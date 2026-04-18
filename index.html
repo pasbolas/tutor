@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tutor Notes Index</title>
+    <meta
+      name="description"
+      content="A minimal tutor notes index with expandable subjects and note links."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./interaction/feedback.css" />
+  </head>
+  <body>
+    <div class="editorial-loader" data-editorial-loader aria-hidden="true">
+      <div class="editorial-loader__frame" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="editorial-loader__center">
+        <p class="editorial-loader__micro">Tutor / Notes Index</p>
+        <div class="editorial-loader__monogram" aria-label="TN mark">
+          <span>T</span>
+          <span>N</span>
+        </div>
+        <div class="editorial-loader__seal" aria-hidden="true">
+          <img src="./loading_assets/a2efb5a0e1e1429320ff84917a87ed3e.jpg" alt="" />
+        </div>
+      </div>
+    </div>
+
+    <main class="study-shell notes-shell notes-shell--minimal" data-notes-hub>
+      <header class="study-topbar">
+        <span class="study-topbar__id">[TUTOR_HOME]</span>
+        <span class="study-topbar__title">Tutor Notes / Subjects</span>
+        <nav class="study-topbar__nav" aria-label="Tutor index links">
+          <a href="#subjects">Subjects</a>
+        </nav>
+      </header>
+
+      <section class="notes-minimal startup-reveal startup-reveal--content" id="subjects">
+        <div class="notes-minimal__header">
+          <p class="study-kicker">Subjects</p>
+          <h1>Notes</h1>
+        </div>
+
+        <div class="notes-subjects" data-notes-subjects-root></div>
+      </section>
+    </main>
+
+    <script type="application/json" data-notes-tree>
+      {
+        "items": [
+          {
+            "name": "Programming",
+            "id": "programming",
+            "type": "folder",
+            "children": [
+              {
+                "name": "Functions in C",
+                "type": "file",
+                "href": "./programming/index.html",
+                "meta": "Markdown lesson"
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+
+    <script src="./transitions.js"></script>
+    <script src="./interaction/audio.js"></script>
+    <script src="./interaction/trails.js"></script>
+    <script src="./script.js"></script>
+  </body>
+</html>
