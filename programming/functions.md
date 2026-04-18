@@ -1,6 +1,6 @@
-Here is a full study guide on functions in C.
+Study guide on functions in C.
 
-# Functions in C: Comprehensive Guide
+# Functions in C
 
 ## What is a function?
 
