@@ -214,6 +214,11 @@ function parseMarkdown(markdown) {
       continue;
     }
 
+    if (/^\s*-{3,}\s*$/.test(line)) {
+      index += 1;
+      continue;
+    }
+
     const codeMatch = line.match(/^```([\w-]+)?\s*$/);
     if (codeMatch) {
       const language = codeMatch[1] || "";
@@ -839,7 +844,7 @@ async function initMarkdownPage() {
       "[data-study-intro]",
       introBlock
         ? introBlock.text
-        : "These are my notes on functions in C, laid out in a way that is easier to revise from and easier to teach from."
+        : page.dataset.markdownIntro || "These notes are laid out in a way that is easier to revise from and easier to teach from."
     );
     
     setText("[data-study-stat='sections']", String(guide.sectionCount));
