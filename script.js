@@ -182,6 +182,15 @@ function renderInline(text) {
   return html;
 }
 
+function prettifyImageName(filename) {
+  return filename
+    .replace(/\.[a-z0-9]+$/i, "")
+    .replace(/[_-]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
 function slugify(text, usedSlugs) {
   const baseSlug = text
     .toLowerCase()
@@ -253,6 +262,47 @@ function parseMarkdown(markdown) {
       continue;
     }
 
+    const imageMatch = line.match(/^\s*\[\[IMAGE:\s*([^\]]+?)\s*\]\]\s*$/i);
+    if (imageMatch) {
+      const filename = imageMatch[1].trim();
+      blocks.push({
+        type: "image",
+        filename,
+        alt: prettifyImageName(filename),
+      });
+      index += 1;
+      continue;
+    }
+
+    const isTableLine = (value) => /^\s*\|.+\|\s*$/.test(value);
+    const isTableSeparator = (value) => /^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(value);
+    if (
+      isTableLine(line)
+      && index + 1 < lines.length
+      && isTableSeparator(lines[index + 1])
+    ) {
+      const splitRow = (value) => value
+        .trim()
+        .replace(/^\||\|$/g, "")
+        .split("|")
+        .map((cell) => cell.trim());
+      const headers = splitRow(line);
+      const rows = [];
+      index += 2;
+
+      while (index < lines.length && isTableLine(lines[index])) {
+        rows.push(splitRow(lines[index]));
+        index += 1;
+      }
+
+      blocks.push({
+        type: "table",
+        headers,
+        rows,
+      });
+      continue;
+    }
+
     const unorderedMatch = line.match(/^\s*[-*]\s+(.*)$/);
     if (unorderedMatch) {
       const items = [];
@@ -305,6 +355,8 @@ function parseMarkdown(markdown) {
         !currentLine.trim()
         || /^```/.test(currentLine)
         || /^(#{1,6})\s+/.test(currentLine)
+        || /^\s*\[\[IMAGE:\s*([^\]]+?)\s*\]\]\s*$/i.test(currentLine)
+        || /^\s*\|.+\|\s*$/.test(currentLine)
         || /^\s*[-*]\s+/.test(currentLine)
         || /^\s*\d+\.\s+/.test(currentLine)
       ) {
@@ -324,7 +376,7 @@ function parseMarkdown(markdown) {
   return blocks;
 }
 
-function renderBlock(block) {
+function renderBlock(block, options = {}) {
   if (block.type === "paragraph") {
     return `<p>${renderInline(block.text)}</p>`;
   }
@@ -352,10 +404,43 @@ function renderBlock(block) {
     return `<h${level}>${renderInline(block.text)}</h${level}>`;
   }
 
+  if (block.type === "image") {
+    const imageBase = options.imageBase || "";
+    const src = `${imageBase}${block.filename}`;
+    return [
+      '<figure class="study-image">',
+      `  <img src="${escapeAttribute(src)}" alt="${escapeAttribute(block.alt)}" loading="lazy" />`,
+      `  <figcaption class="study-markdown__caption"><span>Figure</span><span>${escapeHtml(block.alt)}</span></figcaption>`,
+      "</figure>",
+    ].join("");
+  }
+
+  if (block.type === "table") {
+    const headers = block.headers
+      .map((cell) => `<th scope="col">${renderInline(cell)}</th>`)
+      .join("");
+    const rows = block.rows
+      .map((row) => `
+        <tr>
+          ${row.map((cell) => `<td>${renderInline(cell)}</td>`).join("")}
+        </tr>
+      `)
+      .join("");
+
+    return [
+      '<div class="study-table-wrap">',
+      '  <table class="study-table">',
+      `    <thead><tr>${headers}</tr></thead>`,
+      `    <tbody>${rows}</tbody>`,
+      "  </table>",
+      "</div>",
+    ].join("");
+  }
+
   return "";
 }
 
-function buildGuide(blocks) {
+function buildGuide(blocks, options = {}) {
   const usedSlugs = new Set();
   const outline = [];
   const htmlParts = [];
@@ -408,7 +493,7 @@ function buildGuide(blocks) {
       openSection("Guide Overview");
     }
 
-    if (block.type === "code") {
+    if (block.type === "code" || block.type === "image") {
       codeCount += 1;
     }
 
@@ -416,7 +501,7 @@ function buildGuide(blocks) {
       return;
     }
 
-    htmlParts.push(renderBlock(block));
+    htmlParts.push(renderBlock(block, options));
   });
 
   closeSection();
@@ -442,6 +527,10 @@ function countWords(blocks) {
 
       if (block.type === "list") {
         return block.items.join(" ");
+      }
+
+      if (block.type === "table") {
+        return block.headers.concat(block.rows.flat()).join(" ");
       }
 
       return "";
@@ -746,11 +835,11 @@ function initNotesHub() {
         const listId = `subject-list-${index + 1}`;
 
         return `
-          <section class="notes-subject ${index === 0 ? "is-open" : ""}">
+          <section class="notes-subject">
             <button
               class="notes-subject__toggle"
               type="button"
-              aria-expanded="${index === 0 ? "true" : "false"}"
+              aria-expanded="false"
               aria-controls="${listId}"
             >
               <span class="notes-subject__title">${escapeHtml(subject.name)}</span>
@@ -831,7 +920,9 @@ async function initMarkdownPage() {
     });
 
     const guideBlocks = blocks.filter((block) => block !== introBlock);
-    const guide = buildGuide(guideBlocks);
+    const guide = buildGuide(guideBlocks, {
+      imageBase: page.dataset.markdownImageBase || "",
+    });
     const wordCount = countWords(blocks);
     const readTime = Math.max(1, Math.round(wordCount / 220));
 

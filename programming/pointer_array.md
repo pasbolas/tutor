@@ -1,4 +1,4 @@
-# Chapter: Arrays, Pointers, and Dynamic Memory in C
+# Arrays, Pointers, and Dynamic Memory in C
 
 ---
 

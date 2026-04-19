@@ -379,8 +379,10 @@
   }
 
   const body = document.body;
-  const ENTER_MIN_MS = profile.prefersReducedMotion ? 180 : profile.lowPowerMode ? 320 : 520;
-  const LEAVE_MS = profile.prefersReducedMotion ? 120 : profile.lowPowerMode ? 220 : 340;
+  const LOADER_SEQUENCE_MS = 355 + 470;
+  const LOADER_SETTLE_MS = 60;
+  const ENTER_MIN_MS = profile.prefersReducedMotion ? 180 : LOADER_SEQUENCE_MS + LOADER_SETTLE_MS;
+  const LEAVE_MS = profile.prefersReducedMotion ? 120 : LOADER_SEQUENCE_MS + LOADER_SETTLE_MS;
 
   const revealPage = () => {
     body.classList.add("is-loaded");
