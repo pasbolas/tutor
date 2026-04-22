@@ -546,10 +546,10 @@ function countWords(blocks) {
 }
 
 function setText(selector, value) {
-  const node = document.querySelector(selector);
-  if (node) {
+  const nodes = document.querySelectorAll(selector);
+  nodes.forEach((node) => {
     node.textContent = value;
-  }
+  });
 }
 
 function renderOutline(outline) {
