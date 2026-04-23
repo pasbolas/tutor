@@ -703,6 +703,61 @@ function initOutlineToggle() {
   }
 
   const mobileQuery = window.matchMedia("(max-width: 780px)");
+  let scrollAnimationFrame = 0;
+  let isProgrammaticScroll = false;
+
+  const easeInOutCubic = (progress) => (
+    progress < 0.5
+      ? 4 * progress * progress * progress
+      : 1 - ((-2 * progress + 2) ** 3) / 2
+  );
+
+  const cancelSmoothScroll = () => {
+    if (!scrollAnimationFrame) {
+      return;
+    }
+
+    window.cancelAnimationFrame(scrollAnimationFrame);
+    scrollAnimationFrame = 0;
+    isProgrammaticScroll = false;
+  };
+
+  const animateScrollTo = (targetTop) => {
+    cancelSmoothScroll();
+
+    const startTop = window.scrollY;
+    const maxTop = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+    const endTop = Math.min(Math.max(0, targetTop), maxTop);
+    const distance = endTop - startTop;
+    const duration = Math.min(1150, Math.max(620, 520 + Math.abs(distance) * 0.18));
+    const startTime = performance.now();
+
+    if (Math.abs(distance) < 1) {
+      window.scrollTo(0, endTop);
+      return;
+    }
+
+    isProgrammaticScroll = true;
+
+    const step = (timestamp) => {
+      const elapsed = timestamp - startTime;
+      const progress = Math.min(1, elapsed / duration);
+      const eased = easeInOutCubic(progress);
+
+      window.scrollTo(0, startTop + distance * eased);
+
+      if (progress < 1) {
+        scrollAnimationFrame = window.requestAnimationFrame(step);
+        return;
+      }
+
+      scrollAnimationFrame = 0;
+      isProgrammaticScroll = false;
+    };
+
+    scrollAnimationFrame = window.requestAnimationFrame(step);
+  };
+
   const closePanel = () => {
     panel.classList.remove("is-open");
     syncState();
@@ -740,7 +795,30 @@ function initOutlineToggle() {
       return;
     }
 
+    const href = link.getAttribute("href") || "";
+    const targetId = href.startsWith("#") ? href.slice(1) : "";
+    const target = targetId ? document.getElementById(decodeURIComponent(targetId)) : null;
+    if (!target) {
+      closePanel();
+      return;
+    }
+
+    event.preventDefault();
     closePanel();
+
+    window.requestAnimationFrame(() => {
+      const header = panel.querySelector(".study-outline__header");
+      const headerRect = header ? header.getBoundingClientRect() : panel.getBoundingClientRect();
+      const panelStyles = window.getComputedStyle(panel);
+      const panelPaddingBottom = parseFloat(panelStyles.paddingBottom) || 0;
+      const sectionGap = 14;
+      const landingY = headerRect.bottom + panelPaddingBottom + sectionGap;
+      const targetY = target.getBoundingClientRect().top + window.scrollY - landingY;
+
+      animateScrollTo(targetY);
+
+      window.history.replaceState(null, "", `#${target.id}`);
+    });
   });
 
   document.addEventListener("click", (event) => {
@@ -763,11 +841,31 @@ function initOutlineToggle() {
     closePanel();
   });
 
+  window.addEventListener("wheel", () => {
+    if (!isProgrammaticScroll) {
+      return;
+    }
+
+    cancelSmoothScroll();
+  }, { passive: true });
+
+  window.addEventListener("touchstart", () => {
+    if (!isProgrammaticScroll) {
+      return;
+    }
+
+    cancelSmoothScroll();
+  }, { passive: true });
+
   if (typeof mobileQuery.addEventListener === "function") {
     mobileQuery.addEventListener("change", syncState);
   } else if (typeof mobileQuery.addListener === "function") {
     mobileQuery.addListener(syncState);
   }
+
+  window.addEventListener("pagehide", () => {
+    cancelSmoothScroll();
+  }, { once: true });
 
   syncState();
 }
