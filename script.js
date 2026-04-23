@@ -1,3 +1,38 @@
+const THEME_STORAGE_KEY = "tutor-notes-theme";
+
+function getSystemTheme() {
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+
+function getStoredTheme() {
+  try {
+    const value = window.localStorage.getItem(THEME_STORAGE_KEY);
+    return value === "dark" || value === "light" ? value : "";
+  } catch {
+    return "";
+  }
+}
+
+function setStoredTheme(theme) {
+  try {
+    window.localStorage.setItem(THEME_STORAGE_KEY, theme);
+  } catch {
+    // Storage can be unavailable in hardened/private browser contexts.
+  }
+}
+
+function applyTheme(theme, options = {}) {
+  const nextTheme = theme === "dark" ? "dark" : "light";
+  document.documentElement.dataset.theme = nextTheme;
+  document.documentElement.style.colorScheme = nextTheme;
+
+  if (options.persist) {
+    setStoredTheme(nextTheme);
+  }
+}
+
+applyTheme(getStoredTheme() || getSystemTheme());
+
 function initGlobalClickSpark() {
   const reduceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
   if (reduceMotionQuery.matches) {
@@ -147,6 +182,93 @@ function initGlobalClickSpark() {
     window.removeEventListener("resize", requestResize);
     document.removeEventListener("pointerdown", createSparkBurst);
   }, { once: true });
+}
+
+function initThemeToggle() {
+  const topbars = document.querySelectorAll(".study-topbar");
+  if (!topbars.length) {
+    return;
+  }
+
+  const systemThemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
+  const buttons = [];
+
+  const getCurrentTheme = () => (
+    document.documentElement.dataset.theme === "dark" ? "dark" : "light"
+  );
+
+  const syncButtons = () => {
+    const currentTheme = getCurrentTheme();
+    const isDark = currentTheme === "dark";
+
+    buttons.forEach((button) => {
+      button.setAttribute("aria-pressed", String(isDark));
+      button.setAttribute("aria-label", isDark ? "Switch to light mode" : "Switch to dark mode");
+      button.title = isDark ? "Switch to light mode" : "Switch to dark mode";
+
+      const label = button.querySelector(".theme-toggle__label");
+      if (label) {
+        label.textContent = isDark ? "Light" : "Dark";
+      }
+    });
+  };
+
+  topbars.forEach((topbar) => {
+    if (topbar.querySelector("[data-theme-toggle]")) {
+      return;
+    }
+
+    const button = document.createElement("button");
+    button.className = "theme-toggle";
+    button.type = "button";
+    button.dataset.themeToggle = "";
+    button.innerHTML = `
+      <span class="theme-toggle__track" aria-hidden="true">
+        <span class="theme-toggle__thumb"></span>
+      </span>
+      <span class="theme-toggle__label">Dark</span>
+    `;
+
+    const nav = topbar.querySelector(".study-topbar__nav");
+    if (nav) {
+      nav.appendChild(button);
+    } else {
+      topbar.appendChild(button);
+    }
+
+    button.addEventListener("click", () => {
+      const nextTheme = getCurrentTheme() === "dark" ? "light" : "dark";
+      applyTheme(nextTheme, { persist: true });
+      syncButtons();
+    });
+
+    buttons.push(button);
+  });
+
+  const handleSystemThemeChange = () => {
+    if (getStoredTheme()) {
+      return;
+    }
+
+    applyTheme(getSystemTheme());
+    syncButtons();
+  };
+
+  if (typeof systemThemeQuery.addEventListener === "function") {
+    systemThemeQuery.addEventListener("change", handleSystemThemeChange);
+  } else if (typeof systemThemeQuery.addListener === "function") {
+    systemThemeQuery.addListener(handleSystemThemeChange);
+  }
+
+  window.addEventListener("pagehide", () => {
+    if (typeof systemThemeQuery.removeEventListener === "function") {
+      systemThemeQuery.removeEventListener("change", handleSystemThemeChange);
+    } else if (typeof systemThemeQuery.removeListener === "function") {
+      systemThemeQuery.removeListener(handleSystemThemeChange);
+    }
+  }, { once: true });
+
+  syncButtons();
 }
 
 function escapeHtml(value) {
@@ -959,6 +1081,7 @@ async function initMarkdownPage() {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
+  initThemeToggle();
   initGlobalClickSpark();
   window.requestAnimationFrame(() => {
     document.body.classList.add("is-ready");

@@ -37,124 +37,6 @@
 
   const profile = getSitePerformanceProfile();
 
-  const initNoiseOverlay = () => {
-    if (document.querySelector(".noise-overlay")) {
-      return;
-    }
-
-    const canvas = document.createElement("canvas");
-    canvas.className = "noise-overlay";
-    canvas.setAttribute("aria-hidden", "true");
-    document.body.appendChild(canvas);
-
-    const ctx = canvas.getContext("2d", { alpha: true });
-    if (!ctx) {
-      canvas.remove();
-      return;
-    }
-
-    const patternSize = profile.lowPowerMode ? 144 : 192;
-    const patternRefreshMs = profile.lowPowerMode ? 180 : 110;
-    const patternAlpha = profile.lowPowerMode ? 6 : 8;
-    const canvasSize = profile.lowPowerMode ? 768 : 1024;
-
-    const patternCanvas = document.createElement("canvas");
-    patternCanvas.width = patternSize;
-    patternCanvas.height = patternSize;
-
-    const patternCtx = patternCanvas.getContext("2d", { alpha: true });
-    if (!patternCtx) {
-      canvas.remove();
-      return;
-    }
-
-    const imageData = patternCtx.createImageData(patternSize, patternSize);
-    const patternData = imageData.data;
-    let refreshTimer = 0;
-    let resizeRaf = 0;
-
-    ctx.imageSmoothingEnabled = false;
-
-    const clearRefreshTimer = () => {
-      if (refreshTimer) {
-        window.clearTimeout(refreshTimer);
-        refreshTimer = 0;
-      }
-    };
-
-    const resize = () => {
-      canvas.width = canvasSize;
-      canvas.height = canvasSize;
-      canvas.style.width = "100vw";
-      canvas.style.height = "100vh";
-    };
-
-    const requestResize = () => {
-      if (resizeRaf) {
-        return;
-      }
-
-      resizeRaf = window.requestAnimationFrame(() => {
-        resizeRaf = 0;
-        resize();
-        drawGrain();
-      });
-    };
-
-    const drawGrain = () => {
-      for (let index = 0; index < patternData.length; index += 4) {
-        const value = Math.random() * 255;
-        patternData[index] = value;
-        patternData[index + 1] = value;
-        patternData[index + 2] = value;
-        patternData[index + 3] = patternAlpha;
-      }
-
-      patternCtx.putImageData(imageData, 0, 0);
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
-      ctx.clearRect(0, 0, canvasSize, canvasSize);
-      ctx.drawImage(patternCanvas, 0, 0, canvasSize, canvasSize);
-    };
-
-    const scheduleNextFrame = () => {
-      clearRefreshTimer();
-
-      if (profile.prefersReducedMotion || document.visibilityState !== "visible") {
-        return;
-      }
-
-      refreshTimer = window.setTimeout(() => {
-        drawGrain();
-        scheduleNextFrame();
-      }, patternRefreshMs);
-    };
-
-    const handleVisibilityChange = () => {
-      if (document.visibilityState !== "visible") {
-        clearRefreshTimer();
-        return;
-      }
-
-      drawGrain();
-      scheduleNextFrame();
-    };
-
-    const cleanup = () => {
-      clearRefreshTimer();
-      if (resizeRaf) {
-        window.cancelAnimationFrame(resizeRaf);
-      }
-    };
-
-    window.addEventListener("resize", requestResize, { passive: true });
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    window.addEventListener("pagehide", cleanup, { once: true });
-
-    resize();
-    drawGrain();
-    scheduleNextFrame();
-  };
-
   const initBlobCursor = () => {
     if (!profile.hoverCapable || profile.coarsePointer || profile.smallViewport) {
       return;
@@ -185,30 +67,36 @@
     let targetElement = null;
     let blobWidth = 60;
     let blobHeight = 60;
+    let blobRadius = 30;
     let appliedWidth = 0;
     let appliedHeight = 0;
-    let appliedRadius = "";
+    let appliedRadius = 0;
     let rafId = 0;
     let settleFrames = 0;
 
     const lerp = (start, end, amount) => start + (end - start) * amount;
     const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+    const snap = (value) => Math.round(value * 100) / 100;
 
     const applyBlobShape = (nextWidth, nextHeight, nextRadius) => {
+      const width = snap(nextWidth);
+      const height = snap(nextHeight);
+      const radius = snap(nextRadius);
+
       if (
-        appliedWidth === nextWidth
-        && appliedHeight === nextHeight
-        && appliedRadius === nextRadius
+        appliedWidth === width
+        && appliedHeight === height
+        && appliedRadius === radius
       ) {
         return;
       }
 
-      appliedWidth = nextWidth;
-      appliedHeight = nextHeight;
-      appliedRadius = nextRadius;
-      blob.style.width = `${nextWidth}px`;
-      blob.style.height = `${nextHeight}px`;
-      blob.style.borderRadius = nextRadius;
+      appliedWidth = width;
+      appliedHeight = height;
+      appliedRadius = radius;
+      blob.style.width = `${width}px`;
+      blob.style.height = `${height}px`;
+      blob.style.borderRadius = `${radius}px`;
     };
 
     const scheduleRender = () => {
@@ -229,34 +117,46 @@
       let destinationY = mouseY;
       let destinationWidth = 60;
       let destinationHeight = 60;
-      let destinationRadius = "50%";
+      let destinationRadius = 30;
 
       if (targetElement) {
         const targetRect = targetElement.getBoundingClientRect();
         destinationX = targetRect.left + targetRect.width / 2;
         destinationY = targetRect.top + targetRect.height / 2;
-        destinationWidth = targetRect.width + 16;
-        destinationHeight = targetRect.height + 12;
-        destinationRadius = "0";
+        destinationWidth = clamp(targetRect.width + 18, 34, window.innerWidth * 0.72);
+        destinationHeight = clamp(targetRect.height + 14, 32, 88);
+        destinationRadius = Math.min(destinationHeight / 2, 12);
       }
 
       const distance = Math.hypot(destinationX - blobX, destinationY - blobY);
-      const follow = targetElement
+      const positionFollow = targetElement
         ? clamp(0.28 + distance / 520, 0.28, 0.5)
         : clamp(0.3 + distance / 460, 0.3, 0.6);
+      const shapeDelta = Math.max(
+        Math.abs(destinationWidth - blobWidth),
+        Math.abs(destinationHeight - blobHeight),
+        Math.abs(destinationRadius - blobRadius)
+      );
+      const shapeFollow = targetElement
+        ? clamp(0.18 + shapeDelta / 360, 0.18, 0.34)
+        : clamp(0.2 + shapeDelta / 320, 0.2, 0.38);
 
-      blobX = lerp(blobX, destinationX, follow);
-      blobY = lerp(blobY, destinationY, follow);
-      blobWidth = destinationWidth;
-      blobHeight = destinationHeight;
+      blobX = lerp(blobX, destinationX, positionFollow);
+      blobY = lerp(blobY, destinationY, positionFollow);
+      blobWidth = lerp(blobWidth, destinationWidth, shapeFollow);
+      blobHeight = lerp(blobHeight, destinationHeight, shapeFollow);
+      blobRadius = lerp(blobRadius, destinationRadius, shapeFollow);
 
-      applyBlobShape(blobWidth, blobHeight, destinationRadius);
+      applyBlobShape(blobWidth, blobHeight, blobRadius);
       blob.style.transform = `translate3d(${blobX - blobWidth / 2}px, ${blobY - blobHeight / 2}px, 0)`;
       dot.style.transform = `translate3d(${mouseX - 3}px, ${mouseY - 3}px, 0)`;
 
       const settled = (
         Math.abs(destinationX - blobX) < 0.35
         && Math.abs(destinationY - blobY) < 0.35
+        && Math.abs(destinationWidth - blobWidth) < 0.35
+        && Math.abs(destinationHeight - blobHeight) < 0.35
+        && Math.abs(destinationRadius - blobRadius) < 0.25
       );
 
       if (settled) {
@@ -284,6 +184,12 @@
     const handleMove = (event) => {
       mouseX = event.clientX;
       mouseY = event.clientY;
+
+      const hoverTarget = getHoverTarget(event.target);
+      if (hoverTarget !== targetElement) {
+        targetElement = hoverTarget;
+        cursor.classList.toggle("is-link-hover", Boolean(targetElement));
+      }
 
       if (!targetElement && Math.hypot(mouseX - blobX, mouseY - blobY) > 220) {
         blobX = mouseX;
@@ -370,7 +276,6 @@
     }, { once: true });
   };
 
-  initNoiseOverlay();
   initBlobCursor();
 
   const loader = document.querySelector("[data-editorial-loader]");
