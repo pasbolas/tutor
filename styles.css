@@ -743,6 +743,16 @@ body.is-ready .startup-reveal--content {
   display: grid;
   gap: 1.35rem;
   padding: 0 0.85rem 0 0.45rem;
+  transform: translateZ(0);
+  transition:
+    filter 170ms ease,
+    opacity 170ms ease;
+}
+
+body.is-page-scrolling .study-main-content,
+body.is-page-scrolling .notes-minimal {
+  filter: blur(0.42px) saturate(0.985);
+  opacity: 0.985;
 }
 
 @media (max-width: 1480px) {
@@ -1736,6 +1746,10 @@ body.is-ready .startup-reveal--content {
 
 .notes-minimal {
   padding-top: 1rem;
+  transform: translateZ(0);
+  transition:
+    filter 170ms ease,
+    opacity 170ms ease;
 }
 
 .notes-minimal__header h1 {

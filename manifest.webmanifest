@@ -1,0 +1,31 @@
+{
+  "name": "Tutor Notes",
+  "short_name": "Tutor",
+  "description": "A polished offline-friendly study notes app for tutoring and revision.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#1f1a17",
+  "theme_color": "#a85a4d",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "./misc_assets/app-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./misc_assets/app-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./misc_assets/app-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

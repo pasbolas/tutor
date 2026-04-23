@@ -33,6 +33,31 @@ function applyTheme(theme, options = {}) {
 
 applyTheme(getStoredTheme() || getSystemTheme());
 
+function initPwa() {
+  if (!("serviceWorker" in navigator) || window.location.protocol === "file:") {
+    return;
+  }
+
+  const scriptNode = Array.from(document.scripts).find((script) => {
+    try {
+      return /(^|\/)script\.js$/i.test(new URL(script.src).pathname);
+    } catch {
+      return false;
+    }
+  });
+  const scriptUrl = scriptNode ? scriptNode.src : new URL("./script.js", window.location.href).href;
+  const serviceWorkerUrl = new URL("./sw.js", scriptUrl);
+  const scope = new URL("./", scriptUrl);
+
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register(serviceWorkerUrl, {
+      scope: scope.pathname,
+    }).catch(() => {
+      // PWA support should never block the notes experience.
+    });
+  }, { once: true });
+}
+
 function initGlobalClickSpark() {
   const reduceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
   if (reduceMotionQuery.matches) {
@@ -181,6 +206,62 @@ function initGlobalClickSpark() {
     stopAnimation();
     window.removeEventListener("resize", requestResize);
     document.removeEventListener("pointerdown", createSparkBurst);
+  }, { once: true });
+}
+
+function initScrollSoftening() {
+  const reduceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+  if (reduceMotionQuery.matches) {
+    return;
+  }
+
+  let scrollEndTimer = 0;
+  let scrollRaf = 0;
+  let isScrolling = false;
+
+  const clearScrollEndTimer = () => {
+    if (!scrollEndTimer) {
+      return;
+    }
+
+    window.clearTimeout(scrollEndTimer);
+    scrollEndTimer = 0;
+  };
+
+  const endScroll = () => {
+    scrollEndTimer = 0;
+    isScrolling = false;
+    document.body.classList.remove("is-page-scrolling");
+  };
+
+  const markScrolling = () => {
+    scrollRaf = 0;
+
+    if (!isScrolling) {
+      isScrolling = true;
+      document.body.classList.add("is-page-scrolling");
+    }
+
+    clearScrollEndTimer();
+    scrollEndTimer = window.setTimeout(endScroll, 135);
+  };
+
+  const handleScroll = () => {
+    if (scrollRaf) {
+      return;
+    }
+
+    scrollRaf = window.requestAnimationFrame(markScrolling);
+  };
+
+  window.addEventListener("scroll", handleScroll, { passive: true });
+  window.addEventListener("pagehide", () => {
+    if (scrollRaf) {
+      window.cancelAnimationFrame(scrollRaf);
+    }
+
+    clearScrollEndTimer();
+    document.body.classList.remove("is-page-scrolling");
   }, { once: true });
 }
 
@@ -1179,8 +1260,10 @@ async function initMarkdownPage() {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
+  initPwa();
   initThemeToggle();
   initGlobalClickSpark();
+  initScrollSoftening();
   window.requestAnimationFrame(() => {
     document.body.classList.add("is-ready");
   });
