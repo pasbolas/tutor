@@ -44,19 +44,18 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
+  const requestUrl = new URL(event.request.url);
+  const isSameOrigin = requestUrl.origin === self.location.origin;
+  const acceptsHtml = (event.request.headers.get("accept") || "").includes("text/html");
+  const isDocumentRequest = event.request.mode === "navigate" || acceptsHtml;
 
-      return fetch(event.request)
-        .then((networkResponse) => {
-          if (
-            networkResponse
-            && networkResponse.ok
-            && new URL(event.request.url).origin === self.location.origin
-          ) {
+  event.respondWith(
+    (async () => {
+      if (isSameOrigin && isDocumentRequest) {
+        try {
+          const networkResponse = await fetch(event.request);
+
+          if (networkResponse && networkResponse.ok) {
             const responseToCache = networkResponse.clone();
             caches.open(CACHE_NAME).then((cache) => {
               cache.put(event.request, responseToCache);
@@ -64,14 +63,39 @@ self.addEventListener("fetch", (event) => {
           }
 
           return networkResponse;
-        })
-        .catch(() => {
-          if (event.request.mode === "navigate") {
-            return caches.match("./index.html");
+        } catch {
+          const cachedResponse = await caches.match(event.request);
+          if (cachedResponse) {
+            return cachedResponse;
           }
 
-          return undefined;
-        });
-    })
+          return caches.match("./index.html");
+        }
+      }
+
+      const cachedResponse = await caches.match(event.request);
+      if (cachedResponse) {
+        return cachedResponse;
+      }
+
+      try {
+        const networkResponse = await fetch(event.request);
+
+        if (networkResponse && networkResponse.ok && isSameOrigin) {
+          const responseToCache = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseToCache);
+          });
+        }
+
+        return networkResponse;
+      } catch {
+        if (event.request.mode === "navigate") {
+          return caches.match("./index.html");
+        }
+
+        return undefined;
+      }
+    })()
   );
 });

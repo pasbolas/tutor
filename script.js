@@ -1,4 +1,5 @@
 const THEME_STORAGE_KEY = "tutor-notes-theme";
+const CURSOR_STORAGE_KEY = "tutor-notes-cursor-mode";
 
 function getSystemTheme() {
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
@@ -16,6 +17,23 @@ function getStoredTheme() {
 function setStoredTheme(theme) {
   try {
     window.localStorage.setItem(THEME_STORAGE_KEY, theme);
+  } catch {
+    // Storage can be unavailable in hardened/private browser contexts.
+  }
+}
+
+function getStoredCursorMode() {
+  try {
+    const value = window.localStorage.getItem(CURSOR_STORAGE_KEY);
+    return value === "blob" || value === "native" ? value : "";
+  } catch {
+    return "";
+  }
+}
+
+function setStoredCursorMode(mode) {
+  try {
+    window.localStorage.setItem(CURSOR_STORAGE_KEY, mode);
   } catch {
     // Storage can be unavailable in hardened/private browser contexts.
   }
@@ -348,6 +366,83 @@ function initThemeToggle() {
       systemThemeQuery.removeListener(handleSystemThemeChange);
     }
   }, { once: true });
+
+  syncButtons();
+}
+
+function initCursorToggle() {
+  const topbars = document.querySelectorAll(".study-topbar");
+  const controller = window.__tutorCursorController;
+
+  if (!topbars.length || !controller || typeof controller.setMode !== "function") {
+    return;
+  }
+
+  if (!controller.isAvailable) {
+    return;
+  }
+
+  const buttons = [];
+
+  const getCurrentMode = () => (
+    controller.getMode && controller.getMode() === "native" ? "native" : "blob"
+  );
+
+  const syncButtons = () => {
+    const currentMode = getCurrentMode();
+    const isBlob = currentMode === "blob";
+
+    buttons.forEach((button) => {
+      button.dataset.cursorMode = currentMode;
+      button.setAttribute("aria-pressed", String(isBlob));
+      button.setAttribute("aria-label", isBlob ? "Switch to normal cursor" : "Switch to custom cursor");
+      button.title = isBlob ? "Switch to normal cursor" : "Switch to custom cursor";
+
+      const label = button.querySelector(".cursor-toggle__label");
+      if (label) {
+        label.textContent = isBlob ? "Cursor FX" : "Cursor";
+      }
+    });
+  };
+
+  topbars.forEach((topbar) => {
+    if (topbar.querySelector("[data-cursor-toggle]")) {
+      return;
+    }
+
+    const button = document.createElement("button");
+    button.className = "cursor-toggle";
+    button.type = "button";
+    button.dataset.cursorToggle = "";
+    button.innerHTML = `
+      <span class="cursor-toggle__preview" aria-hidden="true">
+        <span class="cursor-toggle__ring"></span>
+        <span class="cursor-toggle__dot"></span>
+      </span>
+      <span class="cursor-toggle__label">Cursor FX</span>
+    `;
+
+    const nav = topbar.querySelector(".study-topbar__nav");
+    if (nav) {
+      nav.appendChild(button);
+    } else {
+      topbar.appendChild(button);
+    }
+
+    button.addEventListener("click", () => {
+      const nextMode = getCurrentMode() === "blob" ? "native" : "blob";
+      controller.setMode(nextMode, { persist: true });
+      setStoredCursorMode(nextMode);
+      syncButtons();
+    });
+
+    buttons.push(button);
+  });
+
+  const storedMode = getStoredCursorMode();
+  if (storedMode) {
+    controller.setMode(storedMode);
+  }
 
   syncButtons();
 }
@@ -1262,6 +1357,7 @@ async function initMarkdownPage() {
 window.addEventListener("DOMContentLoaded", () => {
   initPwa();
   initThemeToggle();
+  initCursorToggle();
   initGlobalClickSpark();
   initScrollSoftening();
   window.requestAnimationFrame(() => {

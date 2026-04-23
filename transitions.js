@@ -38,28 +38,11 @@
   const profile = getSitePerformanceProfile();
 
   const initBlobCursor = () => {
-    if (!profile.hoverCapable || profile.coarsePointer || profile.smallViewport) {
-      return;
-    }
-
-    if (document.querySelector(".blob-cursor")) {
-      return;
-    }
-
-    const cursor = document.createElement("div");
-    cursor.className = "blob-cursor";
-    cursor.setAttribute("aria-hidden", "true");
-
-    const blob = document.createElement("div");
-    blob.className = "blob-cursor__blob";
-
-    const dot = document.createElement("div");
-    dot.className = "blob-cursor__dot";
-
-    cursor.append(blob, dot);
-    document.body.appendChild(cursor);
-    document.body.classList.add("has-blob-cursor");
-
+    const canUseBlobCursor = !profile.coarsePointer && profile.hoverCapable && !profile.smallViewport;
+    let cursor = null;
+    let blob = null;
+    let dot = null;
+    let mode = "blob";
     let mouseX = window.innerWidth / 2;
     let mouseY = window.innerHeight / 2;
     let blobX = mouseX;
@@ -79,6 +62,10 @@
     const snap = (value) => Math.round(value * 100) / 100;
 
     const applyBlobShape = (nextWidth, nextHeight, nextRadius) => {
+      if (!blob) {
+        return;
+      }
+
       const width = snap(nextWidth);
       const height = snap(nextHeight);
       const radius = snap(nextRadius);
@@ -99,14 +86,61 @@
       blob.style.borderRadius = `${radius}px`;
     };
 
+    const createCursor = () => {
+      if (!canUseBlobCursor || cursor) {
+        return;
+      }
+
+      cursor = document.createElement("div");
+      cursor.className = "blob-cursor";
+      cursor.setAttribute("aria-hidden", "true");
+
+      blob = document.createElement("div");
+      blob.className = "blob-cursor__blob";
+
+      dot = document.createElement("div");
+      dot.className = "blob-cursor__dot";
+
+      cursor.append(blob, dot);
+      document.body.appendChild(cursor);
+      document.body.classList.add("has-blob-cursor");
+      appliedWidth = 0;
+      appliedHeight = 0;
+      appliedRadius = 0;
+      settleFrames = 0;
+      scheduleRender();
+    };
+
+    const destroyCursor = () => {
+      if (rafId) {
+        window.cancelAnimationFrame(rafId);
+        rafId = 0;
+      }
+
+      targetElement = null;
+      document.body.classList.remove("has-blob-cursor");
+
+      if (cursor) {
+        cursor.remove();
+      }
+
+      cursor = null;
+      blob = null;
+      dot = null;
+    };
+
     const scheduleRender = () => {
-      if (!rafId) {
+      if (mode === "blob" && cursor && !rafId) {
         rafId = window.requestAnimationFrame(render);
       }
     };
 
     const render = () => {
       rafId = 0;
+
+      if (!cursor || !blob || !dot) {
+        return;
+      }
 
       if (targetElement && !document.body.contains(targetElement)) {
         targetElement = null;
@@ -188,7 +222,9 @@
       const hoverTarget = getHoverTarget(event.target);
       if (hoverTarget !== targetElement) {
         targetElement = hoverTarget;
-        cursor.classList.toggle("is-link-hover", Boolean(targetElement));
+        if (cursor) {
+          cursor.classList.toggle("is-link-hover", Boolean(targetElement));
+        }
       }
 
       if (!targetElement && Math.hypot(mouseX - blobX, mouseY - blobY) > 220) {
@@ -202,7 +238,7 @@
 
     const handleEnter = (event) => {
       const hoverTarget = getHoverTarget(event.target);
-      if (!hoverTarget) {
+      if (!hoverTarget || !cursor) {
         return;
       }
 
@@ -221,9 +257,9 @@
       }
 
       targetElement = nextTarget;
-      if (targetElement) {
+      if (cursor && targetElement) {
         cursor.classList.add("is-link-hover");
-      } else {
+      } else if (cursor) {
         cursor.classList.remove("is-link-hover");
       }
 
@@ -232,7 +268,7 @@
     };
 
     const handleScroll = () => {
-      if (targetElement) {
+      if (targetElement && cursor) {
         targetElement = null;
         cursor.classList.remove("is-link-hover");
       }
@@ -254,6 +290,30 @@
       scheduleRender();
     };
 
+    const setMode = (nextMode) => {
+      const resolvedMode = nextMode === "native" ? "native" : "blob";
+
+      if (!canUseBlobCursor) {
+        mode = "native";
+        destroyCursor();
+        return mode;
+      }
+
+      if (mode === resolvedMode && ((mode === "blob" && cursor) || mode === "native")) {
+        return mode;
+      }
+
+      mode = resolvedMode;
+
+      if (mode === "blob") {
+        createCursor();
+      } else {
+        destroyCursor();
+      }
+
+      return mode;
+    };
+
     window.addEventListener("pointermove", handleMove, { passive: true });
     window.addEventListener("pointerdown", handleMove, { passive: true });
     document.addEventListener("mouseover", handleEnter);
@@ -261,12 +321,10 @@
     window.addEventListener("scroll", handleScroll, { passive: true });
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
-    scheduleRender();
+    setMode("blob");
 
     window.addEventListener("pagehide", () => {
-      if (rafId) {
-        window.cancelAnimationFrame(rafId);
-      }
+      destroyCursor();
       window.removeEventListener("pointermove", handleMove);
       window.removeEventListener("pointerdown", handleMove);
       window.removeEventListener("scroll", handleScroll);
@@ -274,9 +332,19 @@
       document.removeEventListener("mouseout", handleLeave);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     }, { once: true });
+
+    return {
+      isAvailable: canUseBlobCursor,
+      getMode: () => mode,
+      setMode,
+    };
   };
 
-  initBlobCursor();
+  window.__tutorCursorController = initBlobCursor() || {
+    isAvailable: false,
+    getMode: () => "native",
+    setMode: () => "native",
+  };
 
   const loader = document.querySelector("[data-editorial-loader]");
   if (!loader) {
