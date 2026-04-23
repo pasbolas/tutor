@@ -56,6 +56,29 @@ function initPwa() {
     return;
   }
 
+  const localHosts = new Set(["localhost", "127.0.0.1", "0.0.0.0"]);
+  if (localHosts.has(window.location.hostname)) {
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      registrations.forEach((registration) => {
+        registration.unregister();
+      });
+    }).catch(() => {
+      // Local development should keep working even if cleanup is blocked.
+    });
+
+    if ("caches" in window) {
+      caches.keys().then((keys) => {
+        keys
+          .filter((key) => key.startsWith("tutor-notes-"))
+          .forEach((key) => caches.delete(key));
+      }).catch(() => {
+        // Cache cleanup is best-effort in local development.
+      });
+    }
+
+    return;
+  }
+
   const scriptNode = Array.from(document.scripts).find((script) => {
     try {
       return /(^|\/)script\.js$/i.test(new URL(script.src).pathname);
@@ -66,10 +89,21 @@ function initPwa() {
   const scriptUrl = scriptNode ? scriptNode.src : new URL("./script.js", window.location.href).href;
   const serviceWorkerUrl = new URL("./sw.js", scriptUrl);
   const scope = new URL("./", scriptUrl);
+  let refreshingForServiceWorker = false;
+
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    if (refreshingForServiceWorker) {
+      return;
+    }
+
+    refreshingForServiceWorker = true;
+    window.location.reload();
+  });
 
   window.addEventListener("load", () => {
     navigator.serviceWorker.register(serviceWorkerUrl, {
       scope: scope.pathname,
+      updateViaCache: "none",
     }).catch(() => {
       // PWA support should never block the notes experience.
     });
@@ -283,7 +317,73 @@ function initScrollSoftening() {
   }, { once: true });
 }
 
+function getCurrentTheme() {
+  return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+}
+
+function createThemeToggleButton() {
+  const button = document.createElement("button");
+  button.className = "theme-toggle";
+  button.type = "button";
+  button.dataset.themeToggle = "";
+  button.innerHTML = `
+    <span class="theme-toggle__track" aria-hidden="true">
+      <span class="theme-toggle__thumb"></span>
+    </span>
+    <span class="theme-toggle__label">Dark</span>
+  `;
+
+  return button;
+}
+
+function syncThemeToggleButton(button) {
+  const isDark = getCurrentTheme() === "dark";
+  button.setAttribute("aria-pressed", String(isDark));
+  button.setAttribute("aria-label", isDark ? "Switch to light mode" : "Switch to dark mode");
+  button.title = isDark ? "Switch to light mode" : "Switch to dark mode";
+
+  const label = button.querySelector(".theme-toggle__label");
+  if (label) {
+    label.textContent = isDark ? "Light" : "Dark";
+  }
+}
+
+function createCursorToggleButton() {
+  const button = document.createElement("button");
+  button.className = "cursor-toggle";
+  button.type = "button";
+  button.dataset.cursorToggle = "";
+  button.innerHTML = `
+    <span class="cursor-toggle__preview" aria-hidden="true">
+      <span class="cursor-toggle__ring"></span>
+      <span class="cursor-toggle__dot"></span>
+    </span>
+    <span class="cursor-toggle__label">Cursor FX</span>
+  `;
+
+  return button;
+}
+
+function syncCursorToggleButton(button, controller) {
+  const currentMode = controller.getMode && controller.getMode() === "native" ? "native" : "blob";
+  const isBlob = currentMode === "blob";
+
+  button.dataset.cursorMode = currentMode;
+  button.setAttribute("aria-pressed", String(isBlob));
+  button.setAttribute("aria-label", isBlob ? "Switch to normal cursor" : "Switch to custom cursor");
+  button.title = isBlob ? "Switch to normal cursor" : "Switch to custom cursor";
+
+  const label = button.querySelector(".cursor-toggle__label");
+  if (label) {
+    label.textContent = isBlob ? "Cursor FX" : "Cursor";
+  }
+}
+
 function initThemeToggle() {
+  if (document.querySelector("[data-markdown-page]")) {
+    return;
+  }
+
   const topbars = document.querySelectorAll(".study-topbar");
   if (!topbars.length) {
     return;
@@ -292,23 +392,9 @@ function initThemeToggle() {
   const systemThemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
   const buttons = [];
 
-  const getCurrentTheme = () => (
-    document.documentElement.dataset.theme === "dark" ? "dark" : "light"
-  );
-
   const syncButtons = () => {
-    const currentTheme = getCurrentTheme();
-    const isDark = currentTheme === "dark";
-
     buttons.forEach((button) => {
-      button.setAttribute("aria-pressed", String(isDark));
-      button.setAttribute("aria-label", isDark ? "Switch to light mode" : "Switch to dark mode");
-      button.title = isDark ? "Switch to light mode" : "Switch to dark mode";
-
-      const label = button.querySelector(".theme-toggle__label");
-      if (label) {
-        label.textContent = isDark ? "Light" : "Dark";
-      }
+      syncThemeToggleButton(button);
     });
   };
 
@@ -317,16 +403,7 @@ function initThemeToggle() {
       return;
     }
 
-    const button = document.createElement("button");
-    button.className = "theme-toggle";
-    button.type = "button";
-    button.dataset.themeToggle = "";
-    button.innerHTML = `
-      <span class="theme-toggle__track" aria-hidden="true">
-        <span class="theme-toggle__thumb"></span>
-      </span>
-      <span class="theme-toggle__label">Dark</span>
-    `;
+    const button = createThemeToggleButton();
 
     const nav = topbar.querySelector(".study-topbar__nav");
     if (nav) {
@@ -371,6 +448,10 @@ function initThemeToggle() {
 }
 
 function initCursorToggle() {
+  if (document.querySelector("[data-markdown-page]")) {
+    return;
+  }
+
   const topbars = document.querySelectorAll(".study-topbar");
   const controller = window.__tutorCursorController;
 
@@ -384,24 +465,9 @@ function initCursorToggle() {
 
   const buttons = [];
 
-  const getCurrentMode = () => (
-    controller.getMode && controller.getMode() === "native" ? "native" : "blob"
-  );
-
   const syncButtons = () => {
-    const currentMode = getCurrentMode();
-    const isBlob = currentMode === "blob";
-
     buttons.forEach((button) => {
-      button.dataset.cursorMode = currentMode;
-      button.setAttribute("aria-pressed", String(isBlob));
-      button.setAttribute("aria-label", isBlob ? "Switch to normal cursor" : "Switch to custom cursor");
-      button.title = isBlob ? "Switch to normal cursor" : "Switch to custom cursor";
-
-      const label = button.querySelector(".cursor-toggle__label");
-      if (label) {
-        label.textContent = isBlob ? "Cursor FX" : "Cursor";
-      }
+      syncCursorToggleButton(button, controller);
     });
   };
 
@@ -410,17 +476,7 @@ function initCursorToggle() {
       return;
     }
 
-    const button = document.createElement("button");
-    button.className = "cursor-toggle";
-    button.type = "button";
-    button.dataset.cursorToggle = "";
-    button.innerHTML = `
-      <span class="cursor-toggle__preview" aria-hidden="true">
-        <span class="cursor-toggle__ring"></span>
-        <span class="cursor-toggle__dot"></span>
-      </span>
-      <span class="cursor-toggle__label">Cursor FX</span>
-    `;
+    const button = createCursorToggleButton();
 
     const nav = topbar.querySelector(".study-topbar__nav");
     if (nav) {
@@ -430,7 +486,7 @@ function initCursorToggle() {
     }
 
     button.addEventListener("click", () => {
-      const nextMode = getCurrentMode() === "blob" ? "native" : "blob";
+      const nextMode = controller.getMode() === "blob" ? "native" : "blob";
       controller.setMode(nextMode, { persist: true });
       setStoredCursorMode(nextMode);
       syncButtons();
@@ -445,6 +501,207 @@ function initCursorToggle() {
   }
 
   syncButtons();
+}
+
+function initStudySettingsMenu() {
+  const panel = document.querySelector("[data-study-outline-panel]");
+  const homeLink = panel ? panel.querySelector(".study-outline__home") : null;
+  const controller = window.__tutorCursorController;
+  const soundControl = document.querySelector(".site-sound-control");
+
+  if (!panel || !homeLink) {
+    return;
+  }
+
+  const actions = document.createElement("div");
+  actions.className = "study-outline__actions";
+  homeLink.before(actions);
+  actions.appendChild(homeLink);
+
+  const settings = document.createElement("div");
+  settings.className = "study-settings";
+
+  const trigger = document.createElement("button");
+  trigger.className = "study-settings__trigger";
+  trigger.type = "button";
+  trigger.setAttribute("aria-expanded", "false");
+  trigger.setAttribute("aria-haspopup", "true");
+  trigger.setAttribute("aria-label", "Open settings");
+  trigger.innerHTML = `
+    <span class="study-settings__trigger-icon" aria-hidden="true">
+      <span></span>
+      <span></span>
+      <span></span>
+    </span>
+    <span class="study-settings__trigger-label">Settings</span>
+  `;
+
+  const menu = document.createElement("div");
+  menu.className = "study-settings__menu";
+  menu.hidden = true;
+  let closeTimer = 0;
+  let hideTimer = 0;
+
+  const menuTitle = document.createElement("p");
+  menuTitle.className = "study-settings__menu-title";
+  menuTitle.textContent = "Settings";
+  menu.appendChild(menuTitle);
+
+  const appendMenuItem = (button) => {
+    const item = document.createElement("div");
+    item.className = "study-settings__item";
+    item.appendChild(button);
+    menu.appendChild(item);
+    return button;
+  };
+
+  const themeButton = appendMenuItem(createThemeToggleButton());
+  const syncThemeButton = () => {
+    syncThemeToggleButton(themeButton);
+  };
+
+  themeButton.addEventListener("click", () => {
+    const nextTheme = getCurrentTheme() === "dark" ? "light" : "dark";
+    applyTheme(nextTheme, { persist: true });
+    syncThemeButton();
+  });
+
+  if (controller && controller.isAvailable) {
+    const cursorButton = appendMenuItem(createCursorToggleButton());
+    const storedMode = getStoredCursorMode();
+    if (storedMode) {
+      controller.setMode(storedMode);
+    }
+
+    const syncCursorButton = () => {
+      syncCursorToggleButton(cursorButton, controller);
+    };
+
+    cursorButton.addEventListener("click", () => {
+      const nextMode = controller.getMode() === "blob" ? "native" : "blob";
+      controller.setMode(nextMode, { persist: true });
+      setStoredCursorMode(nextMode);
+      syncCursorButton();
+    });
+
+    syncCursorButton();
+  }
+
+  if (soundControl) {
+    const soundItem = document.createElement("div");
+    soundItem.className = "study-settings__item study-settings__item--sound";
+    soundItem.appendChild(soundControl);
+    menu.appendChild(soundItem);
+  }
+
+  settings.append(trigger, menu);
+  actions.appendChild(settings);
+
+  const clearCloseTimers = () => {
+    if (closeTimer) {
+      window.clearTimeout(closeTimer);
+      closeTimer = 0;
+    }
+
+    if (hideTimer) {
+      window.clearTimeout(hideTimer);
+      hideTimer = 0;
+    }
+  };
+
+  const closeMenu = () => {
+    clearCloseTimers();
+    settings.classList.remove("is-open");
+    trigger.setAttribute("aria-expanded", "false");
+    hideTimer = window.setTimeout(() => {
+      if (!settings.classList.contains("is-open")) {
+        menu.hidden = true;
+      }
+    }, 190);
+  };
+
+  const requestCloseMenu = () => {
+    clearCloseTimers();
+    closeTimer = window.setTimeout(closeMenu, 180);
+  };
+
+  const openMenu = () => {
+    clearCloseTimers();
+    menu.hidden = false;
+    window.requestAnimationFrame(() => {
+      settings.classList.add("is-open");
+    });
+    trigger.setAttribute("aria-expanded", "true");
+  };
+
+  trigger.addEventListener("click", (event) => {
+    event.stopPropagation();
+    if (settings.classList.contains("is-open")) {
+      closeMenu();
+    } else {
+      openMenu();
+    }
+  });
+
+  settings.addEventListener("pointerenter", clearCloseTimers);
+  menu.addEventListener("pointerenter", clearCloseTimers);
+  menu.addEventListener("focusin", clearCloseTimers);
+
+  menu.addEventListener("click", (event) => {
+    event.stopPropagation();
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!settings.contains(event.target)) {
+      closeMenu();
+    }
+  });
+
+  settings.addEventListener("mouseleave", () => {
+    requestCloseMenu();
+  });
+
+  settings.addEventListener("pointerleave", () => {
+    requestCloseMenu();
+  });
+
+  settings.addEventListener("focusout", (event) => {
+    if (!settings.contains(event.relatedTarget)) {
+      closeMenu();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeMenu();
+    }
+  });
+
+  const systemThemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
+  const handleSystemThemeChange = () => {
+    if (getStoredTheme()) {
+      return;
+    }
+
+    applyTheme(getSystemTheme());
+    syncThemeButton();
+  };
+
+  if (typeof systemThemeQuery.addEventListener === "function") {
+    systemThemeQuery.addEventListener("change", handleSystemThemeChange);
+  } else if (typeof systemThemeQuery.addListener === "function") {
+    systemThemeQuery.addListener(handleSystemThemeChange);
+  }
+
+  window.addEventListener("pagehide", () => {
+    if (typeof systemThemeQuery.removeEventListener === "function") {
+      systemThemeQuery.removeEventListener("change", handleSystemThemeChange);
+    } else if (typeof systemThemeQuery.removeListener === "function") {
+      systemThemeQuery.removeListener(handleSystemThemeChange);
+    }
+  }, { once: true });
+
+  syncThemeButton();
 }
 
 function escapeHtml(value) {
@@ -1358,6 +1615,7 @@ window.addEventListener("DOMContentLoaded", () => {
   initPwa();
   initThemeToggle();
   initCursorToggle();
+  initStudySettingsMenu();
   initGlobalClickSpark();
   initScrollSoftening();
   window.requestAnimationFrame(() => {

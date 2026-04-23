@@ -83,6 +83,9 @@
     scrollInstrumentRaf: 0,
     scrollInstrumentTop: 0,
     scrollInstrumentPitch: 0,
+    scrollInstrumentTitleWidth: 0,
+    scrollInstrumentTitlePresence: 0,
+    scrollInstrumentMarkerWidth: 18,
   };
 
   const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
@@ -212,7 +215,10 @@
   };
 
   const collectScrollInstrumentSections = () => {
-    const candidates = Array.from(document.querySelectorAll("main .panel[id], section[id]"));
+    const studySections = Array.from(document.querySelectorAll("[data-study-section]"));
+    const candidates = studySections.length
+      ? studySections
+      : Array.from(document.querySelectorAll("main .panel[id], section[id]"));
     const unique = new Set();
 
     return candidates.filter((section) => {
@@ -223,6 +229,67 @@
       unique.add(section.id);
       return true;
     });
+  };
+
+  const getSectionTitle = (section) => {
+    if (!section) {
+      return "";
+    }
+
+    const heading = section.querySelector(
+      ".study-markdown__section-header h2, .notes-minimal__header h1, h2, h1"
+    );
+
+    return heading ? heading.textContent.trim() : "";
+  };
+
+  const updateScrollInstrumentTitleState = () => {
+    if (!state.scrollInstrumentSections.length) {
+      state.scrollInstrumentTitleWidth = 0;
+      state.scrollInstrumentTitlePresence = 0;
+      state.scrollInstrumentMarkerWidth = 18;
+      return;
+    }
+
+    const anchorY = window.innerHeight * 0.34;
+    let bestSection = null;
+    let bestScore = Number.POSITIVE_INFINITY;
+
+    state.scrollInstrumentSections.forEach((section) => {
+      const rect = section.getBoundingClientRect();
+      const heading = section.querySelector(".study-markdown__section-header h2, h2, h1");
+      const titleRect = heading ? heading.getBoundingClientRect() : rect;
+      const sectionInView = rect.top < window.innerHeight * 0.82 && rect.bottom > window.innerHeight * 0.08;
+
+      if (!sectionInView) {
+        return;
+      }
+
+      const score = Math.abs(Math.min(Math.max(titleRect.top, 0), window.innerHeight) - anchorY);
+      if (score < bestScore) {
+        bestScore = score;
+        bestSection = section;
+      }
+    });
+
+    if (!bestSection) {
+      state.scrollInstrumentTitleWidth = 0;
+      state.scrollInstrumentTitlePresence = 0;
+      state.scrollInstrumentMarkerWidth = 18;
+      return;
+    }
+
+    const title = getSectionTitle(bestSection);
+    const heading = bestSection.querySelector(".study-markdown__section-header h2, h2, h1");
+    const titleRect = heading ? heading.getBoundingClientRect() : bestSection.getBoundingClientRect();
+    const distance = Math.abs(titleRect.top - anchorY);
+    const presence = clamp(1 - (distance / Math.max(180, window.innerHeight * 0.42)), 0.18, 1);
+    const titleWidth = clamp(title.length * 0.52, 12, 34);
+
+    state.scrollInstrumentTitleWidth = titleWidth;
+    state.scrollInstrumentTitlePresence = presence;
+    state.scrollInstrumentMarkerWidth = 18 + titleWidth * presence;
+    state.scrollInstrumentMarker.dataset.title = title;
   };
 
   const getScrollProgress = () => {
@@ -289,7 +356,11 @@
     }
 
     const markerY = state.scrollInstrumentTop + state.scrollInstrumentCurrent * state.scrollInstrumentPitch;
-    state.scrollInstrumentMarker.style.transform = `translateY(${markerY}px)`;
+    state.scrollInstrumentMarker.style.transform = `translate(-50%, ${markerY}px)`;
+    state.scrollInstrumentMarker.style.setProperty(
+      "--instrument-marker-width",
+      `${state.scrollInstrumentMarkerWidth}px`
+    );
 
     const activeIndex = Math.round(state.scrollInstrumentCurrent);
     if (activeIndex !== state.scrollInstrumentActiveIndex) {
@@ -374,6 +445,7 @@
       state.scrollInstrumentSections = collectScrollInstrumentSections();
       measureScrollInstrument();
       updateScrollInstrumentTarget();
+      updateScrollInstrumentTitleState();
       scheduleScrollInstrumentRender();
     };
 
@@ -390,6 +462,7 @@
 
     measureScrollInstrument();
     updateScrollInstrumentTarget();
+    updateScrollInstrumentTitleState();
     state.scrollInstrumentCurrent = state.scrollInstrumentTarget;
     scheduleScrollInstrumentRender();
   };
