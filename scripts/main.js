@@ -220,14 +220,15 @@ function initPwa() {
 
   const scriptNode = Array.from(document.scripts).find((script) => {
     try {
-      return /(^|\/)script\.js$/i.test(new URL(script.src).pathname);
+      return /(^|\/)main\.js$/i.test(new URL(script.src).pathname);
     } catch {
       return false;
     }
   });
-  const scriptUrl = scriptNode ? scriptNode.src : new URL("./script.js", window.location.href).href;
-  const serviceWorkerUrl = new URL("./sw.js", scriptUrl);
-  const scope = new URL("./", scriptUrl);
+  const scriptUrl = scriptNode ? scriptNode.src : new URL("./scripts/main.js", window.location.href).href;
+  const appRootUrl = new URL("../", scriptUrl);
+  const serviceWorkerUrl = new URL("./sw.js", appRootUrl);
+  const scope = appRootUrl;
   let refreshingForServiceWorker = false;
 
   navigator.serviceWorker.addEventListener("controllerchange", () => {
@@ -1573,34 +1574,38 @@ function normalizeHubTree(items, parentId = "") {
   });
 }
 
-function flattenHubTree(items, bucket = []) {
-  items.forEach((item) => {
-    bucket.push(item);
-    if (item.type === "folder") {
-      flattenHubTree(item.children, bucket);
-    }
-  });
-  return bucket;
-}
-
 function escapeAttribute(value) {
   return escapeHtml(String(value));
 }
 
-function initNotesHub() {
+async function loadNotesCatalog(hub) {
+  const catalogUrl = hub.dataset.notesCatalog;
+  if (catalogUrl) {
+    const response = await fetch(catalogUrl);
+    if (!response.ok) {
+      throw new Error(`Failed to load ${catalogUrl} (${response.status})`);
+    }
+
+    return response.json();
+  }
+
+  const dataNode = document.querySelector("[data-notes-tree]");
+  if (!dataNode) {
+    return { items: [] };
+  }
+
+  return JSON.parse(dataNode.textContent || "{}");
+}
+
+async function initNotesHub() {
   const hub = document.querySelector("[data-notes-hub]");
   if (!hub) {
     return;
   }
 
-  const dataNode = document.querySelector("[data-notes-tree]");
-  if (!dataNode) {
-    return;
-  }
-
   let config;
   try {
-    config = JSON.parse(dataNode.textContent || "{}");
+    config = await loadNotesCatalog(hub);
   } catch {
     return;
   }

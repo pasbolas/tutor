@@ -3,27 +3,27 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pointers, Arrays, and DMA in C | Tutor Notes</title>
+    <title>Internetworking, Routers, and IP Datagrams | Tutor Notes</title>
     <meta
       name="description"
-      content="My tutoring notes on pointers, arrays, and dynamic memory allocation in C, rendered as a clean study page."
+      content="My tutoring notes on internetworking, universal service, routers, IP addressing, and datagrams, rendered as a clean study page."
     />
     <meta name="theme-color" content="#a85a4d" />
     <meta name="application-name" content="Tutor Notes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="Tutor Notes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <link rel="manifest" href="../manifest.webmanifest" />
-    <link rel="icon" type="image/png" sizes="32x32" href="../misc_assets/favicon-32.png" />
-    <link rel="apple-touch-icon" href="../misc_assets/apple-touch-icon.png" />
+    <link rel="manifest" href="../../manifest.webmanifest" />
+    <link rel="icon" type="image/png" sizes="32x32" href="../../assets/icons/favicon-32.png" />
+    <link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="../styles.css?v=20260423-4" />
-    <link rel="stylesheet" href="../interaction/feedback.css?v=20260423-4" />
+    <link rel="stylesheet" href="../../styles/main.css?v=20260423-4" />
+    <link rel="stylesheet" href="../../styles/feedback.css?v=20260423-4" />
   </head>
   <body>
     <div class="editorial-loader" data-editorial-loader aria-hidden="true">
@@ -34,13 +34,13 @@
         <span></span>
       </div>
       <div class="editorial-loader__center">
-        <p class="editorial-loader__micro">Programming / My Notes</p>
-        <div class="editorial-loader__monogram" aria-label="PA mark">
-          <span>P</span>
-          <span>A</span>
+        <p class="editorial-loader__micro">Data Communication / My Notes</p>
+        <div class="editorial-loader__monogram" aria-label="IN mark">
+          <span>I</span>
+          <span>N</span>
         </div>
         <div class="editorial-loader__seal" aria-hidden="true">
-          <img src="../loading_assets/a2efb5a0e1e1429320ff84917a87ed3e.jpg" alt="" />
+          <img src="../../assets/loading/editorial-seal.jpg" alt="" />
         </div>
       </div>
     </div>
@@ -49,16 +49,17 @@
       class="study-shell"
       id="top"
       data-markdown-page
-      data-markdown-source="./pointer_array.md"
-      data-markdown-intro="These are my notes on pointers, arrays, and dynamic memory allocation in C, cleaned up into a revision page for tutoring and self-study."
+      data-markdown-source="./intro-to-internet.md"
+      data-markdown-image-base="./intro-to-internet-images/"
+      data-markdown-intro="These are my notes on internetworking, universal service, routers, and IP datagrams, cleaned up into a revision page for tutoring and self-study."
     >
       <header class="study-topbar">
-        <span class="study-topbar__id">[TUTOR_02]</span>
-        <span class="study-topbar__title">Programming / Pointers, Arrays, and DMA</span>
+        <span class="study-topbar__id">[TUTOR_DC_07]</span>
+        <span class="study-topbar__title">Data Communication / Internetworking</span>
         <nav class="study-topbar__nav" aria-label="Tutor page links">
-          <a href="../index.html">All notes</a>
+          <a href="../../index.html">All notes</a>
           <a href="#top">Back to top</a>
-          <a href="./pointer_array.md">Open raw notes</a>
+          <a href="./intro-to-internet.md">Open raw notes</a>
           <a href="#guide">Skip to notes</a>
         </nav>
       </header>
@@ -67,12 +68,12 @@
         <aside class="study-outline startup-reveal startup-reveal--outline" id="contents" data-study-outline-panel>
           <p class="study-kicker">Contents</p>
           <div class="study-outline__header">
-            <a class="study-outline__back" href="../index.html" aria-label="Back to all notes">
-              <img src="../misc_assets/left_arrow.png" alt="" />
+            <a class="study-outline__back" href="../../index.html" aria-label="Back to all notes">
+              <img src="../../assets/icons/left-arrow.png" alt="" />
               <span>Back</span>
             </a>
             <h2>Guide map</h2>
-            <span class="study-outline__slide-title">Slide 13</span>
+            <span class="study-outline__slide-title">Slide 17</span>
             <button
               class="study-outline__toggle"
               type="button"
@@ -86,7 +87,7 @@
           <p class="study-outline__lede">
             Navigation
           </p>
-          <a class="study-outline__home" href="../index.html">Back to main index</a>
+          <a class="study-outline__home" href="../../index.html">Back to main index</a>
           <nav class="study-outline__list" id="study-outline-list" aria-label="Guide outline" data-study-outline>
             <p class="study-outline__empty">The section list will show up here once the notes load.</p>
           </nav>
@@ -96,17 +97,17 @@
           <section class="study-hero startup-reveal startup-reveal--hero">
             <span class="print-stamp print-stamp--study" aria-hidden="true">My Notes</span>
             <figure class="study-asset study-asset--computer" aria-hidden="true">
-              <img src="../assets/computer.jpg" alt="" />
+              <img src="../../assets/decorative/computer.jpg" alt="" />
             </figure>
             <figure class="study-asset study-asset--mouse" aria-hidden="true">
-              <img src="../assets/mouse.jpg" alt="" />
+              <img src="../../assets/decorative/mouse.jpg" alt="" />
             </figure>
 
             <div class="study-hero__copy">
-              <p class="study-kicker">Programming / Memory</p>
-              <h1 data-study-title>Pointers, Arrays, and DMA in C</h1>
+              <p class="study-kicker">Data Communication / Internet</p>
+              <h1 data-study-title>Internetworking, Routers, and IP Datagrams</h1>
               <p class="study-lede" data-study-intro>
-                These are my notes on pointers, arrays, and dynamic memory allocation in C, cleaned up into a revision page for tutoring and self-study.
+                These are my notes on internetworking, universal service, routers, and IP datagrams, cleaned up into a revision page for tutoring and self-study.
               </p>
 
               <div class="study-facts" aria-label="Guide statistics">
@@ -131,7 +132,7 @@
               <p class="study-kicker">Notes</p>
             </div>
             <div class="study-band__meta">
-              <span>Source: <a href="./pointer_array.md">pointer_array.md</a></span>
+              <span>Source: <a href="./intro-to-internet.md">intro-to-internet.md</a></span>
               <span>Built from my notes</span>
               <span>Made for revision + tutoring</span>
             </div>
@@ -145,11 +146,11 @@
           </article>
 
           <footer class="study-footer">
-            <p>Pointers, Arrays, and DMA in C / pulled from my markdown notes</p>
+            <p>Internetworking, Routers, and IP Datagrams / pulled from my markdown notes</p>
             <div class="study-footer__links">
-              <a href="../index.html">Notes index</a>
+              <a href="../../index.html">Notes index</a>
               <a href="#top">Top</a>
-              <a href="./pointer_array.md">Open notes file</a>
+              <a href="./intro-to-internet.md">Open notes file</a>
             </div>
           </footer>
         </div>
@@ -163,9 +164,9 @@
       </svg>
     </button>
 
-    <script src="../transitions.js?v=20260423-4"></script>
-    <script src="../interaction/audio.js?v=20260423-4"></script>
-    <script src="../interaction/trails.js?v=20260423-4"></script>
-    <script src="../script.js?v=20260423-4"></script>
+    <script src="../../scripts/page-transitions.js?v=20260423-4"></script>
+    <script src="../../scripts/interaction/audio.js?v=20260423-4"></script>
+    <script src="../../scripts/interaction/trails.js?v=20260423-4"></script>
+    <script src="../../scripts/main.js?v=20260423-4"></script>
   </body>
 </html>

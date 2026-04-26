@@ -6,6 +6,7 @@
   --ink-muted: rgba(39, 31, 28, 0.72);
   --accent: #a85a4d;
   --accent-soft: rgba(168, 90, 77, 0.1);
+  --code-surface: #ebe2d5;
   --line: rgba(112, 98, 86, 0.3);
   --mono: "IBM Plex Mono", monospace;
 }
@@ -18,6 +19,7 @@
   --ink-muted: rgba(243, 234, 223, 0.72);
   --accent: #e08a76;
   --accent-soft: rgba(224, 138, 118, 0.14);
+  --code-surface: #241f1b;
   --line: rgba(232, 205, 181, 0.18);
 }
 
@@ -30,6 +32,7 @@
     --ink-muted: rgba(243, 234, 223, 0.72);
     --accent: #e08a76;
     --accent-soft: rgba(224, 138, 118, 0.14);
+    --code-surface: #241f1b;
     --line: rgba(232, 205, 181, 0.18);
   }
 }
@@ -1514,7 +1517,7 @@ body.is-page-scrolling .notes-minimal {
 .study-code {
   margin: 1rem 0 0;
   border: 1px solid rgba(112, 98, 86, 0.24);
-  background: #ebe2d5;
+  background: var(--code-surface);
   min-width: 0;
   max-width: 100%;
   overflow: hidden;
@@ -1537,6 +1540,7 @@ body.is-page-scrolling .notes-minimal {
 .study-code pre {
   margin: 0;
   padding: 0.95rem 1rem 1.05rem;
+  background: var(--code-surface);
   overflow: auto;
   max-width: 100%;
   font-family: var(--mono);
@@ -1550,7 +1554,7 @@ body.is-page-scrolling .notes-minimal {
   min-width: 0;
   padding: 0;
   border: 0;
-  background: transparent;
+  background: var(--code-surface);
   border-radius: 0;
   font-size: inherit;
   line-height: inherit;
@@ -2450,6 +2454,10 @@ body.is-page-scrolling .notes-minimal {
     #241f1b;
 }
 
+:root[data-theme="dark"] .study-code {
+  background: var(--code-surface);
+}
+
 :root[data-theme="dark"] .study-image img {
   mix-blend-mode: normal;
   filter: brightness(0.94) contrast(1.05);
@@ -2462,6 +2470,11 @@ body.is-page-scrolling .notes-minimal {
 :root[data-theme="dark"] .study-shell code {
   border-color: rgba(224, 138, 118, 0.22);
   background: rgba(224, 138, 118, 0.1);
+}
+
+:root[data-theme="dark"] .study-code pre code {
+  border-color: transparent;
+  background: var(--code-surface);
 }
 
 :root[data-theme="dark"] .study-markdown__caption,

@@ -1,11 +1,12 @@
 const CACHE_NAME = "tutor-notes-v4";
 
 const CORE_ASSETS = [
-  "./misc_assets/app-icon-192.png",
-  "./misc_assets/app-icon-512.png",
-  "./misc_assets/apple-touch-icon.png",
-  "./misc_assets/favicon-32.png",
-  "./misc_assets/left_arrow.png"
+  "./assets/icons/app-icon-192.png",
+  "./assets/icons/app-icon-512.png",
+  "./assets/icons/apple-touch-icon.png",
+  "./assets/icons/favicon-32.png",
+  "./assets/icons/left-arrow.png",
+  "./assets/loading/editorial-seal.jpg"
 ];
 
 self.addEventListener("install", (event) => {

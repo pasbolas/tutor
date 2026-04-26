@@ -14,16 +14,16 @@
     <meta name="apple-mobile-web-app-title" content="Tutor Notes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <link rel="manifest" href="./manifest.webmanifest" />
-    <link rel="icon" type="image/png" sizes="32x32" href="./misc_assets/favicon-32.png" />
-    <link rel="apple-touch-icon" href="./misc_assets/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/icons/favicon-32.png" />
+    <link rel="apple-touch-icon" href="./assets/icons/apple-touch-icon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css?v=20260423-4" />
-    <link rel="stylesheet" href="./interaction/feedback.css?v=20260423-4" />
+    <link rel="stylesheet" href="./styles/main.css?v=20260423-4" />
+    <link rel="stylesheet" href="./styles/feedback.css?v=20260423-4" />
   </head>
   <body>
     <div class="editorial-loader" data-editorial-loader aria-hidden="true">
@@ -40,12 +40,16 @@
           <span>N</span>
         </div>
         <div class="editorial-loader__seal" aria-hidden="true">
-          <img src="./loading_assets/a2efb5a0e1e1429320ff84917a87ed3e.jpg" alt="" />
+          <img src="./assets/loading/editorial-seal.jpg" alt="" />
         </div>
       </div>
     </div>
 
-    <main class="study-shell notes-shell notes-shell--minimal" data-notes-hub>
+    <main
+      class="study-shell notes-shell notes-shell--minimal"
+      data-notes-hub
+      data-notes-catalog="./data/notes-catalog.json"
+    >
       <header class="study-topbar">
         <span class="study-topbar__id">[TUTOR_HOME]</span>
         <span class="study-topbar__title">Tutor Notes / Subjects</span>
@@ -71,90 +75,9 @@
       </svg>
     </button>
 
-    <script type="application/json" data-notes-tree>
-      {
-        "items": [
-          {
-            "name": "Programming",
-            "id": "programming",
-            "type": "folder",
-            "children": [
-              {
-                "name": "Functions in C",
-                "type": "file",
-                "href": "./programming/index.html?v=20260423-4",
-                "meta": "Markdown lesson"
-              },
-              {
-                "name": "Pointers, Arrays, and DMA in C",
-                "type": "file",
-                "href": "./programming/pointer_array.html?v=20260423-4",
-                "meta": "Slide 13"
-              }
-            ]
-          },
-          {
-            "name": "Data Communication",
-            "id": "data-communication",
-            "type": "folder",
-            "children": [
-              {
-                "name": "Introduction to Local Area Networks",
-                "type": "file",
-                "href": "./Data%20Communication/introduction_to_local_area_networks.html?v=20260423-4",
-                "meta": "Slide 13"
-              },
-              {
-                "name": "LAN Access Techniques",
-                "type": "file",
-                "href": "./Data%20Communication/lan_access_techniques.html?v=20260423-4",
-                "meta": "Slide 14"
-              },
-              {
-                "name": "Extending LANs",
-                "type": "file",
-                "href": "./Data%20Communication/extending_lans_bridges.html?v=20260423-4",
-                "meta": "Slide 15"
-              },
-              {
-                "name": "MAC Addressing",
-                "type": "file",
-                "href": "./Data%20Communication/mac_addressing.html?v=20260423-4",
-                "meta": "Slide 16"
-              },
-              {
-                "name": "Internetworking, Routers, and IP Datagrams",
-                "type": "file",
-                "href": "./Data%20Communication/intro_to_internet.html?v=20260423-4",
-                "meta": "Slide 17"
-              },
-              {
-                "name": "IP Addressing, Routing, Subnetting, and CIDR",
-                "type": "file",
-                "href": "./Data%20Communication/ip_addressing.html?v=20260423-4",
-                "meta": "Slide 18"
-              },
-              {
-                "name": "Protocol Models",
-                "type": "file",
-                "href": "./Data%20Communication/protocol_models.html?v=20260423-4",
-                "meta": "Slide 19"
-              },
-              {
-                "name": "IP Fragmentation",
-                "type": "file",
-                "href": "./Data%20Communication/ip_fragmentation.html?v=20260423-4",
-                "meta": "Slide 20 "
-              }
-            ]
-          }
-        ]
-      }
-    </script>
-
-    <script src="./transitions.js?v=20260423-4"></script>
-    <script src="./interaction/audio.js?v=20260423-4"></script>
-    <script src="./interaction/trails.js?v=20260423-4"></script>
-    <script src="./script.js?v=20260423-4"></script>
+    <script src="./scripts/page-transitions.js?v=20260423-4"></script>
+    <script src="./scripts/interaction/audio.js?v=20260423-4"></script>
+    <script src="./scripts/interaction/trails.js?v=20260423-4"></script>
+    <script src="./scripts/main.js?v=20260423-4"></script>
   </body>
 </html>
