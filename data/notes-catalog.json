@@ -26,6 +26,19 @@
       ]
     },
     {
+      "name": "Law",
+      "id": "law",
+      "type": "folder",
+      "children": [
+        {
+          "name": "General Data Protection Regulation (GDPR)",
+          "type": "file",
+          "href": "./content/law/gdpr.html?v=20260427-1",
+          "meta": "Law 01"
+        }
+      ]
+    },
+    {
       "name": "Data Communication",
       "id": "data-communication",
       "type": "folder",
