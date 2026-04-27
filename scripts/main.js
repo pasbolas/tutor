@@ -854,7 +854,7 @@ function escapeHtml(value) {
 }
 
 function renderInline(text) {
-  const pattern = /(`[^`]+`|\*\*[^*]+\*\*)/g;
+  const pattern = /(`[^`]+`|\*\*[^*]+\*\*|\*[^*\n]+\*)/g;
   let html = "";
   let lastIndex = 0;
   let match = pattern.exec(text);
@@ -865,8 +865,10 @@ function renderInline(text) {
     const token = match[0];
     if (token.startsWith("`")) {
       html += `<code>${escapeHtml(token.slice(1, -1))}</code>`;
-    } else {
+    } else if (token.startsWith("**")) {
       html += `<strong>${escapeHtml(token.slice(2, -2))}</strong>`;
+    } else {
+      html += `<em>${escapeHtml(token.slice(1, -1))}</em>`;
     }
 
     lastIndex = match.index + token.length;
@@ -1165,29 +1167,40 @@ function renderMcqOptions(block) {
   return `<ol class="study-mcq__options" aria-label="Answer options">${items}</ol>`;
 }
 
-function renderMcqDetail(block) {
+function getMcqAnswer(block) {
   const answerMatch = block.text.match(/^\*\*Answer:\*\*\s*(.*)$/i)
     || block.text.match(/^\*\*Answer:\s*(.*?)\*\*$/i);
-  if (answerMatch) {
-    return `
-      <p class="study-mcq__answer">
-        <span>Answer</span>
-        <strong>${renderInline(answerMatch[1].trim())}</strong>
-      </p>
-    `;
-  }
 
+  return answerMatch ? answerMatch[1].trim() : "";
+}
+
+function getMcqExplanation(block) {
   const explanationMatch = block.text.match(/^\*\*Explanation:\*\*\s*(.*)$/i);
-  if (explanationMatch) {
-    return `
-      <p class="study-mcq__explanation">
-        <span>Explanation</span>
-        ${renderInline(explanationMatch[1].trim())}
-      </p>
-    `;
+
+  return explanationMatch ? explanationMatch[1].trim() : "";
+}
+
+function renderMcqFeedback(answer, explanation) {
+  if (!answer && !explanation) {
+    return "";
   }
 
-  return renderBlock(block);
+  return `
+    <div class="study-mcq__feedback">
+      ${answer ? `
+        <p class="study-mcq__feedback-row study-mcq__feedback-row--answer">
+          <span>Answer</span>
+          <strong>${renderInline(answer)}</strong>
+        </p>
+      ` : ""}
+      ${explanation ? `
+        <p class="study-mcq__feedback-row">
+          <span>Explanation</span>
+          <em>${renderInline(explanation)}</em>
+        </p>
+      ` : ""}
+    </div>
+  `;
 }
 
 function renderMcqCard(card, options = {}) {
@@ -1197,14 +1210,21 @@ function renderMcqCard(card, options = {}) {
     && /^A\.\s+/i.test(Array.isArray(block.lines) ? block.lines[0]?.trim() || "" : block.text)
   ));
 
-  const detailBlocks = card.blocks.filter((block) => block !== question && block !== optionsBlock);
+  const answerBlock = card.blocks.find((block) => block.type === "paragraph" && getMcqAnswer(block));
+  const explanationBlock = card.blocks.find((block) => block.type === "paragraph" && getMcqExplanation(block));
+  const renderedBlocks = new Set([question, optionsBlock, answerBlock, explanationBlock].filter(Boolean));
+  const detailBlocks = card.blocks.filter((block) => !renderedBlocks.has(block));
 
   return [
     '<article class="study-mcq">',
     `  <h3>${renderInline(card.title)}</h3>`,
     question ? `  <p class="study-mcq__question">${renderInline(question.text)}</p>` : "",
     optionsBlock ? renderMcqOptions(optionsBlock) : "",
-    detailBlocks.map((block) => renderMcqDetail(block, options)).join(""),
+    renderMcqFeedback(
+      answerBlock ? getMcqAnswer(answerBlock) : "",
+      explanationBlock ? getMcqExplanation(explanationBlock) : ""
+    ),
+    detailBlocks.map((block) => renderBlock(block, options)).join(""),
     "</article>",
   ].join("");
 }
