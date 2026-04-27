@@ -1148,7 +1148,9 @@ function isMcqHeading(block) {
 }
 
 function renderMcqOptions(block) {
-  const text = Array.isArray(block.lines) ? block.lines.join("\n") : block.text;
+  const text = (Array.isArray(block.lines) ? block.lines.join("\n") : block.text)
+    .split(/\n\s*\*\*(?:Answer|Explanation):/i)[0]
+    .trim();
   const optionMatches = [...text.matchAll(/(?:^|\n)\s*([A-D])\.\s+([\s\S]*?)(?=\n\s*[A-D]\.\s+|$)/g)];
 
   if (optionMatches.length < 2) {
@@ -1168,14 +1170,16 @@ function renderMcqOptions(block) {
 }
 
 function getMcqAnswer(block) {
-  const answerMatch = block.text.match(/^\*\*Answer:\*\*\s*(.*)$/i)
-    || block.text.match(/^\*\*Answer:\s*(.*?)\*\*$/i);
+  const text = Array.isArray(block.lines) ? block.lines.join("\n") : block.text;
+  const answerMatch = text.match(/(?:^|\n)\s*\*\*Answer:\*\*\s*([^\n]*)/i)
+    || text.match(/(?:^|\n)\s*\*\*Answer:\s*(.*?)\*\*/i);
 
   return answerMatch ? answerMatch[1].trim() : "";
 }
 
 function getMcqExplanation(block) {
-  const explanationMatch = block.text.match(/^\*\*Explanation:\*\*\s*(.*)$/i);
+  const text = Array.isArray(block.lines) ? block.lines.join("\n") : block.text;
+  const explanationMatch = text.match(/(?:^|\n)\s*\*\*Explanation:\*\*\s*([\s\S]*)$/i);
 
   return explanationMatch ? explanationMatch[1].trim() : "";
 }
