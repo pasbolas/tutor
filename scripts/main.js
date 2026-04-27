@@ -1058,13 +1058,15 @@ function parseMarkdown(markdown) {
         break;
       }
 
-      paragraphLines.push(currentLine.trim());
+      paragraphLines.push(currentLine);
       index += 1;
     }
 
     blocks.push({
       type: "paragraph",
-      text: paragraphLines.join(" "),
+      lines: paragraphLines,
+      preserveBreaks: paragraphLines.some((paragraphLine) => /\s{2,}$/.test(paragraphLine)),
+      text: paragraphLines.map((paragraphLine) => paragraphLine.trim()).join(" "),
     });
   }
 
@@ -1073,6 +1075,10 @@ function parseMarkdown(markdown) {
 
 function renderBlock(block, options = {}) {
   if (block.type === "paragraph") {
+    if (block.preserveBreaks && Array.isArray(block.lines)) {
+      return `<p>${block.lines.map((line) => renderInline(line.trim())).join("<br />")}</p>`;
+    }
+
     return `<p>${renderInline(block.text)}</p>`;
   }
 
@@ -1133,6 +1139,180 @@ function renderBlock(block, options = {}) {
   }
 
   return "";
+}
+
+function isMcqHeading(block) {
+  return block.type === "heading" && /^MCQ\s+\d+/i.test(block.text);
+}
+
+function renderMcqOptions(block) {
+  const text = Array.isArray(block.lines) ? block.lines.join("\n") : block.text;
+  const optionMatches = [...text.matchAll(/(?:^|\n)\s*([A-D])\.\s+([\s\S]*?)(?=\n\s*[A-D]\.\s+|$)/g)];
+
+  if (optionMatches.length < 2) {
+    return renderBlock(block);
+  }
+
+  const items = optionMatches
+    .map((match) => `
+      <li class="study-mcq__option">
+        <span class="study-mcq__option-letter">${escapeHtml(match[1])}</span>
+        <span>${renderInline(match[2].replace(/\s+/g, " ").trim())}</span>
+      </li>
+    `)
+    .join("");
+
+  return `<ol class="study-mcq__options" aria-label="Answer options">${items}</ol>`;
+}
+
+function renderMcqDetail(block) {
+  const answerMatch = block.text.match(/^\*\*Answer:\*\*\s*(.*)$/i)
+    || block.text.match(/^\*\*Answer:\s*(.*?)\*\*$/i);
+  if (answerMatch) {
+    return `
+      <p class="study-mcq__answer">
+        <span>Answer</span>
+        <strong>${renderInline(answerMatch[1].trim())}</strong>
+      </p>
+    `;
+  }
+
+  const explanationMatch = block.text.match(/^\*\*Explanation:\*\*\s*(.*)$/i);
+  if (explanationMatch) {
+    return `
+      <p class="study-mcq__explanation">
+        <span>Explanation</span>
+        ${renderInline(explanationMatch[1].trim())}
+      </p>
+    `;
+  }
+
+  return renderBlock(block);
+}
+
+function renderMcqCard(card, options = {}) {
+  const question = card.blocks.find((block) => block.type === "paragraph");
+  const optionsBlock = card.blocks.find((block) => (
+    block.type === "paragraph"
+    && /^A\.\s+/i.test(Array.isArray(block.lines) ? block.lines[0]?.trim() || "" : block.text)
+  ));
+
+  const detailBlocks = card.blocks.filter((block) => block !== question && block !== optionsBlock);
+
+  return [
+    '<article class="study-mcq">',
+    `  <h3>${renderInline(card.title)}</h3>`,
+    question ? `  <p class="study-mcq__question">${renderInline(question.text)}</p>` : "",
+    optionsBlock ? renderMcqOptions(optionsBlock) : "",
+    detailBlocks.map((block) => renderMcqDetail(block, options)).join(""),
+    "</article>",
+  ].join("");
+}
+
+function buildMcqGuide(blocks, options = {}) {
+  const usedSlugs = new Set();
+  const outline = [];
+  const htmlParts = [];
+  let sectionCount = 0;
+  let codeCount = 0;
+  let currentSectionOpen = false;
+  let currentMcq = null;
+  let hasSeenTitle = false;
+
+  const openSection = (headingText) => {
+    const id = slugify(headingText, usedSlugs);
+    const label = String(sectionCount + 1).padStart(2, "0");
+    outline.push({
+      id,
+      label,
+      text: headingText,
+    });
+
+    htmlParts.push(
+      `<section class="study-markdown__section study-markdown__section--mcq" id="${id}" data-study-section>`,
+      '  <header class="study-markdown__section-header">',
+      `    <span class="study-markdown__section-index">${label}</span>`,
+      "    <div>",
+      `      <p class="study-kicker">Question Set ${label}</p>`,
+      `      <h2>${renderInline(headingText)}</h2>`,
+      "    </div>",
+      "  </header>",
+      '  <div class="study-markdown__section-body study-markdown__section-body--mcq">'
+    );
+
+    currentSectionOpen = true;
+    sectionCount += 1;
+  };
+
+  const closeMcq = () => {
+    if (!currentMcq) {
+      return;
+    }
+
+    htmlParts.push(renderMcqCard(currentMcq, options));
+    currentMcq = null;
+  };
+
+  const closeSection = () => {
+    closeMcq();
+    if (!currentSectionOpen) {
+      return;
+    }
+
+    htmlParts.push("  </div>", "</section>");
+    currentSectionOpen = false;
+  };
+
+  blocks.forEach((block) => {
+    if (block.type === "heading" && block.level === 1) {
+      if (!hasSeenTitle) {
+        hasSeenTitle = true;
+        return;
+      }
+
+      closeSection();
+      openSection(block.text);
+      return;
+    }
+
+    if (isMcqHeading(block)) {
+      if (!currentSectionOpen) {
+        openSection("Practice Questions");
+      }
+
+      closeMcq();
+      codeCount += 1;
+      currentMcq = {
+        title: block.text,
+        blocks: [],
+      };
+      return;
+    }
+
+    if (!currentSectionOpen) {
+      openSection("Practice Questions");
+    }
+
+    if (block.type === "code" || block.type === "image") {
+      codeCount += 1;
+    }
+
+    if (currentMcq) {
+      currentMcq.blocks.push(block);
+      return;
+    }
+
+    htmlParts.push(renderBlock(block, options));
+  });
+
+  closeSection();
+
+  return {
+    html: htmlParts.join(""),
+    outline,
+    sectionCount,
+    codeCount,
+  };
 }
 
 function buildGuide(blocks, options = {}) {
@@ -1719,9 +1899,12 @@ async function initMarkdownPage() {
     });
 
     const guideBlocks = blocks.filter((block) => block !== introBlock);
-    const guide = buildGuide(guideBlocks, {
+    const guideOptions = {
       imageBase: page.dataset.markdownImageBase || "",
-    });
+    };
+    const guide = page.dataset.markdownMode === "mcq"
+      ? buildMcqGuide(guideBlocks, guideOptions)
+      : buildGuide(guideBlocks, guideOptions);
     const wordCount = countWords(blocks);
     const readTime = Math.max(1, Math.round(wordCount / 220));
 
