@@ -35,6 +35,12 @@
           "type": "file",
           "href": "./content/law/gdpr.html?v=20260427-1",
           "meta": "Law 01"
+        },
+        {
+          "name": "GDPR Expected Exam MCQ Bank",
+          "type": "file",
+          "href": "./content/law/gdpr-mcqs.html?v=20260427-1",
+          "meta": "Law 02"
         }
       ]
     },

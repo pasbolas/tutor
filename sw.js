@@ -1,4 +1,4 @@
-const CACHE_NAME = "tutor-notes-v5";
+const CACHE_NAME = "tutor-notes-v6";
 
 const CORE_ASSETS = [
   "./assets/icons/app-icon-192.png",
