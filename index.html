@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Tutor Notes Index</title>
     <meta
       name="description"
@@ -22,7 +22,7 @@
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles/main.css?v=20260429-15" />
+    <link rel="stylesheet" href="./styles/main.css?v=20260429-20" />
     <link rel="stylesheet" href="./styles/feedback.css?v=20260423-4" />
     <script>
       window.va = window.va || function () {
@@ -71,14 +71,24 @@
             <span>Tutor Notes</span>
           </a>
 
-          <section class="tutor-search tutor-search--sidebar" aria-label="Search notes">
-            <svg aria-hidden="true" viewBox="0 0 24 24">
-              <circle cx="11" cy="11" r="7"></circle>
-              <path d="m16 16 5 5"></path>
-            </svg>
-            <span>Search notes...</span>
-            <kbd>CTRL K</kbd>
-          </section>
+          <div class="tutor-search-shell">
+            <section class="tutor-search tutor-search--sidebar" aria-label="Search notes">
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="7"></circle>
+                <path d="m16 16 5 5"></path>
+              </svg>
+              <input
+                class="tutor-search__input"
+                type="search"
+                placeholder="Search notes..."
+                aria-label="Search notes and sections"
+                autocomplete="off"
+                spellcheck="false"
+              />
+              <kbd>CTRL K</kbd>
+            </section>
+            <div class="tutor-search-results" data-search-results hidden></div>
+          </div>
 
           <nav class="tutor-sidebar__nav" aria-label="Subjects">
             <p class="tutor-sidebar__label">Subjects</p>
@@ -152,7 +162,7 @@
               </div>
               <div class="tutor-hero-note__actions">
                 <a href="./content/programming/functions.html?v=20260423-4" class="tutor-button">Continue</a>
-                <button type="button" class="tutor-more" aria-label="More options">...</button>
+                <button type="button" class="tutor-more" aria-label="More options" hidden>...</button>
               </div>
             </article>
           </section>
@@ -243,6 +253,6 @@
     <script src="./scripts/page-transitions.js?v=20260423-4"></script>
     <script src="./scripts/interaction/audio.js?v=20260428-1"></script>
     <script src="./scripts/interaction/trails.js?v=20260423-4"></script>
-    <script src="./scripts/main.js?v=20260429-6"></script>
+    <script src="./scripts/main.js?v=20260429-10"></script>
   </body>
 </html>
