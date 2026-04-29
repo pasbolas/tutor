@@ -22,7 +22,7 @@
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles/main.css?v=20260423-4" />
+    <link rel="stylesheet" href="./styles/main.css?v=20260429-13" />
     <link rel="stylesheet" href="./styles/feedback.css?v=20260423-4" />
     <script>
       window.va = window.va || function () {
@@ -51,28 +51,187 @@
       </div>
     </div>
 
-    <main
-      class="study-shell notes-shell notes-shell--minimal"
-      data-notes-hub
-      data-notes-catalog="./data/notes-catalog.json?v=20260427-5"
-    >
-      <header class="study-topbar">
-        <span class="study-topbar__id">[TUTOR_HOME]</span>
-        <span class="study-topbar__title">Tutor Notes / Subjects</span>
-        <nav class="study-topbar__nav" aria-label="Tutor index links">
-          <a href="#subjects">Subjects</a>
-        </nav>
-      </header>
+    <div class="tutor-dashboard">
+      <div class="tutor-dashboard__frame">
+        <button
+          class="tutor-mobile-nav-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="tutor-sidebar-drawer"
+          aria-label="Open subjects"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <button class="tutor-mobile-sidebar-backdrop" type="button" aria-label="Close subjects"></button>
+        <aside id="tutor-sidebar-drawer" class="tutor-sidebar" aria-label="Tutor subjects" data-sidebar-catalog="./data/notes-catalog.json?v=20260427-5">
+          <a class="tutor-sidebar__brand" href="#dashboard" aria-label="Tutor Notes home">
+            <span class="tutor-sidebar__mark" aria-hidden="true">T</span>
+            <span>Tutor Notes</span>
+          </a>
 
-      <section class="notes-minimal startup-reveal startup-reveal--content" id="subjects">
-        <div class="notes-minimal__header">
-          <p class="study-kicker">Subjects</p>
-          <h1>Notes</h1>
-        </div>
+          <section class="tutor-search tutor-search--sidebar" aria-label="Search notes">
+            <svg aria-hidden="true" viewBox="0 0 24 24">
+              <circle cx="11" cy="11" r="7"></circle>
+              <path d="m16 16 5 5"></path>
+            </svg>
+            <span>Search notes...</span>
+            <kbd>CTRL K</kbd>
+          </section>
 
-        <div class="notes-subjects" data-notes-subjects-root></div>
-      </section>
-    </main>
+          <nav class="tutor-sidebar__nav" aria-label="Subjects">
+            <p class="tutor-sidebar__label">Subjects</p>
+            <div class="tutor-sidebar__subjects" data-sidebar-subjects-root></div>
+          </nav>
+
+          <div class="tutor-sidebar__art" aria-hidden="true">
+            <img src="./assets/decorative/angel.png" alt="" />
+          </div>
+
+          <div class="tutor-sidebar__settings-wrap" data-sidebar-settings>
+            <button
+              class="tutor-sidebar__settings"
+              type="button"
+              aria-expanded="false"
+              aria-controls="tutor-sidebar-settings-menu"
+            >
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"></path>
+                <path d="M19.4 15a1.8 1.8 0 0 0 .36 1.98l.04.04a2.1 2.1 0 0 1-2.97 2.97l-.04-.04a1.8 1.8 0 0 0-1.98-.36 1.8 1.8 0 0 0-1.1 1.66V21a2.1 2.1 0 0 1-4.2 0v-.06A1.8 1.8 0 0 0 8.4 19.3a1.8 1.8 0 0 0-1.98.36l-.04.04a2.1 2.1 0 0 1-2.97-2.97l.04-.04A1.8 1.8 0 0 0 3.8 15a1.8 1.8 0 0 0-1.66-1.1H2a2.1 2.1 0 0 1 0-4.2h.06A1.8 1.8 0 0 0 3.7 8.6a1.8 1.8 0 0 0-.36-1.98l-.04-.04a2.1 2.1 0 0 1 2.97-2.97l.04.04A1.8 1.8 0 0 0 8.3 4a1.8 1.8 0 0 0 1.1-1.66V2a2.1 2.1 0 0 1 4.2 0v.06A1.8 1.8 0 0 0 14.7 3.7a1.8 1.8 0 0 0 1.98-.36l.04-.04a2.1 2.1 0 0 1 2.97 2.97l-.04.04A1.8 1.8 0 0 0 19.3 8.3a1.8 1.8 0 0 0 1.66 1.1H21a2.1 2.1 0 0 1 0 4.2h-.06A1.8 1.8 0 0 0 19.4 15Z"></path>
+              </svg>
+              <span>Settings</span>
+            </button>
+            <div class="tutor-sidebar__settings-menu" id="tutor-sidebar-settings-menu" hidden>
+              <div class="tutor-sidebar__setting-item" data-sidebar-sound-host></div>
+              <div class="tutor-sidebar__setting-item" data-sidebar-theme-host></div>
+              <div class="tutor-sidebar__setting-item" data-sidebar-cursor-host></div>
+            </div>
+          </div>
+        </aside>
+
+        <main class="study-shell notes-shell notes-shell--minimal tutor-dashboard__main" id="dashboard">
+          <section class="tutor-continue" aria-labelledby="continue-heading">
+            <h2 id="continue-heading" class="tutor-section-title">Continue Where You Left Off</h2>
+            <article class="tutor-hero-note">
+              <div class="tutor-hero-note__icon">
+                <svg aria-hidden="true" viewBox="0 0 24 24">
+                  <path d="M4 19.5V5.75A2.75 2.75 0 0 1 6.75 3H11a4 4 0 0 1 4 4v14a4 4 0 0 0-4-4H6.5A2.5 2.5 0 0 0 4 19.5Z"></path>
+                  <path d="M20 19.5V5.75A2.75 2.75 0 0 0 17.25 3H15"></path>
+                </svg>
+              </div>
+              <div class="tutor-hero-note__content">
+                <p class="tutor-hero-note__eyebrow">Continue Where You Left Off</p>
+                <div class="tutor-hero-note__body">
+                  <h1>Pointers, Arrays, and DMA in C</h1>
+                  <p class="tutor-note-path">Programming <span>&rsaquo;</span> Pointers, Arrays, and DMA in C</p>
+                  <div class="tutor-note-meta">
+                    <span class="tutor-note-meta__item tutor-note-meta__item--section">
+                      <svg aria-hidden="true" viewBox="0 0 24 24">
+                        <path d="M4 19.5V5.75A2.75 2.75 0 0 1 6.75 3H11a4 4 0 0 1 4 4v14a4 4 0 0 0-4-4H6.5A2.5 2.5 0 0 0 4 19.5Z"></path>
+                        <path d="M20 19.5V5.75A2.75 2.75 0 0 0 17.25 3H15"></path>
+                      </svg>
+                      <span class="tutor-note-meta__text tutor-note-meta__section">Slide 13</span>
+                    </span>
+                    <span class="tutor-note-meta__separator">&bull;</span>
+                    <span class="tutor-note-meta__item tutor-note-meta__item--time">
+                      <svg aria-hidden="true" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="9"></circle>
+                        <path d="M12 7.5v5l3.5 2"></path>
+                      </svg>
+                      <span class="tutor-note-meta__text tutor-note-meta__opened">Last opened 23 min ago</span>
+                    </span>
+                  </div>
+                </div>
+                <div class="tutor-hero-note__progress-row">
+                  <div class="tutor-progress" aria-label="0 percent complete">
+                    <span style="width: 0%;"></span>
+                  </div>
+                  <span class="tutor-progress__value">0%</span>
+                </div>
+              </div>
+              <div class="tutor-hero-note__actions">
+                <a href="./content/programming/functions.html?v=20260423-4" class="tutor-button">Continue</a>
+                <button type="button" class="tutor-more" aria-label="More options">...</button>
+              </div>
+            </article>
+          </section>
+
+          <section class="tutor-recent" aria-labelledby="recent-heading">
+            <div class="tutor-recent__header">
+              <h2 id="recent-heading" class="tutor-section-title">Recent Notes</h2>
+              <a href="#all-notes">View All <span>›</span></a>
+            </div>
+
+            <div class="tutor-note-list">
+              <a class="tutor-note-row" href="./content/programming/functions.html?v=20260423-4">
+                <span class="tutor-note-row__icon">
+                  <svg aria-hidden="true" viewBox="0 0 24 24">
+                    <path d="M6 2h8l4 4v16H6Z"></path>
+                    <path d="M14 2v5h5"></path>
+                    <path d="M9 12h6M9 16h6M9 8h2"></path>
+                  </svg>
+                </span>
+                <span>
+                  <strong>Time Complexity Analysis</strong>
+                  <small>Programming <span>›</span> Algorithms</small>
+                </span>
+                <time>Yesterday</time>
+                <span class="tutor-row-arrow">›</span>
+              </a>
+
+              <a class="tutor-note-row" href="./content/law/gdpr.html?v=20260427-1">
+                <span class="tutor-note-row__icon">
+                  <svg aria-hidden="true" viewBox="0 0 24 24">
+                    <path d="M6 2h8l4 4v16H6Z"></path>
+                    <path d="M14 2v5h5"></path>
+                    <path d="M9 12h6M9 16h6M9 8h2"></path>
+                  </svg>
+                </span>
+                <span>
+                  <strong>Contract Formation</strong>
+                  <small>Law <span>›</span> Contract Law</small>
+                </span>
+                <time>2 Days Ago</time>
+                <span class="tutor-row-arrow">›</span>
+              </a>
+
+              <a class="tutor-note-row" href="./content/data-communication/lan-access-techniques.html?v=20260423-4">
+                <span class="tutor-note-row__icon">
+                  <svg aria-hidden="true" viewBox="0 0 24 24">
+                    <path d="M9 3v6l-5 9a2 2 0 0 0 1.75 3h12.5A2 2 0 0 0 20 18l-5-9V3"></path>
+                    <path d="M8 3h8"></path>
+                    <path d="M7.3 15h9.4"></path>
+                  </svg>
+                </span>
+                <span>
+                  <strong>Network Security Overview</strong>
+                  <small>Data Communication <span>›</span> Network Security</small>
+                </span>
+                <time>3 Days Ago</time>
+                <span class="tutor-row-arrow">›</span>
+              </a>
+
+              <a class="tutor-note-row" href="./content/data-communication/protocol-models.html?v=20260423-4">
+                <span class="tutor-note-row__icon">
+                  <svg aria-hidden="true" viewBox="0 0 24 24">
+                    <path d="M6 2h8l4 4v16H6Z"></path>
+                    <path d="M14 2v5h5"></path>
+                    <path d="M9 12h6M9 16h6M9 8h2"></path>
+                  </svg>
+                </span>
+                <span>
+                  <strong>TCP/IP Model Explained</strong>
+                  <small>Data Communication <span>›</span> Computer Networks</small>
+                </span>
+                <time>4 Days Ago</time>
+                <span class="tutor-row-arrow">›</span>
+              </a>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
 
     <button class="scroll-to-top" data-scroll-to-top aria-label="Scroll to top">
       <span>to top</span>
@@ -82,8 +241,8 @@
     </button>
 
     <script src="./scripts/page-transitions.js?v=20260423-4"></script>
-    <script src="./scripts/interaction/audio.js?v=20260423-4"></script>
+    <script src="./scripts/interaction/audio.js?v=20260428-1"></script>
     <script src="./scripts/interaction/trails.js?v=20260423-4"></script>
-    <script src="./scripts/main.js?v=20260423-4"></script>
+    <script src="./scripts/main.js?v=20260429-6"></script>
   </body>
 </html>

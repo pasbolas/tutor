@@ -1,6 +1,8 @@
 const THEME_STORAGE_KEY = "tutor-notes-theme";
 const CURSOR_STORAGE_KEY = "tutor-notes-cursor-mode";
 const SCROLL_MEMORY_STORAGE_PREFIX = "tutor-notes-scroll:";
+const RECENT_NOTES_STORAGE_KEY = "tutor-notes-recent-history";
+const RECENT_NOTES_LIMIT = 8;
 
 function getSystemTheme() {
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
@@ -38,6 +40,104 @@ function setStoredCursorMode(mode) {
   } catch {
     // Storage can be unavailable in hardened/private browser contexts.
   }
+}
+
+function getStoredRecentNotes() {
+  try {
+    const value = window.localStorage.getItem(RECENT_NOTES_STORAGE_KEY);
+    if (!value) {
+      return [];
+    }
+
+    const parsed = JSON.parse(value);
+    if (!Array.isArray(parsed)) {
+      return [];
+    }
+
+    return parsed
+      .map((item) => ({
+        href: typeof item?.href === "string" ? item.href : "",
+        title: typeof item?.title === "string" ? item.title : "",
+        subject: typeof item?.subject === "string" ? item.subject : "",
+        meta: typeof item?.meta === "string" ? item.meta : "",
+        sectionId: typeof item?.sectionId === "string" ? item.sectionId : "",
+        sectionLabel: typeof item?.sectionLabel === "string" ? item.sectionLabel : "",
+        sectionTitle: typeof item?.sectionTitle === "string" ? item.sectionTitle : "",
+        sectionIndex: Number(item?.sectionIndex) || 0,
+        totalSections: Number(item?.totalSections) || 0,
+        progressPercent: Number(item?.progressPercent) || 0,
+        visitedAt: Number(item?.visitedAt) || 0,
+      }))
+      .filter((item) => item.href && item.title && item.visitedAt > 0)
+      .sort((left, right) => right.visitedAt - left.visitedAt)
+      .slice(0, RECENT_NOTES_LIMIT);
+  } catch {
+    return [];
+  }
+}
+
+function setStoredRecentNotes(entries) {
+  try {
+    window.localStorage.setItem(
+      RECENT_NOTES_STORAGE_KEY,
+      JSON.stringify(entries.slice(0, RECENT_NOTES_LIMIT))
+    );
+  } catch {
+    // Reading history is an enhancement, so unavailable storage is fine.
+  }
+}
+
+function rememberRecentNote(entry) {
+  if (!entry || !entry.href || !entry.title) {
+    return;
+  }
+
+  const normalizedHref = normalizeComparableHref(entry.href);
+  const nextEntry = {
+    href: normalizedHref,
+    title: entry.title,
+    subject: entry.subject || "",
+    meta: entry.meta || "",
+    sectionId: entry.sectionId || "",
+    sectionLabel: entry.sectionLabel || "",
+    sectionTitle: entry.sectionTitle || "",
+    sectionIndex: Number(entry.sectionIndex) || 0,
+    totalSections: Number(entry.totalSections) || 0,
+    progressPercent: Number(entry.progressPercent) || 0,
+    visitedAt: Date.now(),
+  };
+
+  const existing = getStoredRecentNotes().filter((item) => normalizeComparableHref(item.href) !== normalizedHref);
+  existing.unshift(nextEntry);
+  setStoredRecentNotes(existing);
+}
+
+function formatRelativeVisitTime(timestamp) {
+  const elapsed = Date.now() - timestamp;
+  const minute = 60 * 1000;
+  const hour = 60 * minute;
+  const day = 24 * hour;
+
+  if (elapsed < hour) {
+    const minutes = Math.max(1, Math.round(elapsed / minute));
+    return `${minutes} min ago`;
+  }
+
+  if (elapsed < day) {
+    const hours = Math.max(1, Math.round(elapsed / hour));
+    return `${hours}h ago`;
+  }
+
+  if (elapsed < day * 2) {
+    return "Yesterday";
+  }
+
+  const days = Math.max(2, Math.round(elapsed / day));
+  return `${days} days ago`;
+}
+
+function clamp(value, min, max) {
+  return Math.min(max, Math.max(min, value));
 }
 
 function initPageScrollMemory() {
@@ -525,7 +625,8 @@ function initThemeToggle() {
   }
 
   const topbars = document.querySelectorAll(".study-topbar");
-  if (!topbars.length) {
+  const sidebarThemeHost = document.querySelector("[data-sidebar-theme-host]");
+  if (!topbars.length && !sidebarThemeHost) {
     return;
   }
 
@@ -538,18 +639,38 @@ function initThemeToggle() {
     });
   };
 
-  topbars.forEach((topbar) => {
-    if (topbar.querySelector("[data-theme-toggle]")) {
+  const attachThemeButton = (button, host) => {
+    host.appendChild(button);
+
+    button.addEventListener("click", () => {
+      const nextTheme = getCurrentTheme() === "dark" ? "light" : "dark";
+      applyTheme(nextTheme, { persist: true });
+      syncButtons();
+    });
+
+    buttons.push(button);
+  };
+
+  if (sidebarThemeHost && !sidebarThemeHost.querySelector("[data-theme-toggle]")) {
+    attachThemeButton(createThemeToggleButton(), sidebarThemeHost);
+  }
+
+  if (!sidebarThemeHost) {
+    topbars.forEach((topbar) => {
+      if (topbar.querySelector("[data-theme-toggle]")) {
+        return;
+      }
+
+      const button = createThemeToggleButton();
+
+      const nav = topbar.querySelector(".study-topbar__nav");
+      attachThemeButton(button, nav || topbar);
+    });
+  }
+
+  document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
+    if (buttons.includes(button)) {
       return;
-    }
-
-    const button = createThemeToggleButton();
-
-    const nav = topbar.querySelector(".study-topbar__nav");
-    if (nav) {
-      nav.appendChild(button);
-    } else {
-      topbar.appendChild(button);
     }
 
     button.addEventListener("click", () => {
@@ -593,9 +714,10 @@ function initCursorToggle() {
   }
 
   const topbars = document.querySelectorAll(".study-topbar");
+  const sidebarCursorHost = document.querySelector("[data-sidebar-cursor-host]");
   const controller = window.__tutorCursorController;
 
-  if (!topbars.length || !controller || typeof controller.setMode !== "function") {
+  if ((!topbars.length && !sidebarCursorHost) || !controller || typeof controller.setMode !== "function") {
     return;
   }
 
@@ -611,18 +733,39 @@ function initCursorToggle() {
     });
   };
 
-  topbars.forEach((topbar) => {
-    if (topbar.querySelector("[data-cursor-toggle]")) {
+  const attachCursorButton = (button, host) => {
+    host.appendChild(button);
+
+    button.addEventListener("click", () => {
+      const nextMode = controller.getMode() === "blob" ? "native" : "blob";
+      controller.setMode(nextMode, { persist: true });
+      setStoredCursorMode(nextMode);
+      syncButtons();
+    });
+
+    buttons.push(button);
+  };
+
+  if (sidebarCursorHost && !sidebarCursorHost.querySelector("[data-cursor-toggle]")) {
+    attachCursorButton(createCursorToggleButton(), sidebarCursorHost);
+  }
+
+  if (!sidebarCursorHost) {
+    topbars.forEach((topbar) => {
+      if (topbar.querySelector("[data-cursor-toggle]")) {
+        return;
+      }
+
+      const button = createCursorToggleButton();
+
+      const nav = topbar.querySelector(".study-topbar__nav");
+      attachCursorButton(button, nav || topbar);
+    });
+  }
+
+  document.querySelectorAll("[data-cursor-toggle]").forEach((button) => {
+    if (buttons.includes(button)) {
       return;
-    }
-
-    const button = createCursorToggleButton();
-
-    const nav = topbar.querySelector(".study-topbar__nav");
-    if (nav) {
-      nav.appendChild(button);
-    } else {
-      topbar.appendChild(button);
     }
 
     button.addEventListener("click", () => {
@@ -1253,7 +1396,7 @@ function buildMcqGuide(blocks, options = {}) {
     });
 
     htmlParts.push(
-      `<section class="study-markdown__section study-markdown__section--mcq" id="${id}" data-study-section>`,
+      `<section class="study-markdown__section study-markdown__section--mcq" id="${id}" data-study-section data-study-section-label="${escapeAttribute(label)}" data-study-section-title="${escapeAttribute(headingText)}" data-study-section-index="${sectionCount + 1}">`,
       '  <header class="study-markdown__section-header">',
       `    <span class="study-markdown__section-index">${label}</span>`,
       "    <div>",
@@ -1357,7 +1500,7 @@ function buildGuide(blocks, options = {}) {
     });
 
     htmlParts.push(
-      `<section class="study-markdown__section" id="${id}" data-study-section>`,
+      `<section class="study-markdown__section" id="${id}" data-study-section data-study-section-label="${escapeAttribute(label)}" data-study-section-title="${escapeAttribute(headingText)}" data-study-section-index="${sectionCount + 1}">`,
       '  <header class="study-markdown__section-header">',
       `    <span class="study-markdown__section-index">${label}</span>`,
       "    <div>",
@@ -1663,6 +1806,27 @@ function initOutlineTracking() {
   let currentActiveId = "";
   let observer = null;
 
+  const emitActiveSectionChange = (node) => {
+    if (!node) {
+      return;
+    }
+
+    const totalSections = sectionNodes.length;
+    const sectionIndex = Number(node.dataset.studySectionIndex) || 1;
+    const progressPercent = Math.round((sectionIndex / Math.max(1, totalSections)) * 100);
+
+    window.dispatchEvent(new CustomEvent("tutor:active-section-change", {
+      detail: {
+        id: node.id,
+        label: node.dataset.studySectionLabel || String(sectionIndex).padStart(2, "0"),
+        title: node.dataset.studySectionTitle || "",
+        index: sectionIndex,
+        total: totalSections,
+        progressPercent: clamp(progressPercent, 0, 100),
+      },
+    }));
+  };
+
   const setActive = (id) => {
     if (id === currentActiveId) {
       return;
@@ -1670,9 +1834,12 @@ function initOutlineTracking() {
 
     currentActiveId = id;
     const activeLink = linkMap.get(id);
+    const activeNode = Array.from(sectionNodes).find((node) => node.id === id) || null;
     outlineLinks.forEach((link) => {
       link.classList.toggle("is-active", link.dataset.outlineLink === id);
     });
+
+    emitActiveSectionChange(activeNode);
 
     const shouldScrollOutline =
       activeLink
@@ -1888,6 +2055,351 @@ async function initNotesHub() {
   renderSubjects();
 }
 
+function initTutorSidebar() {
+  const sidebar = document.querySelector(".tutor-sidebar");
+  if (!sidebar) {
+    return;
+  }
+
+  const subjects = Array.from(sidebar.querySelectorAll(".tutor-sidebar__subject"));
+  if (!subjects.length) {
+    return;
+  }
+
+  const setSubjectOpen = (subject, isOpen) => {
+    const toggle = subject.querySelector(".tutor-sidebar__subject-toggle");
+    const panel = subject.querySelector("ul");
+
+    subject.classList.toggle("is-open", isOpen);
+    if (toggle) {
+      toggle.setAttribute("aria-expanded", String(isOpen));
+    }
+    if (panel) {
+      panel.hidden = !isOpen;
+    }
+  };
+
+  subjects.forEach((subject) => {
+    setSubjectOpen(subject, subject.classList.contains("is-open"));
+  });
+
+  sidebar.addEventListener("click", (event) => {
+    const toggle = event.target.closest(".tutor-sidebar__subject-toggle");
+    if (toggle) {
+      const subject = toggle.closest(".tutor-sidebar__subject");
+      if (!subject) {
+        return;
+      }
+
+      const shouldOpen = !subject.classList.contains("is-open");
+      subjects.forEach((candidate) => {
+        setSubjectOpen(candidate, candidate === subject ? shouldOpen : false);
+        candidate.classList.toggle("is-active", candidate === subject);
+      });
+      return;
+    }
+
+    const topic = event.target.closest(".tutor-sidebar li a");
+    if (!topic) {
+      return;
+    }
+
+    sidebar.querySelectorAll(".tutor-sidebar li a.is-active").forEach((link) => {
+      link.classList.remove("is-active");
+    });
+    topic.classList.add("is-active");
+
+    const activeSubject = topic.closest(".tutor-sidebar__subject");
+    subjects.forEach((candidate) => {
+      candidate.classList.toggle("is-active", candidate === activeSubject);
+    });
+  });
+}
+
+function getSubjectIcon(subjectName) {
+  const normalizedName = subjectName.toLowerCase();
+
+  if (normalizedName.includes("law")) {
+    return `
+      <svg aria-hidden="true" viewBox="0 0 24 24">
+        <path d="M12 4v16"></path>
+        <path d="M5 8h14"></path>
+        <path d="m7 8-3 6h6Z"></path>
+        <path d="m17 8-3 6h6Z"></path>
+      </svg>
+    `;
+  }
+
+  if (normalizedName.includes("data")) {
+    return `
+      <svg aria-hidden="true" viewBox="0 0 24 24">
+        <path d="M5 8h14"></path>
+        <path d="M5 16h14"></path>
+        <circle cx="7" cy="8" r="2"></circle>
+        <circle cx="17" cy="16" r="2"></circle>
+      </svg>
+    `;
+  }
+
+  return `
+    <svg aria-hidden="true" viewBox="0 0 24 24">
+      <path d="M8 9h8"></path>
+      <path d="M8 15h8"></path>
+      <path d="M9 4 5 20"></path>
+      <path d="m19 4-4 16"></path>
+    </svg>
+  `;
+}
+
+function collectCatalogNotes(items) {
+  return items.flatMap((item) => {
+    if (item.type === "file") {
+      return [item];
+    }
+
+    return collectCatalogNotes(Array.isArray(item.children) ? item.children : []);
+  });
+}
+
+function normalizeComparableHref(href) {
+  try {
+    const url = new URL(href, window.location.href);
+    return `${url.origin}${url.pathname}`;
+  } catch {
+    return String(href || "").split("?")[0];
+  }
+}
+
+function getSidebarActiveHref() {
+  const current = normalizeComparableHref(window.location.href);
+  const hasReadingHistory = getStoredRecentNotes().length > 0;
+  const continueLink = document.querySelector(".tutor-button[href]");
+  const continueHref = continueLink ? normalizeComparableHref(continueLink.getAttribute("href")) : "";
+
+  if (!hasReadingHistory && (window.location.pathname.endsWith("/") || window.location.pathname.endsWith("/index.html"))) {
+    return "";
+  }
+
+  return window.location.pathname.endsWith("/")
+    || window.location.pathname.endsWith("/index.html")
+    ? continueHref
+    : current;
+}
+
+function getCatalogNoteRows(tree) {
+  return tree
+    .filter((item) => item.type === "folder")
+    .flatMap((subject) => collectCatalogNotes(subject.children).map((note) => ({
+      ...note,
+      subject: subject.name,
+    })));
+}
+
+function getRecentDashboardNotes(notes) {
+  const notesByHref = new Map(
+    notes.map((note) => [normalizeComparableHref(note.href), note])
+  );
+  const history = getStoredRecentNotes();
+  const recent = history
+    .map((entry) => {
+      const matchedNote = notesByHref.get(normalizeComparableHref(entry.href));
+      return {
+        href: matchedNote?.href || entry.href,
+        name: matchedNote?.name || entry.title,
+        subject: matchedNote?.subject || entry.subject || "Notes",
+        meta: matchedNote?.meta || entry.meta || "Note",
+        sectionId: entry.sectionId || "",
+        sectionLabel: entry.sectionLabel || "",
+        sectionTitle: entry.sectionTitle || "",
+        sectionIndex: entry.sectionIndex || 0,
+        totalSections: entry.totalSections || 0,
+        progressPercent: entry.progressPercent || 0,
+        visitedAt: entry.visitedAt,
+      };
+    })
+    .filter((entry) => entry.href && entry.name);
+
+  return recent;
+}
+
+function renderDashboardCatalog(tree, activeHref) {
+  const notes = getCatalogNoteRows(tree);
+  const hasReadingHistory = getStoredRecentNotes().length > 0;
+  const recentNotes = getRecentDashboardNotes(notes);
+  const activeNote = recentNotes[0]
+    || notes.find((note) => normalizeComparableHref(note.href) === activeHref)
+    || notes[0];
+
+  if (activeNote) {
+    const hero = document.querySelector(".tutor-hero-note");
+    if (hero) {
+      const title = hero.querySelector("h1");
+      const path = hero.querySelector(".tutor-note-path");
+      const sectionMeta = hero.querySelector(".tutor-note-meta__section");
+      const openedMeta = hero.querySelector(".tutor-note-meta__opened");
+      const button = hero.querySelector(".tutor-button");
+      const progress = hero.querySelector(".tutor-progress span");
+      const progressValue = hero.querySelector(".tutor-progress__value");
+      const progressTrack = hero.querySelector(".tutor-progress");
+
+      if (title) {
+        title.textContent = hasReadingHistory
+          ? (activeNote.name || activeNote.title)
+          : "Start reading your notes";
+      }
+      if (path) {
+        path.innerHTML = hasReadingHistory
+          ? `${escapeHtml(activeNote.subject)} <span>&rsaquo;</span> ${escapeHtml(activeNote.name || activeNote.title)}`
+          : `Choose a subject <span>&rsaquo;</span> Open any note`;
+      }
+      if (sectionMeta) {
+        sectionMeta.textContent = hasReadingHistory
+          ? `${activeNote.sectionTitle || activeNote.sectionLabel || "Slide 01"}`
+          : "Open your first note";
+      }
+      if (openedMeta) {
+        openedMeta.textContent = hasReadingHistory
+          ? `Last opened ${formatRelativeVisitTime(activeNote.visitedAt)}`
+          : "Ready when you are";
+      }
+      if (button) {
+        button.setAttribute("href", activeNote.href || "#");
+        button.textContent = hasReadingHistory ? "Continue" : "Start Reading";
+      }
+      if (progress) {
+        progress.style.width = `${clamp(Number(activeNote.progressPercent) || 0, 0, 100)}%`;
+      }
+      if (progressValue) {
+        progressValue.textContent = hasReadingHistory
+          ? `${clamp(Number(activeNote.progressPercent) || 0, 0, 100)}%`
+          : "0%";
+      }
+      if (progressTrack) {
+        progressTrack.setAttribute(
+          "aria-label",
+          hasReadingHistory
+            ? `${clamp(Number(activeNote.progressPercent) || 0, 0, 100)} percent through ${activeNote.name || activeNote.title}`
+            : "No reading progress yet"
+        );
+      }
+    }
+  }
+
+  const recentList = document.querySelector(".tutor-note-list");
+  if (!recentList || !notes.length) {
+    return;
+  }
+
+  if (!hasReadingHistory || !recentNotes.length) {
+    recentList.innerHTML = "";
+    return;
+  }
+
+  recentList.innerHTML = recentNotes.slice(0, 4).map((note) => `
+    <a class="tutor-note-row" href="${escapeAttribute(note.href || "#")}">
+      <span class="tutor-note-row__icon">
+        <svg aria-hidden="true" viewBox="0 0 24 24">
+          <path d="M6 2h8l4 4v16H6Z"></path>
+          <path d="M14 2v5h5"></path>
+          <path d="M9 12h6M9 16h6M9 8h2"></path>
+        </svg>
+      </span>
+      <span>
+        <strong>${escapeHtml(note.name || note.title)}</strong>
+        <small>${escapeHtml(note.subject)} <span>&rsaquo;</span> ${escapeHtml(note.meta || "Note")}</small>
+      </span>
+      <time>${escapeHtml(formatRelativeVisitTime(note.visitedAt))}</time>
+      <span class="tutor-row-arrow">&rsaquo;</span>
+    </a>
+  `).join("");
+}
+
+async function initCatalogSidebar() {
+  const sidebar = document.querySelector(".tutor-sidebar[data-sidebar-catalog]");
+  const subjectsRoot = document.querySelector("[data-sidebar-subjects-root]");
+  if (!sidebar || !subjectsRoot) {
+    initTutorSidebar();
+    return;
+  }
+
+  let config;
+  try {
+    const response = await fetch(sidebar.dataset.sidebarCatalog);
+    if (!response.ok) {
+      throw new Error(`Failed to load ${sidebar.dataset.sidebarCatalog}`);
+    }
+    config = await response.json();
+  } catch {
+    initTutorSidebar();
+    return;
+  }
+
+  const tree = normalizeHubTree(Array.isArray(config.items) ? config.items : []);
+  const subjects = tree.filter((item) => item.type === "folder");
+  const activeHref = getSidebarActiveHref();
+  let openSubjectId = "";
+
+  renderDashboardCatalog(tree, activeHref);
+
+  const renderedSubjects = subjects.map((subject, index) => {
+    const notes = collectCatalogNotes(subject.children);
+    const hasActiveNote = notes.some((note) => normalizeComparableHref(note.href) === activeHref);
+    const subjectId = subject.id || slugifyHubId(subject.name);
+    const listId = `sidebar-subject-${subjectId || index + 1}`;
+
+    if (hasActiveNote && !openSubjectId) {
+      openSubjectId = listId;
+    }
+
+    return {
+      html: `
+        <section class="tutor-sidebar__subject${hasActiveNote ? " is-open is-active" : ""}">
+          <button type="button" class="tutor-sidebar__subject-toggle" aria-expanded="${hasActiveNote}" aria-controls="${escapeAttribute(listId)}">
+            <span class="tutor-sidebar__subject-icon">${getSubjectIcon(subject.name)}</span>
+            <span class="tutor-sidebar__subject-name">${escapeHtml(subject.name)}</span>
+            <span class="tutor-sidebar__badge">${notes.length}</span>
+            <span class="tutor-sidebar__chevron" aria-hidden="true"></span>
+          </button>
+          <ul id="${escapeAttribute(listId)}"${hasActiveNote ? "" : " hidden"}>
+            ${notes.length
+              ? notes.map((note) => {
+                const isActive = normalizeComparableHref(note.href) === activeHref;
+                return `
+                  <li>
+                    <a${isActive ? ' class="is-active"' : ""} href="${escapeAttribute(note.href || "#")}" title="${escapeAttribute(note.name)}">
+                      ${escapeHtml(note.name)}
+                    </a>
+                  </li>
+                `;
+              }).join("")
+              : '<li><span class="tutor-sidebar__empty">No notes yet</span></li>'}
+          </ul>
+        </section>
+      `,
+      listId,
+    };
+  });
+
+  subjectsRoot.innerHTML = renderedSubjects.map((subject) => subject.html).join("");
+
+  if (!openSubjectId && getStoredRecentNotes().length > 0) {
+    const firstSubject = subjectsRoot.querySelector(".tutor-sidebar__subject");
+    if (firstSubject) {
+      firstSubject.classList.add("is-open");
+      const toggle = firstSubject.querySelector(".tutor-sidebar__subject-toggle");
+      const panel = firstSubject.querySelector("ul");
+      if (toggle) {
+        toggle.setAttribute("aria-expanded", "true");
+      }
+      if (panel) {
+        panel.hidden = false;
+      }
+    }
+  }
+
+  initTutorSidebar();
+}
+
 async function initMarkdownPage() {
   const page = document.querySelector("[data-markdown-page]");
   const contentRoot = document.querySelector("[data-study-content]");
@@ -1931,11 +2443,57 @@ async function initMarkdownPage() {
       : buildGuide(guideBlocks, guideOptions);
     const wordCount = countWords(blocks);
     const readTime = Math.max(1, Math.round(wordCount / 220));
+    const heroKicker = document.querySelector(".study-hero .study-kicker");
+    const subjectLabel = heroKicker ? heroKicker.textContent.split("/")[0].trim() : "";
+    const pageTitle = titleBlock ? titleBlock.text : document.title.replace(/\s*\|\s*Tutor Notes\s*$/i, "").trim();
+    let latestSectionProgress = null;
 
     contentRoot.innerHTML = guide.html;
     renderOutline(guide.outline);
     initOutlineTracking();
     window.dispatchEvent(new CustomEvent("tutor:page-content-ready"));
+
+    const persistReadingProgress = () => {
+      rememberRecentNote({
+        href: window.location.href,
+        title: pageTitle || "Untitled note",
+        subject: subjectLabel || "Notes",
+        meta: `${readTime} min read`,
+        sectionId: latestSectionProgress?.id || "",
+        sectionLabel: latestSectionProgress?.label || "",
+        sectionTitle: latestSectionProgress?.title || "",
+        sectionIndex: latestSectionProgress?.index || 0,
+        totalSections: latestSectionProgress?.total || guide.sectionCount,
+        progressPercent: latestSectionProgress?.progressPercent || 0,
+      });
+    };
+
+    const getSectionProgressFromNode = (node) => {
+      if (!node) {
+        return null;
+      }
+
+      const sectionIndex = Number(node.dataset.studySectionIndex) || 1;
+      const totalSections = guide.sectionCount || 1;
+      return {
+        id: node.id,
+        label: node.dataset.studySectionLabel || String(sectionIndex).padStart(2, "0"),
+        title: node.dataset.studySectionTitle || "",
+        index: sectionIndex,
+        total: totalSections,
+        progressPercent: clamp(Math.round((sectionIndex / Math.max(1, totalSections)) * 100), 0, 100),
+      };
+    };
+
+    const handleActiveSectionChange = (event) => {
+      latestSectionProgress = event.detail || null;
+      persistReadingProgress();
+    };
+
+    window.addEventListener("tutor:active-section-change", handleActiveSectionChange);
+    window.addEventListener("pagehide", persistReadingProgress, { once: true });
+    latestSectionProgress = getSectionProgressFromNode(contentRoot.querySelector("[data-study-section]"));
+    persistReadingProgress();
 
     setText("[data-study-title]", titleBlock ? titleBlock.text : "Functions in C");
     setText(
@@ -1992,11 +2550,115 @@ function initScrollToTop() {
   toggleVisibility();
 }
 
+function initSidebarSettings() {
+  const root = document.querySelector("[data-sidebar-settings]");
+  if (!root) {
+    return;
+  }
+
+  const sidebar = root.closest(".tutor-sidebar");
+  const trigger = root.querySelector(".tutor-sidebar__settings");
+  const menu = root.querySelector(".tutor-sidebar__settings-menu");
+
+  if (!trigger || !menu) {
+    return;
+  }
+
+  const setOpen = (isOpen) => {
+    root.classList.toggle("is-open", isOpen);
+    sidebar?.classList.toggle("is-settings-open", isOpen);
+    trigger.setAttribute("aria-expanded", String(isOpen));
+    trigger.setAttribute("aria-label", isOpen ? "Close settings" : "Open settings");
+    trigger.title = isOpen ? "Close settings" : "Open settings";
+    menu.hidden = !isOpen;
+  };
+
+  trigger.addEventListener("click", () => {
+    setOpen(!root.classList.contains("is-open"));
+  });
+
+  document.addEventListener("click", (event) => {
+    if (root.contains(event.target)) {
+      return;
+    }
+
+    setOpen(false);
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      setOpen(false);
+      trigger.focus();
+    }
+  });
+
+  setOpen(false);
+}
+
+function initMobileSidebarDrawer() {
+  const dashboard = document.querySelector(".tutor-dashboard");
+  const sidebar = document.querySelector(".tutor-sidebar");
+  const toggle = document.querySelector(".tutor-mobile-nav-toggle");
+  const backdrop = document.querySelector(".tutor-mobile-sidebar-backdrop");
+
+  if (!dashboard || !sidebar || !toggle || !backdrop) {
+    return;
+  }
+
+  const mobileQuery = window.matchMedia("(max-width: 820px)");
+
+  const setOpen = (isOpen) => {
+    const shouldOpen = mobileQuery.matches && isOpen;
+    dashboard.classList.toggle("is-mobile-sidebar-open", shouldOpen);
+    toggle.setAttribute("aria-expanded", String(shouldOpen));
+    toggle.setAttribute("aria-label", shouldOpen ? "Close subjects" : "Open subjects");
+  };
+
+  toggle.addEventListener("click", () => {
+    setOpen(!dashboard.classList.contains("is-mobile-sidebar-open"));
+  });
+
+  backdrop.addEventListener("click", () => {
+    setOpen(false);
+  });
+
+  sidebar.addEventListener("click", (event) => {
+    if (!mobileQuery.matches) {
+      return;
+    }
+
+    if (event.target.closest("a[href]")) {
+      setOpen(false);
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      setOpen(false);
+    }
+  });
+
+  const syncForViewport = () => {
+    if (!mobileQuery.matches) {
+      setOpen(false);
+    }
+  };
+
+  if ("addEventListener" in mobileQuery) {
+    mobileQuery.addEventListener("change", syncForViewport);
+  } else if ("addListener" in mobileQuery) {
+    mobileQuery.addListener(syncForViewport);
+  }
+
+  setOpen(false);
+}
+
 window.addEventListener("DOMContentLoaded", () => {
   initPageScrollMemory();
   initPwa();
   initThemeToggle();
   initCursorToggle();
+  initSidebarSettings();
   initStudySettingsMenu();
   initGlobalClickSpark();
   initScrollSoftening();
@@ -2004,6 +2666,8 @@ window.addEventListener("DOMContentLoaded", () => {
     document.body.classList.add("is-ready");
   });
   initOutlineToggle();
+  initCatalogSidebar();
+  initMobileSidebarDrawer();
   initMarkdownPage();
   initNotesHub();
   initScrollToTop();

@@ -384,7 +384,7 @@
   };
 
   const createScrollInstrument = () => {
-    if (hideScrollInstrumentOnMobile || state.scrollInstrumentRoot) {
+    if (hideScrollInstrumentOnMobile || state.scrollInstrumentRoot || document.querySelector(".tutor-dashboard")) {
       return;
     }
 
@@ -536,13 +536,19 @@
     button.append(dot, label);
     control.append(button, panel);
 
-    const host = document.querySelector(".topbar__group--right")
+    const sidebarSoundHost = document.querySelector("[data-sidebar-sound-host]");
+    const host = sidebarSoundHost
+      || document.querySelector(".topbar__group--right")
       || document.querySelector(".study-topbar__nav")
       || document.querySelector(".project-topbar__links")
       || document.querySelector(".hackathon-topbar__nav");
 
     if (host) {
-      host.prepend(control);
+      if (sidebarSoundHost) {
+        host.appendChild(control);
+      } else {
+        host.prepend(control);
+      }
     } else {
       document.body.appendChild(control);
     }
