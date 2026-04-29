@@ -4942,6 +4942,7 @@ body:has(.tutor-dashboard.is-mobile-sidebar-open) {
   .tutor-sidebar__brand {
     min-height: 40px;
     padding-right: 56px;
+    color: #f3ede2 !important;
     font-size: 28px;
   }
 
@@ -4972,6 +4973,7 @@ body:has(.tutor-dashboard.is-mobile-sidebar-open) {
 
   .tutor-sidebar__label {
     margin: 0 0 12px;
+    color: rgba(243, 237, 226, 0.72) !important;
     font-size: 11px;
     letter-spacing: 0.16em;
   }
@@ -4984,6 +4986,7 @@ body:has(.tutor-dashboard.is-mobile-sidebar-open) {
     min-height: 60px;
     padding: 8px 14px;
     border-radius: 16px;
+    color: #f3ede2 !important;
     font-size: 18px;
   }
 
@@ -4995,6 +4998,7 @@ body:has(.tutor-dashboard.is-mobile-sidebar-open) {
     min-width: 36px;
     height: 28px;
     border-radius: 10px;
+    color: #f3ede2 !important;
     font-size: 11px;
   }
 
@@ -5010,8 +5014,33 @@ body:has(.tutor-dashboard.is-mobile-sidebar-open) {
 
   .tutor-sidebar li a {
     padding: 11px 0 11px 10px;
+    color: #f3ede2 !important;
     font-size: 14px;
     line-height: 1.25;
+  }
+
+  .tutor-sidebar li a:hover,
+  .tutor-sidebar li a:focus-visible,
+  .tutor-sidebar li a.is-active,
+  .tutor-sidebar__subject.is-active .tutor-sidebar__subject-toggle,
+  .tutor-sidebar__subject.is-active.is-open .tutor-sidebar__subject-toggle,
+  .tutor-sidebar__subject-toggle:hover,
+  .tutor-sidebar__subject-toggle:focus-visible,
+  .tutor-sidebar__settings,
+  .tutor-sidebar__settings svg,
+  .tutor-sidebar__empty {
+    color: #f3ede2 !important;
+  }
+
+  .tutor-sidebar__chevron,
+  .tutor-sidebar__subject-icon {
+    color: rgba(243, 237, 226, 0.82) !important;
+  }
+
+  .tutor-sidebar__settings-menu .site-sound-toggle,
+  .tutor-sidebar__settings-menu .theme-toggle,
+  .tutor-sidebar__settings-menu .cursor-toggle {
+    color: #f3ede2 !important;
   }
 
   .tutor-sidebar__art {
