@@ -2495,7 +2495,7 @@ function renderDashboardCatalog(tree, activeHref) {
     return;
   }
 
-  recentList.innerHTML = recentNotes.slice(0, 4).map((note) => `
+  recentList.innerHTML = recentNotes.slice(0, 3).map((note) => `
     <a class="tutor-note-row" href="${escapeAttribute(note.href || "#")}">
       <span class="tutor-note-row__icon">
         <svg aria-hidden="true" viewBox="0 0 24 24">
