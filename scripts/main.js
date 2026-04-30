@@ -1422,6 +1422,32 @@ function renderOutline(outline) {
     .join("");
 }
 
+function scrollToInitialHashTarget() {
+  if (!window.location.hash) {
+    return;
+  }
+
+  let targetId = "";
+  try {
+    targetId = decodeURIComponent(window.location.hash.slice(1));
+  } catch {
+    targetId = window.location.hash.slice(1);
+  }
+
+  const target = targetId ? document.getElementById(targetId) : null;
+  if (!target) {
+    return;
+  }
+
+  window.requestAnimationFrame(() => {
+    target.scrollIntoView({
+      block: "start",
+      inline: "nearest",
+      behavior: "auto",
+    });
+  });
+}
+
 function initOutlineToggle() {
   const panel = document.querySelector("[data-study-outline-panel]");
   const toggle = document.querySelector("[data-study-outline-toggle]");
@@ -2684,6 +2710,7 @@ async function initMarkdownPage() {
     setText("[data-study-status-label]", "Ready");
     setText("[data-study-source-name]", source.replace("./", ""));
     statusRoot.textContent = `Pulled in ${guide.sectionCount} sections from ${source.replace("./", "")}.`;
+    scrollToInitialHashTarget();
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unable to load the markdown file.";
     statusRoot.textContent = "Could not load the notes file.";

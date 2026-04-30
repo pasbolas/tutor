@@ -1302,6 +1302,7 @@ body.is-page-scrolling .notes-minimal {
   padding-top: 1rem;
   min-width: 0;
   max-width: 100%;
+  scroll-margin-top: 1.5rem;
 }
 
 .study-markdown__section-header {
@@ -3924,10 +3925,13 @@ body:has(.tutor-dashboard).is-leaving .tutor-dashboard__frame {
   left: 0;
   z-index: 12;
   display: grid;
+  align-content: start;
   gap: 8px;
-  max-height: 320px;
+  height: calc(100dvh - 128px);
+  max-height: calc(100dvh - 128px);
   overflow: auto;
-  padding: 2px;
+  padding: 2px 2px 16px;
+  overscroll-behavior: contain;
 }
 
 .tutor-search-results[hidden] {
@@ -5010,7 +5014,8 @@ body:has(.tutor-dashboard.is-mobile-sidebar-open) {
   }
 
   .tutor-search-results {
-    max-height: 240px;
+    height: calc(100dvh - 112px);
+    max-height: calc(100dvh - 112px);
     top: calc(100% + 12px);
   }
 
