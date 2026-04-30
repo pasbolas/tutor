@@ -1,4 +1,4 @@
-# CMPU2001 Algorithms and Data Structures: Comprehensive Exam Study Material
+# Algorithms and Data Structures: Comprehensive Exam Study Material
 
 ---
 
@@ -18,27 +18,27 @@ For an array `a[]`, using zero based indexing:
 
 ```text
 parent(i) = (i - 1) / 2
-left(i)   = 2i + 1
-right(i)  = 2i + 2
+left(i) = 2i + 1
+right(i) = 2i + 2
 ```
 
 Example heap array:
 
 ```text
-index: 0   1   2   3   4   5   6   7
-value: 12  11  8   10  7   5   1   9
+index: 0 1 2 3 4 5 6 7
+value: 12 11 8 10 7 5 1 9
 ```
 
 Tree form:
 
 ```text
-              12
-           /      \
-         11        8
-       /   \      / \
-     10     7    5   1
-    /
-   9
+ 12
+ / \
+ 11 8
+ / \ / \
+ 10 7 5 1
+ /
+ 9
 ```
 
 ## 1.2 Heap array vs sorted array
@@ -50,7 +50,7 @@ A sorted array is globally ordered. Every element is in exact sorted position.
 Example:
 
 ```text
-Heap:        [12, 11, 8, 10, 7, 5, 1, 9]
+Heap: [12, 11, 8, 10, 7, 5, 1, 9]
 Sorted desc: [12, 11, 10, 9, 8, 7, 5, 1]
 ```
 
@@ -111,13 +111,13 @@ Swap 13 and 12:
 Final heap:
 
 ```text
-              13
-           /      \
-         12        8
-       /   \      / \
-     11     7    5   1
-    /  \
-   9    10
+ 13
+ / \
+ 12 8
+ / \ / \
+ 11 7 5 1
+ / \
+ 9 10
 ```
 
 ## 1.5 hPos array
@@ -127,8 +127,8 @@ An `hPos[]` array stores where each key currently appears in the heap.
 For:
 
 ```text
-index: 0   1   2   3   4   5   6   7
-value: 12  11  8   10  7   5   1   9
+index: 0 1 2 3 4 5 6 7
+value: 12 11 8 10 7 5 1 9
 ```
 
 The mapping is:
@@ -136,12 +136,12 @@ The mapping is:
 ```text
 hPos[12] = 0
 hPos[11] = 1
-hPos[8]  = 2
+hPos[8] = 2
 hPos[10] = 3
-hPos[7]  = 4
-hPos[5]  = 5
-hPos[1]  = 6
-hPos[9]  = 7
+hPos[7] = 4
+hPos[5] = 5
+hPos[1] = 6
+hPos[9] = 7
 ```
 
 It is useful when a graph algorithm needs to quickly find the heap position of a vertex.
@@ -152,19 +152,19 @@ It is useful when a graph algorithm needs to quickly find the heap position of a
 
 ```text
 maxHeapify(k):
-    left = 2*k + 1
-    right = 2*k + 2
-    largest = k
+ left = 2*k + 1
+ right = 2*k + 2
+ largest = k
 
-    if left < heapSize and a[left] > a[largest]:
-        largest = left
+ if left < heapSize and a[left] > a[largest]:
+ largest = left
 
-    if right < heapSize and a[right] > a[largest]:
-        largest = right
+ if right < heapSize and a[right] > a[largest]:
+ largest = right
 
-    if largest != k:
-        swap a[k] and a[largest]
-        maxHeapify(largest)
+ if largest != k:
+ swap a[k] and a[largest]
+ maxHeapify(largest)
 ```
 
 Complexity: `O(log n)`, because the element moves down at most one tree height.
@@ -197,10 +197,10 @@ For ascending order:
 
 ```text
 bubbleSort(a):
-    for pass = 0 to n - 2:
-        for i = 0 to n - 2 - pass:
-            if a[i] > a[i + 1]:
-                swap a[i], a[i + 1]
+ for pass = 0 to n - 2:
+ for i = 0 to n - 2 - pass:
+ if a[i] > a[i + 1]:
+ swap a[i], a[i + 1]
 ```
 
 Complexity:
@@ -272,10 +272,10 @@ Basic pseudocode:
 
 ```text
 quickSort(a, low, high):
-    if low < high:
-        p = partition(a, low, high)
-        quickSort(a, low, p - 1)
-        quickSort(a, p + 1, high)
+ if low < high:
+ p = partition(a, low, high)
+ quickSort(a, low, p - 1)
+ quickSort(a, p + 1, high)
 ```
 
 Complexity:
@@ -374,43 +374,43 @@ DFS explores as far as possible down one branch before backtracking.
 It records:
 
 - `color`
-  - WHITE means undiscovered.
-  - GRAY means discovered but not finished.
-  - BLACK means finished.
+ - WHITE means undiscovered.
+ - GRAY means discovered but not finished.
+ - BLACK means finished.
 - `d`
-  - discovery time.
+ - discovery time.
 - `f`
-  - finishing time.
+ - finishing time.
 - `π`
-  - parent in the DFS tree.
+ - parent in the DFS tree.
 
 ## 4.2 DFS pseudocode
 
 ```text
 DFS(G):
-    for each vertex u in G.V:
-        u.color = WHITE
-        u.parent = NIL
+ for each vertex u in G.V:
+ u.color = WHITE
+ u.parent = NIL
 
-    time = 0
+ time = 0
 
-    for each vertex u in G.V:
-        if u.color == WHITE:
-            DFSVisit(G, u)
+ for each vertex u in G.V:
+ if u.color == WHITE:
+ DFSVisit(G, u)
 
 DFSVisit(G, u):
-    time = time + 1
-    u.d = time
-    u.color = GRAY
+ time = time + 1
+ u.d = time
+ u.color = GRAY
 
-    for each vertex v in G.Adj[u]:
-        if v.color == WHITE:
-            v.parent = u
-            DFSVisit(G, v)
+ for each vertex v in G.Adj[u]:
+ if v.color == WHITE:
+ v.parent = u
+ DFSVisit(G, v)
 
-    u.color = BLACK
-    time = time + 1
-    u.f = time
+ u.color = BLACK
+ time = time + 1
+ u.f = time
 ```
 
 ## 4.3 DFS complexity
@@ -447,21 +447,21 @@ It builds a shortest path tree using:
 
 ```text
 Dijkstra(G, source):
-    for each vertex v in G.V:
-        distance[v] = infinity
-        parent[v] = NIL
+ for each vertex v in G.V:
+ distance[v] = infinity
+ parent[v] = NIL
 
-    distance[source] = 0
-    heap = all vertices keyed by distance
+ distance[source] = 0
+ heap = all vertices keyed by distance
 
-    while heap is not empty:
-        u = removeMin(heap)
+ while heap is not empty:
+ u = removeMin(heap)
 
-        for each edge (u, v) in G.Adj[u]:
-            if v is still in heap and distance[u] + weight(u, v) < distance[v]:
-                distance[v] = distance[u] + weight(u, v)
-                parent[v] = u
-                decreaseKey(heap, v, distance[v])
+ for each edge (u, v) in G.Adj[u]:
+ if v is still in heap and distance[u] + weight(u, v) < distance[v]:
+ distance[v] = distance[u] + weight(u, v)
+ parent[v] = u
+ decreaseKey(heap, v, distance[v])
 ```
 
 ## 5.3 Complexity for sparse graph
@@ -510,21 +510,21 @@ It repeatedly selects the cheapest edge that connects a vertex inside the tree t
 
 ```text
 Prim(G, start):
-    for each vertex v:
-        dist[v] = infinity
-        parent[v] = NIL
+ for each vertex v:
+ dist[v] = infinity
+ parent[v] = NIL
 
-    dist[start] = 0
-    heap = all vertices keyed by dist
+ dist[start] = 0
+ heap = all vertices keyed by dist
 
-    while heap is not empty:
-        u = removeMin(heap)
+ while heap is not empty:
+ u = removeMin(heap)
 
-        for each edge (u, v) in G.Adj[u]:
-            if v is in heap and weight(u, v) < dist[v]:
-                dist[v] = weight(u, v)
-                parent[v] = u
-                decreaseKey(heap, v, dist[v])
+ for each edge (u, v) in G.Adj[u]:
+ if v is in heap and weight(u, v) < dist[v]:
+ dist[v] = weight(u, v)
+ parent[v] = u
+ decreaseKey(heap, v, dist[v])
 ```
 
 ## 6.3 Prim vs Dijkstra
@@ -548,9 +548,9 @@ Steps:
 1. Sort all edges from smallest to largest.
 2. Start with every vertex in its own set.
 3. For each edge `(u, v)`:
-   - if `u` and `v` are in different sets, add the edge.
-   - union their sets.
-   - if they are already in the same set, reject the edge because it creates a cycle.
+ - if `u` and `v` are in different sets, add the edge.
+ - union their sets.
+ - if they are already in the same set, reject the edge because it creates a cycle.
 
 ## 7.2 Purpose of UnionFind
 
@@ -634,20 +634,20 @@ Each comparison halves the remaining search space.
 
 ```text
 binarySearch(a, target):
-    low = 0
-    high = length(a) - 1
+ low = 0
+ high = length(a) - 1
 
-    while low <= high:
-        mid = (low + high) / 2
+ while low <= high:
+ mid = (low + high) / 2
 
-        if a[mid] == target:
-            return mid
-        else if target < a[mid]:
-            high = mid - 1
-        else:
-            low = mid + 1
+ if a[mid] == target:
+ return mid
+ else if target < a[mid]:
+ high = mid - 1
+ else:
+ low = mid + 1
 
-    return NOT_FOUND
+ return NOT_FOUND
 ```
 
 ---
@@ -666,15 +666,15 @@ A binary search tree is a binary tree where:
 
 ```text
 BSTSearch(root, key):
-    current = root
+ current = root
 
-    while current != NIL and current.key != key:
-        if key < current.key:
-            current = current.left
-        else:
-            current = current.right
+ while current != NIL and current.key != key:
+ if key < current.key:
+ current = current.left
+ else:
+ current = current.right
 
-    return current
+ return current
 ```
 
 ## 9.3 Complexity
@@ -702,11 +702,11 @@ Bad example:
 ```text
 1
  \
-  2
-   \
-    3
-     \
-      4
+ 2
+ \
+ 3
+ \
+ 4
 ```
 
 This behaves like a linked list.
@@ -751,13 +751,13 @@ Four cases:
 Starting tree:
 
 ```text
-              44
-            /    \
-          17      78
-            \    /  \
-            32  50   88
-                / \
-               48 62
+ 44
+ / \
+ 17 78
+ \ / \
+ 32 50 88
+ / \
+ 48 62
 ```
 
 Insert 54:
@@ -770,15 +770,15 @@ Insert 54:
 Tree after normal BST insertion:
 
 ```text
-              44
-            /    \
-          17      78
-            \    /  \
-            32  50   88
-                / \
-               48 62
-                  /
-                 54
+ 44
+ / \
+ 17 78
+ \ / \
+ 32 50 88
+ / \
+ 48 62
+ /
+ 54
 ```
 
 Now node 78 becomes left heavy, and its left child 50 is right heavy. That is a Left Right case at 78.
@@ -791,13 +791,13 @@ Fix:
 Balanced result:
 
 ```text
-              44
-            /    \
-          17      62
-            \    /  \
-            32  50   78
-                / \    \
-               48 54    88
+ 44
+ / \
+ 17 62
+ \ / \
+ 32 50 78
+ / \ \
+ 48 54 88
 ```
 
 ---

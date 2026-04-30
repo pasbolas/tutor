@@ -1,4 +1,4 @@
-# CMPU2001 Expected Exam Questions and Model Answers
+# Expected Exam Questions and Model Answers
 
 These are based on the repeated structure across the past papers. They are not a leak or guarantee. They are the highest value questions to practise.
 
@@ -15,7 +15,7 @@ A heap array is not fully sorted. It only satisfies the heap property. In a max 
 Example:
 
 ```text
-Heap:   [12, 11, 8, 10, 7, 5, 1, 9]
+Heap: [12, 11, 8, 10, 7, 5, 1, 9]
 Sorted: [12, 11, 10, 9, 8, 7, 5, 1]
 ```
 
@@ -42,13 +42,13 @@ Question: Draw the heap array `[12, 11, 8, 10, 7, 5, 1, 9]` as a binary tree.
 Answer:
 
 ```text
-              12
-           /      \
-         11        8
-       /   \      / \
-     10     7    5   1
-    /
-   9
+ 12
+ / \
+ 11 8
+ / \ / \
+ 10 7 5 1
+ /
+ 9
 ```
 
 This is valid because every parent is greater than its children.
@@ -86,13 +86,13 @@ Swap with 12:
 Final heap:
 
 ```text
-              13
-           /      \
-         12        8
-       /   \      / \
-     11     7    5   1
-    /  \
-   9    10
+ 13
+ / \
+ 12 8
+ / \ / \
+ 11 7 5 1
+ / \
+ 9 10
 ```
 
 ---
@@ -103,19 +103,19 @@ Answer:
 
 ```text
 maxHeapify(k):
-    left = 2*k + 1
-    right = 2*k + 2
-    largest = k
+ left = 2*k + 1
+ right = 2*k + 2
+ largest = k
 
-    if left < heapSize and a[left] > a[largest]:
-        largest = left
+ if left < heapSize and a[left] > a[largest]:
+ largest = left
 
-    if right < heapSize and a[right] > a[largest]:
-        largest = right
+ if right < heapSize and a[right] > a[largest]:
+ largest = right
 
-    if largest != k:
-        swap a[k] and a[largest]
-        maxHeapify(largest)
+ if largest != k:
+ swap a[k] and a[largest]
+ maxHeapify(largest)
 ```
 
 Complexity is `O(log n)` because the node can move down at most the height of the heap.
@@ -292,29 +292,29 @@ Answer:
 
 ```text
 DFS(G):
-    for each vertex u in G.V:
-        u.color = WHITE
-        u.parent = NIL
+ for each vertex u in G.V:
+ u.color = WHITE
+ u.parent = NIL
 
-    time = 0
+ time = 0
 
-    for each vertex u in G.V:
-        if u.color == WHITE:
-            DFSVisit(G, u)
+ for each vertex u in G.V:
+ if u.color == WHITE:
+ DFSVisit(G, u)
 
 DFSVisit(G, u):
-    time = time + 1
-    u.d = time
-    u.color = GRAY
+ time = time + 1
+ u.d = time
+ u.color = GRAY
 
-    for each v in G.Adj[u]:
-        if v.color == WHITE:
-            v.parent = u
-            DFSVisit(G, v)
+ for each v in G.Adj[u]:
+ if v.color == WHITE:
+ v.parent = u
+ DFSVisit(G, v)
 
-    u.color = BLACK
-    time = time + 1
-    u.f = time
+ u.color = BLACK
+ time = time + 1
+ u.f = time
 ```
 
 ---
@@ -363,21 +363,21 @@ Answer:
 
 ```text
 Dijkstra(G, source):
-    for each vertex v:
-        distance[v] = infinity
-        parent[v] = NIL
+ for each vertex v:
+ distance[v] = infinity
+ parent[v] = NIL
 
-    distance[source] = 0
-    heap = all vertices keyed by distance
+ distance[source] = 0
+ heap = all vertices keyed by distance
 
-    while heap is not empty:
-        u = removeMin(heap)
+ while heap is not empty:
+ u = removeMin(heap)
 
-        for each edge (u, v) in G.Adj[u]:
-            if v is still in heap and distance[u] + weight(u, v) < distance[v]:
-                distance[v] = distance[u] + weight(u, v)
-                parent[v] = u
-                decreaseKey(heap, v, distance[v])
+ for each edge (u, v) in G.Adj[u]:
+ if v is still in heap and distance[u] + weight(u, v) < distance[v]:
+ distance[v] = distance[u] + weight(u, v)
+ parent[v] = u
+ decreaseKey(heap, v, distance[v])
 ```
 
 ---
@@ -453,11 +453,11 @@ Shortest path tree:
 ```text
 G
 ├── E
-│   ├── B
-│   └── C
+│ ├── B
+│ └── C
 └── F
-    └── D
-        └── A
+ └── D
+ └── A
 ```
 
 ---
@@ -484,13 +484,13 @@ Answer:
 Tree 1 rooted at C:
 
 ```text
-        C
-      / | \
-     A  B  C
-        |
-        D
-       / \
-      E   G
+ C
+ / | \
+ A B C
+ |
+ D
+ / \
+ E G
 ```
 
 More cleanly, since C points to itself as root:
@@ -499,9 +499,9 @@ More cleanly, since C points to itself as root:
 C
 ├── A
 └── B
-    └── D
-        ├── E
-        └── G
+ └── D
+ ├── E
+ └── G
 ```
 
 Tree 2 rooted at F:
@@ -515,8 +515,8 @@ Tree 3 rooted at K:
 ```text
 K
 ├── H
-│   ├── I
-│   └── J
+│ ├── I
+│ └── J
 └── K
 ```
 
@@ -525,8 +525,8 @@ More cleanly, since K points to itself as root:
 ```text
 K
 └── H
-    ├── I
-    └── J
+ ├── I
+ └── J
 ```
 
 ---
@@ -573,13 +573,13 @@ One valid result is:
 C
 ├── A
 ├── B
-│   └── D
-│       ├── E
-│       └── G
+│ └── D
+│ ├── E
+│ └── G
 └── K
-    └── H
-        ├── I
-        └── J
+ └── H
+ ├── I
+ └── J
 ```
 
 If the implementation attaches C under K, the drawing is different but still correct if all nodes become part of one set.
@@ -669,15 +669,15 @@ Answer:
 
 ```text
 BSTSearch(root, key):
-    current = root
+ current = root
 
-    while current != NIL and current.key != key:
-        if key < current.key:
-            current = current.left
-        else:
-            current = current.right
+ while current != NIL and current.key != key:
+ if key < current.key:
+ current = current.left
+ else:
+ current = current.right
 
-    return current
+ return current
 ```
 
 ---
@@ -700,15 +700,15 @@ Insert 54 as the left child of 62.
 Result:
 
 ```text
-              44
-            /    \
-          17      78
-            \    /  \
-            32  50   88
-                / \
-               48 62
-                  /
-                 54
+ 44
+ / \
+ 17 78
+ \ / \
+ 32 50 88
+ / \
+ 48 62
+ /
+ 54
 ```
 
 ---
@@ -729,13 +729,13 @@ Fix:
 Balanced result:
 
 ```text
-              44
-            /    \
-          17      62
-            \    /  \
-            32  50   78
-                / \    \
-               48 54    88
+ 44
+ / \
+ 17 62
+ \ / \
+ 32 50 78
+ / \ \
+ 48 54 88
 ```
 
 ---

@@ -1,4 +1,4 @@
-# CMPU2001 2024/25 Latest Paper: Full Answer Guide
+# Latest Paper: Full Answer Guide
 
 
 # Question 1
@@ -61,8 +61,8 @@ Question: Draw the heap array as a two-dimensional binary tree and show the cont
 Given heap array:
 
 ```text
-index: 0   1   2   3   4   5   6   7
-value: 12  11  8   10  7   5   1   9
+index: 0 1 2 3 4 5 6 7
+value: 12 11 8 10 7 5 1 9
 ```
 
 Answer:
@@ -70,13 +70,13 @@ Answer:
 Tree form:
 
 ```text
-              12
-           /      \
-         11        8
-       /   \      / \
-     10     7    5   1
-    /
-   9
+ 12
+ / \
+ 11 8
+ / \ / \
+ 10 7 5 1
+ /
+ 9
 ```
 
 Array to tree mapping:
@@ -117,13 +117,13 @@ Append 13 at the next free position:
 Tree after append:
 
 ```text
-              12
-           /      \
-         11        8
-       /   \      / \
-     10     7    5   1
-    /  \
-   9    13
+ 12
+ / \
+ 11 8
+ / \ / \
+ 10 7 5 1
+ / \
+ 9 13
 ```
 
 13 is larger than its parent 10, so swap:
@@ -135,13 +135,13 @@ Tree after append:
 Tree:
 
 ```text
-              12
-           /      \
-         11        8
-       /   \      / \
-     13     7    5   1
-    /  \
-   9    10
+ 12
+ / \
+ 11 8
+ / \ / \
+ 13 7 5 1
+ / \
+ 9 10
 ```
 
 13 is larger than its new parent 11, so swap:
@@ -153,13 +153,13 @@ Tree:
 Tree:
 
 ```text
-              12
-           /      \
-         13        8
-       /   \      / \
-     11     7    5   1
-    /  \
-   9    10
+ 12
+ / \
+ 13 8
+ / \ / \
+ 11 7 5 1
+ / \
+ 9 10
 ```
 
 13 is larger than its new parent 12, so swap:
@@ -171,13 +171,13 @@ Tree:
 Final tree:
 
 ```text
-              13
-           /      \
-         12        8
-       /   \      / \
-     11     7    5   1
-    /  \
-   9    10
+ 13
+ / \
+ 12 8
+ / \ / \
+ 11 7 5 1
+ / \
+ 9 10
 ```
 
 ---
@@ -190,19 +190,19 @@ Answer:
 
 ```text
 maxHeapify(k):
-    left = 2*k + 1
-    right = 2*k + 2
-    largest = k
+ left = 2*k + 1
+ right = 2*k + 2
+ largest = k
 
-    if left < heapSize and a[left] > a[largest]:
-        largest = left
+ if left < heapSize and a[left] > a[largest]:
+ largest = left
 
-    if right < heapSize and a[right] > a[largest]:
-        largest = right
+ if right < heapSize and a[right] > a[largest]:
+ largest = right
 
-    if largest != k:
-        swap a[k] and a[largest]
-        maxHeapify(largest)
+ if largest != k:
+ swap a[k] and a[largest]
+ maxHeapify(largest)
 ```
 
 This is recursive because after swapping with the larger child, it calls itself on the child position. The operation stops when the node is larger than both children or when it reaches a leaf.
@@ -487,64 +487,64 @@ time = 0
 Step by step:
 
 1. Start at `u`.
-   - `u.d = 1`
-   - `u.color = GRAY`
+ - `u.d = 1`
+ - `u.color = GRAY`
 
 2. From `u`, visit `v`.
-   - `v.parent = u`
-   - `v.d = 2`
-   - `v.color = GRAY`
+ - `v.parent = u`
+ - `v.d = 2`
+ - `v.color = GRAY`
 
 3. From `v`, visit `y`.
-   - `y.parent = v`
-   - `y.d = 3`
-   - `y.color = GRAY`
+ - `y.parent = v`
+ - `y.d = 3`
+ - `y.color = GRAY`
 
 4. From `y`, visit `x`.
-   - `x.parent = y`
-   - `x.d = 4`
-   - `x.color = GRAY`
+ - `x.parent = y`
+ - `x.d = 4`
+ - `x.color = GRAY`
 
 5. From `x`, edge goes to `v`, but `v` is already GRAY, so do not visit it again.
-   - finish `x`
-   - `x.color = BLACK`
-   - `x.f = 5`
+ - finish `x`
+ - `x.color = BLACK`
+ - `x.f = 5`
 
 6. Finish `y`.
-   - `y.color = BLACK`
-   - `y.f = 6`
+ - `y.color = BLACK`
+ - `y.f = 6`
 
 7. Finish `v`.
-   - `v.color = BLACK`
-   - `v.f = 7`
+ - `v.color = BLACK`
+ - `v.f = 7`
 
 8. Return to `u`. Its other neighbour `x` is already BLACK.
-   - finish `u`
-   - `u.color = BLACK`
-   - `u.f = 8`
+ - finish `u`
+ - `u.color = BLACK`
+ - `u.f = 8`
 
 9. Next vertex in main loop is `v`, already BLACK. Skip it.
 
 10. Next vertex is `w`, still WHITE.
-    - `w.d = 9`
-    - `w.color = GRAY`
-    - `w.parent = NIL`
+ - `w.d = 9`
+ - `w.color = GRAY`
+ - `w.parent = NIL`
 
 11. From `w`, neighbour `y` is already BLACK, so skip it.
 
 12. From `w`, visit `z`.
-    - `z.parent = w`
-    - `z.d = 10`
-    - `z.color = GRAY`
+ - `z.parent = w`
+ - `z.d = 10`
+ - `z.color = GRAY`
 
 13. From `z`, there is a self edge to `z`. It is already GRAY, so skip it.
-    - finish `z`
-    - `z.color = BLACK`
-    - `z.f = 11`
+ - finish `z`
+ - `z.color = BLACK`
+ - `z.f = 11`
 
 14. Finish `w`.
-    - `w.color = BLACK`
-    - `w.f = 12`
+ - `w.color = BLACK`
+ - `w.f = 12`
 
 Final table:
 
@@ -562,8 +562,8 @@ DFS forest:
 ```text
 u
 └── v
-    └── y
-        └── x
+ └── y
+ └── x
 
 w
 └── z
@@ -625,21 +625,21 @@ Dijkstra pseudocode:
 
 ```text
 Dijkstra(G, source):
-    for each vertex v in G.V:
-        distance[v] = infinity
-        parent[v] = NIL
+ for each vertex v in G.V:
+ distance[v] = infinity
+ parent[v] = NIL
 
-    distance[source] = 0
-    heap = all vertices keyed by distance
+ distance[source] = 0
+ heap = all vertices keyed by distance
 
-    while heap is not empty:
-        u = removeMin(heap)
+ while heap is not empty:
+ u = removeMin(heap)
 
-        for each edge (u, v) in G.Adj[u]:
-            if v is still in heap and distance[u] + weight(u, v) < distance[v]:
-                distance[v] = distance[u] + weight(u, v)
-                parent[v] = u
-                decreaseKey(heap, v, distance[v])
+ for each edge (u, v) in G.Adj[u]:
+ if v is still in heap and distance[u] + weight(u, v) < distance[v]:
+ distance[v] = distance[u] + weight(u, v)
+ parent[v] = u
+ decreaseKey(heap, v, distance[v])
 ```
 
 Graph adjacency list:
@@ -691,11 +691,11 @@ Shortest path tree:
 ```text
 G
 ├── E
-│   ├── B
-│   └── C
+│ ├── B
+│ └── C
 └── F
-    └── D
-        └── A
+ └── D
+ └── A
 ```
 
 Edges in the SPT:
@@ -721,7 +721,7 @@ Answer:
 Array with indexes:
 
 ```text
-index: 0 1 2 3 4  5  6  7  8
+index: 0 1 2 3 4 5 6 7 8
 value: 1 5 6 9 10 12 14 17 21
 ```
 
@@ -820,28 +820,28 @@ Iterative version:
 
 ```text
 BSTSearch(root, key):
-    current = root
+ current = root
 
-    while current != NIL and current.key != key:
-        if key < current.key:
-            current = current.left
-        else:
-            current = current.right
+ while current != NIL and current.key != key:
+ if key < current.key:
+ current = current.left
+ else:
+ current = current.right
 
-    return current
+ return current
 ```
 
 Recursive version:
 
 ```text
 BSTSearch(node, key):
-    if node == NIL or node.key == key:
-        return node
+ if node == NIL or node.key == key:
+ return node
 
-    if key < node.key:
-        return BSTSearch(node.left, key)
-    else:
-        return BSTSearch(node.right, key)
+ if key < node.key:
+ return BSTSearch(node.left, key)
+ else:
+ return BSTSearch(node.right, key)
 ```
 
 Either version is acceptable. Both follow the BST ordering property.
@@ -857,13 +857,13 @@ Answer:
 Starting tree:
 
 ```text
-              44
-            /    \
-          17      78
-            \    /  \
-            32  50   88
-                / \
-               48 62
+ 44
+ / \
+ 17 78
+ \ / \
+ 32 50 88
+ / \
+ 48 62
 ```
 
 Insert 54:
@@ -880,15 +880,15 @@ So 54 is inserted as the left child of 62.
 Tree after insertion:
 
 ```text
-              44
-            /    \
-          17      78
-            \    /  \
-            32  50   88
-                / \
-               48 62
-                  /
-                 54
+ 44
+ / \
+ 17 78
+ \ / \
+ 32 50 88
+ / \
+ 48 62
+ /
+ 54
 ```
 
 ---
@@ -920,15 +920,15 @@ A rotation is a local rearrangement of nodes that restores balance while keeping
 After inserting 54, the tree is:
 
 ```text
-              44
-            /    \
-          17      78
-            \    /  \
-            32  50   88
-                / \
-               48 62
-                  /
-                 54
+ 44
+ / \
+ 17 78
+ \ / \
+ 32 50 88
+ / \
+ 48 62
+ /
+ 54
 ```
 
 The first unbalanced node is 78.
@@ -948,27 +948,27 @@ To fix a Left Right case:
 After left rotation at 50:
 
 ```text
-              44
-            /    \
-          17      78
-            \    /  \
-            32  62   88
-                /
-               50
-              /  \
-             48  54
+ 44
+ / \
+ 17 78
+ \ / \
+ 32 62 88
+ /
+ 50
+ / \
+ 48 54
 ```
 
 After right rotation at 78:
 
 ```text
-              44
-            /    \
-          17      62
-            \    /  \
-            32  50   78
-                / \    \
-               48 54    88
+ 44
+ / \
+ 17 62
+ \ / \
+ 32 50 78
+ / \ \
+ 48 54 88
 ```
 
 This is balanced and still satisfies the BST property.

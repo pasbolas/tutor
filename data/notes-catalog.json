@@ -1,128 +1,128 @@
 {
-  "items": [
-    {
-      "name": "Programming",
-      "id": "programming",
-      "type": "folder",
-      "children": [
-        {
-          "name": "Functions in C",
-          "type": "file",
-          "href": "./content/programming/functions.html?v=20260423-4",
-          "meta": "Markdown lesson"
-        },
-        {
-          "name": "Pointers, Arrays, and DMA in C",
-          "type": "file",
-          "href": "./content/programming/pointer-array.html?v=20260423-4",
-          "meta": "Slide 13"
-        },
-        {
-          "name": "Stack vs Heap in C",
-          "type": "file",
-          "href": "./content/programming/stacks-heaps.html?v=20260423-4",
-          "meta": "Slide 14"
-        }
-      ]
-    },
-    {
-      "name": "Law",
-      "id": "law",
-      "type": "folder",
-      "children": [
-        {
-          "name": "General Data Protection Regulation (GDPR)",
-          "type": "file",
-          "href": "./content/law/gdpr.html?v=20260427-1",
-          "meta": "Law 01"
-        },
-        {
-          "name": "GDPR Expected Exam MCQ Bank",
-          "type": "file",
-          "href": "./content/law/gdpr-mcqs.html?v=20260427-4",
-          "meta": "Law 02"
-        }
-      ]
-    },
-    {
-      "name": "Algorithm",
-      "id": "algorithm",
-      "type": "folder",
-      "children": [
-        {
-          "name": "CMPU2001 Algorithms and Data Structures Study Material",
-          "type": "file",
-          "href": "./content/algorithm-and-dsa/notes.html?v=20260430-1",
-          "meta": "Algorithm 01"
-        },
-        {
-          "name": "CMPU2001 Expected Exam Questions and Model Answers",
-          "type": "file",
-          "href": "./content/algorithm-and-dsa/expected-questions-answers.html?v=20260430-1",
-          "meta": "Algorithm 02"
-        },
-        {
-          "name": "CMPU2001 Previous-Year Paper Solutions",
-          "type": "file",
-          "href": "./content/algorithm-and-dsa/previous-year-paper-solutions.html?v=20260430-1",
-          "meta": "Algorithm 03"
-        }
-      ]
-    },
-    {
-      "name": "Data Communication",
-      "id": "data-communication",
-      "type": "folder",
-      "children": [
-        {
-          "name": "Introduction to Local Area Networks",
-          "type": "file",
-          "href": "./content/data-communication/introduction-to-local-area-networks.html?v=20260423-4",
-          "meta": "Slide 13"
-        },
-        {
-          "name": "LAN Access Techniques",
-          "type": "file",
-          "href": "./content/data-communication/lan-access-techniques.html?v=20260423-4",
-          "meta": "Slide 14"
-        },
-        {
-          "name": "Extending LANs",
-          "type": "file",
-          "href": "./content/data-communication/extending-lans-bridges.html?v=20260423-4",
-          "meta": "Slide 15"
-        },
-        {
-          "name": "MAC Addressing",
-          "type": "file",
-          "href": "./content/data-communication/mac-addressing.html?v=20260423-4",
-          "meta": "Slide 16"
-        },
-        {
-          "name": "Internetworking, Routers, and IP Datagrams",
-          "type": "file",
-          "href": "./content/data-communication/intro-to-internet.html?v=20260423-4",
-          "meta": "Slide 17"
-        },
-        {
-          "name": "IP Addressing, Routing, Subnetting, and CIDR",
-          "type": "file",
-          "href": "./content/data-communication/ip-addressing.html?v=20260423-4",
-          "meta": "Slide 18"
-        },
-        {
-          "name": "Protocol Models",
-          "type": "file",
-          "href": "./content/data-communication/protocol-models.html?v=20260423-4",
-          "meta": "Slide 19"
-        },
-        {
-          "name": "IP Fragmentation",
-          "type": "file",
-          "href": "./content/data-communication/ip-fragmentation.html?v=20260423-4",
-          "meta": "Slide 20"
-        }
-      ]
-    }
-  ]
+ "items": [
+ {
+ "name": "Programming",
+ "id": "programming",
+ "type": "folder",
+ "children": [
+ {
+ "name": "Functions in C",
+ "type": "file",
+ "href": "./content/programming/functions.html?v=20260423-4",
+ "meta": "Markdown lesson"
+ },
+ {
+ "name": "Pointers, Arrays, and DMA in C",
+ "type": "file",
+ "href": "./content/programming/pointer-array.html?v=20260423-4",
+ "meta": "Slide 13"
+ },
+ {
+ "name": "Stack vs Heap in C",
+ "type": "file",
+ "href": "./content/programming/stacks-heaps.html?v=20260423-4",
+ "meta": "Slide 14"
+ }
+ ]
+ },
+ {
+ "name": "Law",
+ "id": "law",
+ "type": "folder",
+ "children": [
+ {
+ "name": "General Data Protection Regulation (GDPR)",
+ "type": "file",
+ "href": "./content/law/gdpr.html?v=20260427-1",
+ "meta": "Law 01"
+ },
+ {
+ "name": "GDPR Expected Exam MCQ Bank",
+ "type": "file",
+ "href": "./content/law/gdpr-mcqs.html?v=20260427-4",
+ "meta": "Law 02"
+ }
+ ]
+ },
+ {
+ "name": "Algorithm",
+ "id": "algorithm",
+ "type": "folder",
+ "children": [
+ {
+ "name": "Algorithms and Data Structures Study Material",
+ "type": "file",
+ "href": "./content/algorithm-and-dsa/notes.html?v=20260430-1",
+ "meta": "Algorithm 01"
+ },
+ {
+ "name": "Expected Exam Questions and Model Answers",
+ "type": "file",
+ "href": "./content/algorithm-and-dsa/expected-questions-answers.html?v=20260430-1",
+ "meta": "Algorithm 02"
+ },
+ {
+ "name": "Previous-Year Paper Solutions",
+ "type": "file",
+ "href": "./content/algorithm-and-dsa/previous-year-paper-solutions.html?v=20260430-1",
+ "meta": "Algorithm 03"
+ }
+ ]
+ },
+ {
+ "name": "Data Communication",
+ "id": "data-communication",
+ "type": "folder",
+ "children": [
+ {
+ "name": "Introduction to Local Area Networks",
+ "type": "file",
+ "href": "./content/data-communication/introduction-to-local-area-networks.html?v=20260423-4",
+ "meta": "Slide 13"
+ },
+ {
+ "name": "LAN Access Techniques",
+ "type": "file",
+ "href": "./content/data-communication/lan-access-techniques.html?v=20260423-4",
+ "meta": "Slide 14"
+ },
+ {
+ "name": "Extending LANs",
+ "type": "file",
+ "href": "./content/data-communication/extending-lans-bridges.html?v=20260423-4",
+ "meta": "Slide 15"
+ },
+ {
+ "name": "MAC Addressing",
+ "type": "file",
+ "href": "./content/data-communication/mac-addressing.html?v=20260423-4",
+ "meta": "Slide 16"
+ },
+ {
+ "name": "Internetworking, Routers, and IP Datagrams",
+ "type": "file",
+ "href": "./content/data-communication/intro-to-internet.html?v=20260423-4",
+ "meta": "Slide 17"
+ },
+ {
+ "name": "IP Addressing, Routing, Subnetting, and CIDR",
+ "type": "file",
+ "href": "./content/data-communication/ip-addressing.html?v=20260423-4",
+ "meta": "Slide 18"
+ },
+ {
+ "name": "Protocol Models",
+ "type": "file",
+ "href": "./content/data-communication/protocol-models.html?v=20260423-4",
+ "meta": "Slide 19"
+ },
+ {
+ "name": "IP Fragmentation",
+ "type": "file",
+ "href": "./content/data-communication/ip-fragmentation.html?v=20260423-4",
+ "meta": "Slide 20"
+ }
+ ]
+ }
+ ]
 }
