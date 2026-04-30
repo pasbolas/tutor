@@ -1,29 +1,7 @@
-const THEME_STORAGE_KEY = "tutor-notes-theme";
 const CURSOR_STORAGE_KEY = "tutor-notes-cursor-mode";
 const SCROLL_MEMORY_STORAGE_PREFIX = "tutor-notes-scroll:";
 const RECENT_NOTES_STORAGE_KEY = "tutor-notes-recent-history";
 const RECENT_NOTES_LIMIT = 8;
-
-function getSystemTheme() {
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-}
-
-function getStoredTheme() {
-  try {
-    const value = window.localStorage.getItem(THEME_STORAGE_KEY);
-    return value === "dark" || value === "light" ? value : "";
-  } catch {
-    return "";
-  }
-}
-
-function setStoredTheme(theme) {
-  try {
-    window.localStorage.setItem(THEME_STORAGE_KEY, theme);
-  } catch {
-    // Storage can be unavailable in hardened/private browser contexts.
-  }
-}
 
 function getStoredCursorMode() {
   try {
@@ -277,18 +255,6 @@ function initPageScrollMemory() {
 
   restorePosition();
 }
-
-function applyTheme(theme, options = {}) {
-  const nextTheme = theme === "dark" ? "dark" : "light";
-  document.documentElement.dataset.theme = nextTheme;
-  document.documentElement.style.colorScheme = nextTheme;
-
-  if (options.persist) {
-    setStoredTheme(nextTheme);
-  }
-}
-
-applyTheme(getStoredTheme() || getSystemTheme());
 
 function initPwa() {
   if (!("serviceWorker" in navigator) || window.location.protocol === "file:") {
@@ -557,37 +523,6 @@ function initScrollSoftening() {
   }, { once: true });
 }
 
-function getCurrentTheme() {
-  return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
-}
-
-function createThemeToggleButton() {
-  const button = document.createElement("button");
-  button.className = "theme-toggle";
-  button.type = "button";
-  button.dataset.themeToggle = "";
-  button.innerHTML = `
-    <span class="theme-toggle__track" aria-hidden="true">
-      <span class="theme-toggle__thumb"></span>
-    </span>
-    <span class="theme-toggle__label">Dark</span>
-  `;
-
-  return button;
-}
-
-function syncThemeToggleButton(button) {
-  const isDark = getCurrentTheme() === "dark";
-  button.setAttribute("aria-pressed", String(isDark));
-  button.setAttribute("aria-label", isDark ? "Switch to light mode" : "Switch to dark mode");
-  button.title = isDark ? "Switch to light mode" : "Switch to dark mode";
-
-  const label = button.querySelector(".theme-toggle__label");
-  if (label) {
-    label.textContent = isDark ? "Light" : "Dark";
-  }
-}
-
 function createCursorToggleButton() {
   const button = document.createElement("button");
   button.className = "cursor-toggle";
@@ -617,95 +552,6 @@ function syncCursorToggleButton(button, controller) {
   if (label) {
     label.textContent = isBlob ? "Cursor FX" : "Cursor";
   }
-}
-
-function initThemeToggle() {
-  if (document.querySelector("[data-markdown-page]")) {
-    return;
-  }
-
-  const topbars = document.querySelectorAll(".study-topbar");
-  const sidebarThemeHost = document.querySelector("[data-sidebar-theme-host]");
-  if (!topbars.length && !sidebarThemeHost) {
-    return;
-  }
-
-  const systemThemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
-  const buttons = [];
-
-  const syncButtons = () => {
-    buttons.forEach((button) => {
-      syncThemeToggleButton(button);
-    });
-  };
-
-  const attachThemeButton = (button, host) => {
-    host.appendChild(button);
-
-    button.addEventListener("click", () => {
-      const nextTheme = getCurrentTheme() === "dark" ? "light" : "dark";
-      applyTheme(nextTheme, { persist: true });
-      syncButtons();
-    });
-
-    buttons.push(button);
-  };
-
-  if (sidebarThemeHost && !sidebarThemeHost.querySelector("[data-theme-toggle]")) {
-    attachThemeButton(createThemeToggleButton(), sidebarThemeHost);
-  }
-
-  if (!sidebarThemeHost) {
-    topbars.forEach((topbar) => {
-      if (topbar.querySelector("[data-theme-toggle]")) {
-        return;
-      }
-
-      const button = createThemeToggleButton();
-
-      const nav = topbar.querySelector(".study-topbar__nav");
-      attachThemeButton(button, nav || topbar);
-    });
-  }
-
-  document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
-    if (buttons.includes(button)) {
-      return;
-    }
-
-    button.addEventListener("click", () => {
-      const nextTheme = getCurrentTheme() === "dark" ? "light" : "dark";
-      applyTheme(nextTheme, { persist: true });
-      syncButtons();
-    });
-
-    buttons.push(button);
-  });
-
-  const handleSystemThemeChange = () => {
-    if (getStoredTheme()) {
-      return;
-    }
-
-    applyTheme(getSystemTheme());
-    syncButtons();
-  };
-
-  if (typeof systemThemeQuery.addEventListener === "function") {
-    systemThemeQuery.addEventListener("change", handleSystemThemeChange);
-  } else if (typeof systemThemeQuery.addListener === "function") {
-    systemThemeQuery.addListener(handleSystemThemeChange);
-  }
-
-  window.addEventListener("pagehide", () => {
-    if (typeof systemThemeQuery.removeEventListener === "function") {
-      systemThemeQuery.removeEventListener("change", handleSystemThemeChange);
-    } else if (typeof systemThemeQuery.removeListener === "function") {
-      systemThemeQuery.removeListener(handleSystemThemeChange);
-    }
-  }, { once: true });
-
-  syncButtons();
 }
 
 function initCursorToggle() {
@@ -838,17 +684,6 @@ function initStudySettingsMenu() {
     return button;
   };
 
-  const themeButton = appendMenuItem(createThemeToggleButton());
-  const syncThemeButton = () => {
-    syncThemeToggleButton(themeButton);
-  };
-
-  themeButton.addEventListener("click", () => {
-    const nextTheme = getCurrentTheme() === "dark" ? "light" : "dark";
-    applyTheme(nextTheme, { persist: true });
-    syncThemeButton();
-  });
-
   if (controller && controller.isAvailable) {
     const cursorButton = appendMenuItem(createCursorToggleButton());
     const storedMode = getStoredCursorMode();
@@ -960,31 +795,6 @@ function initStudySettingsMenu() {
     }
   });
 
-  const systemThemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
-  const handleSystemThemeChange = () => {
-    if (getStoredTheme()) {
-      return;
-    }
-
-    applyTheme(getSystemTheme());
-    syncThemeButton();
-  };
-
-  if (typeof systemThemeQuery.addEventListener === "function") {
-    systemThemeQuery.addEventListener("change", handleSystemThemeChange);
-  } else if (typeof systemThemeQuery.addListener === "function") {
-    systemThemeQuery.addListener(handleSystemThemeChange);
-  }
-
-  window.addEventListener("pagehide", () => {
-    if (typeof systemThemeQuery.removeEventListener === "function") {
-      systemThemeQuery.removeEventListener("change", handleSystemThemeChange);
-    } else if (typeof systemThemeQuery.removeListener === "function") {
-      systemThemeQuery.removeListener(handleSystemThemeChange);
-    }
-  }, { once: true });
-
-  syncThemeButton();
 }
 
 function escapeHtml(value) {
@@ -2929,13 +2739,38 @@ function initSidebarSettings() {
     return;
   }
 
-  const setOpen = (isOpen) => {
-    root.classList.toggle("is-open", isOpen);
+  const TRANSITION_MS = 420;
+  let closeTimer = 0;
+
+  const setOpen = (isOpen, { immediate = false } = {}) => {
+    window.clearTimeout(closeTimer);
+
+    if (isOpen) {
+      if (menu.hidden) {
+        menu.hidden = false;
+        menu.getBoundingClientRect();
+      }
+      root.classList.add("is-open");
+    } else {
+      root.classList.remove("is-open");
+    }
+
     sidebar?.classList.toggle("is-settings-open", isOpen);
     trigger.setAttribute("aria-expanded", String(isOpen));
     trigger.setAttribute("aria-label", isOpen ? "Close settings" : "Open settings");
     trigger.title = isOpen ? "Close settings" : "Open settings";
-    menu.hidden = !isOpen;
+
+    if (!isOpen) {
+      if (immediate) {
+        menu.hidden = true;
+      } else {
+        closeTimer = window.setTimeout(() => {
+          if (!root.classList.contains("is-open")) {
+            menu.hidden = true;
+          }
+        }, TRANSITION_MS);
+      }
+    }
   };
 
   trigger.addEventListener("click", () => {
@@ -2957,7 +2792,7 @@ function initSidebarSettings() {
     }
   });
 
-  setOpen(false);
+  setOpen(false, { immediate: true });
 }
 
 function initMobileSidebarDrawer() {
@@ -3049,7 +2884,6 @@ function initDashboardMobileHeaderScroll() {
 window.addEventListener("DOMContentLoaded", () => {
   initPageScrollMemory();
   initPwa();
-  initThemeToggle();
   initCursorToggle();
   initSidebarSettings();
   initStudySettingsMenu();
