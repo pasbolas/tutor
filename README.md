@@ -1,6 +1,8 @@
 # Tutor Notes
 
-A static, offline-friendly tutoring notes site. The site uses simple HTML, CSS, and JavaScript: no build step, no package manager, and no framework required.
+A static, offline-friendly tutoring notes site. The site uses plain HTML, CSS, and JavaScript: no build step, no package manager, and no framework required.
+
+The app is intentionally lightweight. Lesson pages fetch markdown at runtime, render it into study-friendly sections, and share a common visual system across the notes index and individual lessons.
 
 ## Project Structure
 
@@ -24,7 +26,7 @@ A static, offline-friendly tutoring notes site. The site uses simple HTML, CSS, 
 +-- data/
 |   +-- notes-catalog.json
 +-- scripts/
-|   +-- main.js           Theme, markdown rendering, outline, notes hub, PWA setup
+|   +-- main.js           Markdown rendering, outline, notes hub, PWA setup
 |   +-- page-transitions.js
 |   +-- interaction/
 |       +-- audio.js
@@ -83,7 +85,22 @@ Then visit:
 http://localhost:8000/
 ```
 
-## Refactor Notes
+## Architecture Notes / TODO
+
+This project is currently a no-build static site. That keeps hosting simple, but it also means some duplication is still present:
+
+- Lesson HTML files share the same shell by convention rather than through a template system.
+- `scripts/main.js` contains several independent features in one file.
+- A small amount of cross-script state still lives on `window`, especially for cursor and audio interaction controls.
+
+Recommended next refactor, after the public cleanup:
+
+1. Extract repeated lesson HTML into shared templates or a tiny static-site build step.
+2. Split `scripts/main.js` into focused modules such as markdown rendering, catalog/sidebar, search, recent notes, and settings.
+3. Replace remaining `window.__tutor...` state with explicit module APIs once scripts are loaded through a module entrypoint.
+4. Keep `data/notes-catalog.json` as the source of truth for the home page and generated navigation.
+
+## Refactor History
 
 - Moved lesson content into `content/` and renamed subject folders with URL-safe kebab-case names.
 - Moved styles into `styles/` and scripts into `scripts/`.
@@ -91,3 +108,4 @@ http://localhost:8000/
 - Renamed lesson pages, markdown files, and image folders to a consistent kebab-case convention.
 - Extracted the home page notes tree into `data/notes-catalog.json`.
 - Updated PWA paths in `manifest.webmanifest`, `sw.js`, and `scripts/main.js`.
+- Removed the light-mode toggle path; the public UI is now dark-only.
