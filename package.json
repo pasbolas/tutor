@@ -1,0 +1,7 @@
+{
+  "name": "tutor-notes",
+  "private": true,
+  "scripts": {
+    "build": "node scripts/build-pages.js"
+  }
+}

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{title}}</title>
+    <meta name="description" content="{{description}}" />
+    <meta name="theme-color" content="#a85a4d" />
+    <meta name="application-name" content="Tutor Notes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Tutor Notes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="manifest" href="{{basePath}}manifest.webmanifest" />
+    <link rel="icon" type="image/png" sizes="32x32" href="{{basePath}}assets/icons/favicon-32.png" />
+    <link rel="apple-touch-icon" href="{{basePath}}assets/icons/apple-touch-icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{{basePath}}styles/main.css?v={{mainCssVersion}}" />
+    <link rel="stylesheet" href="{{basePath}}styles/feedback.css?v={{feedbackCssVersion}}" />
+    <script>
+      window.va = window.va || function () {
+        (window.vaq = window.vaq || []).push(arguments);
+      };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
+  </head>
+  <body>
+{{loader}}
+{{body}}
+    <script src="{{basePath}}scripts/page-transitions.js?v={{pageTransitionsVersion}}"></script>
+    <script src="{{basePath}}scripts/interaction/audio.js?v={{audioVersion}}"></script>
+    <script src="{{basePath}}scripts/interaction/trails.js?v={{trailsVersion}}"></script>
+    <script type="module" src="{{basePath}}scripts/main.js?v={{mainJsVersion}}"></script>
+  </body>
+</html>

@@ -1,4 +1,4 @@
-const CACHE_NAME = "tutor-notes-v9";
+const CACHE_NAME = "tutor-notes-v10";
 
 const CORE_ASSETS = [
   "./assets/icons/app-icon-192.png",
@@ -99,7 +99,7 @@ self.addEventListener("fetch", (event) => {
           return caches.match("./index.html");
         }
 
-        return undefined;
+        return Response.error();
       }
     })()
   );

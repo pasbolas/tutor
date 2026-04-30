@@ -45,6 +45,31 @@
       ]
     },
     {
+      "name": "Algorithm",
+      "id": "algorithm",
+      "type": "folder",
+      "children": [
+        {
+          "name": "CMPU2001 Algorithms and Data Structures Study Material",
+          "type": "file",
+          "href": "./content/algorithm-and-dsa/notes.html?v=20260430-1",
+          "meta": "Algorithm 01"
+        },
+        {
+          "name": "CMPU2001 Expected Exam Questions and Model Answers",
+          "type": "file",
+          "href": "./content/algorithm-and-dsa/expected-questions-answers.html?v=20260430-1",
+          "meta": "Algorithm 02"
+        },
+        {
+          "name": "CMPU2001 Previous-Year Paper Solutions",
+          "type": "file",
+          "href": "./content/algorithm-and-dsa/previous-year-paper-solutions.html?v=20260430-1",
+          "meta": "Algorithm 03"
+        }
+      ]
+    },
+    {
       "name": "Data Communication",
       "id": "data-communication",
       "type": "folder",

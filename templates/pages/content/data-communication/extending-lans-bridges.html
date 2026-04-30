@@ -1,68 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>IP Fragmentation | Tutor Notes</title>
-    <meta name="description" content="My tutoring notes on IP fragmentation, MTU, IPv4 header fields, offsets, and reassembly, rendered as a clean study page." />
-    <meta name="theme-color" content="#a85a4d" />
-    <meta name="application-name" content="Tutor Notes" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-title" content="Tutor Notes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <link rel="manifest" href="../../manifest.webmanifest" />
-    <link rel="icon" type="image/png" sizes="32x32" href="../../assets/icons/favicon-32.png" />
-    <link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="../../styles/main.css?v=20260423-4" />
-    <link rel="stylesheet" href="../../styles/feedback.css?v=20260423-4" />
-    <script>
-      window.va = window.va || function () {
-        (window.vaq = window.vaq || []).push(arguments);
-      };
-    </script>
-    <script defer src="/_vercel/insights/script.js"></script>
-  </head>
-  <body>
-    <div class="editorial-loader" data-editorial-loader aria-hidden="true">
-      <div class="editorial-loader__frame" aria-hidden="true">
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-      <div class="editorial-loader__center">
-        <p class="editorial-loader__micro">Data Communication / My Notes</p>
-        <div class="editorial-loader__monogram" aria-label="IF mark">
-          <span>I</span>
-          <span>F</span>
-        </div>
-        <div class="editorial-loader__seal" aria-hidden="true">
-          <img src="../../assets/loading/editorial-seal.jpg" alt="" />
-        </div>
-      </div>
-    </div>
-
     <main
       class="study-shell"
       id="top"
       data-markdown-page
-      data-markdown-source="./ip-fragmentation-notes.md"
-      data-markdown-image-base="./ip-fragmentation-images/"
-      data-markdown-intro="These are my notes on IP fragmentation, cleaned up into a revision page for tutoring and self-study."
+      data-markdown-source="./extending-lans-bridges-notes.md"
+      data-markdown-image-base="./extending-lan-images/"
+      data-markdown-intro="These are my notes on extending LANs with repeaters and bridges, cleaned up into a revision page for tutoring and self-study."
     >
       <header class="study-topbar">
-        <span class="study-topbar__id">[TUTOR_DC_03]</span>
-        <span class="study-topbar__title">Data Communication / IP Fragmentation</span>
+        <span class="study-topbar__id">[TUTOR_DC_04]</span>
+        <span class="study-topbar__title">Data Communication / Extending LANs</span>
         <nav class="study-topbar__nav" aria-label="Tutor page links">
           <a href="../../index.html">All notes</a>
           <a href="#top">Back to top</a>
-          <a href="./ip-fragmentation-notes.md">Open raw notes</a>
+          <a href="./extending-lans-bridges-notes.md">Open raw notes</a>
           <a href="#guide">Skip to notes</a>
         </nav>
       </header>
@@ -76,7 +26,7 @@
               <span>Back</span>
             </a>
             <h2>Guide map</h2>
-            <span class="study-outline__slide-title">Slide 20</span>
+            <span class="study-outline__slide-title">Slide 15</span>
             <button
               class="study-outline__toggle"
               type="button"
@@ -107,10 +57,10 @@
             </figure>
 
             <div class="study-hero__copy">
-              <p class="study-kicker">Data Communication / IPv4</p>
-              <h1 data-study-title>IP Fragmentation</h1>
+              <p class="study-kicker">Data Communication / Bridges</p>
+              <h1 data-study-title>Extending LANs with Repeaters and Bridges</h1>
               <p class="study-lede" data-study-intro>
-                These are my notes on IP fragmentation, cleaned up into a revision page for tutoring and self-study.
+                These are my notes on extending LANs with repeaters and bridges, cleaned up into a revision page for tutoring and self-study.
               </p>
 
               <div class="study-facts" aria-label="Guide statistics">
@@ -135,7 +85,7 @@
               <p class="study-kicker">Notes</p>
             </div>
             <div class="study-band__meta">
-              <span>Source: <a href="./ip-fragmentation-notes.md">ip-fragmentation-notes.md</a></span>
+              <span>Source: <a href="./extending-lans-bridges-notes.md">extending-lans-bridges-notes.md</a></span>
               <span>Built from my notes</span>
               <span>Made for revision + tutoring</span>
             </div>
@@ -149,11 +99,11 @@
           </article>
 
           <footer class="study-footer">
-            <p>IP Fragmentation / pulled from my markdown notes</p>
+            <p>Extending LANs with Repeaters and Bridges / pulled from my markdown notes</p>
             <div class="study-footer__links">
               <a href="../../index.html">Notes index</a>
               <a href="#top">Top</a>
-              <a href="./ip-fragmentation-notes.md">Open notes file</a>
+              <a href="./extending-lans-bridges-notes.md">Open notes file</a>
             </div>
           </footer>
         </div>
@@ -166,10 +116,3 @@
         <polyline points="18 15 12 9 6 15"></polyline>
       </svg>
     </button>
-
-    <script src="../../scripts/page-transitions.js?v=20260423-4"></script>
-    <script src="../../scripts/interaction/audio.js?v=20260428-1"></script>
-    <script src="../../scripts/interaction/trails.js?v=20260423-4"></script>
-    <script type="module" src="../../scripts/main.js?v=20260429-2"></script>
-  </body>
-</html>

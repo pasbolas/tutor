@@ -1,6 +1,6 @@
 # Tutor Notes
 
-A static, offline-friendly tutoring notes site. The site uses plain HTML, CSS, and JavaScript: no build step, no package manager, and no framework required.
+A static, offline-friendly tutoring notes site. The site uses plain HTML, CSS, and JavaScript, plus a tiny Node build step that assembles shared HTML templates into the final pages.
 
 The app is intentionally lightweight. Lesson pages fetch markdown at runtime, render it into study-friendly sections, and share a common visual system across the notes index and individual lessons.
 
@@ -9,6 +9,7 @@ The app is intentionally lightweight. Lesson pages fetch markdown at runtime, re
 ```text
 .
 +-- index.html
++-- package.json
 +-- manifest.webmanifest
 +-- sw.js
 +-- assets/
@@ -26,7 +27,13 @@ The app is intentionally lightweight. Lesson pages fetch markdown at runtime, re
 +-- data/
 |   +-- notes-catalog.json
 +-- scripts/
-|   +-- main.js           Markdown rendering, outline, notes hub, PWA setup
+|   +-- build-pages.js    Generates HTML pages from shared templates
+|   +-- main.js           Module entrypoint for app features
+|   +-- modules/
+|   |   +-- catalog.js
+|   |   +-- markdown.js
+|   |   +-- shared.js
+|   |   +-- ui.js
 |   +-- page-transitions.js
 |   +-- interaction/
 |       +-- audio.js
@@ -34,6 +41,14 @@ The app is intentionally lightweight. Lesson pages fetch markdown at runtime, re
 +-- styles/
     +-- main.css
     +-- feedback.css
++-- templates/
+   +-- layout.html
+   +-- pages.json
+   +-- partials/
+   |   +-- loader.html
+   +-- pages/
+      +-- index.html
+      +-- content/
 ```
 
 ## Naming Conventions
@@ -50,7 +65,7 @@ Image filenames inside lesson image folders can keep their original descriptive 
 
 ## How Pages Work
 
-The lesson HTML files are reusable shells. Each page declares:
+The lesson HTML files are generated from shared templates. Each page declares:
 
 ```html
 data-markdown-source="./lesson-notes.md"
@@ -65,11 +80,17 @@ The home page does not hard-code the subject tree anymore. It reads `data/notes-
 
 1. Create a markdown file in the right subject folder, for example:
    `content/data-communication/new-topic-notes.md`
-2. Create or copy a lesson HTML shell in the same folder, for example:
-   `content/data-communication/new-topic.html`
-3. In that HTML file, point `data-markdown-source` to the markdown file.
-4. If the lesson has images, place them in a kebab-case image folder and set `data-markdown-image-base`.
+2. Create a lesson body partial under `templates/pages/` that mirrors the content markup you want.
+3. Add a page entry to `templates/pages.json` with the metadata and body path.
+4. If the lesson has images, place them in a kebab-case image folder and set `data-markdown-image-base` in the body partial.
 5. Add the new lesson to `data/notes-catalog.json` so it appears on the home page.
+6. Run the build to regenerate HTML pages.
+
+## Build
+
+```powershell
+npm run build
+```
 
 ## Local Preview
 
@@ -85,9 +106,16 @@ Then visit:
 http://localhost:8000/
 ```
 
+## Vercel Deployment
+
+Set the Vercel project settings to:
+
+- Build Command: `npm run build`
+- Output Directory: `.`
+
 ## Architecture Notes / TODO
 
-This project is currently a no-build static site. That keeps hosting simple, but it also means some duplication is still present:
+This project uses a tiny static build step to keep the HTML templates centralized:
 
 - Lesson HTML files share the same shell by convention rather than through a template system.
 - `scripts/main.js` contains several independent features in one file.
@@ -95,10 +123,8 @@ This project is currently a no-build static site. That keeps hosting simple, but
 
 Recommended next refactor, after the public cleanup:
 
-1. Extract repeated lesson HTML into shared templates or a tiny static-site build step.
-2. Split `scripts/main.js` into focused modules such as markdown rendering, catalog/sidebar, search, recent notes, and settings.
-3. Replace remaining `window.__tutor...` state with explicit module APIs once scripts are loaded through a module entrypoint.
-4. Keep `data/notes-catalog.json` as the source of truth for the home page and generated navigation.
+1. Replace remaining `window.__tutor...` state with explicit module APIs once scripts are loaded through a module entrypoint.
+2. Keep `data/notes-catalog.json` as the source of truth for the home page and generated navigation.
 
 ## Refactor History
 
