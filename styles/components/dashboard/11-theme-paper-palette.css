@@ -64,8 +64,9 @@ body:has(.tutor-dashboard) {
 
 .tutor-dashboard .tutor-dashboard__main {
   background:
-    linear-gradient(color-mix(in srgb, var(--paper) 82%, transparent), color-mix(in srgb, var(--paper) 88%, transparent)),
-    url("../../../assets/decorative/background.png") center bottom / 78% auto no-repeat,
+    linear-gradient(color-mix(in srgb, var(--paper) 68%, transparent), color-mix(in srgb, var(--paper) 78%, transparent)),
+    radial-gradient(circle at 72% 18%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 24rem),
+    url("../../../assets/decorative/background-dashboard.jpg") center / cover no-repeat,
     var(--paper) !important;
   color: var(--ink) !important;
 }
@@ -147,6 +148,81 @@ body:has(.tutor-dashboard) {
 .tutor-dashboard button:hover,
 .tutor-dashboard button:focus-visible {
   color: var(--ink) !important;
+}
+
+.tutor-note-row {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    box-shadow 220ms ease;
+}
+
+.tutor-note-row > * {
+  position: relative;
+  z-index: 2;
+}
+
+.tutor-note-row::before,
+.tutor-note-row::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition:
+    opacity 260ms ease,
+    filter 520ms ease;
+}
+
+.tutor-note-row::before {
+  z-index: 0;
+  background: url("../../../assets/decorative/recent-hover-dashboard.jpg") center / cover no-repeat;
+  filter: saturate(0.64) contrast(0.86) brightness(0.44) blur(1px);
+}
+
+.tutor-note-row::after {
+  z-index: 1;
+  background:
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, #000 42%, var(--paper-soft)) 0%,
+      color-mix(in srgb, #000 34%, var(--paper-soft)) 18%,
+      color-mix(in srgb, var(--paper-soft) 54%, transparent) 44%,
+      color-mix(in srgb, var(--paper-soft) 50%, transparent) 56%,
+      color-mix(in srgb, #000 34%, var(--paper-soft)) 82%,
+      color-mix(in srgb, #000 42%, var(--paper-soft)) 100%
+    );
+}
+
+.tutor-note-row:hover,
+.tutor-note-row:focus-visible {
+  background-color: color-mix(in srgb, var(--paper-soft) 72%, transparent) !important;
+  border-color: color-mix(in srgb, var(--accent) 64%, var(--line)) !important;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--accent) 74%, transparent),
+    inset 0 0 0 4px color-mix(in srgb, var(--accent) 12%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--accent) 22%, transparent),
+    0 14px 34px color-mix(in srgb, #000 30%, transparent);
+}
+
+.tutor-note-row:hover::before,
+.tutor-note-row:focus-visible::before {
+  opacity: 0.74;
+  filter: saturate(0.92) contrast(0.96) brightness(0.82) blur(0);
+}
+
+.tutor-note-row:hover::after,
+.tutor-note-row:focus-visible::after {
+  opacity: 1;
+}
+
+.tutor-note-row:hover .tutor-note-row__icon,
+.tutor-note-row:focus-visible .tutor-note-row__icon {
+  background-color: color-mix(in srgb, var(--accent) 28%, var(--paper-soft)) !important;
+  border-color: color-mix(in srgb, var(--accent) 70%, var(--line)) !important;
 }
 
 .tutor-continue .tutor-button {

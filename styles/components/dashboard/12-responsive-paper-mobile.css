@@ -414,6 +414,14 @@
   .tutor-note-row:focus-visible {
     background-color: color-mix(in srgb, var(--paper-soft) 78%, transparent) !important;
     border-color: var(--line) !important;
+    box-shadow: none !important;
+  }
+
+  .tutor-note-row:hover::before,
+  .tutor-note-row:focus-visible::before,
+  .tutor-note-row:hover::after,
+  .tutor-note-row:focus-visible::after {
+    opacity: 0 !important;
   }
 
   .tutor-continue .tutor-button:hover {
