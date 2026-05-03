@@ -1,0 +1,482 @@
+/* Auto-split from dashboard.css. Keep import order in main.css unless deliberately changing cascade. */
+
+/* Monochrome dashboard override */
+
+body:has(.tutor-dashboard) {
+  background: #f2ece0 !important;
+  background-image:
+    radial-gradient(circle at 20% 18%, rgba(255, 255, 255, 0.72), transparent 30rem),
+    radial-gradient(circle at 86% 12%, rgba(255, 255, 255, 0.58), transparent 24rem),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(0, 0, 0, 0.02)),
+    #f2ece0 !important;
+  color: #13120f !important;
+}
+
+.tutor-dashboard {
+  --dash-bg: #f2ece0;
+  --dash-panel: rgba(255, 252, 245, 0.86);
+  --dash-line: rgba(47, 42, 34, 0.14);
+  --dash-line-strong: rgba(47, 42, 34, 0.26);
+  --dash-text: #15120d;
+  --dash-muted: rgba(31, 27, 22, 0.72);
+  --dash-faint: rgba(31, 27, 22, 0.46);
+  --dash-accent: #14110d;
+  --dash-warm: rgba(31, 27, 22, 0.82);
+  background: transparent !important;
+  color: #15120d !important;
+}
+
+.tutor-sidebar {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 14rem),
+    radial-gradient(circle at 15% 12%, rgba(255, 255, 255, 0.04), transparent 18rem),
+    #171a19 !important;
+  border-right-color: rgba(228, 219, 203, 0.14) !important;
+  box-shadow: inset -1px 0 rgba(255, 255, 255, 0.04) !important;
+}
+
+.tutor-dashboard .tutor-dashboard__main {
+  background:
+    linear-gradient(rgba(242, 236, 224, 0.78), rgba(242, 236, 224, 0.84)),
+    url("../../../assets/decorative/background.png") center bottom / 78% auto no-repeat,
+    radial-gradient(circle at 18% 10%, rgba(255, 255, 255, 0.52), transparent 20rem),
+    radial-gradient(circle at 82% 14%, rgba(255, 255, 255, 0.38), transparent 18rem),
+    #f2ece0 !important;
+  color: #15120d !important;
+  box-shadow: none !important;
+}
+
+.tutor-hero-note,
+.tutor-note-list,
+.tutor-note-row,
+.tutor-note-row__icon,
+.tutor-hero-note__icon,
+.tutor-button,
+.tutor-more {
+  background-color: rgba(255, 250, 242, 0.28) !important;
+  background-image: none !important;
+  border-color: rgba(58, 49, 38, 0.18) !important;
+  backdrop-filter: blur(2px);
+}
+
+.tutor-search,
+.tutor-search--sidebar,
+.tutor-sidebar__mark,
+.tutor-sidebar__badge,
+.tutor-dashboard .site-sound-toggle,
+.tutor-dashboard .cursor-toggle,
+.tutor-sidebar__settings-menu .site-sound-toggle,
+.tutor-sidebar__settings-menu .cursor-toggle,
+.tutor-sidebar__settings-wrap.is-open .tutor-sidebar__settings {
+  background-color: rgba(255, 255, 255, 0.03) !important;
+  background-image: none !important;
+  border-color: rgba(223, 212, 192, 0.18) !important;
+}
+
+.tutor-sidebar__brand,
+.tutor-sidebar__mark,
+.tutor-sidebar__settings,
+.tutor-sidebar__settings svg,
+.tutor-sidebar__chevron,
+.tutor-sidebar__subject-toggle,
+.tutor-sidebar__subject-icon,
+.tutor-sidebar li a,
+.tutor-sidebar li a.is-active,
+.tutor-sidebar li a:hover,
+.tutor-sidebar li a:focus-visible,
+.tutor-sidebar__empty,
+.tutor-search,
+.tutor-search svg,
+.tutor-search--sidebar,
+.tutor-sidebar__settings-menu .site-sound-toggle,
+.tutor-sidebar__settings-menu .cursor-toggle {
+  color: #f3ede2 !important;
+  stroke: currentColor !important;
+  fill: none !important;
+}
+
+.tutor-sidebar__label {
+  color: rgba(243, 237, 226, 0.54) !important;
+}
+
+.tutor-sidebar li::before,
+.tutor-sidebar li:not(:last-child)::after {
+  border-color: rgba(231, 220, 202, 0.18) !important;
+}
+
+.tutor-dashboard .site-sound-toggle__dot {
+  background: #f3ede2 !important;
+  background-image: none !important;
+}
+
+.tutor-dashboard .cursor-toggle__ring {
+  border-color: rgba(232, 222, 205, 0.36) !important;
+}
+
+.tutor-dashboard .site-sound-toggle,
+.tutor-sidebar__settings-menu .site-sound-toggle {
+  box-shadow: none !important;
+}
+
+.tutor-section-title,
+.tutor-dashboard__greeting h1,
+.tutor-dashboard__greeting p,
+.tutor-recent__header a,
+.tutor-recent__header a span,
+.tutor-footer,
+.tutor-row-arrow,
+.tutor-note-row,
+.tutor-note-row strong,
+.tutor-note-row small,
+.tutor-note-row time,
+.tutor-note-path,
+.tutor-note-meta,
+.tutor-note-meta span,
+.tutor-progress__value,
+.tutor-button,
+.tutor-more,
+.tutor-dashboard a:hover,
+.tutor-dashboard a:focus-visible,
+.tutor-dashboard button:hover,
+.tutor-dashboard button:focus-visible {
+  color: #15120d !important;
+  stroke: currentColor !important;
+  fill: none !important;
+}
+
+.tutor-continue {
+  position: relative;
+  margin-top: 16px;
+}
+
+.tutor-continue .tutor-section-title {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.tutor-continue .tutor-hero-note {
+  grid-template-columns: 132px minmax(0, 1fr) 250px;
+  gap: 0;
+  min-height: 216px;
+  margin-top: 0;
+  padding: 0;
+  border: 1px solid rgba(86, 73, 55, 0.16) !important;
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 38% 46%, rgba(255, 255, 255, 0.22), transparent 42%),
+    linear-gradient(180deg, rgba(252, 247, 239, 0.9), rgba(248, 243, 234, 0.82)) !important;
+  backdrop-filter: none !important;
+  box-shadow: 0 16px 38px rgba(42, 34, 23, 0.05) !important;
+}
+
+.tutor-continue .tutor-hero-note::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.22), transparent 48%),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.18), transparent 22%, transparent 78%, rgba(255, 255, 255, 0.12));
+  pointer-events: none;
+}
+
+.tutor-continue .tutor-hero-note::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 31%;
+  height: 100%;
+  background:
+    linear-gradient(90deg, rgba(249, 243, 233, 0) 0%, rgba(249, 243, 233, 0.16) 26%, rgba(249, 243, 233, 0.8) 100%),
+    url("../../../assets/decorative/background.png") right bottom / contain no-repeat;
+  opacity: 0.18;
+  pointer-events: none;
+}
+
+.tutor-continue .tutor-hero-note__icon {
+  position: relative;
+  display: flex;
+  align-self: stretch;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+  min-height: 100%;
+  padding-top: 54px;
+  border: 0 !important;
+  border-right: 1px solid rgba(86, 73, 55, 0.12) !important;
+  clip-path: none;
+  background: linear-gradient(180deg, rgba(239, 233, 221, 0.72), rgba(246, 241, 232, 0.58)) !important;
+  color: #15120d !important;
+  z-index: 1;
+}
+
+.tutor-continue .tutor-hero-note__icon svg {
+  width: 50px;
+  height: 50px;
+  stroke-width: 1.15;
+}
+
+.tutor-continue .tutor-hero-note__content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 0;
+  padding: 22px 26px 20px 26px;
+}
+
+.tutor-continue .tutor-hero-note__eyebrow {
+  margin: 0 0 12px;
+  color: rgba(95, 81, 62, 0.84);
+  font-family: "Cormorant Garamond", serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.tutor-continue .tutor-hero-note__body {
+  min-width: 0;
+  padding-top: 0;
+}
+
+.tutor-continue .tutor-hero-note h1 {
+  color: #17130f !important;
+  display: -webkit-box;
+  font-size: 44px;
+  font-weight: 500;
+  line-height: 1.02;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  text-transform: none;
+  text-wrap: balance;
+}
+
+.tutor-continue .tutor-note-path {
+  gap: 18px;
+  margin-top: 8px;
+  color: rgba(96, 81, 61, 0.9) !important;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.tutor-continue .tutor-note-path span {
+  color: rgba(74, 63, 49, 0.76) !important;
+}
+
+.tutor-continue .tutor-note-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+  color: rgba(25, 21, 16, 0.9) !important;
+  font-size: 16px;
+  line-height: 1.08;
+}
+
+.tutor-continue .tutor-note-meta__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.tutor-continue .tutor-note-meta__item svg {
+  width: 24px;
+  height: 24px;
+  stroke-width: 1.45;
+  color: rgba(46, 38, 28, 0.74) !important;
+}
+
+.tutor-continue .tutor-note-meta__text {
+  color: rgba(32, 27, 20, 0.94) !important;
+}
+
+.tutor-continue .tutor-note-meta__separator {
+  color: rgba(78, 67, 52, 0.58) !important;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.tutor-continue .tutor-hero-note__progress-row {
+  gap: 10px;
+  margin-top: 10px;
+  padding-top: 0;
+}
+
+.tutor-continue .tutor-progress {
+  width: min(620px, 100%);
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(86, 73, 55, 0.1) !important;
+  flex: 0 1 620px;
+}
+
+.tutor-continue .tutor-progress span {
+  background: #15120d !important;
+  background-image: none !important;
+}
+
+.tutor-continue .tutor-progress__value {
+  color: rgba(27, 22, 16, 0.9) !important;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.tutor-continue .tutor-hero-note__actions {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  min-height: 100%;
+  padding: 48px 28px 26px 28px;
+}
+
+.tutor-continue .tutor-hero-note__actions::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 44px;
+  bottom: 34px;
+  width: 1px;
+  background: rgba(86, 73, 55, 0.14);
+}
+
+.tutor-continue .tutor-button,
+.tutor-continue .tutor-more {
+  box-shadow: none !important;
+}
+
+.tutor-continue .tutor-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  width: 184px;
+  height: 58px;
+  border: 0 !important;
+  border-radius: 14px;
+  background: #1d1b1a !important;
+  color: #f7f1e7 !important;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.tutor-continue .tutor-button::after {
+  content: "→";
+  font-family: "Cormorant Garamond", serif;
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 1;
+  transform: translateY(-1px);
+}
+
+.tutor-continue .tutor-more {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border: 1px solid rgba(86, 73, 55, 0.16) !important;
+  border-radius: 999px;
+  background: rgba(252, 247, 239, 0.52) !important;
+  color: #16120e !important;
+  font-family: var(--mono);
+  font-size: 21px;
+  justify-self: center;
+}
+
+.tutor-continue .tutor-hero-note.is-empty .tutor-hero-note__actions {
+  grid-template-columns: 1fr;
+  justify-items: center;
+}
+
+.tutor-continue .tutor-hero-note.is-empty .tutor-hero-note__actions::before {
+  display: none;
+}
+
+.tutor-continue .tutor-hero-note.is-empty .tutor-button {
+  justify-self: center;
+}
+
+.tutor-continue .tutor-hero-note.is-empty .tutor-more {
+  display: none !important;
+}
+
+.tutor-sidebar__subject-toggle:hover,
+.tutor-sidebar__subject-toggle:focus-visible,
+.tutor-sidebar__subject.is-open .tutor-sidebar__subject-toggle,
+.tutor-dashboard .tutor-sidebar__settings:hover,
+.tutor-dashboard .tutor-sidebar__settings:focus-visible,
+.tutor-sidebar__settings-wrap.is-open .tutor-sidebar__settings:hover,
+.tutor-sidebar__settings-wrap.is-open .tutor-sidebar__settings:focus-visible,
+.tutor-sidebar__settings-menu .site-sound-toggle:hover,
+.tutor-sidebar__settings-menu .site-sound-toggle:focus-visible,
+.tutor-sidebar__settings-menu .cursor-toggle:hover,
+.tutor-sidebar__settings-menu .cursor-toggle:focus-visible {
+  background: rgba(255, 255, 255, 0.08) !important;
+  background-image: none !important;
+}
+
+.tutor-note-row:hover,
+.tutor-note-row:focus-visible,
+.tutor-button:hover,
+.tutor-button:focus-visible {
+  background: rgba(255, 250, 242, 0.74) !important;
+  border-color: rgba(58, 49, 38, 0.22) !important;
+}
+
+.tutor-continue .tutor-button:hover,
+.tutor-continue .tutor-button:focus-visible {
+  background: #262321 !important;
+  border-color: transparent !important;
+  color: #f7f1e7 !important;
+}
+
+.tutor-continue .tutor-more:hover,
+.tutor-continue .tutor-more:focus-visible {
+  background: rgba(252, 247, 239, 0.84) !important;
+  border-color: rgba(86, 73, 55, 0.22) !important;
+}
+
+.tutor-progress {
+  background: rgba(36, 31, 25, 0.14) !important;
+}
+
+.tutor-progress span {
+  background: #15120d !important;
+  background-image: none !important;
+}
+
+.tutor-dashboard *,
+.tutor-dashboard *::before,
+.tutor-dashboard *::after {
+  accent-color: #15120d;
+}
+
+.tutor-mobile-nav-toggle,
+.tutor-mobile-sidebar-backdrop {
+  display: none;
+}
+
+body:has(.tutor-dashboard.is-mobile-sidebar-open) {
+  overflow: hidden;
+}

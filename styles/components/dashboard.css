@@ -1,0 +1,19 @@
+/*
+  Dashboard CSS entrypoint.
+  Replace your current dashboard.css import with this file.
+  The import order preserves the intended cascade: shell, components, responsive rules, theme overrides, final mobile overrides.
+*/
+
+@import "./dashboard/00-dashboard-shell.css";
+@import "./dashboard/01-sidebar.css";
+@import "./dashboard/02-sidebar-settings.css";
+@import "./dashboard/03-controls.css";
+@import "./dashboard/04-search.css";
+@import "./dashboard/05-continue-card.css";
+@import "./dashboard/06-recent-notes.css";
+@import "./dashboard/07-footer.css";
+@import "./dashboard/08-responsive-core.css";
+@import "./dashboard/09-theme-monochrome.css";
+@import "./dashboard/10-responsive-monochrome-mobile.css";
+@import "./dashboard/11-theme-paper-palette.css";
+@import "./dashboard/12-responsive-paper-mobile.css";

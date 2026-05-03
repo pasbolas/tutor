@@ -1,0 +1,161 @@
+/* Auto-split from dashboard.css. Keep import order in main.css unless deliberately changing cascade. */
+
+/* Carry the note-page paper palette through the dashboard/index UI. */
+
+body:has(.tutor-dashboard) {
+  background:
+    radial-gradient(circle at 18% 10%, color-mix(in srgb, var(--paper-soft) 78%, transparent), transparent 22rem),
+    radial-gradient(circle at 84% 14%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 24rem),
+    var(--paper) !important;
+  color: var(--ink) !important;
+}
+
+.tutor-footer,
+.tutor-footer a,
+.tutor-footer p,
+.tutor-footer span {
+  color: rgba(243, 234, 223, 0.78) !important;
+}
+
+.tutor-footer a:hover,
+.tutor-footer a:focus-visible {
+  color: var(--accent) !important;
+}
+
+.tutor-dashboard {
+  --dash-bg: var(--paper);
+  --dash-panel: color-mix(in srgb, var(--paper-soft) 88%, transparent);
+  --dash-line: var(--line);
+  --dash-line-strong: color-mix(in srgb, var(--line) 78%, var(--ink) 22%);
+  --dash-text: var(--ink);
+  --dash-muted: var(--ink-muted);
+  --dash-faint: color-mix(in srgb, var(--ink) 42%, transparent);
+  --dash-accent: var(--accent);
+  --dash-warm: var(--ink-muted);
+  background: transparent !important;
+  color: var(--ink) !important;
+}
+
+.tutor-dashboard__greeting {
+  width: min(100%, 1048px);
+  margin: clamp(18px, 3.8dvh, 42px) auto clamp(28px, 4.4dvh, 42px);
+}
+
+.tutor-dashboard__greeting h1 {
+  color: var(--ink) !important;
+  font-size: clamp(27px, 2.35vw, 38px);
+  font-weight: 600;
+}
+
+.tutor-dashboard__greeting p {
+  color: var(--ink-muted) !important;
+  margin-top: 8px;
+  font-size: 15px;
+}
+
+.tutor-sidebar {
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--paper-soft) 88%, transparent), color-mix(in srgb, var(--paper) 94%, transparent)),
+    var(--paper-soft) !important;
+  border-right-color: var(--line) !important;
+  box-shadow: inset -1px 0 color-mix(in srgb, var(--line) 52%, transparent) !important;
+  color: var(--ink) !important;
+}
+
+.tutor-dashboard .tutor-dashboard__main {
+  background:
+    linear-gradient(color-mix(in srgb, var(--paper) 82%, transparent), color-mix(in srgb, var(--paper) 88%, transparent)),
+    url("../../../assets/decorative/background.png") center bottom / 78% auto no-repeat,
+    var(--paper) !important;
+  color: var(--ink) !important;
+}
+
+.tutor-sidebar__brand,
+.tutor-sidebar__settings,
+.tutor-sidebar__settings svg,
+.tutor-sidebar__chevron,
+.tutor-sidebar__subject-toggle,
+.tutor-sidebar__subject-icon,
+.tutor-sidebar li a,
+.tutor-sidebar li a.is-active,
+.tutor-sidebar li a:hover,
+.tutor-sidebar li a:focus-visible,
+.tutor-sidebar__empty,
+.tutor-search,
+.tutor-search svg,
+.tutor-search--sidebar,
+.tutor-sidebar__settings-menu .site-sound-toggle,
+.tutor-sidebar__settings-menu .cursor-toggle {
+  color: var(--ink) !important;
+  stroke: currentColor !important;
+}
+
+.tutor-sidebar__mark,
+.tutor-sidebar__badge,
+.tutor-search,
+.tutor-search--sidebar,
+.tutor-sidebar__settings-menu .site-sound-toggle,
+.tutor-sidebar__settings-menu .cursor-toggle,
+.tutor-sidebar__settings-wrap.is-open .tutor-sidebar__settings {
+  background-color: color-mix(in srgb, var(--paper-soft) 72%, transparent) !important;
+  border-color: var(--line) !important;
+}
+
+.tutor-sidebar__label,
+.tutor-search__input::placeholder {
+  color: var(--ink-muted) !important;
+}
+
+.tutor-sidebar__subject.is-open .tutor-sidebar__subject-toggle,
+.tutor-sidebar__subject-toggle:hover,
+.tutor-sidebar__subject-toggle:focus-visible,
+.tutor-dashboard .tutor-sidebar__settings:hover,
+.tutor-dashboard .tutor-sidebar__settings:focus-visible,
+.tutor-sidebar__settings-wrap.is-open .tutor-sidebar__settings:hover,
+.tutor-sidebar__settings-wrap.is-open .tutor-sidebar__settings:focus-visible,
+.tutor-sidebar__settings-menu .site-sound-toggle:hover,
+.tutor-sidebar__settings-menu .site-sound-toggle:focus-visible,
+.tutor-sidebar__settings-menu .cursor-toggle:hover,
+.tutor-sidebar__settings-menu .cursor-toggle:focus-visible {
+  background: rgba(255, 255, 255, 0.08) !important;
+  background-image: none !important;
+}
+
+.tutor-note-list,
+.tutor-note-row,
+.tutor-note-row__icon,
+.tutor-continue .tutor-hero-note {
+  background-color: color-mix(in srgb, var(--paper-soft) 78%, transparent) !important;
+  border-color: var(--line) !important;
+}
+
+.tutor-section-title,
+.tutor-recent__header a,
+.tutor-recent__header a span,
+.tutor-row-arrow,
+.tutor-note-row,
+.tutor-note-row strong,
+.tutor-note-row small,
+.tutor-note-row time,
+.tutor-note-path,
+.tutor-note-meta,
+.tutor-note-meta span,
+.tutor-progress__value,
+.tutor-more,
+.tutor-dashboard a:hover,
+.tutor-dashboard a:focus-visible,
+.tutor-dashboard button:hover,
+.tutor-dashboard button:focus-visible {
+  color: var(--ink) !important;
+}
+
+.tutor-continue .tutor-button {
+  background: var(--ink) !important;
+  color: var(--paper-soft) !important;
+}
+
+.tutor-continue .tutor-button:hover,
+.tutor-continue .tutor-button:focus-visible {
+  background: color-mix(in srgb, var(--ink) 88%, var(--accent) 12%) !important;
+  color: var(--paper-soft) !important;
+}

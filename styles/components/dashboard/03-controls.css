@@ -1,0 +1,120 @@
+/* Auto-split from dashboard.css. Keep import order in main.css unless deliberately changing cascade. */
+
+.tutor-dashboard .tutor-dashboard__controls {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.tutor-dashboard .site-sound-control {
+  position: relative;
+}
+
+.tutor-dashboard .site-sound-toggle,
+.tutor-dashboard .cursor-toggle {
+  height: 44px;
+  min-height: 44px;
+  border: 1px solid var(--dash-line);
+  border-radius: 0;
+  background: rgba(21, 19, 18, 0.52);
+  color: var(--dash-text);
+  box-shadow: none;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
+.tutor-dashboard .site-sound-toggle {
+  gap: 11px;
+  padding: 0 14px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(255, 246, 241, 0.9)),
+    #efe6df;
+  color: #ba6e60;
+  box-shadow: 0 9px 24px rgba(0, 0, 0, 0.22);
+}
+
+.tutor-dashboard .site-sound-toggle__dot {
+  width: 13px;
+  height: 13px;
+  border: 2px solid rgba(239, 143, 124, 0.36);
+  border-radius: 50%;
+  background: rgba(239, 143, 124, 0.58);
+}
+
+.tutor-dashboard .site-sound-panel {
+  display: none;
+}
+
+.tutor-dashboard .cursor-toggle__label {
+  min-width: 0;
+}
+
+.tutor-dashboard .cursor-toggle {
+  width: 140px;
+  justify-content: center;
+  padding: 0 13px;
+}
+
+.tutor-dashboard .cursor-toggle__preview {
+  width: 22px;
+  height: 22px;
+}
+
+.tutor-dashboard .cursor-toggle__ring {
+  width: 17px;
+  height: 17px;
+  border-color: var(--dash-accent);
+  box-shadow: none;
+}
+
+.tutor-dashboard .cursor-toggle__dot {
+  display: none;
+}
+
+.tutor-sidebar__settings-menu .site-sound-control,
+.tutor-sidebar__settings-menu .cursor-toggle {
+  width: 100%;
+}
+
+.tutor-sidebar__settings-menu .site-sound-toggle,
+.tutor-sidebar__settings-menu .cursor-toggle {
+  display: flex;
+  width: 100%;
+  height: 44px;
+  min-height: 44px;
+  justify-content: flex-start;
+  border: 1px solid rgba(205, 128, 105, 0.2);
+  border-radius: 12px;
+  background: rgba(18, 17, 16, 0.46);
+  color: rgba(239, 229, 220, 0.82);
+  box-shadow: none;
+}
+
+.tutor-sidebar__settings-menu .site-sound-control,
+.tutor-sidebar__settings-menu .cursor-toggle {
+  backdrop-filter: blur(14px);
+}
+
+.tutor-sidebar__settings-menu .site-sound-toggle:hover,
+.tutor-sidebar__settings-menu .site-sound-toggle:focus-visible,
+.tutor-sidebar__settings-menu .cursor-toggle:hover,
+.tutor-sidebar__settings-menu .cursor-toggle:focus-visible {
+  background: rgba(239, 143, 124, 0.07);
+  color: var(--dash-accent);
+}
+
+.tutor-sidebar__settings-menu .cursor-toggle {
+  gap: 12px;
+  padding: 0 14px;
+}
+
+.tutor-sidebar__settings-menu .site-sound-toggle {
+  gap: 11px;
+  padding: 0 14px;
+}
+
+.tutor-sidebar__settings-menu .site-sound-panel {
+  display: none;
+}

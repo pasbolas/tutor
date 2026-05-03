@@ -9,7 +9,10 @@
  "loaderMarkLabel": "TN mark",
  "loaderMarkA": "T",
  "loaderMarkB": "N",
- "mainCssVersion": "20260503-5",
+ "mainCssVersion": "20260503-6",
+ "componentStyles": [
+ "styles/components/dashboard.css?v=20260503-2"
+ ],
  "feedbackCssVersion": "20260423-4",
  "pageTransitionsVersion": "20260423-4",
  "audioVersion": "20260428-1",

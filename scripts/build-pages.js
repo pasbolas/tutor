@@ -28,12 +28,16 @@ pages.forEach((page) => {
     loaderMarkA: page.loaderMarkA,
     loaderMarkB: page.loaderMarkB,
   });
+  const componentStyles = (page.componentStyles || [])
+    .map((href) => `    <link rel="stylesheet" href="${page.basePath}${href}" />`)
+    .join("\n");
 
   const html = applyTokens(layout, {
     title: page.title,
     description: page.description,
     basePath: page.basePath,
     mainCssVersion: page.mainCssVersion,
+    componentStyles,
     feedbackCssVersion: page.feedbackCssVersion,
     pageTransitionsVersion: page.pageTransitionsVersion,
     audioVersion: page.audioVersion,

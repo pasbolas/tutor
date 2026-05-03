@@ -1,0 +1,147 @@
+/* Auto-split from dashboard.css. Keep import order in main.css unless deliberately changing cascade. */
+
+.tutor-sidebar__label,
+.tutor-section-title,
+.tutor-note-path,
+.tutor-note-row small,
+.tutor-note-row time,
+.tutor-recent__header a,
+.tutor-button,
+.tutor-dashboard__crumb,
+.tutor-dashboard .site-sound-toggle,
+.tutor-dashboard .cursor-toggle {
+  font-family: var(--mono);
+  text-transform: uppercase;
+}
+
+.tutor-hero-note__icon,
+.tutor-note-row__icon {
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(205, 128, 105, 0.18);
+  background: rgba(21, 19, 18, 0.34);
+  color: var(--dash-accent);
+}
+
+.tutor-hero-note svg,
+.tutor-note-row svg {
+  width: 34px;
+  height: 34px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.55;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.tutor-recent {
+  margin-top: 28px;
+}
+
+.tutor-recent__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 14px;
+}
+
+.tutor-recent__header a {
+  display: none !important;
+  align-items: center;
+  gap: 12px;
+  color: var(--dash-accent);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+
+.tutor-recent__header a span,
+.tutor-row-arrow {
+  font-size: 25px;
+  line-height: 1;
+}
+
+.tutor-note-list {
+  border: 1px solid rgba(205, 128, 105, 0.25);
+  background: rgba(27, 24, 22, 0.45);
+}
+
+.tutor-note-row {
+  display: grid;
+  grid-template-columns: 53px minmax(0, 1fr) 132px 24px;
+  align-items: center;
+  gap: 16px;
+  min-height: 72px;
+  padding: 12px 16px 12px 12px;
+  border-bottom: 1px solid rgba(205, 128, 105, 0.2);
+  color: var(--dash-text);
+}
+
+.tutor-note-row:last-child {
+  border-bottom: 0;
+}
+
+.tutor-note-row--fallback-extra {
+  display: none;
+}
+
+.tutor-note-row__icon {
+  width: 42px;
+  height: 42px;
+}
+
+.tutor-note-row__icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.tutor-note-row strong {
+  display: block;
+  color: var(--dash-text);
+  font-family: "Cormorant Garamond", serif;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.28;
+  text-transform: uppercase;
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  overflow-wrap: anywhere;
+}
+
+.tutor-note-row small {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+  color: var(--dash-warm);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.35;
+  letter-spacing: 0.16em;
+}
+
+.tutor-note-row time {
+  justify-self: end;
+  color: var(--dash-warm);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: 0.12em;
+}
+
+.tutor-row-arrow {
+  color: var(--dash-accent);
+}
+
+.tutor-note-row:hover,
+.tutor-note-row:focus-visible,
+.tutor-button:hover,
+.tutor-button:focus-visible {
+  border-color: rgba(239, 143, 124, 0.55);
+  background-color: rgba(239, 143, 124, 0.055);
+}
