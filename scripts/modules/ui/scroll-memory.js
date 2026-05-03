@@ -1,3 +1,5 @@
+import { SCROLL_MEMORY_STORAGE_PREFIX } from "../shared.js";
+
 export function initPageScrollMemory() {
   if (!("scrollTo" in window)) {
     return;
