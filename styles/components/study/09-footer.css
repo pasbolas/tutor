@@ -1,0 +1,34 @@
+.study-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
+  width: min(100%, 760px);
+  margin-top: auto;
+  margin-left: auto;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--line);
+  text-align: right;
+}
+
+.study-footer p {
+  margin: 0;
+  color: var(--ink-muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.study-footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.9rem;
+}
+
+.study-footer__links a {
+  color: var(--ink-muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}

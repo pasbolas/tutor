@@ -1,0 +1,131 @@
+.notes-shell {
+  width: min(94vw, 1280px);
+  margin: 0.75rem auto 1rem;
+  padding: 0.85rem 1rem 1rem;
+}
+
+.notes-shell .study-topbar {
+  padding-bottom: 0.55rem;
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+}
+
+.notes-shell .study-topbar__nav {
+  gap: 0.7rem;
+}
+
+.notes-command-bar {
+  display: grid;
+  grid-template-columns: minmax(220px, 320px) minmax(0, 1fr) auto;
+  gap: 1rem 1.2rem;
+  align-items: end;
+  padding: 1rem 0 0.9rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.notes-command-bar__brand,
+.notes-command-bar__center,
+.notes-command-bar__actions {
+  min-width: 0;
+}
+
+.notes-command-bar__brand h1 {
+  margin: 0.35rem 0 0;
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(2.2rem, 4vw, 3.35rem);
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.notes-command-bar__summary,
+.notes-command-bar__status,
+.notes-preview-pane__intro,
+.notes-empty p,
+.notes-preview__excerpt,
+.notes-preview__points li {
+  color: var(--ink-muted);
+}
+
+.notes-command-bar__summary {
+  margin: 0.55rem 0 0;
+  font-size: 0.96rem;
+  line-height: 1.45;
+}
+
+.notes-command-bar__center {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.notes-command-bar__path,
+.notes-preview-pane__meta,
+.notes-control__label,
+.notes-note-card__eyebrow,
+.notes-note-card__meta,
+.notes-note-card__submeta,
+.notes-rail-section__count,
+.notes-toc-card__count,
+.notes-preview-card__path {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.notes-command-bar__path,
+.notes-stage__path {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0;
+  color: var(--ink-muted);
+}
+
+.notes-command-bar__status {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.notes-command-bar__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.55rem;
+}
+
+.notes-toolbar-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.2rem;
+  padding: 0 0.9rem;
+  border: 1px solid rgba(168, 90, 77, 0.2);
+  background: rgba(168, 90, 77, 0.04);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background-color 140ms ease,
+    border-color 140ms ease,
+    transform 140ms ease,
+    color 140ms ease;
+}
+
+.notes-toolbar-action:hover,
+.notes-toolbar-action:focus-visible {
+  border-color: rgba(168, 90, 77, 0.3);
+  background: rgba(168, 90, 77, 0.08);
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.notes-toolbar-action--muted {
+  background: transparent;
+  border-color: rgba(112, 98, 86, 0.18);
+}

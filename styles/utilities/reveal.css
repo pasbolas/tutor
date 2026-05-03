@@ -1,0 +1,24 @@
+.startup-reveal {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+body.is-ready .startup-reveal {
+  animation: startup-reveal 340ms ease forwards;
+}
+
+body.is-ready .startup-reveal--card {
+  animation-delay: 0.04s;
+}
+
+body.is-ready .startup-reveal--band {
+  animation-delay: 0.08s;
+}
+
+body.is-ready .startup-reveal--outline {
+  animation-delay: 0.12s;
+}
+
+body.is-ready .startup-reveal--content {
+  animation-delay: 0.16s;
+}

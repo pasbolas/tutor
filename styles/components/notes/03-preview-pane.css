@@ -1,0 +1,153 @@
+.notes-preview-pane {
+  min-width: 0;
+  display: grid;
+  gap: 0.9rem;
+}
+
+.notes-preview-pane__header {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.1rem 0 0.75rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.notes-preview-pane__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.notes-preview-pane__title {
+  margin: 0;
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  line-height: 0.96;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.notes-preview-pane__intro {
+  margin: 0;
+  max-width: 58ch;
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+.notes-preview-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.1rem;
+}
+
+.notes-tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.7rem;
+  padding: 0 0.6rem;
+  border: 1px solid rgba(112, 98, 86, 0.16);
+  background: rgba(255, 255, 255, 0.24);
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.notes-preview-tags[hidden] {
+  display: none;
+}
+
+.notes-preview-pane__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(230px, 0.88fr);
+  gap: 0.85rem;
+}
+
+.notes-preview-pane__grid[hidden] {
+  display: none;
+}
+
+.notes-preview-card,
+.notes-toc-card,
+.notes-empty {
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid rgba(112, 98, 86, 0.18);
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.notes-preview__excerpt {
+  margin-top: 0.65rem;
+  max-width: 60ch;
+  font-size: 0.98rem;
+  line-height: 1.58;
+}
+
+.notes-preview__points {
+  margin: 0.75rem 0 0;
+  padding-left: 1rem;
+}
+
+.notes-preview__points[hidden] {
+  display: none;
+}
+
+.notes-preview__points li {
+  font-size: 0.92rem;
+  line-height: 1.58;
+}
+
+.notes-preview__points li + li {
+  margin-top: 0.32rem;
+}
+
+.notes-toc {
+  display: grid;
+  gap: 0;
+  margin-top: 0.6rem;
+}
+
+.notes-toc__link {
+  display: grid;
+  grid-template-columns: 2.15rem minmax(0, 1fr);
+  gap: 0.55rem;
+  padding: 0.55rem 0;
+  border-top: 1px solid rgba(112, 98, 86, 0.15);
+  color: var(--ink-muted);
+  transition: color 140ms ease;
+}
+
+.notes-toc__link:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.notes-toc__link:hover,
+.notes-toc__link:focus-visible {
+  color: var(--accent);
+}
+
+.notes-empty[hidden] {
+  display: none;
+}
+
+.notes-empty h3 {
+  margin: 0.3rem 0 0;
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(1.2rem, 2vw, 1.55rem);
+  line-height: 0.96;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+.notes-empty p {
+  margin: 0.45rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.notes-shell .study-footer {
+  margin-top: 0.15rem;
+  padding-top: 0.75rem;
+}

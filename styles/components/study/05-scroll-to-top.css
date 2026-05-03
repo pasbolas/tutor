@@ -1,0 +1,87 @@
+.scroll-to-top {
+  position: fixed;
+  bottom: 1.7rem;
+  right: 2rem;
+  min-height: 2.28rem;
+  padding: 0.48rem 0.68rem 0.48rem 0.74rem;
+  border: 1px solid var(--line);
+  background: rgba(248, 244, 238, 0.92);
+  color: var(--ink-muted);
+  font-family: "Manrope", sans-serif;
+  font-size: 0.92rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.52rem;
+  border-radius: 0;
+  backdrop-filter: blur(10px);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 220ms ease,
+    visibility 220ms ease,
+    transform 220ms ease,
+    border-color 140ms ease,
+    background-color 140ms ease,
+    color 140ms ease;
+  transform: translateY(10px);
+  z-index: 50;
+}
+
+.scroll-to-top.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.scroll-to-top:hover {
+  border-color: rgba(168, 90, 77, 0.42);
+  background: var(--paper-soft);
+  color: var(--ink);
+}
+
+.scroll-to-top:active {
+  transform: translateY(2px);
+}
+
+.scroll-to-top svg {
+  display: none;
+}
+
+.scroll-to-top::after {
+  content: "";
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+  background: currentColor;
+  mask: url("../../../assets/icons/left-arrow.png") center / contain no-repeat;
+  -webkit-mask: url("../../../assets/icons/left-arrow.png") center / contain no-repeat;
+  transform: rotate(90deg);
+}
+
+.scroll-to-top {
+  background: rgba(31, 26, 23, 0.92);
+  color: var(--ink-muted);
+  border-color: var(--line);
+}
+
+.scroll-to-top:hover {
+  background: var(--paper-soft);
+  color: var(--ink);
+  border-color: rgba(224, 138, 118, 0.46);
+}
+
+@media (max-width: 780px) {
+  .scroll-to-top {
+    bottom: 1rem;
+    right: 1rem;
+    min-height: 2.18rem;
+    padding: 0.5rem 0.62rem;
+    font-size: 0.6rem;
+    gap: 0.38rem;
+  }
+}

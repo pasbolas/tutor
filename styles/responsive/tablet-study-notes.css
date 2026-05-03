@@ -1,0 +1,191 @@
+@media (max-width: 1080px) {
+  .study-shell {
+    width: min(98vw, 1360px);
+  }
+
+  .study-main-grid,
+  .study-hero,
+  .study-band,
+  .notes-workbench {
+    grid-template-columns: 1fr;
+  }
+
+  .study-band__meta {
+    justify-content: flex-start;
+  }
+
+  .study-outline {
+    display: block;
+    position: static;
+    height: auto;
+    max-height: none;
+    overflow: visible;
+    padding: 1rem;
+    backdrop-filter: none;
+  }
+
+  .study-outline__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-height: none;
+  }
+
+  .study-note-card {
+    width: 100%;
+  }
+
+  .notes-command-bar {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .notes-command-bar__actions {
+    justify-content: flex-start;
+  }
+
+  .notes-rail {
+    position: static;
+  }
+
+  .notes-preview-pane__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .notes-shell--minimal {
+    width: min(96vw, 760px);
+  }
+
+  .study-asset--computer {
+    right: 1rem;
+  }
+
+  .study-asset--mouse {
+    left: auto;
+    right: 0.6rem;
+  }
+
+  .study-outline {
+    position: sticky;
+    top: 0.75rem;
+    display: grid;
+    grid-template-rows: auto auto;
+    height: auto;
+    max-height: none;
+    padding: 0.7rem;
+    overflow: visible;
+    border-color: rgba(224, 138, 118, 0.24);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0)),
+      rgba(31, 26, 23, 0.96);
+    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.28);
+    backdrop-filter: blur(12px);
+    z-index: 8;
+  }
+
+  .study-outline__header {
+    display: grid;
+    grid-template-columns: 2.55rem minmax(9rem, auto) minmax(0, 1fr);
+    gap: 0.5rem;
+    align-items: stretch;
+  }
+
+  .study-outline__header h2,
+  .study-outline .study-kicker,
+  .study-outline__lede,
+  .study-outline__home,
+  .study-outline__actions {
+    display: none;
+  }
+
+  .study-outline__back {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.55rem;
+    min-width: 2.55rem;
+    min-height: 2.38rem;
+    overflow: hidden;
+    border: 1px solid rgba(224, 138, 118, 0.28);
+    border-radius: 0.35rem;
+    background: rgba(224, 138, 118, 0.08);
+  }
+
+  .study-outline__back img {
+    display: block;
+    width: 1.25rem;
+    height: 1.25rem;
+    object-fit: contain;
+    filter: brightness(1.28) saturate(1.2);
+  }
+
+  .study-outline__back span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .study-outline__toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 2.38rem;
+    padding: 0.58rem 0.82rem;
+    border-color: rgba(224, 138, 118, 0.28);
+    border-radius: 0.35rem;
+    background: rgba(224, 138, 118, 0.1);
+    color: var(--accent);
+  }
+
+  .study-outline__slide-title {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 2.38rem;
+    padding: 0.58rem 0.82rem;
+    border-radius: 0.35rem;
+    background: rgba(224, 138, 118, 0.08);
+    color: var(--accent);
+    text-align: center;
+  }
+
+  .study-outline__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    height: auto;
+    max-height: 0;
+    margin-top: 0;
+    padding: 0;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition: max-height 220ms ease, opacity 180ms ease, margin-top 180ms ease;
+  }
+
+  .study-outline.is-open .study-outline__list {
+    max-height: min(48vh, 25rem);
+    margin-top: 0.7rem;
+    padding: 0.2rem;
+    overflow: auto;
+    opacity: 1;
+    pointer-events: auto;
+    scrollbar-color: rgba(224, 138, 118, 0.48) rgba(255, 255, 255, 0.04);
+  }
+
+  .study-outline.is-open .study-outline__link {
+    border-color: rgba(232, 205, 181, 0.13);
+    background: rgba(255, 255, 255, 0.025);
+    color: rgba(243, 234, 223, 0.84);
+  }
+
+  .study-outline.is-open .study-outline__link:hover,
+  .study-outline.is-open .study-outline__link:focus-visible,
+  .study-outline.is-open .study-outline__link.is-active {
+    border-color: rgba(224, 138, 118, 0.32);
+    background: rgba(224, 138, 118, 0.11);
+    color: var(--ink);
+  }
+}

@@ -1,0 +1,60 @@
+body.has-blob-cursor {
+  cursor: none;
+}
+
+body.has-blob-cursor a,
+body.has-blob-cursor button,
+body.has-blob-cursor [role="button"] {
+  cursor: none;
+}
+
+.blob-cursor {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 60;
+}
+
+.blob-cursor__blob {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  border: 2px solid rgba(168, 90, 77, 0.84);
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(168, 90, 77, 0.14);
+  will-change: transform, width, height, border-radius;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    opacity 160ms ease;
+}
+
+.blob-cursor__dot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(168, 90, 77, 0.96);
+  will-change: transform;
+  transition: opacity 160ms ease;
+}
+
+.blob-cursor.is-link-hover .blob-cursor__blob {
+  border-color: rgba(168, 90, 77, 0.72);
+  box-shadow:
+    0 0 0 1px rgba(168, 90, 77, 0.08),
+    0 14px 28px rgba(168, 90, 77, 0.1);
+}
+
+.blob-cursor.is-link-hover .blob-cursor__dot {
+  opacity: 0.42;
+}
+
+.click-spark-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 70;
+}

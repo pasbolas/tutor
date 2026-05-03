@@ -1,0 +1,103 @@
+/* Auto-split from dashboard.css. Keep import order in main.css unless deliberately changing cascade. */
+
+@media (min-width: 821px) {
+  
+  .tutor-continue .tutor-progress {
+    height: 6px;
+  }
+
+  
+  .tutor-continue .tutor-progress__value {
+    font-size: 13px;
+  }
+
+  
+  .tutor-continue .tutor-button {
+    width: 146px;
+    height: 46px;
+    gap: 13px;
+    border-radius: 11px;
+    font-size: 10px;
+    letter-spacing: 0.13em;
+  }
+
+  
+  .tutor-continue .tutor-button::after {
+    font-size: 24px;
+  }
+
+  
+  .tutor-recent {
+    margin-top: clamp(32px, 5dvh, 48px);
+  }
+
+  
+  .tutor-recent__header {
+    margin-bottom: 10px;
+  }
+
+  
+  .tutor-section-title {
+    font-size: 12px;
+    letter-spacing: 0.19em;
+  }
+
+  
+  .tutor-note-row {
+    grid-template-columns: 42px minmax(0, 1fr) 108px 18px;
+    gap: 13px;
+    min-height: 62px;
+    padding: 9px 12px 9px 10px;
+  }
+
+  
+  .tutor-note-row__icon {
+    width: 34px;
+    height: 34px;
+  }
+
+  
+  .tutor-note-row__icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  
+  .tutor-note-row strong {
+    font-size: 17px;
+  }
+
+  
+  .tutor-note-row small {
+    gap: 8px;
+    margin-top: 5px;
+    font-size: 10px;
+    letter-spacing: 0.13em;
+  }
+
+  
+  .tutor-note-row time {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+  }
+
+  
+  .tutor-row-arrow {
+    font-size: 20px;
+  }
+
+  
+  .tutor-footer {
+    margin-top: auto;
+    margin-right: auto;
+    margin-left: auto;
+    padding-top: 10px;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+  }
+
+  
+  .tutor-footer p {
+    gap: 12px;
+  }
+}
