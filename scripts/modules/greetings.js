@@ -3,6 +3,8 @@ const DEFAULT_GREETING = {
   subtitle: "Pick up right where you left off.",
 };
 
+const GREETING_STORAGE_KEY = "tutor-dashboard-greeting";
+
 const FALLBACK_GREETINGS = {
   morning: [
     {
@@ -81,6 +83,75 @@ function randomIndex(length) {
   return Math.floor(Math.random() * length);
 }
 
+function loadStoredGreeting() {
+  try {
+    const raw = window.sessionStorage.getItem(GREETING_STORAGE_KEY);
+    if (!raw) {
+      return null;
+    }
+
+    const data = JSON.parse(raw);
+    if (!data || typeof data.key !== "string" || typeof data.period !== "string") {
+      return null;
+    }
+
+    return data;
+  } catch {
+    return null;
+  }
+}
+
+function storeGreeting({ period, key }) {
+  try {
+    window.sessionStorage.setItem(GREETING_STORAGE_KEY, JSON.stringify({ period, key }));
+  } catch {
+    // Storage failures should not block the greeting from rendering.
+  }
+}
+
+function getGreetingKey(entry) {
+  const normalized = normalizeGreeting(entry);
+  return {
+    greeting: normalized,
+    key: `${normalized.title}||${normalized.subtitle}`,
+  };
+}
+
+function pickGreeting(entries, period) {
+  const previous = loadStoredGreeting();
+  const lastKey = previous && previous.period === period ? previous.key : null;
+
+  if (!Array.isArray(entries) || entries.length === 0) {
+    const fallback = normalizeGreeting(DEFAULT_GREETING);
+    storeGreeting({ period, key: `${fallback.title}||${fallback.subtitle}` });
+    return fallback;
+  }
+
+  const attemptLimit = Math.min(entries.length + 2, 8);
+  let selection = null;
+  let selectionKey = null;
+
+  for (let attempt = 0; attempt < attemptLimit; attempt += 1) {
+    const candidate = entries[randomIndex(entries.length)];
+    const { greeting, key } = getGreetingKey(candidate);
+    selection = greeting;
+    selectionKey = key;
+
+    if (!lastKey || entries.length === 1 || key !== lastKey) {
+      break;
+    }
+  }
+
+  if (!selection) {
+    const { greeting, key } = getGreetingKey(entries[0]);
+    selection = greeting;
+    selectionKey = key;
+  }
+
+  storeGreeting({ period, key: selectionKey });
+  return selection;
+}
+
 async function fetchGreetings() {
   try {
     const response = await fetch("./greetings.json", { cache: "no-store" });
@@ -101,7 +172,7 @@ export async function getRandomGreetingForTime(date = new Date()) {
     ? greetings[period]
     : FALLBACK_GREETINGS[period] || [DEFAULT_GREETING];
 
-  return normalizeGreeting(entries[randomIndex(entries.length)]);
+  return pickGreeting(entries, period);
 }
 
 export async function initDashboardGreeting() {
