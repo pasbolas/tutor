@@ -1,330 +1,659 @@
 {
   "morning": [
     {
-      "title": "Good morning from the little study burrow.",
-      "subtitle": "Open a note and let the day start softly."
+      "title": "Kettle's on.",
+      "subtitle": "Come in, sit down."
     },
     {
-      "title": "Mornings are brighter with you :)",
-      "subtitle": "Start with one small page and settle in."
+      "title": "Tea's still warm.",
+      "subtitle": "Just made it."
     },
     {
-      "title": "Good morning, cozy thinker.",
-      "subtitle": "Your notes are tucked away and ready."
+      "title": "Coffee just dropped.",
+      "subtitle": "Good timing."
     },
     {
-      "title": "The burrow is awake.",
-      "subtitle": "Pick a note and warm up the brain gently."
+      "title": "About time.",
+      "subtitle": "Sit down already."
     },
     {
-      "title": "Sun-Kissed Mornings.",
-      "subtitle": "A little reading is enough to begin."
+      "title": "Milk and two sugars, yes?",
+      "subtitle": "Thought so."
     },
     {
-      "title": "404? Imma make some coffee and check back in a bit.",
-      "subtitle": "The notes will be here when you return."
+      "title": "Just brewed a fresh pot.",
+      "subtitle": "Come on in."
     },
     {
-      "title": "Why did the horse go to the bar?",
-      "subtitle": "Because it wanted to get away from the barn."
+      "title": "I made extra.",
+      "subtitle": "Knew you were coming."
     },
     {
-      "title": "Otrovert",
-      "subtitle": "A person who is both introverted and extroverted, Idk why I thought of this but it made me laugh."
+      "title": "Funny, I was just thinking about you.",
+      "subtitle": "Grab a cup."
     },
     {
-      "title": "Arcane",
-      "subtitle": "Secret, mysterious, known or understood by only a few."
+      "title": "You're late.",
+      "subtitle": "Coffee's still hot though."
     },
     {
-      "title": "Welcome to 2006",
-      "subtitle": "AI? COVID? You must have hit your head really hard."
+      "title": "Been expecting you.",
+      "subtitle": "Earl Grey or the usual?"
     },
     {
-      "title": "Morning News Time *bbc radio music*",
-      "subtitle": "British Broadcasting Corporation?"
+      "title": "Don't just stand there.",
+      "subtitle": "Sit, I just made coffee."
     },
     {
-      "title": "Good Morning....I have a question for you.",
-      "subtitle": "Did you name your daughter alexis?"
+      "title": "Good, I needed the company.",
+      "subtitle": "Pull up a chair."
     },
     {
-      "title": "Morning has padded in quietly.",
-      "subtitle": "Your notes are exactly where you left them."
+      "title": "Your usual spot is open.",
+      "subtitle": "Tea's on the counter."
     },
     {
-      "title": "Good morning, notes under lamplight.",
-      "subtitle": "Start gently and let the rhythm build."
+      "title": "I saved you something.",
+      "subtitle": "Still warm, just for you."
     },
     {
-      "title": "The study corner is warm.",
-      "subtitle": "Pick one note and make it a little clearer."
+      "title": "Well, come in then.",
+      "subtitle": "Don't let the cold in."
     },
     {
-      "title": "Good morning, calm little scholar.",
-      "subtitle": "Today begins with one simple note."
+      "title": "Wipe your feet.",
+      "subtitle": "Coffee's ready."
     },
     {
-      "title": "Morning pages.",
-      "subtitle": "Read a little and let it settle."
+      "title": "You look exactly like I imagined.",
+      "subtitle": "Kettle just boiled."
     },
     {
-      "title": "Good morning, burrow brain.",
-      "subtitle": "Wake up slowly with a familiar topic."
+      "title": "Close the door.",
+      "subtitle": "Tea's getting cold."
     },
     {
-      "title": "A small note for a fresh morning.",
-      "subtitle": "No rush, just a gentle first step."
+      "title": "Perfect timing actually.",
+      "subtitle": "Just poured a fresh one."
     },
     {
-      "title": "Good morning, welcome back in.",
-      "subtitle": "Your study nook kept your place."
+      "title": "I was wondering.",
+      "subtitle": "Coffee's on. Sit down."
     }
   ],
   "afternoon": [
     {
-      "title": "Helios climbs to his throne.",
-      "subtitle": "The gods do not rest at noon. Nor shall you."
+      "title": "Oh, you're back.",
+      "subtitle": "Kettle's going on."
     },
     {
-      "title": "Thus it is written on the stone of Delphi.",
-      "subtitle": "He who opens his scroll in the afternoon hours shall not be forgotten."
+      "title": "There you are, finally.",
+      "subtitle": "I kept the pot warm."
     },
     {
-      "title": "Hear this, traveller of the afternoon.",
-      "subtitle": "Apollo watches the idle hand with great disappointment."
+      "title": "You just missed the rush.",
+      "subtitle": "Quiet now. Good time for tea."
     },
     {
-      "title": "The Oracle has spoken.",
-      "subtitle": "Return to your notes before the shadow moves."
+      "title": "Grab a cup.",
+      "subtitle": "Just brewed a fresh pot."
     },
     {
-      "title": "On this wall it is carved for all to see.",
-      "subtitle": "One page read in the heat of day is worth three read by moonlight."
+      "title": "Sit down already.",
+      "subtitle": "Earl Grey or coffee?"
     },
     {
-      "title": "Behold, the sun stands at its peak.",
-      "subtitle": "This is a sign. Open your scrolls."
+      "title": "I knew you'd be back.",
+      "subtitle": "Tea's still warm."
     },
     {
-      "title": "The philosophers of Athens did not nap.",
-      "subtitle": "They debated. You may simply take one note."
+      "title": "Been expecting you.",
+      "subtitle": "Milk and two sugars, yes?"
     },
     {
-      "title": "Inscribed by the hand of Thales.",
-      "subtitle": "Know thyself. Start with your last unread note."
+      "title": "Coffee's hot.",
+      "subtitle": "Come in, close the door."
     },
     {
-      "title": "A proclamation to those who wander the agora.",
-      "subtitle": "The afternoon is short. The knowledge is long."
+      "title": "I made extra.",
+      "subtitle": "Good thing too."
     },
     {
-      "title": "Zeus himself decreed it.",
-      "subtitle": "The midday scholar shall inherit the evening's clarity."
+      "title": "Funny, I was just thinking about you.",
+      "subtitle": "Kettle just boiled."
     },
     {
-      "title": "It is said by those who carved before us.",
-      "subtitle": "The mind sharpens best when the sun is high."
+      "title": "Don't just stand there.",
+      "subtitle": "Pour yourself something."
     },
     {
-      "title": "Hear ye, citizen of the afternoon hours.",
-      "subtitle": "One clear thought carved now outlasts a thousand left to drift."
+      "title": "Your usual spot is open.",
+      "subtitle": "Fresh pot on the counter."
     },
     {
-      "title": "The Stoics left this message on the wall.",
-      "subtitle": "Discipline is the gate. Your note is the key."
+      "title": "Well, come in then.",
+      "subtitle": "Tea won't pour itself."
     },
     {
-      "title": "From the steps of the Parthenon, it was declared.",
-      "subtitle": "No hour is wasted if a single idea is understood."
+      "title": "Good, I needed the company.",
+      "subtitle": "Coffee's just right."
     },
     {
-      "title": "Athena blessed the afternoon learner.",
-      "subtitle": "She asks only that you return to your page."
+      "title": "You're late.",
+      "subtitle": "I saved you some anyway."
     },
     {
-      "title": "So it is written in the hall of records.",
-      "subtitle": "The scholar who studies at noon does not fear the evening test."
+      "title": "About time.",
+      "subtitle": "Kettle's been waiting."
     },
     {
-      "title": "A warning etched in old marble.",
-      "subtitle": "Time passes whether you read or do not read."
+      "title": "I saved you something.",
+      "subtitle": "Still hot."
     },
     {
-      "title": "This stone remembers every afternoon squandered.",
-      "subtitle": "Do not add yours to the count."
+      "title": "Perfect timing actually.",
+      "subtitle": "Just made a fresh brew."
     },
     {
-      "title": "The agora grows loud. Step away from it.",
-      "subtitle": "Your scroll waits in silence and requires only you."
+      "title": "Close the door.",
+      "subtitle": "Sit. Coffee's ready."
     },
     {
-      "title": "As Socrates once asked a passerby.",
-      "subtitle": "What do you know, and when did you last check?"
+      "title": "You look exactly like I imagined.",
+      "subtitle": "Cup's on the table."
     }
   ],
   "evening": [
     {
-      "title": "Helios descends. The sky turns amber.",
-      "subtitle": "What you learn now shall burn through the night."
+      "title": "There you are.",
+      "subtitle": "Kettle's going on right now."
     },
     {
-      "title": "It is written above the temple gate.",
-      "subtitle": "The evening scholar walks lighter into the dark."
+      "title": "I was wondering.",
+      "subtitle": "Tea's still warm."
     },
     {
-      "title": "The gods have dimmed the torch of day.",
-      "subtitle": "Light your own by opening a single page."
+      "title": "Come in, sit down.",
+      "subtitle": "Just brewed a fresh pot."
     },
     {
-      "title": "Carved here by a student of Aristotle.",
-      "subtitle": "The evening is not the end. It is the quiet part of the work."
+      "title": "Good, I needed the company.",
+      "subtitle": "Evening tea is better with two."
     },
     {
-      "title": "Heed the inscription on the eastern wall.",
-      "subtitle": "One idea reviewed at dusk is fixed into the stone of memory."
+      "title": "Been expecting you.",
+      "subtitle": "Put the kettle on an hour ago."
     },
     {
-      "title": "Dusk has arrived as the Fates promised it would.",
-      "subtitle": "Use what remains of the light wisely."
+      "title": "Wipe your feet.",
+      "subtitle": "Tea's on the table."
     },
     {
-      "title": "The stars prepare to be your witnesses.",
-      "subtitle": "Show them a mind still at work."
+      "title": "Oh, you're back.",
+      "subtitle": "Good. I made extra."
     },
     {
-      "title": "Thus spake the elder at the city wall.",
-      "subtitle": "The evening hour forgives slowness. It does not forgive stillness."
+      "title": "Pull up a chair.",
+      "subtitle": "Coffee's still hot."
     },
     {
-      "title": "Nyx approaches on quiet feet.",
-      "subtitle": "Finish one thought before she closes the page."
+      "title": "Your usual spot is open.",
+      "subtitle": "Sit. I'll pour."
     },
     {
-      "title": "Carved in the stone of the evening temple.",
-      "subtitle": "What is reviewed before dark is remembered past it."
+      "title": "Funny, I was just thinking about you.",
+      "subtitle": "Earl Grey's ready."
     },
     {
-      "title": "Hermes, messenger of the gods, leaves a note.",
-      "subtitle": "He says: open your scroll. He has already moved on."
+      "title": "You just missed the rush.",
+      "subtitle": "Nice and quiet now."
     },
     {
-      "title": "The inscription beneath the setting sun reads this.",
-      "subtitle": "An evening not spent in thought is merely a long afternoon."
+      "title": "I saved you something.",
+      "subtitle": "Kept it warm just in case."
     },
     {
-      "title": "Let it be known to all who walk this portico.",
-      "subtitle": "The mind that rests too early rises empty."
+      "title": "Don't just stand there.",
+      "subtitle": "Tea's getting cold."
     },
     {
-      "title": "The Oracle saw you choosing rest over revision.",
-      "subtitle": "She said nothing. But she wrote it down."
+      "title": "About time.",
+      "subtitle": "Kettle's been on twice already."
     },
     {
-      "title": "Even Diogenes read in the evening.",
-      "subtitle": "He had no lamp and no excuses. You have both."
+      "title": "You're late.",
+      "subtitle": "Still saved you a cup."
     },
     {
-      "title": "On this stone the city agrees.",
-      "subtitle": "One quiet hour of study is worth more than a loud hour of intention."
+      "title": "Close the door.",
+      "subtitle": "Evening chill is coming in."
     },
     {
-      "title": "The twilight hour is a gift from Apollon.",
-      "subtitle": "It asks only that you do not waste it."
+      "title": "Well, come in then.",
+      "subtitle": "Fresh pot just dropped."
     },
     {
-      "title": "So it is decreed at the evening assembly.",
-      "subtitle": "Pick one note. Let it be enough."
+      "title": "I made extra.",
+      "subtitle": "Evening calls for it."
     },
     {
-      "title": "The last light holds on as long as it can.",
-      "subtitle": "Meet it halfway. Open something."
+      "title": "Milk and two sugars, yes?",
+      "subtitle": "Already on it."
     },
     {
-      "title": "These words were left here for you specifically.",
-      "subtitle": "The ancients knew you would be here at this hour, unsure. Begin anyway."
+      "title": "Perfect timing actually.",
+      "subtitle": "Just poured the evening brew."
     }
   ],
   "night": [
     {
-      "title": "Nyx has drawn her curtain across the sky.",
-      "subtitle": "Read lightly. The night is not the time for conquest."
+      "title": "Still here?",
+      "subtitle": "I'll put the kettle on."
     },
     {
-      "title": "By the light of a single flame, it was carved.",
-      "subtitle": "One small page at night is a gift to the morning self."
+      "title": "Late one tonight.",
+      "subtitle": "Tea or something stronger?"
     },
     {
-      "title": "The stars are inscribed above. Your notes are inscribed below.",
-      "subtitle": "Both will outlast tonight."
+      "title": "You came back.",
+      "subtitle": "Good. Pot's still warm."
     },
     {
-      "title": "This is the proclamation of the night watch.",
-      "subtitle": "Study gently or do not study at all."
+      "title": "Quiet tonight.",
+      "subtitle": "Just you and the kettle."
     },
     {
-      "title": "Hypnos waits at the door with patience.",
-      "subtitle": "He will let you finish one note first."
+      "title": "Close the door behind you.",
+      "subtitle": "Night air's cold."
     },
     {
-      "title": "Written beneath the moon by an unknown hand.",
-      "subtitle": "What you review tonight, you will own by morning."
+      "title": "Didn't think I'd see you this late.",
+      "subtitle": "Tea's on anyway."
     },
     {
-      "title": "The night temple is open but quiet.",
-      "subtitle": "Enter softly and take only what you need."
+      "title": "I kept a cup aside.",
+      "subtitle": "Figured you'd be back."
     },
     {
-      "title": "Even the gods sleep.",
-      "subtitle": "But first they close their scrolls properly."
+      "title": "Sit down. It's late.",
+      "subtitle": "Something warm first."
     },
     {
-      "title": "The inscription here is worn but legible.",
-      "subtitle": "Do not let the hour become the reason you stopped."
+      "title": "Last pot of the night.",
+      "subtitle": "Good timing."
     },
     {
-      "title": "It is the decree of the night council.",
-      "subtitle": "One completed thought is a worthy end to any day."
+      "title": "You look like you need tea.",
+      "subtitle": "Already brewing."
     },
     {
-      "title": "The torches are low in the hall of learning.",
-      "subtitle": "That is no reason to leave empty-handed."
+      "title": "Everyone else has gone.",
+      "subtitle": "Place is yours."
     },
     {
-      "title": "Morpheus sends this message ahead of his visit.",
-      "subtitle": "Finish the page. He will wait."
+      "title": "Night's quiet now.",
+      "subtitle": "Kettle just boiled."
     },
     {
-      "title": "On the wall beside the sleeping quarters it reads.",
-      "subtitle": "A mind at rest having learned something is a mind at peace."
+      "title": "Still warm.",
+      "subtitle": "Just for you."
     },
     {
-      "title": "The midnight scholar is mentioned in the old texts.",
-      "subtitle": "Not by name. By what they chose to do with the quiet."
+      "title": "Pull up a chair.",
+      "subtitle": "Night tea hits different."
     },
     {
-      "title": "Carved here by lamplight, long ago.",
-      "subtitle": "The night asks little. Give it one clear thought."
+      "title": "I was about to close up.",
+      "subtitle": "Good thing I didn't."
     },
     {
-      "title": "Athena does not sleep, but she understands rest.",
-      "subtitle": "Close the scroll when the words begin to blur."
+      "title": "One more cup.",
+      "subtitle": "Night's not over yet."
     },
     {
-      "title": "This is the final inscription on the night wall.",
-      "subtitle": "What you did today is already written. Add one good line."
+      "title": "You made it.",
+      "subtitle": "Tea's waiting."
     },
     {
-      "title": "The agora is empty. The scrolls are still full.",
-      "subtitle": "You have the night to yourself. Use a little of it."
+      "title": "Funny seeing you this late.",
+      "subtitle": "Milk and two sugars?"
     },
     {
-      "title": "Thus ends the public decree of the evening.",
-      "subtitle": "Rest is permitted. Completion is preferred."
+      "title": "Last call.",
+      "subtitle": "Tea or coffee?"
     },
     {
-      "title": "The gods have noted your presence at this late hour.",
-      "subtitle": "They ask only that you read one page before you go."
+      "title": "No rush.",
+      "subtitle": "Kettle's on. Stay a while."
+    }
+  ]
+}{
+  "morning": [
+    {
+      "title": "Kettle's on.",
+      "subtitle": "Come in, sit down."
+    },
+    {
+      "title": "Tea's still warm.",
+      "subtitle": "Just made it."
+    },
+    {
+      "title": "Coffee just dropped.",
+      "subtitle": "Good timing."
+    },
+    {
+      "title": "About time.",
+      "subtitle": "Sit down already."
+    },
+    {
+      "title": "Milk and two sugars, yes?",
+      "subtitle": "Thought so."
+    },
+    {
+      "title": "Just brewed a fresh pot.",
+      "subtitle": "Come on in."
+    },
+    {
+      "title": "I made extra.",
+      "subtitle": "Knew you were coming."
+    },
+    {
+      "title": "Funny, I was just thinking about you.",
+      "subtitle": "Grab a cup."
+    },
+    {
+      "title": "You're late.",
+      "subtitle": "Coffee's still hot though."
+    },
+    {
+      "title": "Been expecting you.",
+      "subtitle": "Earl Grey or the usual?"
+    },
+    {
+      "title": "Don't just stand there.",
+      "subtitle": "Sit, I just made coffee."
+    },
+    {
+      "title": "Good, I needed the company.",
+      "subtitle": "Pull up a chair."
+    },
+    {
+      "title": "Your usual spot is open.",
+      "subtitle": "Tea's on the counter."
+    },
+    {
+      "title": "I saved you something.",
+      "subtitle": "Still warm, just for you."
+    },
+    {
+      "title": "Well, come in then.",
+      "subtitle": "Don't let the cold in."
+    },
+    {
+      "title": "Wipe your feet.",
+      "subtitle": "Coffee's ready."
+    },
+    {
+      "title": "You look exactly like I imagined.",
+      "subtitle": "Kettle just boiled."
+    },
+    {
+      "title": "Close the door.",
+      "subtitle": "Tea's getting cold."
+    },
+    {
+      "title": "Perfect timing actually.",
+      "subtitle": "Just poured a fresh one."
+    },
+    {
+      "title": "I was wondering.",
+      "subtitle": "Coffee's on. Sit down."
+    }
+  ],
+  "afternoon": [
+    {
+      "title": "Oh, you're back.",
+      "subtitle": "Kettle's going on."
+    },
+    {
+      "title": "There you are, finally.",
+      "subtitle": "I kept the pot warm."
+    },
+    {
+      "title": "You just missed the rush.",
+      "subtitle": "Quiet now. Good time for tea."
+    },
+    {
+      "title": "Grab a cup.",
+      "subtitle": "Just brewed a fresh pot."
+    },
+    {
+      "title": "Sit down already.",
+      "subtitle": "Earl Grey or coffee?"
+    },
+    {
+      "title": "I knew you'd be back.",
+      "subtitle": "Tea's still warm."
+    },
+    {
+      "title": "Been expecting you.",
+      "subtitle": "Milk and two sugars, yes?"
+    },
+    {
+      "title": "Coffee's hot.",
+      "subtitle": "Come in, close the door."
+    },
+    {
+      "title": "I made extra.",
+      "subtitle": "Good thing too."
+    },
+    {
+      "title": "Funny, I was just thinking about you.",
+      "subtitle": "Kettle just boiled."
+    },
+    {
+      "title": "Don't just stand there.",
+      "subtitle": "Pour yourself something."
+    },
+    {
+      "title": "Your usual spot is open.",
+      "subtitle": "Fresh pot on the counter."
+    },
+    {
+      "title": "Well, come in then.",
+      "subtitle": "Tea won't pour itself."
+    },
+    {
+      "title": "Good, I needed the company.",
+      "subtitle": "Coffee's just right."
+    },
+    {
+      "title": "You're late.",
+      "subtitle": "I saved you some anyway."
+    },
+    {
+      "title": "About time.",
+      "subtitle": "Kettle's been waiting."
+    },
+    {
+      "title": "I saved you something.",
+      "subtitle": "Still hot."
+    },
+    {
+      "title": "Perfect timing actually.",
+      "subtitle": "Just made a fresh brew."
+    },
+    {
+      "title": "Close the door.",
+      "subtitle": "Sit. Coffee's ready."
+    },
+    {
+      "title": "You look exactly like I imagined.",
+      "subtitle": "Cup's on the table."
+    }
+  ],
+  "evening": [
+    {
+      "title": "There you are.",
+      "subtitle": "Kettle's going on right now."
+    },
+    {
+      "title": "I was wondering.",
+      "subtitle": "Tea's still warm."
+    },
+    {
+      "title": "Come in, sit down.",
+      "subtitle": "Just brewed a fresh pot."
+    },
+    {
+      "title": "Good, I needed the company.",
+      "subtitle": "Evening tea is better with two."
+    },
+    {
+      "title": "Been expecting you.",
+      "subtitle": "Put the kettle on an hour ago."
+    },
+    {
+      "title": "Wipe your feet.",
+      "subtitle": "Tea's on the table."
+    },
+    {
+      "title": "Oh, you're back.",
+      "subtitle": "Good. I made extra."
+    },
+    {
+      "title": "Pull up a chair.",
+      "subtitle": "Coffee's still hot."
+    },
+    {
+      "title": "Your usual spot is open.",
+      "subtitle": "Sit. I'll pour."
+    },
+    {
+      "title": "Funny, I was just thinking about you.",
+      "subtitle": "Earl Grey's ready."
+    },
+    {
+      "title": "You just missed the rush.",
+      "subtitle": "Nice and quiet now."
+    },
+    {
+      "title": "I saved you something.",
+      "subtitle": "Kept it warm just in case."
+    },
+    {
+      "title": "Don't just stand there.",
+      "subtitle": "Tea's getting cold."
+    },
+    {
+      "title": "About time.",
+      "subtitle": "Kettle's been on twice already."
+    },
+    {
+      "title": "You're late.",
+      "subtitle": "Still saved you a cup."
+    },
+    {
+      "title": "Close the door.",
+      "subtitle": "Evening chill is coming in."
+    },
+    {
+      "title": "Well, come in then.",
+      "subtitle": "Fresh pot just dropped."
+    },
+    {
+      "title": "I made extra.",
+      "subtitle": "Evening calls for it."
+    },
+    {
+      "title": "Milk and two sugars, yes?",
+      "subtitle": "Already on it."
+    },
+    {
+      "title": "Perfect timing actually.",
+      "subtitle": "Just poured the evening brew."
+    }
+  ],
+  "night": [
+    {
+      "title": "Still here?",
+      "subtitle": "I'll put the kettle on."
+    },
+    {
+      "title": "Late one tonight.",
+      "subtitle": "Tea or something stronger?"
+    },
+    {
+      "title": "You came back.",
+      "subtitle": "Good. Pot's still warm."
+    },
+    {
+      "title": "Quiet tonight.",
+      "subtitle": "Just you and the kettle."
+    },
+    {
+      "title": "Close the door behind you.",
+      "subtitle": "Night air's cold."
+    },
+    {
+      "title": "Didn't think I'd see you this late.",
+      "subtitle": "Tea's on anyway."
+    },
+    {
+      "title": "I kept a cup aside.",
+      "subtitle": "Figured you'd be back."
+    },
+    {
+      "title": "Sit down. It's late.",
+      "subtitle": "Something warm first."
+    },
+    {
+      "title": "Last pot of the night.",
+      "subtitle": "Good timing."
+    },
+    {
+      "title": "You look like you need tea.",
+      "subtitle": "Already brewing."
+    },
+    {
+      "title": "Everyone else has gone.",
+      "subtitle": "Place is yours."
+    },
+    {
+      "title": "Night's quiet now.",
+      "subtitle": "Kettle just boiled."
+    },
+    {
+      "title": "Still warm.",
+      "subtitle": "Just for you."
+    },
+    {
+      "title": "Pull up a chair.",
+      "subtitle": "Night tea hits different."
+    },
+    {
+      "title": "I was about to close up.",
+      "subtitle": "Good thing I didn't."
+    },
+    {
+      "title": "One more cup.",
+      "subtitle": "Night's not over yet."
+    },
+    {
+      "title": "You made it.",
+      "subtitle": "Tea's waiting."
+    },
+    {
+      "title": "Funny seeing you this late.",
+      "subtitle": "Milk and two sugars?"
+    },
+    {
+      "title": "Last call.",
+      "subtitle": "Tea or coffee?"
+    },
+    {
+      "title": "No rush.",
+      "subtitle": "Kettle's on. Stay a while."
     }
   ]
 }

@@ -1,4 +1,4 @@
-const CACHE_NAME = "tutor-notes-v13";
+const CACHE_NAME = "tutor-notes-v14";
 
 const CORE_ASSETS = [
   "./catalog.json",
@@ -52,7 +52,10 @@ self.addEventListener("fetch", (event) => {
   const isVercelInsightsRequest = isSameOrigin && requestUrl.pathname.startsWith("/_vercel/");
   const acceptsHtml = (event.request.headers.get("accept") || "").includes("text/html");
   const isDocumentRequest = event.request.mode === "navigate" || acceptsHtml;
-  const isCatalogRequest = isSameOrigin && requestUrl.pathname.endsWith("/catalog.json");
+  const isFreshJsonDataRequest = (
+    isSameOrigin
+    && ["/catalog.json", "/greetings.json"].some((path) => requestUrl.pathname.endsWith(path))
+  );
   const isFreshAssetRequest = (
     isSameOrigin
     && ["script", "style", "worker"].includes(event.request.destination)
@@ -69,7 +72,7 @@ self.addEventListener("fetch", (event) => {
 
   event.respondWith(
     (async () => {
-      if (isCatalogRequest) {
+      if (isFreshJsonDataRequest) {
         try {
           const networkResponse = await fetch(event.request);
 
