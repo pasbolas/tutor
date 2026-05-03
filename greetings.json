@@ -1,0 +1,330 @@
+{
+  "morning": [
+    {
+      "title": "Good morning from the little study burrow.",
+      "subtitle": "Open a note and let the day start softly."
+    },
+    {
+      "title": "Morning light has found your notes.",
+      "subtitle": "Start with one small page and settle in."
+    },
+    {
+      "title": "Good morning, cozy thinker.",
+      "subtitle": "Your notes are tucked away and ready."
+    },
+    {
+      "title": "The burrow is awake.",
+      "subtitle": "Pick a note and warm up the brain gently."
+    },
+    {
+      "title": "Good morning, soft start.",
+      "subtitle": "A little reading is enough to begin."
+    },
+    {
+      "title": "Morning tea, warm notes.",
+      "subtitle": "Choose one topic and ease into it."
+    },
+    {
+      "title": "Good morning, little learner.",
+      "subtitle": "Your next note is waiting in its corner."
+    },
+    {
+      "title": "Fresh morning, quiet desk.",
+      "subtitle": "Open where you left off and take it slowly."
+    },
+    {
+      "title": "Morning glow in the note nook.",
+      "subtitle": "One idea at a time, nice and easy."
+    },
+    {
+      "title": "Good morning, study nest ready.",
+      "subtitle": "Curl up with a note and start small."
+    },
+    {
+      "title": "A soft morning for clear thoughts.",
+      "subtitle": "Let one note lead you into the day."
+    },
+    {
+      "title": "Good morning, tiny progress time.",
+      "subtitle": "Open a page and let the focus arrive."
+    },
+    {
+      "title": "Morning has padded in quietly.",
+      "subtitle": "Your notes are exactly where you left them."
+    },
+    {
+      "title": "Good morning, notes under lamplight.",
+      "subtitle": "Start gently and let the rhythm build."
+    },
+    {
+      "title": "The study corner is warm.",
+      "subtitle": "Pick one note and make it a little clearer."
+    },
+    {
+      "title": "Good morning, calm little scholar.",
+      "subtitle": "Today begins with one simple note."
+    },
+    {
+      "title": "Morning pages, soft focus.",
+      "subtitle": "Read a little and let it settle."
+    },
+    {
+      "title": "Good morning, burrow brain.",
+      "subtitle": "Wake up slowly with a familiar topic."
+    },
+    {
+      "title": "A small note for a fresh morning.",
+      "subtitle": "No rush, just a gentle first step."
+    },
+    {
+      "title": "Good morning, welcome back in.",
+      "subtitle": "Your study nook kept your place."
+    }
+  ],
+  "afternoon": [
+    {
+      "title": "Good afternoon, back to the burrow.",
+      "subtitle": "Settle in and pick up the thread."
+    },
+    {
+      "title": "Afternoon light, quiet notes.",
+      "subtitle": "Choose one topic and keep it gentle."
+    },
+    {
+      "title": "Good afternoon, little study keeper.",
+      "subtitle": "Your notes are neatly waiting."
+    },
+    {
+      "title": "The note nook is still warm.",
+      "subtitle": "Open a page and continue softly."
+    },
+    {
+      "title": "Afternoon study, tucked in nicely.",
+      "subtitle": "A small session can still do plenty."
+    },
+    {
+      "title": "Good afternoon, cozy focus.",
+      "subtitle": "Pick one note and let it unfold."
+    },
+    {
+      "title": "A calm afternoon in the shelves.",
+      "subtitle": "Your next idea is waiting nearby."
+    },
+    {
+      "title": "Good afternoon, soft little reset.",
+      "subtitle": "Come back to your notes without rushing."
+    },
+    {
+      "title": "Afternoon pages, warm desk.",
+      "subtitle": "Read one section and keep the pace easy."
+    },
+    {
+      "title": "Good afternoon, burrow lights on.",
+      "subtitle": "Your notes are ready for a quiet return."
+    },
+    {
+      "title": "A little afternoon study spell.",
+      "subtitle": "Open a note and let one idea click."
+    },
+    {
+      "title": "Good afternoon, tucked-away learner.",
+      "subtitle": "There is a note waiting with your name on it."
+    },
+    {
+      "title": "Afternoon calm, notes nearby.",
+      "subtitle": "Pick up from the last warm thought."
+    },
+    {
+      "title": "Good afternoon, steady little scholar.",
+      "subtitle": "One clear step is enough to continue."
+    },
+    {
+      "title": "The burrow has kept your place.",
+      "subtitle": "Come back in and follow the next note."
+    },
+    {
+      "title": "Afternoon glow over the pages.",
+      "subtitle": "Choose one idea and stay with it."
+    },
+    {
+      "title": "Good afternoon, cozy brain online.",
+      "subtitle": "Let the notes guide you back in."
+    },
+    {
+      "title": "A soft desk, a clear note.",
+      "subtitle": "That is enough for a useful afternoon."
+    },
+    {
+      "title": "Good afternoon, study shelf open.",
+      "subtitle": "Your next topic is waiting quietly."
+    },
+    {
+      "title": "Afternoon in the little note den.",
+      "subtitle": "Settle in and make one thing clearer."
+    }
+  ],
+  "evening": [
+    {
+      "title": "Good evening, the burrow is glowing.",
+      "subtitle": "Settle in and pick up where you left off."
+    },
+    {
+      "title": "Evening notes under soft light.",
+      "subtitle": "Review gently and let the ideas settle."
+    },
+    {
+      "title": "Good evening, cozy note explorer.",
+      "subtitle": "Your next page is waiting in the quiet."
+    },
+    {
+      "title": "The study lamp is on.",
+      "subtitle": "Open a note and keep the pace soft."
+    },
+    {
+      "title": "Evening has tucked the room in.",
+      "subtitle": "A little progress fits nicely here."
+    },
+    {
+      "title": "Good evening, warm little thinker.",
+      "subtitle": "Pick one topic and sit with it awhile."
+    },
+    {
+      "title": "Evening pages, calm hands.",
+      "subtitle": "Read slowly and let one idea land."
+    },
+    {
+      "title": "Good evening, notes by lamplight.",
+      "subtitle": "Continue gently from the last page."
+    },
+    {
+      "title": "A quiet evening in the note nook.",
+      "subtitle": "Open something familiar and ease in."
+    },
+    {
+      "title": "Good evening, burrow mode.",
+      "subtitle": "The notes are warm, the pace is yours."
+    },
+    {
+      "title": "Evening study, soft and steady.",
+      "subtitle": "One clean review can be enough."
+    },
+    {
+      "title": "Good evening, little library light.",
+      "subtitle": "Your notes are waiting on the shelf."
+    },
+    {
+      "title": "The room is quiet, the notes are open.",
+      "subtitle": "Make one idea clearer before you stop."
+    },
+    {
+      "title": "Good evening, gentle revision.",
+      "subtitle": "Settle in and follow the next thought."
+    },
+    {
+      "title": "Evening glow, study den ready.",
+      "subtitle": "Pick a note and let the world get quiet."
+    },
+    {
+      "title": "Good evening, tucked-in focus.",
+      "subtitle": "A few calm minutes still count."
+    },
+    {
+      "title": "The burrow feels made for revision.",
+      "subtitle": "Open one page and take it slowly."
+    },
+    {
+      "title": "Evening notes, warm and simple.",
+      "subtitle": "No rush, just one useful step."
+    },
+    {
+      "title": "Good evening, soft study light.",
+      "subtitle": "Your last note is ready when you are."
+    },
+    {
+      "title": "A cozy evening for one clear idea.",
+      "subtitle": "Choose a topic and let it settle."
+    }
+  ],
+  "night": [
+    {
+      "title": "Good night, quiet little burrow.",
+      "subtitle": "Keep it light and let the ideas rest."
+    },
+    {
+      "title": "Night notes under a small lamp.",
+      "subtitle": "Review gently and stop before it gets heavy."
+    },
+    {
+      "title": "Good night, cozy thinker.",
+      "subtitle": "One small note is enough for now."
+    },
+    {
+      "title": "The burrow is soft and sleepy.",
+      "subtitle": "Read a little, then let the brain rest."
+    },
+    {
+      "title": "Night mode in the note nook.",
+      "subtitle": "Open one short page and keep it peaceful."
+    },
+    {
+      "title": "Good night, warm study corner.",
+      "subtitle": "A quiet review can close the day nicely."
+    },
+    {
+      "title": "Late notes, soft blanket energy.",
+      "subtitle": "Pick something small and finish gently."
+    },
+    {
+      "title": "Good night, little library mouse.",
+      "subtitle": "One idea before sleep is plenty."
+    },
+    {
+      "title": "The shelves are quiet tonight.",
+      "subtitle": "Review lightly and leave the rest for morning."
+    },
+    {
+      "title": "Night glow, notes tucked close.",
+      "subtitle": "Keep it simple and call it progress."
+    },
+    {
+      "title": "Good night, moonlit notes.",
+      "subtitle": "Let one idea land softly."
+    },
+    {
+      "title": "Late-night study, burrow edition.",
+      "subtitle": "No big mission, just one clear page."
+    },
+    {
+      "title": "Good night, soft focus.",
+      "subtitle": "Read slowly and let the day close."
+    },
+    {
+      "title": "The little den is quiet now.",
+      "subtitle": "A tiny review is more than enough."
+    },
+    {
+      "title": "Night notes, calm paws.",
+      "subtitle": "Step lightly through one topic."
+    },
+    {
+      "title": "Good night, tucked-away scholar.",
+      "subtitle": "Your notes can wait after this one page."
+    },
+    {
+      "title": "A sleepy corner for sleepy notes.",
+      "subtitle": "Keep it gentle and finish cleanly."
+    },
+    {
+      "title": "Good night, study softly.",
+      "subtitle": "One small thought, then rest."
+    },
+    {
+      "title": "The burrow is dim and peaceful.",
+      "subtitle": "Open one note only if it feels kind."
+    },
+    {
+      "title": "Night has settled over the pages.",
+      "subtitle": "Review a little and let tomorrow hold the rest."
+    }
+  ]
+}

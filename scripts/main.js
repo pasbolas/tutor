@@ -9,7 +9,8 @@ import {
   initScrollToTop,
   initSidebarSettings,
   initStudySettingsMenu,
-} from "./modules/ui.js";
+} from "./modules/ui.js?v=20260503-2";
+import { initDashboardGreeting } from "./modules/greetings.js?v=20260503-1";
 import { initCatalogSidebar, initNotesHub } from "./modules/catalog.js";
 import { initMarkdownPage, initOutlineToggle } from "./modules/markdown.js";
 
@@ -27,6 +28,7 @@ window.addEventListener("DOMContentLoaded", () => {
   initOutlineToggle();
   initCatalogSidebar();
   initMobileSidebarDrawer();
+  initDashboardGreeting();
   initDashboardMobileHeaderScroll();
   initMarkdownPage();
   initNotesHub();

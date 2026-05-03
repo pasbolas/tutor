@@ -7,6 +7,7 @@
     <meta name="description" content="My law notes on GDPR, privacy, data protection principles, data subject rights, breach reporting, and compliance." />
     <meta name="theme-color" content="#a85a4d" />
     <meta name="application-name" content="Tutor Notes" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="Tutor Notes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -26,7 +27,14 @@
         (window.vaq = window.vaq || []).push(arguments);
       };
     </script>
-    <script defer src="/_vercel/insights/script.js"></script>
+    <script>
+      if (!["localhost", "127.0.0.1", "::1"].includes(window.location.hostname)) {
+        const script = document.createElement("script");
+        script.defer = true;
+        script.src = "/_vercel/insights/script.js";
+        document.head.appendChild(script);
+      }
+    </script>
   </head>
   <body>
     <div class="editorial-loader" data-editorial-loader aria-hidden="true">

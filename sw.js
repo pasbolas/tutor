@@ -1,7 +1,8 @@
-const CACHE_NAME = "tutor-notes-v11";
+const CACHE_NAME = "tutor-notes-v13";
 
 const CORE_ASSETS = [
   "./catalog.json",
+  "./greetings.json",
   "./assets/icons/app-icon-192.png",
   "./assets/icons/app-icon-512.png",
   "./assets/icons/apple-touch-icon.png",
@@ -48,6 +49,7 @@ self.addEventListener("fetch", (event) => {
 
   const requestUrl = new URL(event.request.url);
   const isSameOrigin = requestUrl.origin === self.location.origin;
+  const isVercelInsightsRequest = isSameOrigin && requestUrl.pathname.startsWith("/_vercel/");
   const acceptsHtml = (event.request.headers.get("accept") || "").includes("text/html");
   const isDocumentRequest = event.request.mode === "navigate" || acceptsHtml;
   const isCatalogRequest = isSameOrigin && requestUrl.pathname.endsWith("/catalog.json");
@@ -55,6 +57,15 @@ self.addEventListener("fetch", (event) => {
     isSameOrigin
     && ["script", "style", "worker"].includes(event.request.destination)
   );
+
+  if (isVercelInsightsRequest) {
+    event.respondWith(new Response("", {
+      headers: {
+        "Content-Type": "application/javascript; charset=utf-8"
+      }
+    }));
+    return;
+  }
 
   event.respondWith(
     (async () => {
@@ -98,7 +109,12 @@ self.addEventListener("fetch", (event) => {
             return cachedResponse;
           }
 
-          return caches.match("./index.html");
+          if (isDocumentRequest) {
+            const fallbackResponse = await caches.match("./index.html");
+            return fallbackResponse || Response.error();
+          }
+
+          return Response.error();
         }
       }
 
@@ -120,7 +136,8 @@ self.addEventListener("fetch", (event) => {
         return networkResponse;
       } catch {
         if (event.request.mode === "navigate") {
-          return caches.match("./index.html");
+          const fallbackResponse = await caches.match("./index.html");
+          return fallbackResponse || Response.error();
         }
 
         return Response.error();

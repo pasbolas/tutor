@@ -7,6 +7,7 @@
     <meta name="description" content="A minimal tutor notes index with expandable subjects and note links." />
     <meta name="theme-color" content="#a85a4d" />
     <meta name="application-name" content="Tutor Notes" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="Tutor Notes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -19,14 +20,21 @@
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles/main.css?v=20260429-20" />
+    <link rel="stylesheet" href="./styles/main.css?v=20260503-5" />
     <link rel="stylesheet" href="./styles/feedback.css?v=20260423-4" />
     <script>
       window.va = window.va || function () {
         (window.vaq = window.vaq || []).push(arguments);
       };
     </script>
-    <script defer src="/_vercel/insights/script.js"></script>
+    <script>
+      if (!["localhost", "127.0.0.1", "::1"].includes(window.location.hostname)) {
+        const script = document.createElement("script");
+        script.defer = true;
+        script.src = "/_vercel/insights/script.js";
+        document.head.appendChild(script);
+      }
+    </script>
   </head>
   <body>
     <div class="editorial-loader" data-editorial-loader aria-hidden="true">
@@ -118,6 +126,11 @@
         </aside>
 
         <main class="study-shell notes-shell notes-shell--minimal tutor-dashboard__main" id="dashboard">
+          <header class="tutor-dashboard__greeting" aria-label="Dashboard greeting">
+            <h1 data-dashboard-greeting>Good evening, note explorer.</h1>
+            <p data-dashboard-greeting-subtitle>Pick up right where you left off.</p>
+          </header>
+
           <section class="tutor-continue" aria-labelledby="continue-heading">
             <h2 id="continue-heading" class="tutor-section-title">Continue Where You Left Off</h2>
             <article class="tutor-hero-note">
@@ -237,9 +250,8 @@
           </section>
 
           <footer class="tutor-footer" aria-label="Site footer">
-            <a href="./README.md">About</a>
-            <a href="https://github.com/pasbolas" rel="me noopener" target="_blank">GitHub</a>
-            <span>@Akshat</span>
+            <p><span>Tip</span><span>Use CTRL K to quickly search your notes.</span></p>
+            <p><span>Made by</span><a href="https://github.com/pasbolas" rel="me noopener" target="_blank">Akshat</a></p>
           </footer>
         </main>
       </div>
@@ -255,6 +267,6 @@
     <script src="./scripts/page-transitions.js?v=20260423-4"></script>
     <script src="./scripts/interaction/audio.js?v=20260428-1"></script>
     <script src="./scripts/interaction/trails.js?v=20260423-4"></script>
-    <script type="module" src="./scripts/main.js?v=20260429-10"></script>
+    <script type="module" src="./scripts/main.js?v=20260503-4"></script>
   </body>
 </html>
