@@ -673,7 +673,7 @@ export function initOutlineToggle() {
     return;
   }
 
-  const mobileQuery = window.matchMedia("(max-width: 780px)");
+  const mobileQuery = window.matchMedia("(max-width: 1080px)");
   let scrollAnimationFrame = 0;
   let isProgrammaticScroll = false;
 
@@ -850,7 +850,7 @@ function initOutlineTracking() {
     return;
   }
 
-  const mobileQuery = window.matchMedia("(max-width: 780px)");
+  const mobileQuery = window.matchMedia("(max-width: 1080px)");
   const linkMap = new Map(
     Array.from(outlineLinks).map((link) => [link.dataset.outlineLink, link])
   );

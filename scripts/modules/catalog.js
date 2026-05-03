@@ -44,15 +44,21 @@ function normalizeHubTree(items, parentId = "") {
   });
 }
 
-async function loadNotesCatalog(hub) {
-  const catalogUrl = hub.dataset.notesCatalog;
-  if (catalogUrl) {
-    const response = await fetch(catalogUrl, { cache: "no-store" });
-    if (!response.ok) {
-      throw new Error(`Failed to load ${catalogUrl} (${response.status})`);
-    }
+const DEFAULT_CATALOG_URL = "/catalog.json";
 
-    return response.json();
+async function fetchCatalog(catalogUrl) {
+  const response = await fetch(catalogUrl, { cache: "no-store" });
+  if (!response.ok) {
+    throw new Error(`Failed to load ${catalogUrl} (${response.status})`);
+  }
+
+  return response.json();
+}
+
+async function loadNotesCatalog(hub) {
+  const catalogUrl = hub.dataset.notesCatalog || DEFAULT_CATALOG_URL;
+  if (catalogUrl) {
+    return fetchCatalog(catalogUrl);
   }
 
   const dataNode = document.querySelector("[data-notes-tree]");
@@ -753,7 +759,7 @@ function renderDashboardCatalog(tree, activeHref) {
 }
 
 export async function initCatalogSidebar() {
-  const sidebar = document.querySelector(".tutor-sidebar[data-sidebar-catalog]");
+  const sidebar = document.querySelector(".tutor-sidebar");
   const subjectsRoot = document.querySelector("[data-sidebar-subjects-root]");
   if (!sidebar || !subjectsRoot) {
     initTutorSidebar();
@@ -762,11 +768,7 @@ export async function initCatalogSidebar() {
 
   let config;
   try {
-    const response = await fetch(sidebar.dataset.sidebarCatalog, { cache: "no-store" });
-    if (!response.ok) {
-      throw new Error(`Failed to load ${sidebar.dataset.sidebarCatalog}`);
-    }
-    config = await response.json();
+    config = await fetchCatalog(sidebar.dataset.sidebarCatalog || DEFAULT_CATALOG_URL);
   } catch {
     initTutorSidebar();
     return;

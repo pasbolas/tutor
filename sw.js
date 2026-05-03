@@ -1,6 +1,7 @@
-const CACHE_NAME = "tutor-notes-v10";
+const CACHE_NAME = "tutor-notes-v11";
 
 const CORE_ASSETS = [
+  "./catalog.json",
   "./assets/icons/app-icon-192.png",
   "./assets/icons/app-icon-512.png",
   "./assets/icons/apple-touch-icon.png",
@@ -49,6 +50,7 @@ self.addEventListener("fetch", (event) => {
   const isSameOrigin = requestUrl.origin === self.location.origin;
   const acceptsHtml = (event.request.headers.get("accept") || "").includes("text/html");
   const isDocumentRequest = event.request.mode === "navigate" || acceptsHtml;
+  const isCatalogRequest = isSameOrigin && requestUrl.pathname.endsWith("/catalog.json");
   const isFreshAssetRequest = (
     isSameOrigin
     && ["script", "style", "worker"].includes(event.request.destination)
@@ -56,6 +58,28 @@ self.addEventListener("fetch", (event) => {
 
   event.respondWith(
     (async () => {
+      if (isCatalogRequest) {
+        try {
+          const networkResponse = await fetch(event.request);
+
+          if (networkResponse && networkResponse.ok) {
+            const responseToCache = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, responseToCache);
+            });
+          }
+
+          return networkResponse;
+        } catch {
+          const cachedResponse = await caches.match(event.request);
+          if (cachedResponse) {
+            return cachedResponse;
+          }
+
+          return Response.error();
+        }
+      }
+
       if (isSameOrigin && (isDocumentRequest || isFreshAssetRequest)) {
         try {
           const networkResponse = await fetch(event.request);

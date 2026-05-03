@@ -9,6 +9,7 @@ The app is intentionally lightweight. Lesson pages fetch markdown at runtime, re
 ```text
 .
 +-- index.html
++-- catalog.json
 +-- package.json
 +-- manifest.webmanifest
 +-- sw.js
@@ -24,8 +25,6 @@ The app is intentionally lightweight. Lesson pages fetch markdown at runtime, re
 |   +-- programming/
 |       +-- *.html
 |       +-- *.md
-+-- data/
-|   +-- notes-catalog.json
 +-- scripts/
 |   +-- build-pages.js    Generates HTML pages from shared templates
 |   +-- main.js           Module entrypoint for app features
@@ -74,7 +73,7 @@ data-markdown-image-base="./lesson-images/"
 
 `scripts/main.js` fetches the markdown file, parses supported markdown blocks, renders the study page, builds the section outline, and updates the page stats.
 
-The home page does not hard-code the subject tree anymore. It reads `data/notes-catalog.json`, then renders the expandable subject list from that data.
+The home page does not hard-code the subject tree anymore. It reads the root `catalog.json`, then renders the expandable subject list from that data.
 
 ## Adding A Lesson
 
@@ -83,7 +82,7 @@ The home page does not hard-code the subject tree anymore. It reads `data/notes-
 2. Create a lesson body partial under `templates/pages/` that mirrors the content markup you want.
 3. Add a page entry to `templates/pages.json` with the metadata and body path.
 4. If the lesson has images, place them in a kebab-case image folder and set `data-markdown-image-base` in the body partial.
-5. Add the new lesson to `data/notes-catalog.json` so it appears on the home page.
+5. Add the new lesson to `catalog.json` so it appears anywhere the shared catalog is rendered.
 6. Run the build to regenerate HTML pages.
 
 ## Build
@@ -124,7 +123,7 @@ This project uses a tiny static build step to keep the HTML templates centralize
 Recommended next refactor, after the public cleanup:
 
 1. Replace remaining `window.__tutor...` state with explicit module APIs once scripts are loaded through a module entrypoint.
-2. Keep `data/notes-catalog.json` as the source of truth for the home page and generated navigation.
+2. Keep `catalog.json` as the source of truth for the home page and generated navigation.
 
 ## Refactor History
 
@@ -132,6 +131,6 @@ Recommended next refactor, after the public cleanup:
 - Moved styles into `styles/` and scripts into `scripts/`.
 - Grouped shared assets into `assets/decorative/`, `assets/icons/`, and `assets/loading/`.
 - Renamed lesson pages, markdown files, and image folders to a consistent kebab-case convention.
-- Extracted the home page notes tree into `data/notes-catalog.json`.
+- Extracted the notes tree into root-level `catalog.json`.
 - Updated PWA paths in `manifest.webmanifest`, `sw.js`, and `scripts/main.js`.
 - Removed the light-mode toggle path; the public UI is now dark-only.

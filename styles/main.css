@@ -2716,6 +2716,132 @@ body.is-page-scrolling .notes-minimal {
     left: auto;
     right: 0.6rem;
   }
+
+  .study-outline {
+    position: sticky;
+    top: 0.75rem;
+    display: grid;
+    grid-template-rows: auto auto;
+    height: auto;
+    max-height: none;
+    padding: 0.7rem;
+    overflow: visible;
+    border-color: rgba(224, 138, 118, 0.24);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0)),
+      rgba(31, 26, 23, 0.96);
+    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.28);
+    backdrop-filter: blur(12px);
+    z-index: 8;
+  }
+
+  .study-outline__header {
+    display: grid;
+    grid-template-columns: 2.55rem minmax(9rem, auto) minmax(0, 1fr);
+    gap: 0.5rem;
+    align-items: stretch;
+  }
+
+  .study-outline__header h2,
+  .study-outline .study-kicker,
+  .study-outline__lede,
+  .study-outline__home,
+  .study-outline__actions {
+    display: none;
+  }
+
+  .study-outline__back {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.55rem;
+    min-width: 2.55rem;
+    min-height: 2.38rem;
+    overflow: hidden;
+    border: 1px solid rgba(224, 138, 118, 0.28);
+    border-radius: 0.35rem;
+    background: rgba(224, 138, 118, 0.08);
+  }
+
+  .study-outline__back img {
+    display: block;
+    width: 1.25rem;
+    height: 1.25rem;
+    object-fit: contain;
+    filter: brightness(1.28) saturate(1.2);
+  }
+
+  .study-outline__back span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .study-outline__toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 2.38rem;
+    padding: 0.58rem 0.82rem;
+    border-color: rgba(224, 138, 118, 0.28);
+    border-radius: 0.35rem;
+    background: rgba(224, 138, 118, 0.1);
+    color: var(--accent);
+  }
+
+  .study-outline__slide-title {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 2.38rem;
+    padding: 0.58rem 0.82rem;
+    border-radius: 0.35rem;
+    background: rgba(224, 138, 118, 0.08);
+    color: var(--accent);
+    text-align: center;
+  }
+
+  .study-outline__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    height: auto;
+    max-height: 0;
+    margin-top: 0;
+    padding: 0;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition: max-height 220ms ease, opacity 180ms ease, margin-top 180ms ease;
+  }
+
+  .study-outline.is-open .study-outline__list {
+    max-height: min(48vh, 25rem);
+    margin-top: 0.7rem;
+    padding: 0.2rem;
+    overflow: auto;
+    opacity: 1;
+    pointer-events: auto;
+    scrollbar-color: rgba(224, 138, 118, 0.48) rgba(255, 255, 255, 0.04);
+  }
+
+  .study-outline.is-open .study-outline__link {
+    border-color: rgba(232, 205, 181, 0.13);
+    background: rgba(255, 255, 255, 0.025);
+    color: rgba(243, 234, 223, 0.84);
+  }
+
+  .study-outline.is-open .study-outline__link:hover,
+  .study-outline.is-open .study-outline__link:focus-visible,
+  .study-outline.is-open .study-outline__link.is-active {
+    border-color: rgba(224, 138, 118, 0.32);
+    background: rgba(224, 138, 118, 0.11);
+    color: var(--ink);
+  }
 }
 
 @media (max-width: 780px) {
@@ -2771,11 +2897,11 @@ body.is-page-scrolling .notes-minimal {
     padding: 0.45rem;
     border: 1px solid rgba(168, 90, 77, 0.28);
     border-radius: 0.45rem;
-    border-color: rgba(168, 90, 77, 0.28);
+    border-color: rgba(224, 138, 118, 0.24);
     background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0.68)),
-      rgba(248, 244, 238, 0.97);
-    box-shadow: 0 16px 34px rgba(39, 31, 28, 0.14);
+      linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0)),
+      rgba(31, 26, 23, 0.97);
+    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.34);
     backdrop-filter: blur(14px);
     z-index: 12;
   }
@@ -2806,15 +2932,15 @@ body.is-page-scrolling .notes-minimal {
     height: 2.34rem;
     min-height: 2.34rem;
     overflow: hidden;
-    border: 1px solid rgba(168, 90, 77, 0.24);
+    border: 1px solid rgba(224, 138, 118, 0.28);
     border-radius: 0.35rem;
     background:
-      linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(168, 90, 77, 0.08)),
-      rgba(248, 244, 238, 0.7);
+      linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(224, 138, 118, 0.08)),
+      rgba(35, 29, 25, 0.9);
     color: transparent;
     box-shadow:
-      inset 0 0 0 1px rgba(255, 255, 255, 0.36),
-      0 8px 16px rgba(39, 31, 28, 0.08);
+      inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+      0 8px 16px rgba(0, 0, 0, 0.18);
     transition:
       border-color 140ms ease,
       background-color 140ms ease,
@@ -2826,8 +2952,8 @@ body.is-page-scrolling .notes-minimal {
     width: 1.28rem;
     height: 1.28rem;
     object-fit: contain;
-    filter: none;
-    opacity: 0.92;
+    filter: brightness(1.28) saturate(1.2);
+    opacity: 0.96;
     transform: translateX(-0.02rem);
     transition:
       filter 160ms ease,
@@ -2846,8 +2972,8 @@ body.is-page-scrolling .notes-minimal {
 
   .study-outline__back:hover,
   .study-outline__back:focus-visible {
-    border-color: rgba(168, 90, 77, 0.46);
-    background-color: rgba(168, 90, 77, 0.1);
+    border-color: rgba(224, 138, 118, 0.44);
+    background-color: rgba(224, 138, 118, 0.12);
     transform: translateX(-2px);
   }
 
@@ -2867,8 +2993,10 @@ body.is-page-scrolling .notes-minimal {
     min-height: 2.34rem;
     padding: 0.56rem 0.78rem;
     border-radius: 0.35rem;
-    background: rgba(168, 90, 77, 0.09);
-    box-shadow: 0 8px 16px rgba(168, 90, 77, 0.08);
+    border-color: rgba(224, 138, 118, 0.28);
+    background: rgba(224, 138, 118, 0.1);
+    color: var(--ink);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.16);
   }
 
   .study-outline__slide-title {
@@ -2882,7 +3010,8 @@ body.is-page-scrolling .notes-minimal {
     align-self: stretch;
     padding: 0.56rem 0.68rem;
     border-radius: 0.35rem;
-    background: rgba(168, 90, 77, 0.05);
+    background: rgba(224, 138, 118, 0.08);
+    color: var(--accent);
     text-align: center;
     line-height: 1.15;
     white-space: normal;
@@ -2942,7 +3071,7 @@ body.is-page-scrolling .notes-minimal {
     width: 100%;
     margin-top: 0.95rem;
     padding-top: 0.75rem;
-    border-top: 1px solid rgba(168, 90, 77, 0.18);
+    border-top: 1px solid rgba(224, 138, 118, 0.2);
     clear: both;
   }
 
@@ -2990,6 +3119,29 @@ body.is-page-scrolling .notes-minimal {
     opacity: 1;
     pointer-events: auto;
     padding: 0.2rem 0.2rem 0.25rem 0.2rem;
+    scrollbar-color: rgba(224, 138, 118, 0.48) rgba(255, 255, 255, 0.04);
+  }
+
+  .study-outline.is-open .study-outline__list::-webkit-scrollbar-thumb {
+    background: rgba(224, 138, 118, 0.48);
+  }
+
+  .study-outline.is-open .study-outline__link {
+    border-color: rgba(232, 205, 181, 0.13);
+    background: rgba(255, 255, 255, 0.025);
+    color: rgba(243, 234, 223, 0.82);
+  }
+
+  .study-outline.is-open .study-outline__link span:first-child {
+    color: var(--accent);
+  }
+
+  .study-outline.is-open .study-outline__link:hover,
+  .study-outline.is-open .study-outline__link:focus-visible,
+  .study-outline.is-open .study-outline__link.is-active {
+    border-color: rgba(224, 138, 118, 0.32);
+    background: rgba(224, 138, 118, 0.11);
+    color: var(--ink);
   }
 
   .study-markdown__section-header,

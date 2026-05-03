@@ -34,6 +34,23 @@
  "mainJsVersion": "20260429-2"
  },
  {
+ "output": "content/programming/functions_2.html",
+ "body": "templates/pages/content/programming/functions_2.html",
+ "basePath": "../../",
+ "title": "C Functions: Parameters, Pointers, and Arrays | Tutor Notes",
+ "description": "My tutoring notes on C function parameter passing, pointer parameters, 1-D arrays, 2-D arrays, and code tracing practice.",
+ "loaderMicro": "Programming / Functions",
+ "loaderMarkLabel": "F2 mark",
+ "loaderMarkA": "F",
+ "loaderMarkB": "2",
+ "mainCssVersion": "20260423-4",
+ "feedbackCssVersion": "20260423-4",
+ "pageTransitionsVersion": "20260423-4",
+ "audioVersion": "20260428-1",
+ "trailsVersion": "20260423-4",
+ "mainJsVersion": "20260429-2"
+ },
+ {
  "output": "content/programming/pointer-array.html",
  "body": "templates/pages/content/programming/pointer-array.html",
  "basePath": "../../",
