@@ -36,13 +36,23 @@
   };
 
   const profile = getSitePerformanceProfile();
+  const CURSOR_STORAGE_KEY = "tutor-notes-cursor-mode";
+
+  const getInitialCursorMode = () => {
+    try {
+      const value = window.localStorage.getItem(CURSOR_STORAGE_KEY);
+      return value === "blob" ? "blob" : "native";
+    } catch {
+      return "native";
+    }
+  };
 
   const initBlobCursor = () => {
     const canUseBlobCursor = !profile.coarsePointer && profile.hoverCapable && !profile.smallViewport;
     let cursor = null;
     let blob = null;
     let dot = null;
-    let mode = "blob";
+    let mode = "native";
     let mouseX = window.innerWidth / 2;
     let mouseY = window.innerHeight / 2;
     let blobX = mouseX;
@@ -321,7 +331,7 @@
     window.addEventListener("scroll", handleScroll, { passive: true });
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
-    setMode("blob");
+    setMode(getInitialCursorMode());
 
     window.addEventListener("pagehide", () => {
       destroyCursor();
