@@ -14,13 +14,37 @@
             <span class="pdf-reader__code">DC_02</span>
             <span class="pdf-reader__name">Data Communication</span>
           </span>
+          <span class="pdf-reader__badge" data-pdf-page-badge>1 / 10</span>
         </div>
-        <div class="pdf-reader__dock-group">
+        <div class="pdf-reader__dock-group pdf-reader__dock-group--tools">
+          <button class="pdf-reader__icon-button pdf-reader__icon-button--ghost" type="button" aria-label="Search PDF">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="11" cy="11" r="7" />
+              <path d="m16 16 5 5" />
+            </svg>
+          </button>
+          <button class="pdf-reader__pill-button pdf-reader__pill-button--open pdf-reader__pill-button--header" type="button" data-pdf-open-local>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3.75 7.25h6.2l1.55 1.8h8.75v8.95a2 2 0 0 1-2 2H5.75a2 2 0 0 1-2-2V7.25Z" />
+              <path d="M3.75 9.05h16.5" />
+            </svg>
+            <span>Open</span>
+          </button>
+          <button class="pdf-reader__icon-button pdf-reader__icon-button--ghost" type="button" aria-label="More options">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="5" r="1.6" />
+              <circle cx="12" cy="12" r="1.6" />
+              <circle cx="12" cy="19" r="1.6" />
+            </svg>
+          </button>
+        </div>
+        <div class="pdf-reader__dock-group pdf-reader__dock-group--nav">
           <button class="pdf-reader__text-button" type="button" aria-label="Previous page" data-pdf-prev>
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="m15 18-6-6 6-6" />
             </svg>
           </button>
+          <span class="pdf-reader__page-label" data-pdf-page-label>1 / 10</span>
           <input class="pdf-reader__page-input" type="number" min="1" value="1" aria-label="Page number" data-pdf-page-input />
           <span class="pdf-reader__count">/ <span data-pdf-total-pages>0</span></span>
           <button class="pdf-reader__text-button" type="button" aria-label="Next page" data-pdf-next>
@@ -29,7 +53,7 @@
             </svg>
           </button>
         </div>
-        <div class="pdf-reader__dock-group">
+        <div class="pdf-reader__dock-group pdf-reader__dock-group--zoom">
           <button class="pdf-reader__text-button" type="button" aria-label="Zoom out" data-pdf-zoom-out>
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M5 12h14" />

@@ -14,6 +14,14 @@ const getRequiredElement = (root, selector) => {
   return element;
 };
 
+const getRequiredElements = (root, selector) => {
+  const elements = Array.from(root.querySelectorAll(selector));
+  if (!elements.length) {
+    throw new Error(`Missing PDF reader elements: ${selector}`);
+  }
+  return elements;
+};
+
 class SimplePDFReader {
   constructor(root) {
     this.root = root;
@@ -40,10 +48,15 @@ class SimplePDFReader {
     this.loading = getRequiredElement(root, "[data-pdf-loading]");
     this.error = getRequiredElement(root, "[data-pdf-error]");
     this.retryButton = getRequiredElement(root, "[data-pdf-retry]");
+    this.dock = getRequiredElement(root, ".pdf-reader__dock");
+    this.toolsGroup = getRequiredElement(root, ".pdf-reader__dock-group--tools");
+    this.navGroup = getRequiredElement(root, ".pdf-reader__dock-group--nav");
+    this.zoomGroup = getRequiredElement(root, ".pdf-reader__dock-group--zoom");
+    this.actionsGroup = getRequiredElement(root, ".pdf-reader__dock-group--actions");
     this.scrollRoot = getRequiredElement(root, "[data-pdf-scroll]");
     this.pagesRoot = getRequiredElement(root, "[data-pdf-pages]");
     this.backButton = getRequiredElement(root, "[data-pdf-back]");
-    this.openLocalButton = getRequiredElement(root, "[data-pdf-open-local]");
+    this.openLocalButtons = getRequiredElements(root, "[data-pdf-open-local]");
     this.fileInput = getRequiredElement(root, "[data-pdf-file-input]");
     this.downloadLink = getRequiredElement(root, "[data-pdf-download]");
     this.printButton = getRequiredElement(root, "[data-pdf-print]");
@@ -51,14 +64,20 @@ class SimplePDFReader {
     this.nextButton = getRequiredElement(root, "[data-pdf-next]");
     this.pageInput = getRequiredElement(root, "[data-pdf-page-input]");
     this.totalPages = getRequiredElement(root, "[data-pdf-total-pages]");
+    this.pageLabel = root.querySelector("[data-pdf-page-label]");
+    this.pageBadge = root.querySelector("[data-pdf-page-badge]");
     this.zoomLabel = getRequiredElement(root, "[data-pdf-zoom-label]");
     this.zoomOutButton = getRequiredElement(root, "[data-pdf-zoom-out]");
     this.zoomInButton = getRequiredElement(root, "[data-pdf-zoom-in]");
     this.fitWidthButton = getRequiredElement(root, "[data-pdf-fit-width]");
+    this.mobileControls = null;
+    this.mobileControlsRow = null;
+    this.actionsPlacementIsBottom = false;
   }
 
   async init() {
     this.bindEvents();
+    this.updateActionsPlacement();
     this.setSource(this.sourceUrl, this.sourceName);
     await this.loadPdf(this.sourceUrl, this.sourceName);
   }
@@ -72,7 +91,9 @@ class SimplePDFReader {
       window.location.href = "../../index.html";
     });
 
-    this.openLocalButton.addEventListener("click", () => this.fileInput.click());
+    this.openLocalButtons.forEach((button) => {
+      button.addEventListener("click", () => this.fileInput.click());
+    });
     this.fileInput.addEventListener("change", () => this.openSelectedFile());
     this.printButton.addEventListener("click", () => this.printCurrentPdf());
     this.retryButton.addEventListener("click", () => this.loadPdf(this.sourceUrl, this.sourceName));
@@ -256,6 +277,14 @@ class SimplePDFReader {
     this.pageInput.max = String(this.pageCount || 1);
     this.pageInput.value = String(this.currentPage || 1);
     this.totalPages.textContent = this.pageCount ? String(this.pageCount) : "...";
+    const totalLabel = this.pageCount ? String(this.pageCount) : "--";
+    const pageLabel = `${this.currentPage || 1} / ${totalLabel}`;
+    if (this.pageLabel) {
+      this.pageLabel.textContent = pageLabel;
+    }
+    if (this.pageBadge) {
+      this.pageBadge.textContent = pageLabel;
+    }
     this.previousButton.disabled = !this.pageCount || this.currentPage <= 1;
     this.nextButton.disabled = !this.pageCount || this.currentPage >= this.pageCount;
     this.zoomLabel.textContent = `${Math.round(this.zoom * 100)}%`;
@@ -272,6 +301,46 @@ class SimplePDFReader {
     const isWiderThanViewport = widestPage > availableWidth + 1;
     this.pagesRoot.classList.toggle("is-wider-than-viewport", isWiderThanViewport);
     return isWiderThanViewport;
+  }
+
+  updateActionsPlacement() {
+    const isMobile = window.matchMedia("(max-width: 720px)").matches;
+
+    if (isMobile) {
+      if (!this.mobileControls) {
+        this.mobileControls = document.createElement("div");
+        this.mobileControls.className = "pdf-reader__mobile-controls";
+      }
+      if (!this.mobileControlsRow) {
+        this.mobileControlsRow = document.createElement("div");
+        this.mobileControlsRow.className = "pdf-reader__mobile-controls-row";
+      }
+      if (!this.mobileControls.isConnected) {
+        this.root.appendChild(this.mobileControls);
+      }
+
+      this.navGroup.classList.add("is-floating");
+      this.zoomGroup.classList.add("is-floating");
+      this.actionsGroup.classList.add("is-floating");
+      this.mobileControlsRow.append(this.navGroup, this.zoomGroup);
+      this.mobileControls.replaceChildren(this.mobileControlsRow, this.actionsGroup);
+      this.actionsPlacementIsBottom = true;
+      return;
+    }
+
+    if (!isMobile && this.actionsPlacementIsBottom) {
+      this.navGroup.classList.remove("is-floating");
+      this.zoomGroup.classList.remove("is-floating");
+      this.actionsGroup.classList.remove("is-floating");
+      this.dock.append(this.navGroup, this.zoomGroup, this.actionsGroup);
+      if (this.mobileControls && this.mobileControls.isConnected) {
+        this.mobileControls.remove();
+      }
+      if (this.mobileControlsRow) {
+        this.mobileControlsRow.remove();
+      }
+      this.actionsPlacementIsBottom = false;
+    }
   }
 
   getScrollAvailableWidth() {
@@ -445,6 +514,7 @@ class SimplePDFReader {
   }
 
   handleResize() {
+    this.updateActionsPlacement();
     if (this.fitMode) {
       this.fitWidth();
       return;
