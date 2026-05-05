@@ -320,13 +320,13 @@
  "loaderMarkB": "T",
  "mainCssVersion": "20260423-4",
  "componentStyles": [
- "styles/components/pdf-reader.css?v=20260505-12"
+ "styles/components/pdf-reader.css?v=20260505-14"
  ],
  "feedbackCssVersion": "20260423-4",
  "pageTransitionsVersion": "20260423-4",
  "audioVersion": "20260505-1",
  "trailsVersion": "20260423-4",
- "mainJsVersion": "20260505-4"
+ "mainJsVersion": "20260505-7"
  }
 ]
 

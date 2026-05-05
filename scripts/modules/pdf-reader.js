@@ -223,6 +223,7 @@ class SimplePDFReader {
     }
 
     this.syncControls();
+    this.syncHorizontalOverflowState();
     const nextElement = this.getPageElement(currentPage);
     if (nextElement) {
       this.scrollRoot.scrollTo({
@@ -261,6 +262,23 @@ class SimplePDFReader {
     this.zoomOutButton.disabled = this.zoom <= this.minZoom + 0.001;
     this.zoomInButton.disabled = this.zoom >= this.maxZoom - 0.001;
     this.fitWidthButton.classList.toggle("is-active", this.fitMode);
+  }
+
+  syncHorizontalOverflowState() {
+    const widestPage = this.pages.reduce((width, pageRecord) => (
+      Math.max(width, pageRecord.wrapper.getBoundingClientRect().width)
+    ), 0);
+    const availableWidth = this.getScrollAvailableWidth();
+    const isWiderThanViewport = widestPage > availableWidth + 1;
+    this.pagesRoot.classList.toggle("is-wider-than-viewport", isWiderThanViewport);
+    return isWiderThanViewport;
+  }
+
+  getScrollAvailableWidth() {
+    const styles = window.getComputedStyle(this.scrollRoot);
+    const paddingLeft = Number.parseFloat(styles.paddingLeft) || 0;
+    const paddingRight = Number.parseFloat(styles.paddingRight) || 0;
+    return Math.max(0, this.scrollRoot.clientWidth - paddingLeft - paddingRight);
   }
 
   getPageTitle() {
@@ -408,15 +426,18 @@ class SimplePDFReader {
     }
 
     const viewport = firstPage.page.getViewport({ scale: 1 });
-    const availableWidth = Math.max(300, this.scrollRoot.clientWidth - 48);
+    const availableWidth = Math.max(300, this.getScrollAvailableWidth());
     const fitZoom = clamp(availableWidth / viewport.width, this.minZoom, this.maxZoom);
     return this.setZoom(fitZoom, { fitMode: true, rerender });
   }
 
   centerCurrentPage() {
     window.requestAnimationFrame(() => {
+      const hasHorizontalOverflow = this.syncHorizontalOverflowState();
       this.scrollRoot.scrollTo({
-        left: Math.max(0, (this.scrollRoot.scrollWidth - this.scrollRoot.clientWidth) / 2),
+        left: hasHorizontalOverflow
+          ? Math.max(0, (this.scrollRoot.scrollWidth - this.scrollRoot.clientWidth) / 2)
+          : 0,
         top: this.scrollRoot.scrollTop,
         behavior: "instant",
       });
