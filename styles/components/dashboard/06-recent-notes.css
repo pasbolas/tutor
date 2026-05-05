@@ -126,12 +126,35 @@
 }
 
 .tutor-note-row time {
-  justify-self: end;
   color: var(--dash-warm);
   font-size: 12px;
   font-weight: 700;
   line-height: 1.35;
   letter-spacing: 0.12em;
+}
+
+.tutor-note-row__status {
+  display: grid;
+  justify-items: end;
+  gap: 6px;
+}
+
+.tutor-note-row__progress {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 42px;
+  min-height: 18px;
+  padding: 0 7px;
+  border: 1px solid rgba(239, 143, 124, 0.26);
+  border-radius: 999px;
+  background: rgba(239, 143, 124, 0.075);
+  color: var(--dash-accent);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1;
 }
 
 .tutor-row-arrow {

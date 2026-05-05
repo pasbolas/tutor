@@ -13,6 +13,7 @@ import {
 import { initDashboardGreeting } from "./modules/greetings.js?v=20260503-1";
 import { initCatalogSidebar, initNotesHub } from "./modules/catalog.js";
 import { initMarkdownPage, initOutlineToggle } from "./modules/markdown.js";
+import { initPDFReader } from "./modules/pdf-reader.js?v=20260505-4";
 
 window.addEventListener("DOMContentLoaded", () => {
   initPageScrollMemory();
@@ -33,4 +34,5 @@ window.addEventListener("DOMContentLoaded", () => {
   initMarkdownPage();
   initNotesHub();
   initScrollToTop();
+  initPDFReader();
 });

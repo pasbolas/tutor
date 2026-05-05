@@ -69,6 +69,7 @@ export const state = {
   handleMouseLeave: null,
   handleScroll: null,
   scrollInstrumentRoot: null,
+  scrollInstrumentScrollTarget: null,
   scrollInstrumentTicks: [],
   scrollInstrumentMarker: null,
   scrollInstrumentSections: [],

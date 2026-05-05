@@ -34,6 +34,40 @@ function getSectionTitle(section) {
   return heading ? heading.textContent.trim() : "";
 }
 
+function getScrollTarget() {
+  return document.querySelector("[data-pdf-scroll]") || window;
+}
+
+function getScrollMetrics() {
+  const target = state.scrollInstrumentScrollTarget || getScrollTarget();
+
+  if (target === window) {
+    const scrollElement = document.scrollingElement || document.documentElement;
+    return {
+      maxScrollable: Math.max(1, (scrollElement.scrollHeight || 0) - window.innerHeight),
+      scrollTop: window.scrollY || window.pageYOffset || scrollElement.scrollTop || 0,
+    };
+  }
+
+  return {
+    maxScrollable: Math.max(1, (target.scrollHeight || 0) - (target.clientHeight || 0)),
+    scrollTop: target.scrollTop || 0,
+  };
+}
+
+function scrollToRatio(ratio) {
+  const target = state.scrollInstrumentScrollTarget || getScrollTarget();
+  const { maxScrollable } = getScrollMetrics();
+  const top = maxScrollable * clamp(ratio, 0, 1);
+
+  if (target === window) {
+    window.scrollTo({ top, behavior: "smooth" });
+    return;
+  }
+
+  target.scrollTo({ top, behavior: "smooth" });
+}
+
 function updateScrollInstrumentTitleState() {
   if (!state.scrollInstrumentSections.length) {
     state.scrollInstrumentTitleWidth = 0;
@@ -84,12 +118,9 @@ function updateScrollInstrumentTitleState() {
 }
 
 function getScrollProgress() {
-  const maxScrollable = Math.max(
-    1,
-    (document.documentElement.scrollHeight || 0) - window.innerHeight
-  );
+  const { maxScrollable, scrollTop } = getScrollMetrics();
 
-  return clamp((window.scrollY || window.pageYOffset || 0) / maxScrollable, 0, 1);
+  return clamp(scrollTop / maxScrollable, 0, 1);
 }
 
 function measureScrollInstrument() {
@@ -200,14 +231,13 @@ export function createScrollInstrument() {
       const ratio = index / Math.max(1, tickCount - 1);
       const sections = state.scrollInstrumentSections;
 
-      if (sections.length > 1) {
+      if ((state.scrollInstrumentScrollTarget || getScrollTarget()) === window && sections.length > 1) {
         const sectionIndex = Math.round(ratio * (sections.length - 1));
         sections[sectionIndex].scrollIntoView({ behavior: "smooth", block: "start" });
         return;
       }
 
-      const maxScrollable = Math.max(0, (document.documentElement.scrollHeight || 0) - window.innerHeight);
-      window.scrollTo({ top: maxScrollable * ratio, behavior: "smooth" });
+      scrollToRatio(ratio);
     });
 
     ticks.push(tick);
@@ -221,6 +251,7 @@ export function createScrollInstrument() {
   state.scrollInstrumentRoot = root;
   state.scrollInstrumentTicks = ticks;
   state.scrollInstrumentMarker = marker;
+  state.scrollInstrumentScrollTarget = getScrollTarget();
   state.scrollInstrumentSections = collectScrollInstrumentSections();
 
   let syncRaf = 0;
@@ -234,10 +265,15 @@ export function createScrollInstrument() {
   };
 
   const requestSync = () => {
+    state.scrollInstrumentScrollTarget = getScrollTarget();
     if (!syncRaf) {
       syncRaf = window.requestAnimationFrame(syncInstrument);
     }
   };
+
+  if (state.scrollInstrumentScrollTarget !== window) {
+    state.scrollInstrumentScrollTarget.addEventListener("scroll", requestSync, { passive: true });
+  }
 
   window.addEventListener("resize", requestSync, { passive: true });
   window.addEventListener("scroll", requestSync, { passive: true });

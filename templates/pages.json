@@ -9,15 +9,15 @@
  "loaderMarkLabel": "TN mark",
  "loaderMarkA": "T",
  "loaderMarkB": "N",
- "mainCssVersion": "20260503-6",
+ "mainCssVersion": "20260505-1",
  "componentStyles": [
- "styles/components/dashboard.css?v=20260503-11"
+ "styles/components/dashboard.css?v=20260505-1"
  ],
  "feedbackCssVersion": "20260423-4",
  "pageTransitionsVersion": "20260423-4",
- "audioVersion": "20260428-1",
+ "audioVersion": "20260505-1",
  "trailsVersion": "20260423-4",
- "mainJsVersion": "20260503-4"
+ "mainJsVersion": "20260505-4"
  },
  {
  "output": "content/programming/functions.html",
@@ -32,7 +32,7 @@
  "mainCssVersion": "20260423-4",
  "feedbackCssVersion": "20260423-4",
  "pageTransitionsVersion": "20260423-4",
- "audioVersion": "20260428-1",
+ "audioVersion": "20260505-1",
  "trailsVersion": "20260423-4",
  "mainJsVersion": "20260429-2"
  },
@@ -49,7 +49,7 @@
  "mainCssVersion": "20260423-4",
  "feedbackCssVersion": "20260423-4",
  "pageTransitionsVersion": "20260423-4",
- "audioVersion": "20260428-1",
+ "audioVersion": "20260505-1",
  "trailsVersion": "20260423-4",
  "mainJsVersion": "20260429-2"
  },
@@ -66,7 +66,7 @@
  "mainCssVersion": "20260423-4",
  "feedbackCssVersion": "20260423-4",
  "pageTransitionsVersion": "20260423-4",
- "audioVersion": "20260428-1",
+ "audioVersion": "20260505-1",
  "trailsVersion": "20260423-4",
  "mainJsVersion": "20260429-2"
  },
@@ -83,7 +83,7 @@
  "mainCssVersion": "20260423-4",
  "feedbackCssVersion": "20260423-4",
  "pageTransitionsVersion": "20260423-4",
- "audioVersion": "20260428-1",
+ "audioVersion": "20260505-1",
  "trailsVersion": "20260423-4",
  "mainJsVersion": "20260429-2"
  },
@@ -100,7 +100,7 @@
  "mainCssVersion": "20260423-4",
  "feedbackCssVersion": "20260423-4",
  "pageTransitionsVersion": "20260423-4",
- "audioVersion": "20260428-1",
+ "audioVersion": "20260505-1",
  "trailsVersion": "20260423-4",
  "mainJsVersion": "20260429-2"
  },
@@ -117,7 +117,7 @@
  "mainCssVersion": "20260427-3",
  "feedbackCssVersion": "20260423-4",
  "pageTransitionsVersion": "20260423-4",
- "audioVersion": "20260428-1",
+ "audioVersion": "20260505-1",
  "trailsVersion": "20260423-4",
  "mainJsVersion": "20260429-2"
  },
@@ -134,7 +134,7 @@
  "mainCssVersion": "20260423-4",
  "feedbackCssVersion": "20260423-4",
  "pageTransitionsVersion": "20260423-4",
- "audioVersion": "20260428-1",
+ "audioVersion": "20260505-1",
  "trailsVersion": "20260423-4",
  "mainJsVersion": "20260430-1"
  },
@@ -151,7 +151,7 @@
  "mainCssVersion": "20260423-4",
  "feedbackCssVersion": "20260423-4",
  "pageTransitionsVersion": "20260423-4",
- "audioVersion": "20260428-1",
+ "audioVersion": "20260505-1",
  "trailsVersion": "20260423-4",
  "mainJsVersion": "20260430-1"
  },
@@ -168,7 +168,7 @@
  "mainCssVersion": "20260423-4",
  "feedbackCssVersion": "20260423-4",
  "pageTransitionsVersion": "20260423-4",
- "audioVersion": "20260428-1",
+ "audioVersion": "20260505-1",
  "trailsVersion": "20260423-4",
  "mainJsVersion": "20260430-1"
  },
@@ -185,7 +185,7 @@
  "mainCssVersion": "20260423-4",
  "feedbackCssVersion": "20260423-4",
  "pageTransitionsVersion": "20260423-4",
- "audioVersion": "20260428-1",
+ "audioVersion": "20260505-1",
  "trailsVersion": "20260423-4",
  "mainJsVersion": "20260429-2"
  },
@@ -202,7 +202,7 @@
  "mainCssVersion": "20260423-4",
  "feedbackCssVersion": "20260423-4",
  "pageTransitionsVersion": "20260423-4",
- "audioVersion": "20260428-1",
+ "audioVersion": "20260505-1",
  "trailsVersion": "20260423-4",
  "mainJsVersion": "20260429-2"
  },
@@ -219,7 +219,7 @@
  "mainCssVersion": "20260423-4",
  "feedbackCssVersion": "20260423-4",
  "pageTransitionsVersion": "20260423-4",
- "audioVersion": "20260428-1",
+ "audioVersion": "20260505-1",
  "trailsVersion": "20260423-4",
  "mainJsVersion": "20260429-2"
  },
@@ -236,7 +236,7 @@
  "mainCssVersion": "20260423-4",
  "feedbackCssVersion": "20260423-4",
  "pageTransitionsVersion": "20260423-4",
- "audioVersion": "20260428-1",
+ "audioVersion": "20260505-1",
  "trailsVersion": "20260423-4",
  "mainJsVersion": "20260429-2"
  },
@@ -253,7 +253,7 @@
  "mainCssVersion": "20260423-4",
  "feedbackCssVersion": "20260423-4",
  "pageTransitionsVersion": "20260423-4",
- "audioVersion": "20260428-1",
+ "audioVersion": "20260505-1",
  "trailsVersion": "20260423-4",
  "mainJsVersion": "20260429-2"
  },
@@ -270,7 +270,7 @@
  "mainCssVersion": "20260423-4",
  "feedbackCssVersion": "20260423-4",
  "pageTransitionsVersion": "20260423-4",
- "audioVersion": "20260428-1",
+ "audioVersion": "20260505-1",
  "trailsVersion": "20260423-4",
  "mainJsVersion": "20260429-2"
  },
@@ -287,7 +287,7 @@
  "mainCssVersion": "20260423-4",
  "feedbackCssVersion": "20260423-4",
  "pageTransitionsVersion": "20260423-4",
- "audioVersion": "20260428-1",
+ "audioVersion": "20260505-1",
  "trailsVersion": "20260423-4",
  "mainJsVersion": "20260429-2"
  },
@@ -304,8 +304,29 @@
  "mainCssVersion": "20260423-4",
  "feedbackCssVersion": "20260423-4",
  "pageTransitionsVersion": "20260423-4",
- "audioVersion": "20260428-1",
+ "audioVersion": "20260505-1",
  "trailsVersion": "20260423-4",
  "mainJsVersion": "20260429-2"
+ },
+ {
+ "output": "content/data-communication/data-transmission-pdf.html",
+ "body": "templates/pages/content/data-communication/data-transmission-pdf.html",
+ "basePath": "../../",
+ "title": "Data Transmission PDF | Tutor Notes",
+ "description": "The Data Communication Data Transmission PDF rendered as an embedded tutor notes page.",
+ "loaderMicro": "Data Communication / PDF",
+ "loaderMarkLabel": "DT mark",
+ "loaderMarkA": "D",
+ "loaderMarkB": "T",
+ "mainCssVersion": "20260423-4",
+ "componentStyles": [
+ "styles/components/pdf-reader.css?v=20260505-12"
+ ],
+ "feedbackCssVersion": "20260423-4",
+ "pageTransitionsVersion": "20260423-4",
+ "audioVersion": "20260505-1",
+ "trailsVersion": "20260423-4",
+ "mainJsVersion": "20260505-4"
  }
 ]
+

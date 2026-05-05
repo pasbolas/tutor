@@ -114,7 +114,10 @@ export function renderDashboardCatalog(tree, activeHref) {
     return;
   }
 
-  recentList.innerHTML = recentNotes.slice(0, 3).map((note) => `
+  recentList.innerHTML = recentNotes.slice(0, 3).map((note) => {
+    const progressPercent = clamp(Number(note.progressPercent) || 0, 0, 100);
+
+    return `
     <a class="tutor-note-row" href="${escapeAttribute(note.href || "#")}">
       <span class="tutor-note-row__icon">
         <svg aria-hidden="true" viewBox="0 0 24 24">
@@ -127,8 +130,12 @@ export function renderDashboardCatalog(tree, activeHref) {
         <strong>${escapeHtml(note.name || note.title)}</strong>
         <small>${escapeHtml(note.subject)} <span>&rsaquo;</span> ${escapeHtml(note.meta || "Note")}</small>
       </span>
-      <time>${escapeHtml(formatRelativeVisitTime(note.visitedAt))}</time>
+      <span class="tutor-note-row__status">
+        <time>${escapeHtml(formatRelativeVisitTime(note.visitedAt))}</time>
+        <span class="tutor-note-row__progress" aria-label="${progressPercent} percent complete">${progressPercent}%</span>
+      </span>
       <span class="tutor-row-arrow">&rsaquo;</span>
     </a>
-  `).join("");
+  `;
+  }).join("");
 }

@@ -1,5 +1,8 @@
 # Local review / planning notes
 review.md
+review*.md
+planning.md
+planning-*.md
 
 # Environment and secrets
 .env
@@ -27,4 +30,6 @@ coverage/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+.*
 
