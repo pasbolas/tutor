@@ -76,6 +76,19 @@
       ]
     },
     {
+      "name": "HCI",
+      "id": "hci",
+      "type": "folder",
+      "children": [
+        {
+          "name": "Human Computer Interaction Exam Notes",
+          "type": "file",
+          "href": "./content/hci/hci-notes.html?v=20260507-1",
+          "meta": "HCI 01"
+        }
+      ]
+    },
+    {
       "name": "Data Communication",
       "id": "data-communication",
       "type": "folder",

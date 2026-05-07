@@ -173,6 +173,23 @@
  "mainJsVersion": "20260430-1"
  },
  {
+ "output": "content/hci/hci-notes.html",
+ "body": "templates/pages/content/hci/hci-notes.html",
+ "basePath": "../../",
+ "title": "Human Computer Interaction Exam Notes | Tutor Notes",
+ "description": "My Human Computer Interaction exam notes covering HCI disciplines, human-centred design, accessibility, personas, prototyping, and usability evaluation.",
+ "loaderMicro": "HCI / Exam Notes",
+ "loaderMarkLabel": "HC mark",
+ "loaderMarkA": "H",
+ "loaderMarkB": "C",
+ "mainCssVersion": "20260423-4",
+ "feedbackCssVersion": "20260423-4",
+ "pageTransitionsVersion": "20260423-4",
+ "audioVersion": "20260505-1",
+ "trailsVersion": "20260423-4",
+ "mainJsVersion": "20260429-2"
+ },
+ {
  "output": "content/data-communication/extending-lans-bridges.html",
  "body": "templates/pages/content/data-communication/extending-lans-bridges.html",
  "basePath": "../../",
