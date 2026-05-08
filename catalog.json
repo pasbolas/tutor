@@ -28,6 +28,12 @@
           "type": "file",
           "href": "./content/programming/stacks-heaps.html?v=20260423-4",
           "meta": "Slide 14"
+        },
+        {
+          "name": "Structures in C",
+          "type": "file",
+          "href": "./content/programming/structures.html?v=20260508-1",
+          "meta": "Structures"
         }
       ]
     },

@@ -88,6 +88,23 @@
  "mainJsVersion": "20260429-2"
  },
  {
+ "output": "content/programming/structures.html",
+ "body": "templates/pages/content/programming/structures.html",
+ "basePath": "../../",
+ "title": "C Programming Notes: Structures | Tutor Notes",
+ "description": "My programming notes on C structures, structure variables, member access, pointers to structures, nested structures, arrays of structures, typedef, and common mistakes.",
+ "loaderMicro": "Programming / Structures",
+ "loaderMarkLabel": "ST mark",
+ "loaderMarkA": "S",
+ "loaderMarkB": "T",
+ "mainCssVersion": "20260423-4",
+ "feedbackCssVersion": "20260423-4",
+ "pageTransitionsVersion": "20260423-4",
+ "audioVersion": "20260505-1",
+ "trailsVersion": "20260423-4",
+ "mainJsVersion": "20260429-2"
+ },
+ {
  "output": "content/law/gdpr.html",
  "body": "templates/pages/content/law/gdpr.html",
  "basePath": "../../",
