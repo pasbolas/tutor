@@ -3,8 +3,8 @@ import {
   escapeHtml,
   escapeAttribute,
   slugify,
-  rememberRecentNote,
 } from "./shared.js";
+import { StatusTracker } from "./status-tracker.js";
 
 function renderInline(text) {
   const pattern = /(`[^`]+`|\*\*[^*]+\*\*|\*[^*\n]+\*)/g;
@@ -1017,8 +1017,8 @@ export async function initMarkdownPage() {
     initOutlineTracking();
     window.dispatchEvent(new CustomEvent("tutor:page-content-ready"));
 
-    const persistReadingProgress = () => {
-      rememberRecentNote({
+    const statusTracker = new StatusTracker({
+      getEntry: () => ({
         href: window.location.href,
         title: pageTitle || "Untitled note",
         subject: subjectLabel || "Notes",
@@ -1029,8 +1029,8 @@ export async function initMarkdownPage() {
         sectionIndex: latestSectionProgress?.index || 0,
         totalSections: latestSectionProgress?.total || guide.sectionCount,
         progressPercent: latestSectionProgress?.progressPercent || 0,
-      });
-    };
+      }),
+    });
 
     const getSectionProgressFromNode = (node) => {
       if (!node) {
@@ -1051,13 +1051,13 @@ export async function initMarkdownPage() {
 
     const handleActiveSectionChange = (event) => {
       latestSectionProgress = event.detail || null;
-      persistReadingProgress();
+      statusTracker.persist();
     };
 
     window.addEventListener("tutor:active-section-change", handleActiveSectionChange);
-    window.addEventListener("pagehide", persistReadingProgress, { once: true });
+    window.addEventListener("pagehide", () => statusTracker.flush(), { once: true });
     latestSectionProgress = getSectionProgressFromNode(contentRoot.querySelector("[data-study-section]"));
-    persistReadingProgress();
+    statusTracker.persist(undefined, { force: true });
 
     setText("[data-study-title]", titleBlock ? titleBlock.text : "Functions in C");
     setText(

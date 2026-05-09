@@ -130,6 +130,12 @@
           "meta": "Slide 15"
         },
         {
+          "name": "15. Extending LANs Q&A",
+          "type": "file",
+          "href": "./content/data-communication/extending-lan-q-and-a.html?v=20260509-1",
+          "meta": "Exam Q&A"
+        },
+        {
           "name": "16. MAC Addressing",
           "type": "file",
           "href": "./content/data-communication/mac-addressing.html?v=20260423-4",

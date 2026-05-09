@@ -1,4 +1,4 @@
-import { rememberRecentNote } from "./shared.js";
+import { StatusTracker } from "./status-tracker.js";
 
 const PDFJS_VERSION = "4.10.38";
 const PDFJS_URL = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${PDFJS_VERSION}/build/pdf.mjs`;
@@ -33,9 +33,10 @@ class SimplePDFReader {
     this.renderToken = 0;
     this.scrollTicking = false;
     this.progressTicking = false;
-    this.progressPersistTimer = 0;
-    this.lastProgressPersistAt = 0;
-    this.lastProgressKey = "";
+    this.statusTracker = new StatusTracker({
+      getEntry: () => this.getReadingProgressEntry(),
+      getKey: (entry) => `${this.sourceName}:${entry.sectionIndex}:${entry.progressPercent}`,
+    });
 
     this.loading = getRequiredElement(root, "[data-pdf-loading]");
     this.error = getRequiredElement(root, "[data-pdf-error]");
@@ -109,7 +110,7 @@ class SimplePDFReader {
     this.scrollRoot.addEventListener("wheel", (event) => this.handleWheel(event), { passive: false });
     window.addEventListener("resize", () => this.handleResize());
     document.addEventListener("keydown", (event) => this.handleKeydown(event));
-    window.addEventListener("pagehide", () => this.persistReadingProgress({ force: true }), { once: true });
+    window.addEventListener("pagehide", () => this.statusTracker.flush(), { once: true });
   }
 
   async loadPdf(sourceUrl, sourceName = "document.pdf") {
@@ -369,31 +370,13 @@ class SimplePDFReader {
     return clamp(Math.max(pageProgress, scrollProgress), 0, 100);
   }
 
-  persistReadingProgress({ force = false } = {}) {
+  getReadingProgressEntry() {
     if (!this.pageCount) {
-      return;
+      return null;
     }
 
     const progressPercent = this.getProgressPercent();
-    const progressKey = `${this.sourceName}:${this.currentPage}:${progressPercent}`;
-    const now = Date.now();
-
-    if (!force && progressKey === this.lastProgressKey) {
-      return;
-    }
-
-    if (!force && now - this.lastProgressPersistAt < 750) {
-      window.clearTimeout(this.progressPersistTimer);
-      this.progressPersistTimer = window.setTimeout(() => {
-        this.persistReadingProgress({ force: true });
-      }, 750);
-      return;
-    }
-
-    this.lastProgressKey = progressKey;
-    this.lastProgressPersistAt = now;
-
-    rememberRecentNote({
+    return {
       href: window.location.href,
       title: this.getPageTitle(),
       subject: this.getSubjectLabel(),
@@ -404,7 +387,11 @@ class SimplePDFReader {
       sectionIndex: this.currentPage,
       totalSections: this.pageCount,
       progressPercent,
-    });
+    };
+  }
+
+  persistReadingProgress({ force = false } = {}) {
+    this.statusTracker.persist(undefined, { force });
   }
 
   getPageElement(pageNumber) {

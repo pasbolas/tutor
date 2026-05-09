@@ -224,6 +224,23 @@
  "mainJsVersion": "20260429-2"
  },
  {
+ "output": "content/data-communication/extending-lan-q-and-a.html",
+ "body": "templates/pages/content/data-communication/extending-lan-q-and-a.html",
+ "basePath": "../../",
+ "title": "Extending LANs Q&A Exam Notes | Tutor Notes",
+ "description": "My Q&A style exam notes on extending LANs with repeaters and bridges, including address learning, collision domains, throughput, loops, and spanning tree.",
+ "loaderMicro": "Data Communication / Q&A",
+ "loaderMarkLabel": "EQ mark",
+ "loaderMarkA": "E",
+ "loaderMarkB": "Q",
+ "mainCssVersion": "20260423-4",
+ "feedbackCssVersion": "20260423-4",
+ "pageTransitionsVersion": "20260423-4",
+ "audioVersion": "20260505-1",
+ "trailsVersion": "20260423-4",
+ "mainJsVersion": "20260509-2"
+ },
+ {
  "output": "content/data-communication/intro-to-internet.html",
  "body": "templates/pages/content/data-communication/intro-to-internet.html",
  "basePath": "../../",
@@ -360,7 +377,7 @@
  "pageTransitionsVersion": "20260423-4",
  "audioVersion": "20260505-1",
  "trailsVersion": "20260423-4",
- "mainJsVersion": "20260509-1"
+ "mainJsVersion": "20260509-2"
  },
  {
  "output": "content/data-communication/channel-capacity-pdf.html",
@@ -380,7 +397,7 @@
  "pageTransitionsVersion": "20260423-4",
  "audioVersion": "20260505-1",
  "trailsVersion": "20260423-4",
- "mainJsVersion": "20260509-1"
+ "mainJsVersion": "20260509-2"
  }
 ]
 
