@@ -112,6 +112,12 @@
           "meta": "PDF"
         },
         {
+          "name": "03. Channel Capacity PDF",
+          "type": "file",
+          "href": "./content/data-communication/channel-capacity-pdf.html?v=20260509-1",
+          "meta": "PDF"
+        },
+        {
           "name": "14. LAN Access Techniques",
           "type": "file",
           "href": "./content/data-communication/lan-access-techniques.html?v=20260423-4",

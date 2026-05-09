@@ -361,6 +361,26 @@
  "audioVersion": "20260505-1",
  "trailsVersion": "20260423-4",
  "mainJsVersion": "20260505-10"
+ },
+ {
+ "output": "content/data-communication/channel-capacity-pdf.html",
+ "body": "templates/pages/content/data-communication/channel-capacity-pdf.html",
+ "basePath": "../../",
+ "title": "Channel Capacity PDF | Tutor Notes",
+ "description": "The Data Communication Channel Capacity PDF rendered as an embedded tutor notes page.",
+ "loaderMicro": "Data Communication / PDF",
+ "loaderMarkLabel": "CC mark",
+ "loaderMarkA": "C",
+ "loaderMarkB": "C",
+ "mainCssVersion": "20260423-4",
+ "componentStyles": [
+ "styles/components/pdf-reader.css?v=20260505-18"
+ ],
+ "feedbackCssVersion": "20260423-4",
+ "pageTransitionsVersion": "20260423-4",
+ "audioVersion": "20260505-1",
+ "trailsVersion": "20260423-4",
+ "mainJsVersion": "20260505-10"
  }
 ]
 
