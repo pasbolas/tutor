@@ -360,7 +360,7 @@
  "pageTransitionsVersion": "20260423-4",
  "audioVersion": "20260505-1",
  "trailsVersion": "20260423-4",
- "mainJsVersion": "20260505-10"
+ "mainJsVersion": "20260509-1"
  },
  {
  "output": "content/data-communication/channel-capacity-pdf.html",
@@ -380,7 +380,7 @@
  "pageTransitionsVersion": "20260423-4",
  "audioVersion": "20260505-1",
  "trailsVersion": "20260423-4",
- "mainJsVersion": "20260505-10"
+ "mainJsVersion": "20260509-1"
  }
 ]
 

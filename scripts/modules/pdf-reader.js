@@ -14,14 +14,6 @@ const getRequiredElement = (root, selector) => {
   return element;
 };
 
-const getRequiredElements = (root, selector) => {
-  const elements = Array.from(root.querySelectorAll(selector));
-  if (!elements.length) {
-    throw new Error(`Missing PDF reader elements: ${selector}`);
-  }
-  return elements;
-};
-
 class SimplePDFReader {
   constructor(root) {
     this.root = root;
@@ -56,8 +48,8 @@ class SimplePDFReader {
     this.scrollRoot = getRequiredElement(root, "[data-pdf-scroll]");
     this.pagesRoot = getRequiredElement(root, "[data-pdf-pages]");
     this.backButton = getRequiredElement(root, "[data-pdf-back]");
-    this.openLocalButtons = getRequiredElements(root, "[data-pdf-open-local]");
-    this.fileInput = getRequiredElement(root, "[data-pdf-file-input]");
+    this.openLocalButtons = Array.from(root.querySelectorAll("[data-pdf-open-local]"));
+    this.fileInput = root.querySelector("[data-pdf-file-input]");
     this.downloadLink = getRequiredElement(root, "[data-pdf-download]");
     this.printButton = getRequiredElement(root, "[data-pdf-print]");
     this.previousButton = getRequiredElement(root, "[data-pdf-prev]");
@@ -91,10 +83,12 @@ class SimplePDFReader {
       window.location.href = "../../index.html";
     });
 
-    this.openLocalButtons.forEach((button) => {
-      button.addEventListener("click", () => this.fileInput.click());
-    });
-    this.fileInput.addEventListener("change", () => this.openSelectedFile());
+    if (this.fileInput) {
+      this.openLocalButtons.forEach((button) => {
+        button.addEventListener("click", () => this.fileInput.click());
+      });
+      this.fileInput.addEventListener("change", () => this.openSelectedFile());
+    }
     this.printButton.addEventListener("click", () => this.printCurrentPdf());
     this.retryButton.addEventListener("click", () => this.loadPdf(this.sourceUrl, this.sourceName));
     this.previousButton.addEventListener("click", () => this.goToPage(this.currentPage - 1));
