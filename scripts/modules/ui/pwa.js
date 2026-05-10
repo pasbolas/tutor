@@ -3,7 +3,10 @@ export function initPwa() {
     return;
   }
 
-  navigator.serviceWorker.register("./sw.js", { scope: "./" }).catch(() => {
+  const appRoot = new URL("../../../", import.meta.url);
+  const serviceWorkerUrl = new URL("sw.js", appRoot);
+
+  navigator.serviceWorker.register(serviceWorkerUrl.href, { scope: appRoot.pathname }).catch(() => {
     // Ignore registration errors on unsupported contexts.
   });
 }
