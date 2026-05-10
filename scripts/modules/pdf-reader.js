@@ -159,6 +159,12 @@ class SimplePDFReader {
   }
 
   clearPages() {
+    this.pages.forEach((pageRecord) => {
+      if (pageRecord.renderTask) {
+        pageRecord.renderTask.cancel();
+        pageRecord.renderTask = null;
+      }
+    });
     this.pagesRoot.textContent = "";
     this.pages = [];
     this.pageCount = 0;
@@ -193,16 +199,49 @@ class SimplePDFReader {
 
   async renderAllPages(token) {
     this.root.classList.add("is-rendering");
-    for (const pageRecord of this.pages) {
-      await this.renderPage(pageRecord, this.zoom, token);
-      if (token !== this.renderToken) {
-        return;
+    try {
+      for (const pageRecord of this.pages) {
+        if (token !== this.renderToken) {
+          return;
+        }
+
+        await this.renderPage(pageRecord, this.zoom, token);
+        if (token !== this.renderToken) {
+          return;
+        }
+      }
+    } finally {
+      if (token === this.renderToken) {
+        this.root.classList.remove("is-rendering");
       }
     }
-    this.root.classList.remove("is-rendering");
   }
 
   async renderPage(pageRecord, scale, token) {
+    if (token !== this.renderToken) {
+      return;
+    }
+
+    if (pageRecord.renderTask) {
+      const previousTask = pageRecord.renderTask;
+      previousTask.cancel();
+      try {
+        await previousTask.promise;
+      } catch (error) {
+        if (!(error instanceof Error) || error.name !== "RenderingCancelledException") {
+          throw error;
+        }
+      } finally {
+        if (pageRecord.renderTask === previousTask) {
+          pageRecord.renderTask = null;
+        }
+      }
+    }
+
+    if (token !== this.renderToken) {
+      return;
+    }
+
     const viewport = pageRecord.page.getViewport({ scale });
     const canvas = pageRecord.canvas;
     const context = canvas.getContext("2d");
@@ -215,7 +254,21 @@ class SimplePDFReader {
     pageRecord.wrapper.style.width = `${viewport.width}px`;
 
     context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-    await pageRecord.page.render({ canvasContext: context, viewport }).promise;
+    const renderTask = pageRecord.page.render({ canvasContext: context, viewport });
+    pageRecord.renderTask = renderTask;
+
+    try {
+      await renderTask.promise;
+    } catch (error) {
+      if (error instanceof Error && error.name === "RenderingCancelledException") {
+        return;
+      }
+      throw error;
+    } finally {
+      if (pageRecord.renderTask === renderTask) {
+        pageRecord.renderTask = null;
+      }
+    }
 
     if (token === this.renderToken) {
       pageRecord.renderedScale = scale;
