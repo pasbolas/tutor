@@ -13,6 +13,7 @@ const SPLIT_NOTES_STORAGE_KEY = "tutor-notes-split-view";
 const SPLIT_NOTES_MOBILE_QUERY = "(max-width: 780px)";
 const ROOT_URL = new URL("../../", import.meta.url);
 const CATALOG_URL = new URL("../../catalog.json", import.meta.url);
+const EMPTY_STATE_CAT_URL = new URL("../../assets/loading/neon_cat.gif", import.meta.url);
 
 function isInsideSplitFrame() {
   try {
@@ -216,37 +217,38 @@ function buildSplitNotesUi(notes, state) {
 
     <section class="split-notes__workspace" aria-label="Side-by-side notes" data-split-notes-workspace hidden>
       <header class="split-notes__bar">
-        <div class="split-notes__brand">
-          <button class="split-notes__icon-button" type="button" data-split-notes-close aria-label="Close split notes">
-            ${renderIcon('<path d="M18 6 6 18" /><path d="m6 6 12 12" />')}
-          </button>
-          <strong>Split notes</strong>
-        </div>
-
-        <div class="split-notes__selectors">
+        <div class="split-notes__toolbar-side split-notes__toolbar-side--left">
+          <div class="split-notes__brand">
+            <button class="split-notes__icon-button" type="button" data-split-notes-close aria-label="Close split notes">
+              ${renderIcon('<path d="M18 6 6 18" /><path d="m6 6 12 12" />')}
+            </button>
+            <strong>Split notes</strong>
+          </div>
           <label class="split-notes__select-field">
             <span>Left</span>
             <select data-split-notes-select="left" aria-label="Choose left note">
               ${renderOptions(notes, state.leftNote)}
             </select>
           </label>
+        </div>
+
+        <div class="split-notes__toolbar-side split-notes__toolbar-side--right">
           <label class="split-notes__select-field">
             <span>Right</span>
             <select data-split-notes-select="right" aria-label="Choose right note">
               ${renderOptions(notes, state.rightNote, { placeholder: "Select a right note..." })}
             </select>
           </label>
-        </div>
-
-        <div class="split-notes__actions">
-          <button class="split-notes__text-button" type="button" data-split-notes-swap>
-            ${renderIcon('<path d="M7 7h10" /><path d="m14 4 3 3-3 3" /><path d="M17 17H7" /><path d="m10 14-3 3 3 3" />')}
-            <span>Swap</span>
-          </button>
-          <button class="split-notes__text-button" type="button" data-split-notes-toggle-left aria-pressed="false">
-            ${renderIcon('<path d="M4 5h6v14H4z" /><path d="M14 8h6" /><path d="M14 12h6" /><path d="M14 16h6" />')}
-            <span data-split-notes-toggle-label>Minimise left</span>
-          </button>
+          <div class="split-notes__actions">
+            <button class="split-notes__text-button" type="button" data-split-notes-swap>
+              ${renderIcon('<path d="M7 7h10" /><path d="m14 4 3 3-3 3" /><path d="M17 17H7" /><path d="m10 14-3 3 3 3" />')}
+              <span>Swap</span>
+            </button>
+            <button class="split-notes__text-button" type="button" data-split-notes-toggle-left aria-pressed="false">
+              ${renderIcon('<path d="M4 5h6v14H4z" /><path d="M14 8h6" /><path d="M14 12h6" /><path d="M14 16h6" />')}
+              <span data-split-notes-toggle-label>Minimise left</span>
+            </button>
+          </div>
         </div>
       </header>
 
@@ -277,6 +279,11 @@ function buildSplitNotesUi(notes, state) {
           </header>
           <div class="split-notes__frame-wrap">
             <iframe data-split-notes-frame="right" title="Right note"></iframe>
+            <div class="split-notes__empty-state" data-split-notes-empty="right" aria-live="polite">
+              <span class="split-notes__empty-arrow" aria-hidden="true"></span>
+              <p>Select the right notes</p>
+              <img src="${escapeAttribute(EMPTY_STATE_CAT_URL.href)}" alt="" loading="eager" decoding="async" />
+            </div>
           </div>
         </article>
       </div>
@@ -340,6 +347,7 @@ function createSplitNotesController(notes, initialState) {
   const root = buildSplitNotesUi(notes, state);
   const ui = getUiNodes(root);
   const cleanups = [];
+  let leftToggleAnimationTimer = 0;
 
   const on = (target, eventName, handler) => {
     if (!target) {
@@ -347,6 +355,16 @@ function createSplitNotesController(notes, initialState) {
     }
     target.addEventListener(eventName, handler);
     cleanups.push(() => target.removeEventListener(eventName, handler));
+  };
+
+  const animateLeftToggle = () => {
+    window.clearTimeout(leftToggleAnimationTimer);
+    root.classList.remove("is-left-toggle-animating");
+    void root.offsetWidth;
+    root.classList.add("is-left-toggle-animating");
+    leftToggleAnimationTimer = window.setTimeout(() => {
+      root.classList.remove("is-left-toggle-animating");
+    }, 420);
   };
 
   const updateSelectedOption = (select, note) => {
@@ -463,6 +481,7 @@ function createSplitNotesController(notes, initialState) {
   ui.toggleButtons.forEach((button) => {
     on(button, "click", () => {
       state.isLeftMinimized = !state.isLeftMinimized;
+      animateLeftToggle();
       sync();
     });
   });
@@ -482,6 +501,7 @@ function createSplitNotesController(notes, initialState) {
   return {
     destroy() {
       state.isOpen = false;
+      window.clearTimeout(leftToggleAnimationTimer);
       document.body.classList.remove("has-split-notes");
       cleanups.forEach((cleanup) => cleanup());
       root.remove();
