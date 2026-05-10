@@ -14,6 +14,7 @@ import { initDashboardGreeting } from "./modules/greetings.js?v=20260503-1";
 import { initCatalogSidebar, initNotesHub } from "./modules/catalog.js";
 import { initMarkdownPage, initOutlineToggle } from "./modules/markdown.js";
 import { initPDFReader } from "./modules/pdf-reader.js?v=20260509-2";
+import { initSplitNotes } from "./modules/split-notes.js";
 
 window.addEventListener("DOMContentLoaded", () => {
   initPageScrollMemory();
@@ -35,4 +36,5 @@ window.addEventListener("DOMContentLoaded", () => {
   initNotesHub();
   initScrollToTop();
   initPDFReader();
+  initSplitNotes();
 });

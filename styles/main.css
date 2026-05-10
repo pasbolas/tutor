@@ -12,6 +12,7 @@
 @import "./components/study/07-markdown-core.css";
 @import "./components/study/08-markdown-mcq-media.css";
 @import "./components/study/09-footer.css";
+@import "./components/split-notes.css";
 @import "./components/notes/00-shell-toolbar.css";
 @import "./components/notes/01-workbench-filters.css";
 @import "./components/notes/02-note-list.css";
