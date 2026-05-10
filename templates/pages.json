@@ -241,6 +241,26 @@
  "mainJsVersion": "20260509-2"
  },
  {
+ "output": "content/data-communication/extending-lan-pdf.html",
+ "body": "templates/pages/content/data-communication/extending-lan-pdf.html",
+ "basePath": "../../",
+ "title": "Extending LAN PDF | Tutor Notes",
+ "description": "The Data Communication Extending LAN PDF rendered as an embedded tutor notes page.",
+ "loaderMicro": "Data Communication / PDF",
+ "loaderMarkLabel": "EL mark",
+ "loaderMarkA": "E",
+ "loaderMarkB": "L",
+ "mainCssVersion": "20260423-4",
+ "componentStyles": [
+ "styles/components/pdf-reader.css?v=20260505-18"
+ ],
+ "feedbackCssVersion": "20260423-4",
+ "pageTransitionsVersion": "20260423-4",
+ "audioVersion": "20260505-1",
+ "trailsVersion": "20260423-4",
+ "mainJsVersion": "20260509-2"
+ },
+ {
  "output": "content/data-communication/intro-to-internet.html",
  "body": "templates/pages/content/data-communication/intro-to-internet.html",
  "basePath": "../../",
@@ -389,6 +409,26 @@
  "loaderMarkLabel": "CC mark",
  "loaderMarkA": "C",
  "loaderMarkB": "C",
+ "mainCssVersion": "20260423-4",
+ "componentStyles": [
+ "styles/components/pdf-reader.css?v=20260505-18"
+ ],
+ "feedbackCssVersion": "20260423-4",
+ "pageTransitionsVersion": "20260423-4",
+ "audioVersion": "20260505-1",
+ "trailsVersion": "20260423-4",
+ "mainJsVersion": "20260509-2"
+ },
+ {
+ "output": "content/data-communication/sync-async-transmission-pdf.html",
+ "body": "templates/pages/content/data-communication/sync-async-transmission-pdf.html",
+ "basePath": "../../",
+ "title": "Synchronous and Asynchronous Transmission PDF | Tutor Notes",
+ "description": "The Data Communication synchronous and asynchronous transmission PDF rendered as an embedded tutor notes page.",
+ "loaderMicro": "Data Communication / PDF",
+ "loaderMarkLabel": "SA mark",
+ "loaderMarkA": "S",
+ "loaderMarkB": "A",
  "mainCssVersion": "20260423-4",
  "componentStyles": [
  "styles/components/pdf-reader.css?v=20260505-18"

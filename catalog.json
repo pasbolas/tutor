@@ -118,6 +118,12 @@
           "meta": "PDF"
         },
         {
+          "name": "09. Synchronous and Asynchronous Transmission PDF",
+          "type": "file",
+          "href": "./content/data-communication/sync-async-transmission-pdf.html?v=20260510-1",
+          "meta": "PDF"
+        },
+        {
           "name": "14. LAN Access Techniques",
           "type": "file",
           "href": "./content/data-communication/lan-access-techniques.html?v=20260423-4",
@@ -134,6 +140,12 @@
           "type": "file",
           "href": "./content/data-communication/extending-lan-q-and-a.html?v=20260509-1",
           "meta": "Exam Q&A"
+        },
+        {
+          "name": "15. Extending LAN PDF",
+          "type": "file",
+          "href": "./content/data-communication/extending-lan-pdf.html?v=20260510-1",
+          "meta": "PDF"
         },
         {
           "name": "16. MAC Addressing",
