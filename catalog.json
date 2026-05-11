@@ -6,34 +6,46 @@
       "type": "folder",
       "children": [
         {
-          "name": "Functions in C",
-          "type": "file",
-          "href": "./content/programming/functions.html?v=20260423-4",
-          "meta": "Markdown lesson"
+          "name": "C Foundations",
+          "type": "folder",
+          "children": [
+            {
+              "name": "Functions in C",
+              "type": "file",
+              "href": "./content/programming/functions.html?v=20260423-4",
+              "meta": "Markdown lesson"
+            },
+            {
+              "name": "Functions in C (Part 2)",
+              "type": "file",
+              "href": "./content/programming/functions_2.html?v=20260503-1",
+              "meta": "Functions 02"
+            }
+          ]
         },
         {
-          "name": "Functions in C (Part 2)",
-          "type": "file",
-          "href": "./content/programming/functions_2.html?v=20260503-1",
-          "meta": "Functions 02"
-        },
-        {
-          "name": "Pointers, Arrays, and DMA in C",
-          "type": "file",
-          "href": "./content/programming/pointer-array.html?v=20260423-4",
-          "meta": "Slide 13"
-        },
-        {
-          "name": "Stack vs Heap in C",
-          "type": "file",
-          "href": "./content/programming/stacks-heaps.html?v=20260423-4",
-          "meta": "Slide 14"
-        },
-        {
-          "name": "Structures in C",
-          "type": "file",
-          "href": "./content/programming/structures.html?v=20260508-1",
-          "meta": "Structures"
+          "name": "Memory and Data Structures",
+          "type": "folder",
+          "children": [
+            {
+              "name": "Pointers, Arrays, and DMA in C",
+              "type": "file",
+              "href": "./content/programming/pointer-array.html?v=20260423-4",
+              "meta": "Slide 13"
+            },
+            {
+              "name": "Stack vs Heap in C",
+              "type": "file",
+              "href": "./content/programming/stacks-heaps.html?v=20260423-4",
+              "meta": "Slide 14"
+            },
+            {
+              "name": "Structures in C",
+              "type": "file",
+              "href": "./content/programming/structures.html?v=20260508-1",
+              "meta": "Structures"
+            }
+          ]
         }
       ]
     },
@@ -43,16 +55,22 @@
       "type": "folder",
       "children": [
         {
-          "name": "General Data Protection Regulation (GDPR)",
-          "type": "file",
-          "href": "./content/law/gdpr.html?v=20260427-1",
-          "meta": "Law 01"
-        },
-        {
-          "name": "GDPR Expected Exam MCQ Bank",
-          "type": "file",
-          "href": "./content/law/gdpr-mcqs.html?v=20260427-4",
-          "meta": "Law 02"
+          "name": "Data Protection",
+          "type": "folder",
+          "children": [
+            {
+              "name": "General Data Protection Regulation (GDPR)",
+              "type": "file",
+              "href": "./content/law/gdpr.html?v=20260427-1",
+              "meta": "Law 01"
+            },
+            {
+              "name": "GDPR Expected Exam MCQ Bank",
+              "type": "file",
+              "href": "./content/law/gdpr-mcqs.html?v=20260427-4",
+              "meta": "Law 02"
+            }
+          ]
         }
       ]
     },
@@ -62,22 +80,34 @@
       "type": "folder",
       "children": [
         {
-          "name": "Algorithms and Data Structures Study Material",
-          "type": "file",
-          "href": "./content/algorithm-and-dsa/notes.html?v=20260430-1",
-          "meta": "Algorithm 01"
+          "name": "Study Material",
+          "type": "folder",
+          "children": [
+            {
+              "name": "Algorithms and Data Structures Study Material",
+              "type": "file",
+              "href": "./content/algorithm-and-dsa/notes.html?v=20260430-1",
+              "meta": "Algorithm 01"
+            }
+          ]
         },
         {
-          "name": "Expected Exam Questions and Model Answers",
-          "type": "file",
-          "href": "./content/algorithm-and-dsa/expected-questions-answers.html?v=20260430-1",
-          "meta": "Algorithm 02"
-        },
-        {
-          "name": "Previous-Year Paper Solutions",
-          "type": "file",
-          "href": "./content/algorithm-and-dsa/previous-year-paper-solutions.html?v=20260430-1",
-          "meta": "Algorithm 03"
+          "name": "Exam Practice",
+          "type": "folder",
+          "children": [
+            {
+              "name": "Expected Exam Questions and Model Answers",
+              "type": "file",
+              "href": "./content/algorithm-and-dsa/expected-questions-answers.html?v=20260430-1",
+              "meta": "Algorithm 02"
+            },
+            {
+              "name": "Previous-Year Paper Solutions",
+              "type": "file",
+              "href": "./content/algorithm-and-dsa/previous-year-paper-solutions.html?v=20260430-1",
+              "meta": "Algorithm 03"
+            }
+          ]
         }
       ]
     },
@@ -87,10 +117,16 @@
       "type": "folder",
       "children": [
         {
-          "name": "Human Computer Interaction Exam Notes",
-          "type": "file",
-          "href": "./content/hci/hci-notes.html?v=20260507-2",
-          "meta": "HCI 01"
+          "name": "Exam Revision",
+          "type": "folder",
+          "children": [
+            {
+              "name": "Human Computer Interaction Exam Notes",
+              "type": "file",
+              "href": "./content/hci/hci-notes.html?v=20260507-2",
+              "meta": "HCI 01"
+            }
+          ]
         }
       ]
     },
@@ -100,82 +136,130 @@
       "type": "folder",
       "children": [
         {
-          "name": "13. Introduction to Local Area Networks",
-          "type": "file",
-          "href": "./content/data-communication/introduction-to-local-area-networks.html?v=20260423-4",
-          "meta": "Slide 13"
+          "name": "Transmission and Capacity",
+          "type": "folder",
+          "children": [
+            {
+              "name": "02. Data Transmission PDF",
+              "type": "file",
+              "href": "./content/data-communication/data-transmission-pdf.html?v=20260505-1",
+              "meta": "PDF"
+            },
+            {
+              "name": "03. Channel Capacity PDF",
+              "type": "file",
+              "href": "./content/data-communication/channel-capacity-pdf.html?v=20260509-1",
+              "meta": "PDF"
+            },
+            {
+              "name": "09. Synchronous and Asynchronous Transmission PDF",
+              "type": "file",
+              "href": "./content/data-communication/sync-async-transmission-pdf.html?v=20260510-1",
+              "meta": "PDF"
+            }
+          ]
         },
         {
-          "name": "02. Data Transmission PDF",
-          "type": "file",
-          "href": "./content/data-communication/data-transmission-pdf.html?v=20260505-1",
-          "meta": "PDF"
+          "name": "Local Area Networks",
+          "type": "folder",
+          "children": [
+            {
+              "name": "13. Introduction to Local Area Networks",
+              "type": "file",
+              "href": "./content/data-communication/introduction-to-local-area-networks.html?v=20260423-4",
+              "meta": "Slide 13"
+            },
+            {
+              "name": "14. LAN Access Techniques",
+              "type": "file",
+              "href": "./content/data-communication/lan-access-techniques.html?v=20260423-4",
+              "meta": "Slide 14"
+            },
+            {
+              "name": "15. Extending LANs",
+              "type": "file",
+              "href": "./content/data-communication/extending-lans-bridges.html?v=20260423-4",
+              "meta": "Slide 15"
+            },
+            {
+              "name": "15. Extending LANs Q&A",
+              "type": "file",
+              "href": "./content/data-communication/extending-lan-q-and-a.html?v=20260509-1",
+              "meta": "Exam Q&A"
+            },
+            {
+              "name": "15. Extending LAN PDF",
+              "type": "file",
+              "href": "./content/data-communication/extending-lan-pdf.html?v=20260510-1",
+              "meta": "PDF"
+            },
+            {
+              "name": "16. MAC Addressing",
+              "type": "file",
+              "href": "./content/data-communication/mac-addressing.html?v=20260423-4",
+              "meta": "Slide 16"
+            }
+          ]
         },
         {
-          "name": "03. Channel Capacity PDF",
-          "type": "file",
-          "href": "./content/data-communication/channel-capacity-pdf.html?v=20260509-1",
-          "meta": "PDF"
+          "name": "Internetworking and IP",
+          "type": "folder",
+          "children": [
+            {
+              "name": "17. Internetworking, Routers, and IP Datagrams",
+              "type": "file",
+              "href": "./content/data-communication/intro-to-internet.html?v=20260423-4",
+              "meta": "Slide 17"
+            },
+            {
+              "name": "18. IP Addressing, Routing, Subnetting, and CIDR",
+              "type": "file",
+              "href": "./content/data-communication/ip-addressing.html?v=20260423-4",
+              "meta": "Slide 18"
+            },
+            {
+              "name": "20. IP Fragmentation",
+              "type": "file",
+              "href": "./content/data-communication/ip-fragmentation.html?v=20260423-4",
+              "meta": "Slide 20"
+            }
+          ]
         },
         {
-          "name": "09. Synchronous and Asynchronous Transmission PDF",
-          "type": "file",
-          "href": "./content/data-communication/sync-async-transmission-pdf.html?v=20260510-1",
-          "meta": "PDF"
+          "name": "Protocol Architecture",
+          "type": "folder",
+          "children": [
+            {
+              "name": "19. Protocol Models",
+              "type": "file",
+              "href": "./content/data-communication/protocol-models.html?v=20260423-4",
+              "meta": "Slide 19"
+            }
+          ]
         },
         {
-          "name": "14. LAN Access Techniques",
-          "type": "file",
-          "href": "./content/data-communication/lan-access-techniques.html?v=20260423-4",
-          "meta": "Slide 14"
-        },
-        {
-          "name": "15. Extending LANs",
-          "type": "file",
-          "href": "./content/data-communication/extending-lans-bridges.html?v=20260423-4",
-          "meta": "Slide 15"
-        },
-        {
-          "name": "15. Extending LANs Q&A",
-          "type": "file",
-          "href": "./content/data-communication/extending-lan-q-and-a.html?v=20260509-1",
-          "meta": "Exam Q&A"
-        },
-        {
-          "name": "15. Extending LAN PDF",
-          "type": "file",
-          "href": "./content/data-communication/extending-lan-pdf.html?v=20260510-1",
-          "meta": "PDF"
-        },
-        {
-          "name": "16. MAC Addressing",
-          "type": "file",
-          "href": "./content/data-communication/mac-addressing.html?v=20260423-4",
-          "meta": "Slide 16"
-        },
-        {
-          "name": "17. Internetworking, Routers, and IP Datagrams",
-          "type": "file",
-          "href": "./content/data-communication/intro-to-internet.html?v=20260423-4",
-          "meta": "Slide 17"
-        },
-        {
-          "name": "18. IP Addressing, Routing, Subnetting, and CIDR",
-          "type": "file",
-          "href": "./content/data-communication/ip-addressing.html?v=20260423-4",
-          "meta": "Slide 18"
-        },
-        {
-          "name": "19. Protocol Models",
-          "type": "file",
-          "href": "./content/data-communication/protocol-models.html?v=20260423-4",
-          "meta": "Slide 19"
-        },
-        {
-          "name": "20. IP Fragmentation",
-          "type": "file",
-          "href": "./content/data-communication/ip-fragmentation.html?v=20260423-4",
-          "meta": "Slide 20"
+          "name": "HDLC",
+          "type": "folder",
+          "children": [
+            {
+              "name": "HDLC Notes - Step 1",
+              "type": "file",
+              "href": "./content/data-communication/hdlc/hdlc-step-1.html?v=20260511-1",
+              "meta": "HDLC 01"
+            },
+            {
+              "name": "HDLC Frame Types - Step 2",
+              "type": "file",
+              "href": "./content/data-communication/hdlc/hdlc-step-2.html?v=20260511-1",
+              "meta": "HDLC 02"
+            },
+            {
+              "name": "HDLC Operation and Sequence Numbers - Step 3",
+              "type": "file",
+              "href": "./content/data-communication/hdlc/hdlc-step-3.html?v=20260511-1",
+              "meta": "HDLC 03"
+            }
+          ]
         }
       ]
     }

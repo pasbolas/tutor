@@ -16,6 +16,10 @@ import {
   slugifyHubId,
 } from "./tree.js";
 
+function getSidebarPanelId(prefix, value, fallback) {
+  return `${prefix}-${slugifyHubId(String(value || fallback).replace(/\//g, "-"))}`;
+}
+
 function getSidebarActiveHref() {
   const current = normalizeComparableHref(window.location.href);
   const hasReadingHistory = getStoredRecentNotes().length > 0;
@@ -30,6 +34,59 @@ function getSidebarActiveHref() {
     || window.location.pathname.endsWith("/index.html")
     ? continueHref
     : current;
+}
+
+function renderFolderIcon() {
+  return `
+    <svg aria-hidden="true" viewBox="0 0 24 24">
+      <path d="M3.5 6.5h6.25l1.6 2H20.5v9.25A2.25 2.25 0 0 1 18.25 20H5.75A2.25 2.25 0 0 1 3.5 17.75Z"></path>
+      <path d="M3.5 8.5h17"></path>
+    </svg>
+  `;
+}
+
+function hasActiveNote(items, activeHref) {
+  return collectCatalogNotes(items)
+    .some((note) => normalizeComparableHref(note.href) === activeHref);
+}
+
+function renderSidebarItems(items, activeHref, parentId) {
+  if (!items.length) {
+    return '<li><span class="tutor-sidebar__empty">No notes yet</span></li>';
+  }
+
+  return items.map((item, index) => {
+    if (item.type === "file") {
+      const isActive = normalizeComparableHref(item.href) === activeHref;
+
+      return `
+        <li class="tutor-sidebar__note-item">
+          <a${isActive ? ' class="tutor-sidebar__note-link is-active"' : ' class="tutor-sidebar__note-link"'} href="${escapeAttribute(item.href || "#")}" title="${escapeAttribute(item.name)}">
+            ${escapeHtml(item.name)}
+          </a>
+        </li>
+      `;
+    }
+
+    const children = Array.isArray(item.children) ? item.children : [];
+    const notes = collectCatalogNotes(children);
+    const isOpen = hasActiveNote(children, activeHref);
+    const folderId = getSidebarPanelId("sidebar-folder", item.id, `${parentId}-${index + 1}`);
+
+    return `
+      <li class="tutor-sidebar__subfolder${isOpen ? " is-open is-active" : ""}">
+        <button type="button" class="tutor-sidebar__folder-toggle" aria-expanded="${isOpen}" aria-controls="${escapeAttribute(folderId)}">
+          <span class="tutor-sidebar__folder-icon">${renderFolderIcon()}</span>
+          <span class="tutor-sidebar__folder-name">${escapeHtml(item.name)}</span>
+          <span class="tutor-sidebar__folder-count">${notes.length}</span>
+          <span class="tutor-sidebar__folder-chevron" aria-hidden="true"></span>
+        </button>
+        <ul class="tutor-sidebar__folder-list" id="${escapeAttribute(folderId)}"${isOpen ? "" : " hidden"}>
+          ${renderSidebarItems(children, activeHref, folderId)}
+        </ul>
+      </li>
+    `;
+  }).join("");
 }
 
 export async function initCatalogSidebar() {
@@ -59,7 +116,7 @@ export async function initCatalogSidebar() {
     const notes = collectCatalogNotes(subject.children);
     const hasActiveNote = notes.some((note) => normalizeComparableHref(note.href) === activeHref);
     const subjectId = subject.id || slugifyHubId(subject.name);
-    const listId = `sidebar-subject-${subjectId || index + 1}`;
+    const listId = getSidebarPanelId("sidebar-subject", subjectId, index + 1);
 
     if (hasActiveNote && !openSubjectId) {
       openSubjectId = listId;
@@ -74,19 +131,8 @@ export async function initCatalogSidebar() {
             <span class="tutor-sidebar__badge">${notes.length}</span>
             <span class="tutor-sidebar__chevron" aria-hidden="true"></span>
           </button>
-          <ul id="${escapeAttribute(listId)}"${hasActiveNote ? "" : " hidden"}>
-            ${notes.length
-              ? notes.map((note) => {
-                const isActive = normalizeComparableHref(note.href) === activeHref;
-                return `
-                  <li>
-                    <a${isActive ? ' class="is-active"' : ""} href="${escapeAttribute(note.href || "#")}" title="${escapeAttribute(note.name)}">
-                      ${escapeHtml(note.name)}
-                    </a>
-                  </li>
-                `;
-              }).join("")
-              : '<li><span class="tutor-sidebar__empty">No notes yet</span></li>'}
+          <ul class="tutor-sidebar__subject-list" id="${escapeAttribute(listId)}"${hasActiveNote ? "" : " hidden"}>
+            ${renderSidebarItems(subject.children, activeHref, listId)}
           </ul>
         </section>
       `,
@@ -101,7 +147,7 @@ export async function initCatalogSidebar() {
     if (firstSubject) {
       firstSubject.classList.add("is-open");
       const toggle = firstSubject.querySelector(".tutor-sidebar__subject-toggle");
-      const panel = firstSubject.querySelector("ul");
+      const panel = firstSubject.querySelector(".tutor-sidebar__subject-list");
       if (toggle) {
         toggle.setAttribute("aria-expanded", "true");
       }

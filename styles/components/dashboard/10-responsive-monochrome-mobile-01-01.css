@@ -206,7 +206,7 @@
     -webkit-overflow-scrolling: touch;
     align-content: start;
     grid-auto-rows: max-content;
-    gap: 5px;
+    gap: 4px;
     padding-right: 2px;
     padding-bottom: 96px;
     scrollbar-width: none;
@@ -220,15 +220,30 @@
 
   
   .tutor-sidebar__subject-toggle {
+    grid-template-columns: 18px minmax(0, 1fr) auto 12px;
+    gap: 8px;
     min-height: 42px;
-    padding: 5px 10px;
+    padding: 6px 8px;
     border-radius: 12px;
     color: #f3ede2 !important;
-    font-size: 16px;
+    font-family: "Manrope", sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1.15;
+  }
+
+  
+  .tutor-sidebar__subject-icon,
+  .tutor-sidebar__subject-icon svg {
+    width: 18px;
+    height: 18px;
   }
 
   
   .tutor-sidebar__subject-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
     white-space: normal;
   }
 
@@ -242,29 +257,84 @@
   }
 
   
-  .tutor-sidebar ul {
-    margin-left: 12px;
-    padding: 6px 0 0 24px;
+  .tutor-sidebar__subject-list {
+    margin-left: 13px;
+    padding: 6px 0 2px 18px;
+  }
+
+  
+  .tutor-sidebar__folder-list {
+    margin-left: 4px;
+    padding: 4px 0 2px 14px;
   }
 
   
   .tutor-sidebar li::before,
   .tutor-sidebar li:not(:last-child)::after {
-    left: -10px;
+    left: -8px;
   }
 
   
-  .tutor-sidebar li a {
-    padding: 11px 0 11px 10px;
+  .tutor-sidebar__subfolder::before {
+    height: 19px;
+  }
+
+  
+  .tutor-sidebar__subfolder:not(:last-child)::after,
+  .tutor-sidebar__subfolder.is-open:not(:last-child)::after {
+    top: 19px;
+  }
+
+  
+  .tutor-sidebar__folder-toggle {
+    grid-template-columns: 16px minmax(0, 1fr) auto 10px;
+    gap: 7px;
+    min-height: 36px;
+    padding: 7px 7px 7px 8px;
+    border-radius: 10px;
     color: #f3ede2 !important;
-    font-size: 14px;
-    line-height: 1.25;
+    font-size: 12px;
+    line-height: 1.15;
   }
 
   
-  .tutor-sidebar li a:hover,
-  .tutor-sidebar li a:focus-visible,
-  .tutor-sidebar li a.is-active,
+  .tutor-sidebar__folder-icon,
+  .tutor-sidebar__folder-icon svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  
+  .tutor-sidebar__folder-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+  }
+
+  
+  .tutor-sidebar__folder-count {
+    color: rgba(243, 237, 226, 0.62) !important;
+    font-size: 10px;
+  }
+
+  
+  .tutor-sidebar__note-link {
+    padding: 8px 6px 8px 8px;
+    color: #f3ede2 !important;
+    font-size: 12px;
+    line-height: 1.22;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
+  
+  .tutor-sidebar__note-link:hover,
+  .tutor-sidebar__note-link:focus-visible,
+  .tutor-sidebar__note-link.is-active,
+  .tutor-sidebar__folder-toggle:hover,
+  .tutor-sidebar__folder-toggle:focus-visible,
+  .tutor-sidebar__subfolder.is-open > .tutor-sidebar__folder-toggle,
   .tutor-sidebar__subject.is-open .tutor-sidebar__subject-toggle,
   .tutor-sidebar__subject-toggle:hover,
   .tutor-sidebar__subject-toggle:focus-visible,

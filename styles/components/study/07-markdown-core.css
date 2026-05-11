@@ -88,6 +88,25 @@
   overflow-wrap: anywhere;
 }
 
+.study-markdown blockquote {
+  max-width: 72ch;
+  margin: 1rem 0 0;
+  padding: 0.85rem 1rem;
+  border-left: 3px solid var(--accent);
+  background: rgba(168, 90, 77, 0.07);
+  color: var(--ink);
+}
+
+.study-markdown blockquote p {
+  margin: 0;
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.study-markdown blockquote p + p {
+  margin-top: 0.45rem;
+}
+
 .study-markdown .study-qa {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);

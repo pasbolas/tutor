@@ -11,13 +11,13 @@
  "loaderMarkB": "N",
  "mainCssVersion": "20260505-1",
  "componentStyles": [
- "styles/components/dashboard.css?v=20260510-1"
+ "styles/components/dashboard.css?v=20260511-1"
  ],
  "feedbackCssVersion": "20260423-4",
  "pageTransitionsVersion": "20260423-4",
  "audioVersion": "20260505-1",
  "trailsVersion": "20260423-4",
- "mainJsVersion": "20260505-4"
+ "mainJsVersion": "20260511-1"
  },
  {
  "output": "content/programming/functions.html",
@@ -438,6 +438,57 @@
  "audioVersion": "20260505-1",
  "trailsVersion": "20260423-4",
  "mainJsVersion": "20260509-2"
+ },
+ {
+ "output": "content/data-communication/hdlc/hdlc-step-1.html",
+ "body": "templates/pages/content/data-communication/hdlc/hdlc-step-1.html",
+ "basePath": "../../../",
+ "title": "HDLC Notes - Step 1 | Tutor Notes",
+ "description": "My HDLC notes covering the protocol definition, frame format, flag pattern, and bit stuffing.",
+ "loaderMicro": "Data Communication / HDLC",
+ "loaderMarkLabel": "H1 mark",
+ "loaderMarkA": "H",
+ "loaderMarkB": "1",
+ "mainCssVersion": "20260423-4",
+ "feedbackCssVersion": "20260423-4",
+ "pageTransitionsVersion": "20260423-4",
+ "audioVersion": "20260505-1",
+ "trailsVersion": "20260423-4",
+ "mainJsVersion": "20260511-1"
+ },
+ {
+ "output": "content/data-communication/hdlc/hdlc-step-2.html",
+ "body": "templates/pages/content/data-communication/hdlc/hdlc-step-2.html",
+ "basePath": "../../../",
+ "title": "HDLC Frame Types | Tutor Notes",
+ "description": "My HDLC notes covering I-frames, S-frames, U-frames, piggybacking, and link management commands.",
+ "loaderMicro": "Data Communication / HDLC",
+ "loaderMarkLabel": "H2 mark",
+ "loaderMarkA": "H",
+ "loaderMarkB": "2",
+ "mainCssVersion": "20260423-4",
+ "feedbackCssVersion": "20260423-4",
+ "pageTransitionsVersion": "20260423-4",
+ "audioVersion": "20260505-1",
+ "trailsVersion": "20260423-4",
+ "mainJsVersion": "20260511-1"
+ },
+ {
+ "output": "content/data-communication/hdlc/hdlc-step-3.html",
+ "body": "templates/pages/content/data-communication/hdlc/hdlc-step-3.html",
+ "basePath": "../../../",
+ "title": "HDLC Operation and Sequence Numbers | Tutor Notes",
+ "description": "My HDLC notes covering initialisation, data transfer, disconnect, sequence numbers, S-frame recovery, and the Poll/Final bit.",
+ "loaderMicro": "Data Communication / HDLC",
+ "loaderMarkLabel": "H3 mark",
+ "loaderMarkA": "H",
+ "loaderMarkB": "3",
+ "mainCssVersion": "20260423-4",
+ "feedbackCssVersion": "20260423-4",
+ "pageTransitionsVersion": "20260423-4",
+ "audioVersion": "20260505-1",
+ "trailsVersion": "20260423-4",
+ "mainJsVersion": "20260511-1"
  }
 ]
 

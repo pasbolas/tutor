@@ -55,13 +55,19 @@ export async function loadNotesCatalog(hub) {
   return JSON.parse(dataNode.textContent || "{}");
 }
 
-export function collectCatalogNotes(items) {
+export function collectCatalogNotes(items, folderPath = []) {
   return items.flatMap((item) => {
     if (item.type === "file") {
-      return [item];
+      return [{
+        ...item,
+        folderPath,
+      }];
     }
 
-    return collectCatalogNotes(Array.isArray(item.children) ? item.children : []);
+    return collectCatalogNotes(
+      Array.isArray(item.children) ? item.children : [],
+      [...folderPath, item.name]
+    );
   });
 }
 

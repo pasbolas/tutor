@@ -21,6 +21,7 @@ function getRecentDashboardNotes(notes) {
         name: matchedNote?.name || entry.title,
         subject: matchedNote?.subject || entry.subject || "Notes",
         meta: matchedNote?.meta || entry.meta || "Note",
+        folderPath: matchedNote?.folderPath || entry.folderPath || [],
         sectionId: entry.sectionId || "",
         sectionLabel: entry.sectionLabel || "",
         sectionTitle: entry.sectionTitle || "",
@@ -46,6 +47,11 @@ export function renderDashboardCatalog(tree, activeHref) {
   if (activeNote) {
     const hero = document.querySelector(".tutor-hero-note");
     if (hero) {
+      const activePath = [
+        activeNote.subject,
+        ...(Array.isArray(activeNote.folderPath) ? activeNote.folderPath : []),
+        activeNote.name || activeNote.title,
+      ].filter(Boolean);
       const title = hero.querySelector("h1");
       const path = hero.querySelector(".tutor-note-path");
       const sectionMeta = hero.querySelector(".tutor-note-meta__section");
@@ -65,7 +71,7 @@ export function renderDashboardCatalog(tree, activeHref) {
       }
       if (path) {
         path.innerHTML = hasReadingHistory
-          ? `${escapeHtml(activeNote.subject)} <span>&rsaquo;</span> ${escapeHtml(activeNote.name || activeNote.title)}`
+          ? activePath.map((part) => escapeHtml(part)).join(" <span>&rsaquo;</span> ")
           : "Choose a subject <span>&rsaquo;</span> Open any note";
       }
       if (sectionMeta) {
@@ -116,6 +122,11 @@ export function renderDashboardCatalog(tree, activeHref) {
 
   recentList.innerHTML = recentNotes.slice(0, 3).map((note) => {
     const progressPercent = clamp(Number(note.progressPercent) || 0, 0, 100);
+    const notePath = [
+      note.subject,
+      ...(Array.isArray(note.folderPath) ? note.folderPath : []),
+      note.meta || "Note",
+    ].filter(Boolean);
 
     return `
     <a class="tutor-note-row" href="${escapeAttribute(note.href || "#")}">
@@ -128,7 +139,7 @@ export function renderDashboardCatalog(tree, activeHref) {
       </span>
       <span>
         <strong>${escapeHtml(note.name || note.title)}</strong>
-        <small>${escapeHtml(note.subject)} <span>&rsaquo;</span> ${escapeHtml(note.meta || "Note")}</small>
+        <small>${notePath.map((part) => escapeHtml(part)).join(" <span>&rsaquo;</span> ")}</small>
       </span>
       <span class="tutor-note-row__status">
         <time>${escapeHtml(formatRelativeVisitTime(note.visitedAt))}</time>

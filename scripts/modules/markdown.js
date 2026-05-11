@@ -80,6 +80,28 @@ export function parseMarkdown(markdown) {
       continue;
     }
 
+    const quoteMatch = line.match(/^\s*>\s?(.*)$/);
+    if (quoteMatch) {
+      const quoteLines = [];
+
+      while (index < lines.length) {
+        const currentQuoteMatch = lines[index].match(/^\s*>\s?(.*)$/);
+        if (!currentQuoteMatch) {
+          break;
+        }
+
+        quoteLines.push(currentQuoteMatch[1].trim());
+        index += 1;
+      }
+
+      blocks.push({
+        type: "quote",
+        lines: quoteLines,
+        text: quoteLines.join(" "),
+      });
+      continue;
+    }
+
     const codeMatch = line.match(/^```([\w-]+)?\s*$/);
     if (codeMatch) {
       const language = codeMatch[1] || "";
@@ -250,6 +272,14 @@ function renderBlock(block, options = {}) {
       .map((item) => `<li>${renderInline(item)}</li>`)
       .join("");
     return `<${tag}>${items}</${tag}>`;
+  }
+
+  if (block.type === "quote") {
+    const body = block.lines
+      .filter((item) => item.trim())
+      .map((item) => `<p>${renderInline(item)}</p>`)
+      .join("");
+    return `<blockquote>${body}</blockquote>`;
   }
 
   if (block.type === "code") {
@@ -594,6 +624,10 @@ function countWords(blocks) {
 
       if (block.type === "list") {
         return block.items.join(" ");
+      }
+
+      if (block.type === "quote") {
+        return block.text;
       }
 
       if (block.type === "table") {

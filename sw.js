@@ -1,4 +1,4 @@
-const CACHE_NAME = "tutor-notes-v16";
+const CACHE_NAME = "tutor-notes-v17";
 
 const CORE_ASSETS = [
   "./catalog.json",

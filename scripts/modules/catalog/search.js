@@ -22,7 +22,7 @@ async function loadSearchableNote(note) {
     return {
       ...note,
       sections: [],
-      searchText: compactWhitespace(`${note.subject} ${note.name} ${note.meta}`),
+      searchText: compactWhitespace(`${note.subject} ${(note.folderPath || []).join(" ")} ${note.name} ${note.meta}`),
     };
   }
 
@@ -73,6 +73,11 @@ async function loadSearchableNote(note) {
       return;
     }
 
+    if (block.type === "quote") {
+      section.body.push(block.text);
+      return;
+    }
+
     if (block.type === "heading") {
       section.body.push(block.text);
     }
@@ -88,6 +93,7 @@ async function loadSearchableNote(note) {
     })),
     searchText: compactWhitespace([
       note.subject,
+      ...(note.folderPath || []),
       note.name,
       note.meta,
       ...sections.flatMap((section) => [section.title, section.body.join(" ")]),
@@ -116,6 +122,7 @@ function scoreSearchCandidate(candidate, queryTerms) {
   const title = compactWhitespace(candidate.title || candidate.name || "").toLowerCase();
   const subject = compactWhitespace(candidate.subject || "").toLowerCase();
   const meta = compactWhitespace(candidate.meta || "").toLowerCase();
+  const folderPath = compactWhitespace((candidate.folderPath || []).join(" ")).toLowerCase();
   const section = compactWhitespace(candidate.sectionTitle || "").toLowerCase();
   const snippet = compactWhitespace(candidate.snippet || "").toLowerCase();
 
@@ -123,6 +130,7 @@ function scoreSearchCandidate(candidate, queryTerms) {
     let nextScore = score;
     if (title.includes(term)) nextScore += 18;
     if (subject.includes(term)) nextScore += 7;
+    if (folderPath.includes(term)) nextScore += 7;
     if (meta.includes(term)) nextScore += 5;
     if (section.includes(term)) nextScore += 10;
     if (snippet.includes(term)) nextScore += 4;
@@ -143,14 +151,16 @@ function buildSearchResults(query, index) {
 
   index.forEach((note) => {
     const titleText = `${note.name} ${note.subject} ${note.meta}`.toLowerCase();
-    const titleMatch = queryTerms.every((term) => titleText.includes(term));
+    const folderText = (note.folderPath || []).join(" ").toLowerCase();
+    const titleAndFolderMatch = queryTerms.every((term) => `${titleText} ${folderText}`.includes(term));
 
-    if (titleMatch) {
+    if (titleAndFolderMatch) {
       matches.push({
         type: "note",
         href: note.href,
         title: note.name,
         subject: note.subject,
+        folderPath: note.folderPath || [],
         meta: note.meta,
         sectionTitle: "",
         snippet: note.meta || note.subject,
@@ -158,7 +168,7 @@ function buildSearchResults(query, index) {
     }
 
     note.sections.forEach((section) => {
-      const corpus = `${note.name} ${note.subject} ${section.title} ${section.bodyText}`.toLowerCase();
+      const corpus = `${note.name} ${note.subject} ${(note.folderPath || []).join(" ")} ${section.title} ${section.bodyText}`.toLowerCase();
       if (!queryTerms.every((term) => corpus.includes(term))) {
         return;
       }
@@ -168,6 +178,7 @@ function buildSearchResults(query, index) {
         href: section.href,
         title: note.name,
         subject: note.subject,
+        folderPath: note.folderPath || [],
         meta: note.meta,
         sectionTitle: section.title,
         snippet: getSearchSnippet(section.bodyText || section.title, trimmed),
@@ -220,7 +231,11 @@ function renderSidebarSearchResults(resultsRoot, query, results) {
     <a class="tutor-search-result" href="${escapeAttribute(result.href)}">
       <span class="tutor-search-result__kind">${result.type === "section" ? "Section" : "Note"}</span>
       <strong>${escapeHtml(result.title)}</strong>
-      <small>${escapeHtml(result.subject)} <span>&rsaquo;</span> ${escapeHtml(result.sectionTitle || result.meta || "Note")}</small>
+      <small>${[
+        result.subject,
+        ...(result.folderPath || []),
+        result.sectionTitle || result.meta || "Note",
+      ].filter(Boolean).map((part) => escapeHtml(part)).join(" <span>&rsaquo;</span> ")}</small>
       <p>${escapeHtml(result.snippet || "")}</p>
     </a>
   `).join("");
@@ -246,7 +261,7 @@ export function initSidebarSearch(tree) {
           return {
             ...note,
             sections: [],
-            searchText: compactWhitespace(`${note.subject} ${note.name} ${note.meta}`),
+            searchText: compactWhitespace(`${note.subject} ${(note.folderPath || []).join(" ")} ${note.name} ${note.meta}`),
           };
         }
       }));

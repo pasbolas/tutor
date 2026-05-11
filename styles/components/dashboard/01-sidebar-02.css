@@ -1,8 +1,97 @@
 
-.tutor-sidebar li a {
+.tutor-sidebar__folder-toggle {
   position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 17px minmax(0, 1fr) auto 10px;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  min-height: 36px;
+  padding: 7px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: rgba(239, 229, 220, 0.68);
+  font-family: "Manrope", sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.15;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color 180ms ease,
+    color 180ms ease;
+}
+
+
+.tutor-sidebar__folder-icon {
+  display: grid;
+  width: 16px;
+  height: 16px;
+  place-items: center;
+  color: rgba(239, 143, 124, 0.64);
+}
+
+
+.tutor-sidebar__folder-icon svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+
+.tutor-sidebar__folder-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+.tutor-sidebar__folder-count {
+  color: rgba(239, 229, 220, 0.42);
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+
+.tutor-sidebar__folder-chevron {
+  justify-self: end;
+  width: 5px;
+  height: 5px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  color: rgba(239, 143, 124, 0.52);
+  transform: rotate(45deg) translateY(-1px);
+  transition: transform 180ms ease;
+}
+
+
+.tutor-sidebar__subfolder.is-open > .tutor-sidebar__folder-toggle,
+.tutor-sidebar__subfolder.is-active > .tutor-sidebar__folder-toggle,
+.tutor-sidebar__folder-toggle:hover,
+.tutor-sidebar__folder-toggle:focus-visible {
+  color: var(--dash-text);
+  background: rgba(239, 143, 124, 0.045);
+}
+
+
+.tutor-sidebar__subfolder.is-open > .tutor-sidebar__folder-toggle .tutor-sidebar__folder-chevron {
+  transform: rotate(225deg) translate(-2px, -1px);
+}
+
+
+.tutor-sidebar__note-link {
+  position: relative;
+  z-index: 1;
   display: block;
-  padding: 9px 0 9px 12px;
+  padding: 9px 10px 9px 12px;
   border-radius: 0;
   color: var(--dash-warm);
   font-family: "Manrope", sans-serif;
@@ -14,13 +103,13 @@
 }
 
 
-.tutor-sidebar li a:hover,
-.tutor-sidebar li a:focus-visible {
+.tutor-sidebar__note-link:hover,
+.tutor-sidebar__note-link:focus-visible {
   color: var(--dash-accent);
 }
 
 
-.tutor-sidebar li a.is-active {
+.tutor-sidebar__note-link.is-active {
   color: var(--dash-accent);
   font-weight: 800;
 }
