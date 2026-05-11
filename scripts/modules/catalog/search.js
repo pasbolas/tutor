@@ -6,7 +6,55 @@ import {
   slugify,
 } from "../shared.js";
 import { parseMarkdown } from "../markdown.js";
-import { getCatalogNoteRows } from "./tree.js";
+import {
+  DEFAULT_CATALOG_URL,
+  fetchCatalog,
+  getCatalogNoteRows,
+  normalizeHubTree,
+} from "./tree.js";
+
+function getMetadataSearchText(note) {
+  return compactWhitespace([
+    note.subject,
+    ...(note.folderPath || []),
+    note.name,
+    note.meta,
+  ].filter(Boolean).join(" "));
+}
+
+function getNotePageDocument(noteHtml) {
+  if (typeof window === "undefined" || typeof window.DOMParser !== "function") {
+    return null;
+  }
+
+  return new window.DOMParser().parseFromString(noteHtml, "text/html");
+}
+
+function getMarkdownSource(noteHtml) {
+  const parsedDocument = getNotePageDocument(noteHtml);
+  const source = parsedDocument
+    ?.querySelector("[data-markdown-source]")
+    ?.getAttribute("data-markdown-source");
+
+  if (source) {
+    return source;
+  }
+
+  return noteHtml.match(/data-markdown-source="([^"]+)"/i)?.[1] || "";
+}
+
+function getNotePageText(noteHtml) {
+  const parsedDocument = getNotePageDocument(noteHtml);
+  if (!parsedDocument?.body) {
+    return "";
+  }
+
+  parsedDocument
+    .querySelectorAll("script, style, svg, canvas")
+    .forEach((node) => node.remove());
+
+  return compactWhitespace(parsedDocument.body.textContent || "");
+}
 
 async function loadSearchableNote(note) {
   const noteUrl = getNoteAbsoluteUrl(note.href);
@@ -17,16 +65,17 @@ async function loadSearchableNote(note) {
     return response.text();
   });
 
-  const sourceMatch = noteHtml.match(/data-markdown-source="([^"]+)"/i);
-  if (!sourceMatch) {
+  const markdownSource = getMarkdownSource(noteHtml);
+  if (!markdownSource) {
+    const pageText = getNotePageText(noteHtml);
     return {
       ...note,
       sections: [],
-      searchText: compactWhitespace(`${note.subject} ${(note.folderPath || []).join(" ")} ${note.name} ${note.meta}`),
+      searchText: compactWhitespace(`${getMetadataSearchText(note)} ${pageText}`),
     };
   }
 
-  const markdownUrl = new URL(sourceMatch[1], noteUrl.href);
+  const markdownUrl = new URL(markdownSource, noteUrl.href);
   const markdown = await fetch(markdownUrl.href).then((response) => {
     if (!response.ok) {
       throw new Error(`Failed to load ${markdownUrl.href}`);
@@ -101,6 +150,12 @@ async function loadSearchableNote(note) {
   };
 }
 
+async function loadNotesFromCatalog(catalogUrl) {
+  const config = await fetchCatalog(catalogUrl);
+  const tree = normalizeHubTree(Array.isArray(config.items) ? config.items : []);
+  return getCatalogNoteRows(tree);
+}
+
 function getSearchSnippet(text, query) {
   const normalizedText = compactWhitespace(text);
   const lowerText = normalizedText.toLowerCase();
@@ -150,9 +205,14 @@ function buildSearchResults(query, index) {
   const matches = [];
 
   index.forEach((note) => {
-    const titleText = `${note.name} ${note.subject} ${note.meta}`.toLowerCase();
-    const folderText = (note.folderPath || []).join(" ").toLowerCase();
-    const titleAndFolderMatch = queryTerms.every((term) => `${titleText} ${folderText}`.includes(term));
+    const noteCorpus = compactWhitespace([
+      note.name,
+      note.subject,
+      note.meta,
+      ...(note.folderPath || []),
+      note.searchText,
+    ].join(" ")).toLowerCase();
+    const titleAndFolderMatch = queryTerms.every((term) => noteCorpus.includes(term));
 
     if (titleAndFolderMatch) {
       matches.push({
@@ -163,11 +223,11 @@ function buildSearchResults(query, index) {
         folderPath: note.folderPath || [],
         meta: note.meta,
         sectionTitle: "",
-        snippet: note.meta || note.subject,
+        snippet: getSearchSnippet(note.searchText || note.meta || note.subject, trimmed),
       });
     }
 
-    note.sections.forEach((section) => {
+    (note.sections || []).forEach((section) => {
       const corpus = `${note.name} ${note.subject} ${(note.folderPath || []).join(" ")} ${section.title} ${section.bodyText}`.toLowerCase();
       if (!queryTerms.every((term) => corpus.includes(term))) {
         return;
@@ -249,22 +309,33 @@ export function initSidebarSearch(tree) {
     return;
   }
 
-  const notes = getCatalogNoteRows(tree);
+  const fallbackNotes = getCatalogNoteRows(Array.isArray(tree) ? tree : []);
+  const catalogUrl = sidebar?.dataset.sidebarCatalog || DEFAULT_CATALOG_URL;
   let searchIndexPromise = null;
 
   const loadIndex = async () => {
     if (!searchIndexPromise) {
-      searchIndexPromise = Promise.all(notes.map(async (note) => {
+      searchIndexPromise = (async () => {
+        let notes = fallbackNotes;
+
         try {
-          return await loadSearchableNote(note);
+          notes = await loadNotesFromCatalog(catalogUrl);
         } catch {
-          return {
-            ...note,
-            sections: [],
-            searchText: compactWhitespace(`${note.subject} ${(note.folderPath || []).join(" ")} ${note.name} ${note.meta}`),
-          };
+          notes = fallbackNotes;
         }
-      }));
+
+        return Promise.all(notes.map(async (note) => {
+          try {
+            return await loadSearchableNote(note);
+          } catch {
+            return {
+              ...note,
+              sections: [],
+              searchText: getMetadataSearchText(note),
+            };
+          }
+        }));
+      })();
     }
 
     return searchIndexPromise;
