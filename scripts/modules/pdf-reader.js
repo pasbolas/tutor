@@ -1,10 +1,9 @@
 import { StatusTracker } from "./status-tracker.js";
+import { clamp } from "./shared.js";
 
 const PDFJS_VERSION = "4.10.38";
 const PDFJS_URL = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${PDFJS_VERSION}/build/pdf.mjs`;
 const PDFJS_WORKER_URL = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${PDFJS_VERSION}/build/pdf.worker.mjs`;
-
-const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 
 const getRequiredElement = (root, selector) => {
   const element = root.querySelector(selector);

@@ -11,6 +11,40 @@ const CORE_ASSETS = [
   "./assets/loading/editorial-seal.jpg"
 ];
 
+const FRESH_JSON_PATHS = ["/catalog.json", "/greetings.json", "/favourites.json"];
+const FRESH_DESTINATIONS = ["script", "style", "worker"];
+
+function cacheResponse(request, response) {
+  if (!response || !response.ok) {
+    return;
+  }
+
+  const responseToCache = response.clone();
+  caches.open(CACHE_NAME).then((cache) => {
+    cache.put(request, responseToCache);
+  });
+}
+
+async function networkFirstWithFallback(request, { documentFallback = false } = {}) {
+  try {
+    const networkResponse = await fetch(request);
+    cacheResponse(request, networkResponse);
+    return networkResponse;
+  } catch {
+    const cachedResponse = await caches.match(request);
+    if (cachedResponse) {
+      return cachedResponse;
+    }
+
+    if (documentFallback) {
+      const fallbackResponse = await caches.match("./index.html");
+      return fallbackResponse || Response.error();
+    }
+
+    return Response.error();
+  }
+}
+
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches
@@ -54,11 +88,11 @@ self.addEventListener("fetch", (event) => {
   const isDocumentRequest = event.request.mode === "navigate" || acceptsHtml;
   const isFreshJsonDataRequest = (
     isSameOrigin
-    && ["/catalog.json", "/greetings.json", "/favourites.json"].some((path) => requestUrl.pathname.endsWith(path))
+    && FRESH_JSON_PATHS.some((path) => requestUrl.pathname.endsWith(path))
   );
   const isFreshAssetRequest = (
     isSameOrigin
-    && ["script", "style", "worker"].includes(event.request.destination)
+    && FRESH_DESTINATIONS.includes(event.request.destination)
   );
 
   if (isVercelInsightsRequest) {
@@ -73,52 +107,11 @@ self.addEventListener("fetch", (event) => {
   event.respondWith(
     (async () => {
       if (isFreshJsonDataRequest) {
-        try {
-          const networkResponse = await fetch(event.request);
-
-          if (networkResponse && networkResponse.ok) {
-            const responseToCache = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(event.request, responseToCache);
-            });
-          }
-
-          return networkResponse;
-        } catch {
-          const cachedResponse = await caches.match(event.request);
-          if (cachedResponse) {
-            return cachedResponse;
-          }
-
-          return Response.error();
-        }
+        return networkFirstWithFallback(event.request);
       }
 
       if (isSameOrigin && (isDocumentRequest || isFreshAssetRequest)) {
-        try {
-          const networkResponse = await fetch(event.request);
-
-          if (networkResponse && networkResponse.ok) {
-            const responseToCache = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(event.request, responseToCache);
-            });
-          }
-
-          return networkResponse;
-        } catch {
-          const cachedResponse = await caches.match(event.request);
-          if (cachedResponse) {
-            return cachedResponse;
-          }
-
-          if (isDocumentRequest) {
-            const fallbackResponse = await caches.match("./index.html");
-            return fallbackResponse || Response.error();
-          }
-
-          return Response.error();
-        }
+        return networkFirstWithFallback(event.request, { documentFallback: isDocumentRequest });
       }
 
       const cachedResponse = await caches.match(event.request);
@@ -126,25 +119,7 @@ self.addEventListener("fetch", (event) => {
         return cachedResponse;
       }
 
-      try {
-        const networkResponse = await fetch(event.request);
-
-        if (networkResponse && networkResponse.ok && isSameOrigin) {
-          const responseToCache = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache);
-          });
-        }
-
-        return networkResponse;
-      } catch {
-        if (event.request.mode === "navigate") {
-          const fallbackResponse = await caches.match("./index.html");
-          return fallbackResponse || Response.error();
-        }
-
-        return Response.error();
-      }
+      return networkFirstWithFallback(event.request, { documentFallback: event.request.mode === "navigate" });
     })()
   );
 });

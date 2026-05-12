@@ -1,9 +1,9 @@
+import { slugifyId } from "../shared.js";
+
+const normalizedTreeCache = new Map();
+
 function slugifyHubId(text) {
-  return text
-    .toLowerCase()
-    .replace(/[`']/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "") || "item";
+  return slugifyId(text, "item");
 }
 
 export function normalizeHubTree(items, parentId = "") {
@@ -39,6 +39,20 @@ export async function fetchCatalog(catalogUrl) {
   }
 
   return response.json();
+}
+
+export async function loadNormalizedCatalogTree(catalogUrl = DEFAULT_CATALOG_URL) {
+  if (!normalizedTreeCache.has(catalogUrl)) {
+    normalizedTreeCache.set(
+      catalogUrl,
+      (async () => {
+        const config = await fetchCatalog(catalogUrl);
+        return normalizeHubTree(Array.isArray(config.items) ? config.items : []);
+      })()
+    );
+  }
+
+  return normalizedTreeCache.get(catalogUrl);
 }
 
 export async function loadNotesCatalog(hub) {

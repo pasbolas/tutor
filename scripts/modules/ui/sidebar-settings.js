@@ -1,3 +1,5 @@
+import { bindDismissableLayer } from "./dismissable.js";
+
 export function initSidebarSettings() {
   const root = document.querySelector("[data-sidebar-settings]");
   if (!root) {
@@ -50,19 +52,12 @@ export function initSidebarSettings() {
     setOpen(!root.classList.contains("is-open"));
   });
 
-  document.addEventListener("click", (event) => {
-    if (root.contains(event.target)) {
-      return;
-    }
-
-    setOpen(false);
-  });
-
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
+  bindDismissableLayer({
+    root,
+    close: () => {
       setOpen(false);
       trigger.focus();
-    }
+    },
   });
 
   setOpen(false, { immediate: true });

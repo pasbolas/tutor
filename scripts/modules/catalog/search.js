@@ -8,9 +8,8 @@ import {
 import { parseMarkdown } from "../markdown.js";
 import {
   DEFAULT_CATALOG_URL,
-  fetchCatalog,
   getCatalogNoteRows,
-  normalizeHubTree,
+  loadNormalizedCatalogTree,
 } from "./tree.js";
 
 function getMetadataSearchText(note) {
@@ -151,8 +150,7 @@ async function loadSearchableNote(note) {
 }
 
 async function loadNotesFromCatalog(catalogUrl) {
-  const config = await fetchCatalog(catalogUrl);
-  const tree = normalizeHubTree(Array.isArray(config.items) ? config.items : []);
+  const tree = await loadNormalizedCatalogTree(catalogUrl);
   return getCatalogNoteRows(tree);
 }
 

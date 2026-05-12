@@ -1,5 +1,10 @@
-import { getStoredCursorMode, setStoredCursorMode } from "../shared.js";
-import { createCursorToggleButton, syncCursorToggleButton } from "./cursor-toggle.js";
+import { getStoredCursorMode } from "../shared.js";
+import {
+  bindCursorToggleButton,
+  createCursorToggleButton,
+  syncCursorToggleButton,
+} from "./cursor-toggle.js";
+import { bindDismissableLayer } from "./dismissable.js";
 
 export function initStudySettingsMenu() {
   const panel = document.querySelector("[data-study-outline-panel]");
@@ -64,10 +69,7 @@ export function initStudySettingsMenu() {
       syncCursorToggleButton(cursorButton, controller);
     };
 
-    cursorButton.addEventListener("click", () => {
-      const nextMode = controller.getMode() === "blob" ? "native" : "blob";
-      controller.setMode(nextMode, { persist: true });
-      setStoredCursorMode(nextMode);
+    bindCursorToggleButton(cursorButton, controller, () => {
       syncCursorButton();
     });
 
@@ -140,11 +142,7 @@ export function initStudySettingsMenu() {
     event.stopPropagation();
   });
 
-  document.addEventListener("click", (event) => {
-    if (!settings.contains(event.target)) {
-      closeMenu();
-    }
-  });
+  bindDismissableLayer({ root: settings, close: closeMenu });
 
   settings.addEventListener("mouseleave", () => {
     requestCloseMenu();
@@ -160,10 +158,4 @@ export function initStudySettingsMenu() {
     }
   });
 
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      closeMenu();
-    }
-  });
 }
-

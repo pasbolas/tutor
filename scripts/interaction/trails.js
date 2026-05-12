@@ -5,12 +5,14 @@
 
   window.__tutorTrailOverlayInitialized = true;
 
-  const profile = window.__tutorPerformanceProfile || {
-    prefersReducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
-    coarsePointer: window.matchMedia("(hover: none), (pointer: coarse)").matches,
-    smallViewport: window.matchMedia("(max-width: 980px)").matches,
-    lowPowerMode: false,
-  };
+  const profile = typeof window.__tutorGetPerformanceProfile === "function"
+    ? window.__tutorGetPerformanceProfile()
+    : (window.__tutorPerformanceProfile || {
+      prefersReducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+      coarsePointer: window.matchMedia("(hover: none), (pointer: coarse)").matches,
+      smallViewport: window.matchMedia("(max-width: 980px)").matches,
+      lowPowerMode: false,
+    });
 
   if (profile.prefersReducedMotion || profile.coarsePointer || profile.smallViewport) {
     return;
