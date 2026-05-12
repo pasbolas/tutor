@@ -1,3 +1,4 @@
 /* 01-sidebar.css entrypoint. Split into focused parts to keep each CSS file under 300 lines. */
 @import "./01-sidebar-01.css";
 @import "./01-sidebar-02.css";
+@import "./01-sidebar-favourites.css";

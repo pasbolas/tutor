@@ -1,4 +1,4 @@
-const CACHE_NAME = "tutor-notes-v17";
+const CACHE_NAME = "tutor-notes-v34";
 
 const CORE_ASSETS = [
   "./catalog.json",
@@ -54,7 +54,7 @@ self.addEventListener("fetch", (event) => {
   const isDocumentRequest = event.request.mode === "navigate" || acceptsHtml;
   const isFreshJsonDataRequest = (
     isSameOrigin
-    && ["/catalog.json", "/greetings.json"].some((path) => requestUrl.pathname.endsWith(path))
+    && ["/catalog.json", "/greetings.json", "/favourites.json"].some((path) => requestUrl.pathname.endsWith(path))
   );
   const isFreshAssetRequest = (
     isSameOrigin
