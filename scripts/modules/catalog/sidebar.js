@@ -17,9 +17,10 @@ import {
   slugifyHubId,
 } from "./tree.js";
 
-const FAVOURITES_PREVIEW_LIMIT = 4;
+const FAVOURITES_PREVIEW_LIMIT = 3;
 const DEFAULT_FAVOURITES_URL = "./favourites.json";
 const FAVOURITES_STORAGE_KEY = "tutor-notes-favourite-overrides";
+const FAVOURITES_SECTION_STORAGE_KEY = "tutor-notes-favourites-expanded";
 
 function getSidebarPanelId(prefix, value, fallback) {
   return `${prefix}-${slugifyHubId(String(value || fallback).replace(/\//g, "-"))}`;
@@ -89,6 +90,22 @@ function setStoredFavouriteOverrides(overrides) {
     window.localStorage.setItem(FAVOURITES_STORAGE_KEY, JSON.stringify(overrides));
   } catch {
     // Favourites still work for the current render without storage.
+  }
+}
+
+function getStoredFavouritesExpanded() {
+  try {
+    return window.localStorage.getItem(FAVOURITES_SECTION_STORAGE_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function setStoredFavouritesExpanded(isExpanded) {
+  try {
+    window.localStorage.setItem(FAVOURITES_SECTION_STORAGE_KEY, isExpanded ? "1" : "0");
+  } catch {
+    // The accordion can still work for this page even without storage.
   }
 }
 
@@ -194,22 +211,47 @@ function renderFavouriteCard(note) {
   ].filter(Boolean);
 
   return `
-    <a class="tutor-favourite-card" href="${escapeAttribute(note.href || "#")}">
-      <span class="tutor-favourite-card__icon">${renderFileIcon()}</span>
-      <span>
-        <strong>${escapeHtml(note.name)}</strong>
-        <small>${meta.map((part) => escapeHtml(part)).join(" &bull; ")}</small>
-      </span>
-    </a>
+    <div class="tutor-favourite-card-row">
+      <a class="tutor-favourite-card" href="${escapeAttribute(note.href || "#")}">
+        <span class="tutor-favourite-card__icon">${renderFileIcon()}</span>
+        <span>
+          <strong>${escapeHtml(note.name)}</strong>
+          <small>${meta.map((part) => escapeHtml(part)).join(" &bull; ")}</small>
+        </span>
+      </a>
+      <button class="tutor-sidebar__favorite-toggle tutor-favourite-card__toggle is-favourite" type="button" data-favourite-toggle data-favourite-href="${escapeAttribute(note.href || "#")}" aria-pressed="true" aria-label="Remove from favourites">
+        ${renderStarIcon()}
+      </button>
+    </div>
   `;
 }
 
-function closeFavouritesPopover(popover, openButton) {
-  popover.hidden = true;
-  openButton?.setAttribute("aria-expanded", "false");
+function setFavouritesScrollLock(isLocked) {
+  document.documentElement.classList.toggle("tutor-favourites-scroll-lock", isLocked);
+  document.body.classList.toggle("tutor-favourites-scroll-lock", isLocked);
 }
 
-function initFavouritesPopover(root, favourites) {
+function openFavouritesPopover(popover, openButton) {
+  popover.hidden = false;
+  setFavouritesScrollLock(true);
+  window.requestAnimationFrame(() => {
+    popover.classList.add("is-open");
+    openButton?.setAttribute("aria-expanded", "true");
+  });
+}
+
+function closeFavouritesPopover(popover, openButton) {
+  popover.classList.remove("is-open");
+  setFavouritesScrollLock(false);
+  openButton?.setAttribute("aria-expanded", "false");
+  window.setTimeout(() => {
+    if (!popover.classList.contains("is-open")) {
+      popover.hidden = true;
+    }
+  }, 220);
+}
+
+function initFavouritesPopover(root, favourites, notes, favouriteItems) {
   const openButton = root.querySelector("[data-favourites-open]");
   const popover = document.createElement("div");
   popover.className = "tutor-favourites-popover";
@@ -231,11 +273,26 @@ function initFavouritesPopover(root, favourites) {
   document.body.append(popover);
 
   openButton?.addEventListener("click", () => {
-    popover.hidden = !popover.hidden;
-    openButton.setAttribute("aria-expanded", String(!popover.hidden));
+    if (popover.hidden) {
+      openFavouritesPopover(popover, openButton);
+      return;
+    }
+
+    closeFavouritesPopover(popover, openButton);
   });
 
   popover.addEventListener("click", (event) => {
+    const toggle = event.target.closest("[data-favourite-toggle]");
+    if (toggle) {
+      event.preventDefault();
+      event.stopPropagation();
+      toggleFavourite(toggle.getAttribute("data-favourite-href") || "", notes, favouriteItems);
+      closeFavouritesPopover(popover, openButton);
+      renderSidebarFavourites(notes, favouriteItems);
+      syncFavouriteToggleStates(notes, favouriteItems);
+      return;
+    }
+
     if (event.target === popover || event.target.closest("[data-favourites-close]")) {
       closeFavouritesPopover(popover, openButton);
     }
@@ -260,6 +317,7 @@ function initFavouritesPopover(root, favourites) {
 
 function hideSidebarFavourites(root) {
   document.querySelectorAll("[data-favourites-popover]").forEach((popover) => popover.remove());
+  setFavouritesScrollLock(false);
 }
 
 function renderSidebarFavourites(notes, favouriteItems) {
@@ -267,37 +325,74 @@ function renderSidebarFavourites(notes, favouriteItems) {
   if (!root) {
     return;
   }
+  const shouldStayExpanded = root.classList.contains("is-expanded") || getStoredFavouritesExpanded();
   document.querySelectorAll("[data-favourites-popover]").forEach((popover) => popover.remove());
+  setFavouritesScrollLock(false);
 
   const favourites = getFavourites(notes, favouriteItems);
   if (!favourites.length) {
     hideSidebarFavourites(root);
     root.hidden = false;
+    root.classList.toggle("is-expanded", shouldStayExpanded);
     root.innerHTML = `
-      <p class="tutor-sidebar__label">Favourites (0)</p>
-      <p class="tutor-favourites-empty">soo..you don't like anything here? :(</p>
+      <button class="tutor-favourites-toggle" type="button" aria-expanded="${shouldStayExpanded}" data-favourites-section-toggle>
+        <span>Favourites (0)</span>
+        <span class="tutor-favourites-toggle__chevron" aria-hidden="true"></span>
+      </button>
+      <div class="tutor-favourites-body">
+        <p class="tutor-favourites-empty">soo..you don't like anything here? :(</p>
+      </div>
     `;
     window.requestAnimationFrame(() => {
       root.classList.add("is-visible");
     });
+    initFavouritesSectionToggle(root);
     return;
   }
 
   root.hidden = false;
+  root.classList.toggle("is-expanded", shouldStayExpanded);
   root.innerHTML = `
-    <p class="tutor-sidebar__label">Favourites (${favourites.length})</p>
-    <div class="tutor-favourites-preview">
-      ${favourites.slice(0, FAVOURITES_PREVIEW_LIMIT).map((note, index) => renderFavouritePreview(note, index)).join("")}
-    </div>
-    <button class="tutor-favourites-open" type="button" aria-expanded="false" data-favourites-open>
-      View all favourites <span aria-hidden="true">&rarr;</span>
+    <button class="tutor-favourites-toggle" type="button" aria-expanded="${shouldStayExpanded}" data-favourites-section-toggle>
+      <span>Favourites (${favourites.length})</span>
+      <span class="tutor-favourites-toggle__chevron" aria-hidden="true"></span>
     </button>
+    <div class="tutor-favourites-body">
+      <div class="tutor-favourites-preview">
+        ${favourites.slice(0, FAVOURITES_PREVIEW_LIMIT).map((note, index) => renderFavouritePreview(note, index)).join("")}
+      </div>
+      <button class="tutor-favourites-open${favourites.length <= FAVOURITES_PREVIEW_LIMIT ? " tutor-favourites-open--desktop-overflow-only" : ""}" type="button" aria-expanded="false" data-favourites-open>
+        View all favourites <span aria-hidden="true">&rarr;</span>
+      </button>
+    </div>
   `;
 
   window.requestAnimationFrame(() => {
     root.classList.add("is-visible");
   });
-  initFavouritesPopover(root, favourites);
+  initFavouritesSectionToggle(root);
+  initFavouritesPopover(root, favourites, notes, favouriteItems);
+}
+
+function initFavouritesSectionToggle(root) {
+  const toggle = root.querySelector("[data-favourites-section-toggle]");
+  const body = root.querySelector(".tutor-favourites-body");
+  if (!toggle || !body) {
+    return;
+  }
+
+  const syncHeight = () => {
+    root.style.setProperty("--favourites-body-height", `${body.scrollHeight}px`);
+  };
+
+  syncHeight();
+  toggle.addEventListener("click", () => {
+    syncHeight();
+    const shouldExpand = !root.classList.contains("is-expanded");
+    root.classList.toggle("is-expanded", shouldExpand);
+    toggle.setAttribute("aria-expanded", String(shouldExpand));
+    setStoredFavouritesExpanded(shouldExpand);
+  });
 }
 
 function syncFavouriteToggleStates(notes, favouriteItems) {

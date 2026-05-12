@@ -112,6 +112,19 @@ export function initTutorSidebar() {
   });
 
   sidebar.addEventListener("click", (event) => {
+    const collapseAll = event.target.closest("[data-sidebar-collapse-all]");
+    if (collapseAll) {
+      subjects.forEach((subject) => {
+        setSubjectOpen(subject, false);
+        subject.classList.remove("is-active");
+      });
+      sidebar.querySelectorAll(".tutor-sidebar__subfolder").forEach((folder) => {
+        setFolderOpen(folder, false);
+        folder.classList.remove("is-active");
+      });
+      return;
+    }
+
     const toggle = event.target.closest(".tutor-sidebar__subject-toggle");
     if (toggle) {
       const subject = toggle.closest(".tutor-sidebar__subject");
