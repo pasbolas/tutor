@@ -31,6 +31,30 @@ export function syncCursorToggleButton(button, controller) {
   }
 }
 
+export function toggleCursorMode(controller, onModeChanged) {
+  if (!controller || typeof controller.getMode !== "function" || typeof controller.setMode !== "function") {
+    return;
+  }
+
+  const nextMode = controller.getMode() === "blob" ? "native" : "blob";
+  controller.setMode(nextMode, { persist: true });
+  setStoredCursorMode(nextMode);
+
+  if (typeof onModeChanged === "function") {
+    onModeChanged(nextMode);
+  }
+}
+
+export function bindCursorToggleButton(button, controller, onModeChanged) {
+  if (!button) {
+    return;
+  }
+
+  button.addEventListener("click", () => {
+    toggleCursorMode(controller, onModeChanged);
+  });
+}
+
 export function initCursorToggle() {
   if (document.querySelector("[data-markdown-page]")) {
     return;
@@ -58,13 +82,7 @@ export function initCursorToggle() {
 
   const attachCursorButton = (button, host) => {
     host.appendChild(button);
-
-    button.addEventListener("click", () => {
-      const nextMode = controller.getMode() === "blob" ? "native" : "blob";
-      controller.setMode(nextMode, { persist: true });
-      setStoredCursorMode(nextMode);
-      syncButtons();
-    });
+    bindCursorToggleButton(button, controller, syncButtons);
 
     buttons.push(button);
   };
@@ -91,12 +109,7 @@ export function initCursorToggle() {
       return;
     }
 
-    button.addEventListener("click", () => {
-      const nextMode = controller.getMode() === "blob" ? "native" : "blob";
-      controller.setMode(nextMode, { persist: true });
-      setStoredCursorMode(nextMode);
-      syncButtons();
-    });
+    bindCursorToggleButton(button, controller, syncButtons);
 
     buttons.push(button);
   });
@@ -108,4 +121,3 @@ export function initCursorToggle() {
 
   syncButtons();
 }
-

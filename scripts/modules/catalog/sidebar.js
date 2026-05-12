@@ -11,9 +11,8 @@ import { initTutorSidebar } from "./sidebar-accordion.js";
 import {
   DEFAULT_CATALOG_URL,
   collectCatalogNotes,
-  fetchCatalog,
   getCatalogNoteRows,
-  normalizeHubTree,
+  loadNormalizedCatalogTree,
   slugifyHubId,
 } from "./tree.js";
 
@@ -479,13 +478,12 @@ export async function initCatalogSidebar() {
 
   let config;
   try {
-    config = await fetchCatalog(sidebar.dataset.sidebarCatalog || DEFAULT_CATALOG_URL);
+    config = await loadNormalizedCatalogTree(sidebar.dataset.sidebarCatalog || DEFAULT_CATALOG_URL);
   } catch {
     initTutorSidebar();
     return;
   }
-
-  const tree = normalizeHubTree(Array.isArray(config.items) ? config.items : []);
+  const tree = config;
   const subjects = tree.filter((item) => item.type === "folder");
   const activeHref = getSidebarActiveHref();
   const notes = getCatalogNoteRows(tree);

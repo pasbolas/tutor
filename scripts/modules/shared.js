@@ -151,6 +151,14 @@ export function slugify(text, usedSlugs) {
   return slug;
 }
 
+export function slugifyId(text, fallback = "item") {
+  return String(text || "")
+    .toLowerCase()
+    .replace(/[`']/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "") || fallback;
+}
+
 export function normalizeComparableHref(href) {
   try {
     const url = new URL(href, window.location.href);

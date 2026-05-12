@@ -1,9 +1,13 @@
-export const profile = window.__tutorPerformanceProfile || {
-  hoverCapable: window.matchMedia("(hover: hover)").matches,
-  coarsePointer: window.matchMedia("(hover: none), (pointer: coarse)").matches,
-  smallViewport: window.matchMedia("(max-width: 980px)").matches,
-  prefersReducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
-};
+import { clamp } from "../../modules/shared.js";
+
+export const profile = typeof window.__tutorGetPerformanceProfile === "function"
+  ? window.__tutorGetPerformanceProfile()
+  : (window.__tutorPerformanceProfile || {
+    hoverCapable: window.matchMedia("(hover: hover)").matches,
+    coarsePointer: window.matchMedia("(hover: none), (pointer: coarse)").matches,
+    smallViewport: window.matchMedia("(max-width: 980px)").matches,
+    prefersReducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+  });
 
 export const AudioContextClass = window.AudioContext || window.webkitAudioContext;
 export const supportsHover = profile.hoverCapable;
@@ -84,8 +88,6 @@ export const state = {
   scrollInstrumentTitlePresence: 0,
   scrollInstrumentMarkerWidth: 18,
 };
-
-export const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 
 export const getNow = () => (window.performance && typeof window.performance.now === "function"
   ? window.performance.now()

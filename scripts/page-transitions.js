@@ -1,38 +1,19 @@
 (() => {
   const getSitePerformanceProfile = () => {
-    if (window.__tutorPerformanceProfile) {
-      return window.__tutorPerformanceProfile;
+    if (typeof window.__tutorGetPerformanceProfile === "function") {
+      return window.__tutorGetPerformanceProfile();
     }
 
-    const coarsePointer = window.matchMedia("(hover: none), (pointer: coarse)").matches;
-    const hoverCapable = window.matchMedia("(hover: hover)").matches;
-    const smallViewport = window.matchMedia("(max-width: 980px)").matches;
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const deviceMemory = navigator.deviceMemory || 4;
-    const hardwareConcurrency = navigator.hardwareConcurrency || 4;
-    const saveData = Boolean(navigator.connection && navigator.connection.saveData);
-    const lowPowerMode = Boolean(
-      prefersReducedMotion
-      || saveData
-      || deviceMemory <= 4
-      || hardwareConcurrency <= 4
-      || (coarsePointer && smallViewport)
-    );
-
-    const profile = {
-      coarsePointer,
-      hoverCapable,
-      smallViewport,
-      prefersReducedMotion,
-      deviceMemory,
-      hardwareConcurrency,
-      saveData,
-      lowPowerMode,
+    return window.__tutorPerformanceProfile || {
+      coarsePointer: window.matchMedia("(hover: none), (pointer: coarse)").matches,
+      hoverCapable: window.matchMedia("(hover: hover)").matches,
+      smallViewport: window.matchMedia("(max-width: 980px)").matches,
+      prefersReducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+      deviceMemory: navigator.deviceMemory || 4,
+      hardwareConcurrency: navigator.hardwareConcurrency || 4,
+      saveData: Boolean(navigator.connection && navigator.connection.saveData),
+      lowPowerMode: false,
     };
-
-    window.__tutorPerformanceProfile = profile;
-    document.documentElement.classList.toggle("is-low-power-device", lowPowerMode);
-    return profile;
   };
 
   const profile = getSitePerformanceProfile();
