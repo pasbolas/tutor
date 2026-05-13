@@ -1,7 +1,7 @@
 (() => {
   const themeToggle = document.getElementById("themeToggle");
   const themeStorageKey = "hci-theme";
-  const legacyStorageKeys = ["hci-q2-theme", "hci-q3-theme"];
+  const legacyStorageKeys = ["hci-q2-theme", "hci-q3-theme", "hci-q4-theme"];
 
   if (!themeToggle) {
     return;

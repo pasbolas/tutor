@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HCI Question 4 Study Notes</title>
+  <link rel="stylesheet" href="../../styles/components/hci-question.css" />
+</head>
+<body>
+  <div class="wiki-shell">
+    <aside class="sidebar">
+      <div class="logo">
+        <div class="logo-main">HCI</div>
+        <div class="logo-sub">Q4 study article</div>
+      </div>
+
+      <h3>Contents</h3>
+      <ul>
+        <li><a href="#affordance">Affordance</a></li>
+        <li><a href="#mental-models">Mental models</a></li>
+        <li><a href="#gestalt">Gestalt Laws</a></li>
+        <li><a href="#heuristics">Nielsen's heuristics</a></li>
+        <li><a href="#summary">Summary</a></li>
+      </ul>
+
+      <h3>Exam use</h3>
+      <ul>
+        <li><a href="#affordance">5 marks</a></li>
+        <li><a href="#mental-models">7 to 10 marks</a></li>
+        <li><a href="#gestalt">10 marks</a></li>
+        <li><a href="#heuristics">Examples</a></li>
+      </ul>
+    </aside>
+
+    <main class="content">
+      <div class="top-tabs">
+        <div>
+          <span>Article</span>
+          <span>Study notes</span>
+        </div>
+        <div>
+          <span>Read</span>
+          <button class="theme-toggle" type="button" id="themeToggle" aria-pressed="false">Dark mode</button>
+        </div>
+      </div>
+
+      <h1>HCI Question 4 Study Notes</h1>
+      <p class="site-note">From CMPU2008 Human Computer Interaction revision material.</p>
+
+      <div class="article-layout">
+        <article>
+          <p>
+            This page covers only the expected Question 4 topics: affordance, mental models, Gestalt Laws, and Nielsen's 10 usability heuristics.
+          </p>
+
+          <section id="affordance">
+            <h2>Affordance</h2>
+            <p class="hatnote">Main idea: affordance suggests how an object or interface element can be used.</p>
+
+            <div class="definition">
+              <strong>Definition:</strong> An affordance is a property of an object or interface element that suggests how it can be used. In HCI, affordances help users understand possible actions without needing detailed instructions.
+            </div>
+
+            <table class="wikitable">
+              <thead>
+                <tr>
+                  <th>Example</th>
+                  <th>Affordance</th>
+                  <th>User expectation</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Button</td><td>Looks pressable or clickable.</td><td>User expects it to perform an action.</td></tr>
+                <tr><td>Scrollbar</td><td>Shows content can be moved up or down.</td><td>User expects to scroll.</td></tr>
+                <tr><td>Text field</td><td>Empty box suggests typing is possible.</td><td>User expects to enter text.</td></tr>
+                <tr><td>Slider</td><td>Movable handle suggests adjustment.</td><td>User expects to drag it to change a value.</td></tr>
+                <tr><td>Trash icon</td><td>Suggests deleting or removing something.</td><td>User expects it to remove an item.</td></tr>
+              </tbody>
+            </table>
+
+            <h3>Good and poor affordance</h3>
+            <table class="wikitable">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Explanation</th>
+                  <th>Example</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Good affordance</td><td>The user can easily understand what action is possible.</td><td>A raised button labelled Submit.</td></tr>
+                <tr><td>Poor affordance</td><td>The user cannot tell what is clickable, draggable, or usable.</td><td>Plain text used as a button with no visual clue.</td></tr>
+              </tbody>
+            </table>
+
+            <div class="answer">
+              <div class="answer-title">Exam answer</div>
+              An affordance is a feature of an object or interface that suggests how it should be used. For example, a button affords clicking, a scrollbar affords scrolling, and a text box affords typing. Good affordances make interfaces easier to understand because users can see what actions are possible.
+            </div>
+          </section>
+
+          <section id="mental-models">
+            <h2>Mental models</h2>
+            <p class="hatnote">Main idea: users carry expectations about how systems work.</p>
+
+            <div class="definition">
+              <strong>Definition:</strong> A mental model is a user's internal understanding or expectation of how a system works. Users rely on mental models to predict what will happen when they interact with an interface.
+            </div>
+
+            <table class="wikitable">
+              <thead>
+                <tr>
+                  <th>Example</th>
+                  <th>Mental model</th>
+                  <th>Design implication</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Shopping cart icon</td><td>Items can be added before checkout.</td><td>Use familiar cart behaviour in online shops.</td></tr>
+                <tr><td>Floppy disk icon</td><td>Clicking saves the file.</td><td>Use familiar save symbols or clear labels.</td></tr>
+                <tr><td>Back button</td><td>Returns to the previous screen.</td><td>Back navigation should behave consistently.</td></tr>
+                <tr><td>Magnifying glass</td><td>Search function.</td><td>Use common icons for common actions.</td></tr>
+              </tbody>
+            </table>
+
+            <h3>Why mental models matter</h3>
+            <ul>
+              <li>They help users predict system behaviour.</li>
+              <li>They reduce learning effort.</li>
+              <li>They make interfaces feel familiar.</li>
+              <li>They help designers avoid confusing users.</li>
+              <li>They are useful during testing because mismatches reveal design problems.</li>
+            </ul>
+
+            <h3>Erroneous mental model examples</h3>
+            <table class="wikitable">
+              <thead>
+                <tr>
+                  <th>Erroneous mental model</th>
+                  <th>Problem</th>
+                  <th>Design response</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>User thinks deleting an app also deletes the account.</td><td>User may think their personal data is gone when it is not.</td><td>Show clear account deletion information.</td></tr>
+                <tr><td>User thinks closing a browser tab logs them out.</td><td>Security risk on shared devices.</td><td>Use clear logout messages and session warnings.</td></tr>
+                <tr><td>User thinks pressing Back cancels a payment.</td><td>User may accidentally leave a process or duplicate actions.</td><td>Show confirmation and transaction status clearly.</td></tr>
+                <tr><td>User thinks saving is automatic when it is manual.</td><td>Work may be lost.</td><td>Use autosave indicators or visible save controls.</td></tr>
+              </tbody>
+            </table>
+
+            <div class="answer">
+              <div class="answer-title">Exam answer</div>
+              A mental model is a user's understanding of how a system works. Mental models are important because users rely on them to predict what actions will do. For example, users expect a shopping cart icon to store items before checkout and a back button to return to the previous page. If the interface does not match the user's mental model, errors and confusion can occur.
+            </div>
+          </section>
+
+          <section id="gestalt">
+            <h2>Gestalt Laws with examples</h2>
+            <p class="hatnote">Main idea: Gestalt Laws explain how people visually group and organise information.</p>
+
+            <div class="definition">
+              <strong>Definition:</strong> Gestalt Laws are principles of visual perception that describe how users naturally organise visual elements into patterns, groups, and meaningful structures.
+            </div>
+
+            <table class="wikitable">
+              <thead>
+                <tr>
+                  <th>Gestalt Law</th>
+                  <th>Meaning</th>
+                  <th>Screen design example</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Proximity</td>
+                  <td>Items close together are seen as related.</td>
+                  <td>Place a label close to its form field so users know they belong together.</td>
+                </tr>
+                <tr>
+                  <td>Similarity</td>
+                  <td>Items that look similar are seen as part of the same group.</td>
+                  <td>Use the same style for all primary buttons.</td>
+                </tr>
+                <tr>
+                  <td>Continuity</td>
+                  <td>Users prefer smooth, continuous paths or flows.</td>
+                  <td>Arrange steps in a checkout process from left to right or top to bottom.</td>
+                </tr>
+                <tr>
+                  <td>Closure</td>
+                  <td>Users mentally complete incomplete shapes or patterns.</td>
+                  <td>Use simple icons where users can recognise the meaning even with minimal detail.</td>
+                </tr>
+                <tr>
+                  <td>Figure-ground</td>
+                  <td>Users separate the main object from the background.</td>
+                  <td>Use contrast so a popup, button, or warning message stands out from the page.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3>How Gestalt Laws help interface design</h3>
+            <ul>
+              <li>They improve visual organisation.</li>
+              <li>They make screens easier to scan.</li>
+              <li>They help group related information.</li>
+              <li>They guide user attention to important content.</li>
+              <li>They reduce confusion in complex layouts.</li>
+            </ul>
+
+            <div class="answer">
+              <div class="answer-title">Exam answer</div>
+              Gestalt Laws explain how users organise visual information. Proximity means items close together are seen as related. Similarity means items that look alike are grouped together. Continuity means users follow smooth visual paths. Closure means users complete incomplete shapes mentally. Figure-ground means users separate the main object from the background. These laws help designers create clearer layouts and better visual grouping.
+            </div>
+          </section>
+
+          <section id="heuristics">
+            <h2>Nielsen's 10 heuristics with examples</h2>
+            <p class="hatnote">Main idea: Nielsen's heuristics are usability principles used to evaluate interface design.</p>
+
+            <div class="definition">
+              <strong>Definition:</strong> Nielsen's 10 heuristics are general usability guidelines used to identify problems in user interface design.
+            </div>
+
+            <table class="wikitable">
+              <thead>
+                <tr>
+                  <th>Heuristic</th>
+                  <th>Meaning</th>
+                  <th>Example</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1. Visibility of system status</td>
+                  <td>Keep users informed about what is happening.</td>
+                  <td>Show a loading spinner, progress bar, or confirmation message.</td>
+                </tr>
+                <tr>
+                  <td>2. Match between system and real world</td>
+                  <td>Use familiar words, concepts, and order.</td>
+                  <td>Use “basket” or “cart” in an online shop instead of technical database terms.</td>
+                </tr>
+                <tr>
+                  <td>3. User control and freedom</td>
+                  <td>Allow users to undo, cancel, or leave unwanted actions.</td>
+                  <td>Provide Undo, Cancel, Back, or Exit options.</td>
+                </tr>
+                <tr>
+                  <td>4. Consistency and standards</td>
+                  <td>Use the same patterns and meanings across the interface.</td>
+                  <td>Use the same button style for the same type of action.</td>
+                </tr>
+                <tr>
+                  <td>5. Error prevention</td>
+                  <td>Prevent problems before they happen.</td>
+                  <td>Disable Submit until required fields are completed.</td>
+                </tr>
+                <tr>
+                  <td>6. Recognition rather than recall</td>
+                  <td>Make options visible so users do not need to remember information.</td>
+                  <td>Show menu options, recent searches, or visible form hints.</td>
+                </tr>
+                <tr>
+                  <td>7. Flexibility and efficiency of use</td>
+                  <td>Support both beginners and experienced users.</td>
+                  <td>Provide keyboard shortcuts or saved templates for expert users.</td>
+                </tr>
+                <tr>
+                  <td>8. Aesthetic and minimalist design</td>
+                  <td>Remove unnecessary information and clutter.</td>
+                  <td>Use a clean checkout page with only essential fields.</td>
+                </tr>
+                <tr>
+                  <td>9. Help users recognise, diagnose, and recover from errors</td>
+                  <td>Error messages should explain the problem and solution.</td>
+                  <td>Show “Password must contain 8 characters” instead of “Invalid input”.</td>
+                </tr>
+                <tr>
+                  <td>10. Help and documentation</td>
+                  <td>Provide support when users need guidance.</td>
+                  <td>Include FAQs, tooltips, onboarding screens, or searchable help pages.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3>Using heuristics in an evaluation</h3>
+            <ol>
+              <li>Select Nielsen's 10 heuristics as the evaluation criteria.</li>
+              <li>Inspect the interface screen by screen.</li>
+              <li>Record usability problems linked to specific heuristics.</li>
+              <li>Rate the severity of each problem.</li>
+              <li>Suggest design improvements.</li>
+            </ol>
+
+            <div class="answer">
+              <div class="answer-title">Exam answer</div>
+              Nielsen's heuristics are usability principles used to evaluate interfaces. Examples include visibility of system status, such as showing a progress bar; consistency and standards, such as using the same button style throughout; error prevention, such as disabling submit until required fields are complete; and help users recover from errors, such as giving clear error messages that explain how to fix the problem.
+            </div>
+          </section>
+
+          <section id="summary">
+            <h2>Summary</h2>
+            <table class="wikitable">
+              <thead>
+                <tr>
+                  <th>Topic</th>
+                  <th>Key points</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Affordance</td><td>Interface features suggest possible actions. Buttons afford clicking, sliders afford dragging, text boxes afford typing.</td></tr>
+                <tr><td>Mental models</td><td>Users' expectations of how a system works. Interfaces should match familiar expectations.</td></tr>
+                <tr><td>Erroneous mental models</td><td>Wrong user assumptions, such as thinking deleting an app deletes the account.</td></tr>
+                <tr><td>Gestalt Laws</td><td>Proximity, similarity, continuity, closure, and figure-ground help organise screen layouts.</td></tr>
+                <tr><td>Nielsen's heuristics</td><td>10 usability principles for evaluating interfaces and identifying usability problems.</td></tr>
+                <tr><td>Heuristic evaluation</td><td>Inspect the interface, identify problems, link them to heuristics, rate severity, and suggest improvements.</td></tr>
+              </tbody>
+            </table>
+          </section>
+
+          <div class="reference-box">
+            This study article is limited to the listed Question 4 topics only.
+          </div>
+        </article>
+
+        <aside>
+          <div class="infobox">
+            <div class="infobox-title">HCI Question 4</div>
+            <table>
+              <tr><th>Module</th><td>Human Computer Interaction</td></tr>
+              <tr><th>Code</th><td>CMPU2008</td></tr>
+              <tr><th>Focus</th><td>Interface design principles</td></tr>
+              <tr><th>Topics</th><td>4</td></tr>
+              <tr><th>Best use</th><td>Definitions, examples, evaluations</td></tr>
+            </table>
+          </div>
+        </aside>
+      </div>
+    </main>
+  </div>
+  <script src="../../scripts/modules/hci-question.js"></script>
+</body>
+</html>
