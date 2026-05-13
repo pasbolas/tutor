@@ -7,6 +7,23 @@
   <link rel="stylesheet" href="../../styles/components/hci-question.css" />
 </head>
 <body>
+  <header class="mobile-wiki-header" aria-label="Study notes site header">
+    <button class="mobile-menu-button" type="button" aria-label="Open notes menu" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <a class="mobile-wordmark" href="../../index.html" aria-label="Tutor notes home">
+      <span class="mobile-wordmark__main">HCI Notes</span>
+    </a>
+    <form class="mobile-search" role="search" action="../../index.html">
+      <span class="mobile-search__icon" aria-hidden="true"></span>
+      <input type="search" name="q" placeholder="Search notes" aria-label="Search notes" />
+    </form>
+    <button class="mobile-search-button" type="button" aria-label="Search">
+      <span class="mobile-search__icon" aria-hidden="true"></span>
+    </button>
+  </header>
   <div class="wiki-shell">
     <aside class="sidebar">
       <div class="logo">
@@ -42,11 +59,11 @@
       </ul>
     </aside>
 
-    <main class="content">
+    <main class="content" id="top">
       <div class="top-tabs">
         <div>
-          <span>Article</span>
-          <span>Study notes</span>
+          <a class="is-active" href="#top">Article</a>
+          <a href="#summary">Study notes</a>
         </div>
         <div>
           <span>Read</span>
@@ -56,6 +73,13 @@
 
       <h1>HCI Question 4 Study Notes</h1>
       <p class="site-note">From CMPU2008 Human Computer Interaction revision material.</p>
+      <details class="mobile-contents" id="contents" data-mobile-contents>
+        <summary>
+          <span class="mobile-contents__icon" aria-hidden="true"></span>
+          <span>Contents</span>
+        </summary>
+        <nav aria-label="Mobile contents"></nav>
+      </details>
 
       <div class="article-layout">
         <article>
