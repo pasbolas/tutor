@@ -133,6 +133,12 @@
           "type": "file",
           "href": "./content/hci/question_2.html?v=20260513-1",
           "meta": "HCI 03"
+        },
+        {
+          "name": "HCI Question 3 Study Notes",
+          "type": "file",
+          "href": "./content/hci/question_3.html?v=20260513-1",
+          "meta": "HCI 04"
         }
       ]
     },

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HCI Question 3 Study Notes</title>
+  <link rel="stylesheet" href="../../styles/components/hci-question.css" />
+</head>
+<body>
+  <div class="wiki-shell">
+    <aside class="sidebar">
+      <div class="logo">
+        <div class="logo-main">HCI</div>
+        <div class="logo-sub">Q3 study article</div>
+      </div>
+
+      <a class="back-button" href="../../index.html">Back to catalog</a>
+
+      <h3>Contents</h3>
+      <ul>
+        <li><a href="#digital-accessibility">Digital accessibility</a></li>
+        <li><a href="#participatory-design">Participatory Design</a></li>
+        <li><a href="#think-aloud">Think Aloud evaluation</a></li>
+        <li><a href="#user-research">User research methods</a></li>
+        <li><a href="#summary">Summary</a></li>
+      </ul>
+
+      <h3>Exam use</h3>
+      <ul>
+        <li><a href="#digital-accessibility">5 marks</a></li>
+        <li><a href="#participatory-design">8 marks</a></li>
+        <li><a href="#think-aloud">8 marks</a></li>
+        <li><a href="#user-research">9 marks</a></li>
+      </ul>
+
+      <h3>HCI questions</h3>
+      <ul>
+        <li><a href="./question_1.html">Question 1 notes</a></li>
+        <li><a href="./question_2.html">Question 2 notes</a></li>
+        <li><a href="./question_3.html">Question 3 notes</a></li>
+      </ul>
+    </aside>
+
+    <main class="content">
+      <div class="top-tabs">
+        <div>
+          <span>Article</span>
+          <span>Study notes</span>
+        </div>
+        <div>
+          <span>Read</span>
+          <button class="theme-toggle" type="button" id="themeToggle" aria-pressed="false">Dark mode</button>
+        </div>
+      </div>
+
+      <h1>HCI Question 3 Study Notes</h1>
+      <p class="site-note">From CMPU2008 Human Computer Interaction revision material.</p>
+
+      <div class="article-layout">
+        <article>
+          <p>
+            This page covers only the expected Question 3 topics: digital accessibility, participatory design, Think Aloud evaluation, and user research methods for evaluating a mobile app.
+          </p>
+
+          <section id="digital-accessibility">
+            <h2>Digital accessibility</h2>
+            <p class="hatnote">Main idea: digital systems should be usable by people with different abilities and assistive needs.</p>
+
+            <div class="definition">
+              <strong>Definition:</strong> Digital accessibility means designing digital products, websites, apps, and systems so that people with disabilities can perceive, understand, navigate, and interact with them.
+            </div>
+
+            <table class="wikitable">
+              <thead>
+                <tr>
+                  <th>Accessibility need</th>
+                  <th>Barrier</th>
+                  <th>Design response</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Visual impairment</td>
+                  <td>Small text, low contrast, images without descriptions.</td>
+                  <td>Use strong contrast, resizable text, alt text, and screen reader support.</td>
+                </tr>
+                <tr>
+                  <td>Hearing impairment</td>
+                  <td>Audio-only instructions or alerts.</td>
+                  <td>Use captions, transcripts, visual alerts, and text alternatives.</td>
+                </tr>
+                <tr>
+                  <td>Motor impairment</td>
+                  <td>Small buttons, difficult gestures, mouse-only controls.</td>
+                  <td>Use keyboard access, large touch targets, simple gestures, and enough spacing.</td>
+                </tr>
+                <tr>
+                  <td>Cognitive impairment</td>
+                  <td>Complex language, cluttered screens, unclear navigation.</td>
+                  <td>Use plain language, consistent layouts, clear labels, and step-by-step guidance.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3>Key accessibility principles</h3>
+            <ul>
+              <li>Information should be perceivable.</li>
+              <li>Controls should be operable.</li>
+              <li>Content should be understandable.</li>
+              <li>The system should work with assistive technologies.</li>
+            </ul>
+
+            <div class="answer">
+              <div class="answer-title">Exam answer</div>
+              Digital accessibility means designing digital systems so that people with disabilities can access, understand, and use them. This includes supporting users with visual, hearing, motor, and cognitive impairments through features such as alt text, captions, keyboard access, readable layouts, clear labels, and compatibility with assistive technologies.
+            </div>
+          </section>
+
+          <section id="participatory-design">
+            <h2>Participatory Design</h2>
+            <p class="hatnote">Main idea: users are directly involved in the design process.</p>
+
+            <div class="definition">
+              <strong>Definition:</strong> Participatory Design is a design approach where users and stakeholders actively take part in the design process, rather than only being studied or tested at the end.
+            </div>
+
+            <table class="wikitable">
+              <thead>
+                <tr>
+                  <th>Feature</th>
+                  <th>Meaning</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>User involvement</td><td>Users help shape requirements, ideas, and design decisions.</td></tr>
+                <tr><td>Shared decision-making</td><td>Designers and users work together to identify problems and solutions.</td></tr>
+                <tr><td>Real user experience</td><td>The design is informed by people who actually use or need the system.</td></tr>
+                <tr><td>Iterative improvement</td><td>Users give feedback during repeated design and testing stages.</td></tr>
+              </tbody>
+            </table>
+
+            <h3>How it improves digital accessibility</h3>
+            <table class="wikitable">
+              <thead>
+                <tr>
+                  <th>Benefit</th>
+                  <th>Explanation</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Identifies real barriers</td><td>Disabled users can explain practical issues that designers may miss.</td></tr>
+                <tr><td>Improves requirements</td><td>Accessibility needs are included from the start instead of added later.</td></tr>
+                <tr><td>Tests assistive technology use</td><td>Users can show how screen readers, keyboard navigation, or other tools work in practice.</td></tr>
+                <tr><td>Reduces assumptions</td><td>Designers avoid guessing what users need.</td></tr>
+                <tr><td>Improves inclusion</td><td>The final design better reflects diverse user needs.</td></tr>
+              </tbody>
+            </table>
+
+            <div class="answer">
+              <div class="answer-title">Exam answer</div>
+              Participatory Design involves users directly in the design process. It can improve digital accessibility because users with disabilities can identify real barriers, explain their needs, test designs with assistive technologies, and give feedback throughout development. This helps designers create systems that are more inclusive and usable.
+            </div>
+          </section>
+
+          <section id="think-aloud">
+            <h2>Think Aloud evaluation</h2>
+            <p class="hatnote">Main idea: users say what they are thinking while completing tasks.</p>
+
+            <div class="definition">
+              <strong>Definition:</strong> Think Aloud is a usability testing method where participants complete tasks while verbalising their thoughts, expectations, confusion, and decisions.
+            </div>
+
+            <h3>How Think Aloud works</h3>
+            <ol>
+              <li>Give the participant a realistic task.</li>
+              <li>Ask them to use the interface while speaking their thoughts aloud.</li>
+              <li>Observe where they hesitate, make mistakes, or become confused.</li>
+              <li>Record comments, actions, errors, and task completion.</li>
+              <li>Use the findings to improve the interface.</li>
+            </ol>
+
+            <table class="wikitable">
+              <thead>
+                <tr>
+                  <th>What it reveals</th>
+                  <th>Example</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>User expectations</td><td>What the user thinks a button or menu should do.</td></tr>
+                <tr><td>Confusion</td><td>Where the user does not understand labels or instructions.</td></tr>
+                <tr><td>Navigation issues</td><td>Where the user cannot find the next step.</td></tr>
+                <tr><td>Error causes</td><td>Why the user makes mistakes.</td></tr>
+              </tbody>
+            </table>
+
+            <h3>Challenge for screen reader users</h3>
+            <table class="wikitable">
+              <thead>
+                <tr>
+                  <th>Issue</th>
+                  <th>Explanation</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Listening conflict</td><td>The participant must listen to the screen reader while also speaking their thoughts.</td></tr>
+                <tr><td>Cognitive load</td><td>Doing the task, listening, navigating, and speaking at the same time can be demanding.</td></tr>
+                <tr><td>Interruptions</td><td>Speaking aloud may interrupt concentration or screen reader flow.</td></tr>
+                <tr><td>Timing issues</td><td>It may slow down the task and affect natural behaviour.</td></tr>
+              </tbody>
+            </table>
+
+            <div class="answer">
+              <div class="answer-title">Exam answer</div>
+              Think Aloud is a usability testing method where users complete tasks while saying what they are thinking. It helps reveal confusion, expectations, navigation problems, and causes of errors. It can be challenging for screen reader users because they must listen to the screen reader while also speaking aloud, which increases cognitive load and may interrupt their normal interaction flow.
+            </div>
+          </section>
+
+          <section id="user-research">
+            <h2>Types of user research for a mobile app</h2>
+            <p class="hatnote">Main idea: use practical methods to identify barriers and challenges users face when using the mobile app.</p>
+
+            <div class="definition">
+              <strong>Scenario focus:</strong> A mobile app is being evaluated with older users to identify barriers or challenges. The study has one month and a limited travel budget.
+            </div>
+
+            <h3>Recommended methods</h3>
+
+            <div class="method-box">
+              <h3>Method 1: Usability testing</h3>
+              <div>
+                <p><strong>Use:</strong> Ask older users to complete realistic tasks on the mobile app.</p>
+                <p><strong>Data collected:</strong> Task completion, errors, confusion, time taken, comments, and observed behaviour.</p>
+                <p><strong>Why suitable:</strong> It shows actual barriers users face while using the app.</p>
+                <p><strong>Recording:</strong> Notes, screen recording, audio recording, task success checklist, and observer notes.</p>
+                <p><strong>Ethics:</strong> Get consent, explain the study, protect privacy, anonymise data, and allow users to stop at any time.</p>
+              </div>
+            </div>
+
+            <div class="method-box">
+              <h3>Method 2: Interviews</h3>
+              <div>
+                <p><strong>Use:</strong> Ask users about their experience, expectations, difficulties, and opinions after using the app.</p>
+                <p><strong>Data collected:</strong> Qualitative data such as opinions, frustrations, needs, and suggestions.</p>
+                <p><strong>Why suitable:</strong> Interviews explain why users struggled and what they expected.</p>
+                <p><strong>Recording:</strong> Audio recording with consent, written notes, interview guide, and summary of themes.</p>
+                <p><strong>Ethics:</strong> Get informed consent, avoid leading questions, anonymise responses, and store data securely.</p>
+              </div>
+            </div>
+
+            <div class="method-box">
+              <h3>Method 3: Questionnaires or surveys</h3>
+              <div>
+                <p><strong>Use:</strong> Ask users short questions after testing the app.</p>
+                <p><strong>Data collected:</strong> Ratings, satisfaction scores, difficulty ratings, and short written comments.</p>
+                <p><strong>Why suitable:</strong> It is low-cost and quick to collect feedback from several users.</p>
+                <p><strong>Recording:</strong> Online form, paper form, spreadsheet, or coded response sheet.</p>
+                <p><strong>Ethics:</strong> Explain purpose, keep answers anonymous where possible, and avoid collecting unnecessary personal data.</p>
+              </div>
+            </div>
+
+            <h3>Good study plan for the exam scenario</h3>
+            <table class="wikitable">
+              <thead>
+                <tr>
+                  <th>Step</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>1</td><td>Recruit a small group of older users.</td></tr>
+                <tr><td>2</td><td>Prepare realistic tasks, such as logging in, checking balance, or making a payment.</td></tr>
+                <tr><td>3</td><td>Run usability testing in a quiet room or remotely to reduce travel cost.</td></tr>
+                <tr><td>4</td><td>Collect observations, errors, task completion, and comments.</td></tr>
+                <tr><td>5</td><td>Follow up with short interviews or questionnaires.</td></tr>
+                <tr><td>6</td><td>Analyse common barriers and suggest design improvements.</td></tr>
+              </tbody>
+            </table>
+
+            <div class="answer">
+              <div class="answer-title">Exam answer</div>
+              I would use usability testing and interviews. In usability testing, older users would complete realistic mobile app tasks while I observe task success, errors, confusion, and comments. This method is suitable because it shows the actual barriers users face. I would record data using notes, a task checklist, and screen or audio recording with consent. I would also use interviews to ask users about their experience, difficulties, and expectations. This provides qualitative data explaining why problems occurred. Ethical measures include informed consent, anonymity, secure data storage, and allowing participants to withdraw.
+            </div>
+          </section>
+
+          <section id="summary">
+            <h2>Summary</h2>
+            <table class="wikitable">
+              <thead>
+                <tr>
+                  <th>Topic</th>
+                  <th>Key points</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Digital accessibility</td><td>Design digital systems so people with disabilities can perceive, understand, navigate, and interact with them.</td></tr>
+                <tr><td>Participatory Design</td><td>Users are actively involved in the design process to improve real-world usability and accessibility.</td></tr>
+                <tr><td>Think Aloud</td><td>Users complete tasks while verbalising thoughts. Reveals confusion, expectations, and errors.</td></tr>
+                <tr><td>Think Aloud with screen readers</td><td>Can be difficult because users must listen to screen reader output while speaking and completing tasks.</td></tr>
+                <tr><td>User research methods</td><td>Use usability testing, interviews, and questionnaires to evaluate mobile app barriers.</td></tr>
+                <tr><td>Ethics</td><td>Use consent, anonymity, privacy, secure storage, and the right to withdraw.</td></tr>
+              </tbody>
+            </table>
+          </section>
+
+          <div class="reference-box">
+            This study article is limited to the listed Question 3 topics only.
+          </div>
+        </article>
+
+        <aside>
+          <div class="infobox">
+            <div class="infobox-title">HCI Question 3</div>
+            <table>
+              <tr><th>Module</th><td>Human Computer Interaction</td></tr>
+              <tr><th>Code</th><td>CMPU2008</td></tr>
+              <tr><th>Focus</th><td>Accessibility and user research</td></tr>
+              <tr><th>Topics</th><td>4</td></tr>
+              <tr><th>Best use</th><td>Definitions, methods, examples, ethics</td></tr>
+            </table>
+          </div>
+        </aside>
+      </div>
+    </main>
+  </div>
+  <script src="../../scripts/modules/hci-question.js"></script>
+</body>
+</html>

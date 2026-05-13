@@ -1,7 +1,7 @@
 (() => {
   const themeToggle = document.getElementById("themeToggle");
   const themeStorageKey = "hci-theme";
-  const legacyStorageKey = "hci-q2-theme";
+  const legacyStorageKeys = ["hci-q2-theme", "hci-q3-theme"];
 
   if (!themeToggle) {
     return;
@@ -13,10 +13,11 @@
     themeToggle.textContent = isDark ? "Light mode" : "Dark mode";
     themeToggle.setAttribute("aria-pressed", String(isDark));
     localStorage.setItem(themeStorageKey, theme);
-    localStorage.removeItem(legacyStorageKey);
+    legacyStorageKeys.forEach((key) => localStorage.removeItem(key));
   }
 
-  const savedTheme = localStorage.getItem(themeStorageKey) || localStorage.getItem(legacyStorageKey);
+  const savedTheme = localStorage.getItem(themeStorageKey)
+    || legacyStorageKeys.map((key) => localStorage.getItem(key)).find(Boolean);
   if (savedTheme) {
     applyTheme(savedTheme);
   }
