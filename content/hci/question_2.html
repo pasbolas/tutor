@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HCI Question 2 Study Notes</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --page-bg: #ffffff;
+      --text: #202122;
+      --muted: #54595d;
+      --link: #0645ad;
+      --border: #a2a9b1;
+      --soft-border: #eaecf0;
+      --surface: #f8f9fa;
+      --surface-2: #eaecf0;
+      --button-bg: #ffffff;
+      --button-hover: #f1f3f5;
+    }
+
+    body.dark-mode {
+      --page-bg: #101418;
+      --text: #e6e6e6;
+      --muted: #aab0b6;
+      --link: #8ab4f8;
+      --border: #4b5563;
+      --soft-border: #2d3640;
+      --surface: #171d23;
+      --surface-2: #222b34;
+      --button-bg: #171d23;
+      --button-hover: #222b34;
+    }
+
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background: var(--page-bg);
+      color: var(--text);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    a {
+      color: var(--link);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .wiki-shell {
+      display: grid;
+      grid-template-columns: 176px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      border-right: 1px solid var(--border);
+      background: var(--surface);
+      padding: 16px 12px;
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 20px;
+      font-family: Georgia, "Times New Roman", serif;
+    }
+
+    .logo-main {
+      font-size: 25px;
+      line-height: 1;
+      letter-spacing: 1px;
+    }
+
+    .logo-sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .back-button {
+      display: inline-block;
+      border: 1px solid var(--border);
+      background: var(--button-bg);
+      color: var(--text);
+      font-size: 12px;
+      line-height: 1;
+      padding: 7px 10px;
+      margin: 0 0 12px;
+    }
+
+    .back-button:hover {
+      background: var(--button-hover);
+      text-decoration: none;
+    }
+
+    .sidebar h3 {
+      font-size: 12px;
+      font-weight: normal;
+      color: var(--muted);
+      border-bottom: 1px solid var(--soft-border);
+      margin: 14px 0 6px;
+      padding-bottom: 3px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .sidebar li {
+      margin: 5px 0;
+      font-size: 12px;
+    }
+
+    .content {
+      padding: 18px 28px 50px;
+      max-width: 1120px;
+    }
+
+    .top-tabs {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 18px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .top-tabs div {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .top-tabs span {
+      padding: 8px 0 6px;
+    }
+
+    .theme-toggle {
+      border: 1px solid var(--border);
+      background: var(--button-bg);
+      color: var(--text);
+      font: inherit;
+      font-size: 13px;
+      padding: 5px 9px;
+      cursor: pointer;
+    }
+
+    .theme-toggle:hover {
+      background: var(--button-hover);
+    }
+
+    h1 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: normal;
+      font-size: 32px;
+      line-height: 1.2;
+      border-bottom: 1px solid var(--border);
+      margin: 0 0 8px;
+      padding-bottom: 6px;
+    }
+
+    .site-note {
+      color: var(--muted);
+      margin: 0 0 16px;
+      font-size: 13px;
+    }
+
+    .article-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 285px;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .infobox {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
+
+    .infobox-title {
+      background: var(--surface-2);
+      text-align: center;
+      font-weight: bold;
+      padding: 7px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .infobox table {
+      margin: 0;
+      border: 0;
+      width: 100%;
+      font-size: 13px;
+    }
+
+    .infobox th,
+    .infobox td {
+      border: 0;
+      border-bottom: 1px solid var(--soft-border);
+      padding: 7px;
+      vertical-align: top;
+    }
+
+    .infobox th {
+      width: 38%;
+      background: transparent;
+      text-align: left;
+    }
+
+    .toc {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      padding: 10px 14px;
+      display: inline-block;
+      min-width: 260px;
+      margin: 10px 0 22px;
+    }
+
+    .toc-title {
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    .toc ol {
+      margin: 0;
+      padding-left: 24px;
+    }
+
+    .toc li {
+      margin: 3px 0;
+    }
+
+    h2 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: normal;
+      font-size: 23px;
+      border-bottom: 1px solid var(--border);
+      margin: 24px 0 10px;
+      padding-bottom: 3px;
+    }
+
+    h3 {
+      font-size: 16px;
+      margin: 16px 0 6px;
+    }
+
+    p {
+      margin: 8px 0 12px;
+    }
+
+    .hatnote {
+      font-style: italic;
+      color: var(--muted);
+      margin: 8px 0 14px;
+    }
+
+    .definition,
+    .answer {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      padding: 10px 12px;
+      margin: 12px 0 18px;
+    }
+
+    .answer-title {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    table.wikitable {
+      border-collapse: collapse;
+      margin: 12px 0 18px;
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      width: 100%;
+    }
+
+    .wikitable th,
+    .wikitable td {
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      vertical-align: top;
+    }
+
+    .wikitable th {
+      background: var(--surface-2);
+      text-align: left;
+      font-weight: bold;
+    }
+
+    ul {
+      margin: 6px 0 14px 24px;
+      padding: 0;
+    }
+
+    li {
+      margin: 3px 0;
+    }
+
+    .emap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      margin: 12px 0 18px;
+    }
+
+    .emap div {
+      border: 1px solid var(--border);
+      padding: 12px;
+      min-height: 120px;
+    }
+
+    .emap h3 {
+      margin-top: 0;
+      font-size: 15px;
+    }
+
+    .reference-box {
+      font-size: 12px;
+      border-top: 1px solid var(--border);
+      margin-top: 24px;
+      padding-top: 10px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 900px) {
+      .wiki-shell {
+        display: block;
+      }
+
+      .sidebar {
+        border-right: 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .sidebar ul {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 14px;
+      }
+
+      .article-layout {
+        display: block;
+      }
+
+      .content {
+        padding: 16px;
+      }
+
+      .emap {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media print {
+      .sidebar,
+      .top-tabs {
+        display: none;
+      }
+
+      .wiki-shell {
+        display: block;
+      }
+
+      .content {
+        max-width: none;
+        padding: 0;
+      }
+
+      .article-layout {
+        display: block;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wiki-shell">
+    <aside class="sidebar">
+      <div class="logo">
+        <div class="logo-main">HCI</div>
+        <div class="logo-sub">Q2 study article</div>
+      </div>
+
+      <a class="back-button" href="../../index.html">Back to catalog</a>
+
+      <h3>Contents</h3>
+      <ul>
+        <li><a href="#aging">Aging users</a></li>
+        <li><a href="#personas">Personas</a></li>
+        <li><a href="#design">Personas in design</a></li>
+        <li><a href="#empathy">Empathy map</a></li>
+        <li><a href="#summary">Summary</a></li>
+      </ul>
+
+      <h3>Exam use</h3>
+      <ul>
+        <li><a href="#aging">4 marks</a></li>
+        <li><a href="#personas">8 marks</a></li>
+        <li><a href="#design">10 marks</a></li>
+        <li><a href="#empathy">8 marks</a></li>
+      </ul>
+    </aside>
+
+    <main class="content">
+      <div class="top-tabs">
+        <div>
+          <span>Article</span>
+          <span>Study notes</span>
+        </div>
+        <div>
+          <span>Read</span>
+          <button class="theme-toggle" type="button" id="themeToggle" aria-pressed="false">Dark mode</button>
+        </div>
+      </div>
+
+      <h1>HCI Question 2 Study Notes</h1>
+      <p class="site-note">From CMPU2008 Human Computer Interaction revision material.</p>
+
+      <div class="article-layout">
+        <article>
+          <p>
+            This page covers only the expected Question 2 topics: accessibility and usability for aging users, personas, personas in design, and empathy maps.
+          </p>
+
+          <div class="toc">
+            <div class="toc-title">Contents</div>
+            <ol>
+              <li><a href="#aging">Accessibility and usability for aging users</a></li>
+              <li><a href="#personas">Personas</a></li>
+              <li><a href="#design">Personas in design</a></li>
+              <li><a href="#empathy">Empathy map</a></li>
+              <li><a href="#summary">Summary table</a></li>
+            </ol>
+          </div>
+
+          <section id="aging">
+            <h2>Accessibility and usability for aging users</h2>
+            <p class="hatnote">Main idea: aging can affect vision, hearing, movement, memory, and confidence when using digital interfaces.</p>
+
+            <div class="definition">
+              <strong>Definition:</strong> Accessibility means designing interfaces so older users can access and use them despite age-related changes. Usability means making the interface easy, efficient, and comfortable for them to use.
+            </div>
+
+            <table class="wikitable">
+              <thead>
+                <tr>
+                  <th>Age-related factor</th>
+                  <th>Effect on interface use</th>
+                  <th>Design response</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Reduced vision</td>
+                  <td>Small text, low contrast, and crowded layouts become harder to read.</td>
+                  <td>Use larger text, strong contrast, clear spacing, and readable fonts.</td>
+                </tr>
+                <tr>
+                  <td>Reduced hearing</td>
+                  <td>Audio alerts, spoken instructions, or notification sounds may be missed.</td>
+                  <td>Use captions, visual alerts, vibration, and text alternatives.</td>
+                </tr>
+                <tr>
+                  <td>Reduced motor control</td>
+                  <td>Small buttons, precise gestures, and fast interactions become difficult.</td>
+                  <td>Use large buttons, simple gestures, generous spacing, and slower timeouts.</td>
+                </tr>
+                <tr>
+                  <td>Memory and cognitive changes</td>
+                  <td>Complex menus, hidden actions, and long processes may confuse users.</td>
+                  <td>Use simple navigation, clear labels, step-by-step guidance, and consistent layouts.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="answer">
+              <div class="answer-title">Exam answer</div>
+              Two age-related factors that affect accessibility and usability are reduced vision and reduced motor control. Reduced vision can make small text or low contrast difficult to read, so interfaces should use larger text and strong contrast. Reduced motor control can make small buttons and precise gestures difficult, so interfaces should use larger clickable areas and simple interaction methods.
+            </div>
+          </section>
+
+          <section id="personas">
+            <h2>Personas</h2>
+            <p class="hatnote">Main idea: a persona is a realistic user profile based on user research.</p>
+
+            <div class="definition">
+              <strong>Definition:</strong> A persona is a fictional but realistic representation of a target user group. It is based on research and describes the user’s goals, needs, behaviours, and challenges.
+            </div>
+
+            <h3>Information included in a persona</h3>
+            <table class="wikitable">
+              <thead>
+                <tr>
+                  <th>Information</th>
+                  <th>Purpose</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Name and basic profile</td><td>Makes the user type easier to remember.</td></tr>
+                <tr><td>Age and background</td><td>Shows relevant context about the user.</td></tr>
+                <tr><td>Goals</td><td>Shows what the user wants to achieve.</td></tr>
+                <tr><td>Tasks</td><td>Shows what the user needs to do with the system.</td></tr>
+                <tr><td>Needs</td><td>Shows what the design must support.</td></tr>
+                <tr><td>Frustrations or pain points</td><td>Shows problems the design should avoid or solve.</td></tr>
+                <tr><td>Technology experience</td><td>Shows whether the user is novice, average, or expert.</td></tr>
+                <tr><td>Accessibility needs</td><td>Shows barriers related to vision, hearing, motor control, or cognition.</td></tr>
+              </tbody>
+            </table>
+
+            <div class="answer">
+              <div class="answer-title">Exam answer</div>
+              A persona is a fictional but realistic profile of a target user based on user research. A persona may include a name, age, background, goals, tasks, needs, frustrations, technology experience, and accessibility needs.
+            </div>
+          </section>
+
+          <section id="design">
+            <h2>Personas in design</h2>
+            <p class="hatnote">Main idea: personas help designers focus on real user needs instead of designing for themselves.</p>
+
+            <h3>How personas are used in design</h3>
+            <table class="wikitable">
+              <thead>
+                <tr>
+                  <th>Use</th>
+                  <th>Explanation</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Guide design decisions</td><td>Designers can ask whether a feature helps the persona achieve their goals.</td></tr>
+                <tr><td>Keep focus on users</td><td>Personas prevent the team from designing only for their own preferences.</td></tr>
+                <tr><td>Support communication</td><td>They give the design team a shared understanding of target users.</td></tr>
+                <tr><td>Identify requirements</td><td>Personas help identify what the system must do for different user groups.</td></tr>
+                <tr><td>Support testing scenarios</td><td>Personas help create realistic tasks for usability testing.</td></tr>
+              </tbody>
+            </table>
+
+            <h3>Pros and cons of personas</h3>
+            <table class="wikitable">
+              <thead>
+                <tr>
+                  <th>Pros</th>
+                  <th>Cons</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Help designers understand target users.</td>
+                  <td>Can become inaccurate if not based on real research.</td>
+                </tr>
+                <tr>
+                  <td>Make user needs easier to remember.</td>
+                  <td>Can oversimplify users and ignore individual differences.</td>
+                </tr>
+                <tr>
+                  <td>Support better design decisions.</td>
+                  <td>Can become stereotypes if poorly created.</td>
+                </tr>
+                <tr>
+                  <td>Improve team communication.</td>
+                  <td>Can become outdated if user needs change.</td>
+                </tr>
+                <tr>
+                  <td>Help create realistic user scenarios.</td>
+                  <td>May be ignored if the team does not use them properly.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="answer">
+              <div class="answer-title">Exam answer</div>
+              Personas help design teams understand target users and make user-focused decisions. They can guide features, requirements, and usability testing scenarios. Their advantages include clearer user focus, better communication, and more realistic design decisions. Their disadvantages are that they can become inaccurate, outdated, oversimplified, or stereotyped if they are not based on real research.
+            </div>
+          </section>
+
+          <section id="empathy">
+            <h2>Empathy map</h2>
+            <p class="hatnote">Main idea: an empathy map organises user research into four areas to understand the user better.</p>
+
+            <div class="definition">
+              <strong>Definition:</strong> An empathy map is a user research tool that helps designers organise what users say, think, do, and feel. It helps translate research findings into design ideas.
+            </div>
+
+            <div class="emap">
+              <div>
+                <h3>Says</h3>
+                <p>What the user directly says in interviews, testing, or feedback.</p>
+                <p><strong>Example:</strong> “I cannot find the submit button.”</p>
+              </div>
+              <div>
+                <h3>Thinks</h3>
+                <p>What the user may be thinking but may not say directly.</p>
+                <p><strong>Example:</strong> “This process feels confusing.”</p>
+              </div>
+              <div>
+                <h3>Does</h3>
+                <p>What the user physically does while using the system.</p>
+                <p><strong>Example:</strong> Repeatedly goes back to the previous page.</p>
+              </div>
+              <div>
+                <h3>Feels</h3>
+                <p>The user’s emotions during the interaction.</p>
+                <p><strong>Example:</strong> Frustrated, uncertain, confident, rushed.</p>
+              </div>
+            </div>
+
+            <h3>How empathy maps help design</h3>
+            <table class="wikitable">
+              <thead>
+                <tr>
+                  <th>Research finding</th>
+                  <th>Possible design idea</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>User says they cannot find a feature.</td><td>Improve labels, navigation, and visual hierarchy.</td></tr>
+                <tr><td>User thinks the process is too complex.</td><td>Reduce steps and simplify the flow.</td></tr>
+                <tr><td>User repeatedly makes the same mistake.</td><td>Add clearer instructions, feedback, or error prevention.</td></tr>
+                <tr><td>User feels anxious or unsure.</td><td>Use confirmation messages, progress indicators, and reassuring wording.</td></tr>
+              </tbody>
+            </table>
+
+            <div class="answer">
+              <div class="answer-title">Exam answer</div>
+              An empathy map has four quadrants: says, thinks, does, and feels. It helps designers organise user research by showing what users say, what they think, what actions they take, and how they feel. This can be used to translate research into design ideas, such as clearer navigation, simpler steps, better feedback, and improved error prevention.
+            </div>
+          </section>
+
+          <section id="summary">
+            <h2>Summary</h2>
+            <table class="wikitable">
+              <thead>
+                <tr>
+                  <th>Topic</th>
+                  <th>Key points</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Accessibility and usability for aging users</td><td>Older users may experience reduced vision, hearing, motor control, memory, and confidence. Use clear, simple, accessible design.</td></tr>
+                <tr><td>Personas</td><td>Research-based fictional user profiles containing goals, needs, tasks, frustrations, and background information.</td></tr>
+                <tr><td>Personas in design</td><td>Used to guide design decisions, communicate user needs, identify requirements, and create testing scenarios.</td></tr>
+                <tr><td>Pros of personas</td><td>Improve user focus, communication, requirements, and realistic design thinking.</td></tr>
+                <tr><td>Cons of personas</td><td>Can be inaccurate, outdated, oversimplified, or stereotyped if not based on research.</td></tr>
+                <tr><td>Empathy map</td><td>Four quadrants: says, thinks, does, feels. Used to turn research into design improvements.</td></tr>
+              </tbody>
+            </table>
+          </section>
+
+          <div class="reference-box">
+            This study article is limited to the listed Question 2 topics only.
+          </div>
+        </article>
+
+        <aside>
+          <div class="infobox">
+            <div class="infobox-title">HCI Question 2</div>
+            <table>
+              <tr><th>Module</th><td>Human Computer Interaction</td></tr>
+              <tr><th>Code</th><td>CMPU2008</td></tr>
+              <tr><th>Focus</th><td>User research and user representation</td></tr>
+              <tr><th>Topics</th><td>4</td></tr>
+              <tr><th>Best use</th><td>Definitions, examples, pros and cons</td></tr>
+            </table>
+          </div>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const themeToggle = document.getElementById('themeToggle');
+    const savedTheme = localStorage.getItem('hci-q2-theme');
+
+    function applyTheme(theme) {
+      const isDark = theme === 'dark';
+      document.body.classList.toggle('dark-mode', isDark);
+      themeToggle.textContent = isDark ? 'Light mode' : 'Dark mode';
+      themeToggle.setAttribute('aria-pressed', String(isDark));
+      localStorage.setItem('hci-q2-theme', theme);
+    }
+
+    if (savedTheme) {
+      applyTheme(savedTheme);
+    }
+
+    themeToggle.addEventListener('click', () => {
+      const nextTheme = document.body.classList.contains('dark-mode') ? 'light' : 'dark';
+      applyTheme(nextTheme);
+    });
+  </script>
+</body>
+</html>

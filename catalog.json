@@ -125,6 +125,18 @@
               "type": "file",
               "href": "./content/hci/hci-notes.html?v=20260507-2",
               "meta": "HCI 01"
+            },
+            {
+              "name": "HCI Question 1 Study Notes",
+              "type": "file",
+              "href": "./content/hci/question_1.html?v=20260513-1",
+              "meta": "HCI 02"
+            },
+            {
+              "name": "HCI Question 2 Study Notes",
+              "type": "file",
+              "href": "./content/hci/question_2.html?v=20260513-1",
+              "meta": "HCI 03"
             }
           ]
         }

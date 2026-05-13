@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HCI Question 1 Study Notes</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --page-bg: #ffffff;
+      --text: #202122;
+      --muted: #54595d;
+      --link: #0645ad;
+      --border: #a2a9b1;
+      --soft-border: #eaecf0;
+      --surface: #f8f9fa;
+      --surface-2: #eaecf0;
+      --button-bg: #ffffff;
+      --button-hover: #f1f3f5;
+    }
+
+    body.dark-mode {
+      --page-bg: #101418;
+      --text: #e6e6e6;
+      --muted: #aab0b6;
+      --link: #8ab4f8;
+      --border: #4b5563;
+      --soft-border: #2d3640;
+      --surface: #171d23;
+      --surface-2: #222b34;
+      --button-bg: #171d23;
+      --button-hover: #222b34;
+    }
+
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background: var(--page-bg);
+      color: var(--text);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    a {
+      color: var(--link);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .wiki-shell {
+      display: grid;
+      grid-template-columns: 176px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      border-right: 1px solid var(--border);
+      background: var(--surface);
+      padding: 16px 12px;
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 20px;
+      font-family: Georgia, "Times New Roman", serif;
+    }
+
+    .logo-main {
+      font-size: 25px;
+      line-height: 1;
+      letter-spacing: 1px;
+    }
+
+    .logo-sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .back-button {
+      display: inline-block;
+      border: 1px solid var(--border);
+      background: var(--button-bg);
+      color: var(--text);
+      font-size: 12px;
+      line-height: 1;
+      padding: 7px 10px;
+      margin: 0 0 12px;
+    }
+
+    .back-button:hover {
+      background: var(--button-hover);
+      text-decoration: none;
+    }
+
+    .sidebar h3 {
+      font-size: 12px;
+      font-weight: normal;
+      color: var(--muted);
+      border-bottom: 1px solid var(--soft-border);
+      margin: 14px 0 6px;
+      padding-bottom: 3px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .sidebar li {
+      margin: 5px 0;
+      font-size: 12px;
+    }
+
+    .content {
+      padding: 18px 28px 50px;
+      max-width: 1120px;
+    }
+
+    .top-tabs {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 18px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .top-tabs div {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .top-tabs span {
+      padding: 8px 0 6px;
+    }
+
+    .theme-toggle {
+      border: 1px solid var(--border);
+      background: var(--button-bg);
+      color: var(--text);
+      font: inherit;
+      font-size: 13px;
+      padding: 5px 9px;
+      cursor: pointer;
+    }
+
+    .theme-toggle:hover {
+      background: var(--button-hover);
+    }
+
+    h1 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: normal;
+      font-size: 32px;
+      line-height: 1.2;
+      border-bottom: 1px solid var(--border);
+      margin: 0 0 8px;
+      padding-bottom: 6px;
+    }
+
+    .site-note {
+      color: var(--muted);
+      margin: 0 0 16px;
+      font-size: 13px;
+    }
+
+    .article-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 285px;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .infobox {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
+
+    .infobox-title {
+      background: var(--surface-2);
+      text-align: center;
+      font-weight: bold;
+      padding: 7px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .infobox table {
+      margin: 0;
+      border: 0;
+      width: 100%;
+      font-size: 13px;
+    }
+
+    .infobox th,
+    .infobox td {
+      border: 0;
+      border-bottom: 1px solid var(--soft-border);
+      padding: 7px;
+      vertical-align: top;
+    }
+
+    .infobox th {
+      width: 38%;
+      background: transparent;
+      text-align: left;
+    }
+
+    .toc {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      padding: 10px 14px;
+      display: inline-block;
+      min-width: 260px;
+      margin: 10px 0 22px;
+    }
+
+    .toc-title {
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    .toc ol {
+      margin: 0;
+      padding-left: 24px;
+    }
+
+    .toc li {
+      margin: 3px 0;
+    }
+
+    h2 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: normal;
+      font-size: 23px;
+      border-bottom: 1px solid var(--border);
+      margin: 24px 0 10px;
+      padding-bottom: 3px;
+    }
+
+    h3 {
+      font-size: 16px;
+      margin: 16px 0 6px;
+    }
+
+    p {
+      margin: 8px 0 12px;
+    }
+
+    .hatnote {
+      font-style: italic;
+      color: var(--muted);
+      margin: 8px 0 14px;
+    }
+
+    .definition {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      padding: 9px 12px;
+      margin: 10px 0 14px;
+    }
+
+    .answer {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      padding: 10px 12px;
+      margin: 12px 0 18px;
+    }
+
+    .answer-title {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    table.wikitable {
+      border-collapse: collapse;
+      margin: 12px 0 18px;
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      width: 100%;
+    }
+
+    .wikitable th,
+    .wikitable td {
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      vertical-align: top;
+    }
+
+    .wikitable th {
+      background: var(--surface-2);
+      text-align: left;
+      font-weight: bold;
+    }
+
+    ul {
+      margin: 6px 0 14px 24px;
+      padding: 0;
+    }
+
+    li {
+      margin: 3px 0;
+    }
+
+    .small {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .reference-box {
+      font-size: 12px;
+      border-top: 1px solid var(--border);
+      margin-top: 24px;
+      padding-top: 10px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 900px) {
+      .wiki-shell {
+        display: block;
+      }
+
+      .sidebar {
+        border-right: 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .sidebar ul {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 14px;
+      }
+
+      .article-layout {
+        display: block;
+      }
+
+      .content {
+        padding: 16px;
+      }
+    }
+
+    @media print {
+      .sidebar,
+      .top-tabs {
+        display: none;
+      }
+
+      .wiki-shell {
+        display: block;
+      }
+
+      .content {
+        max-width: none;
+        padding: 0;
+      }
+
+      .article-layout {
+        display: block;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wiki-shell">
+    <aside class="sidebar">
+      <div class="logo">
+        <div class="logo-main">HCI</div>
+        <div class="logo-sub">study article</div>
+      </div>
+
+      <a class="back-button" href="../../index.html">Back to catalog</a>
+
+      <h3>Contents</h3>
+      <ul>
+        <li><a href="#disciplines">Disciplines</a></li>
+        <li><a href="#senses">Human senses and I/O</a></li>
+        <li><a href="#prototypes">Prototypes</a></li>
+        <li><a href="#hcd">Human Centred Design</a></li>
+        <li><a href="#universal">Universal Design</a></li>
+        <li><a href="#usability">Usability</a></li>
+        <li><a href="#summary">Summary</a></li>
+      </ul>
+
+      <h3>Exam use</h3>
+      <ul>
+        <li><a href="#summary">Quick revision</a></li>
+        <li><a href="#prototypes">Prototype types</a></li>
+        <li><a href="#universal">Irish legislation</a></li>
+      </ul>
+    </aside>
+
+    <main class="content">
+      <div class="top-tabs">
+        <div>
+          <span>Article</span>
+          <span>Study notes</span>
+        </div>
+        <div>
+          <span>Read</span>
+          <span>Print</span>
+          <button class="theme-toggle" type="button" id="themeToggle" aria-pressed="false">Dark mode</button>
+        </div>
+      </div>
+
+      <h1>HCI Question 1 Study Notes</h1>
+      <p class="site-note">From CMPU2008 Human Computer Interaction revision material.</p>
+
+      <div class="article-layout">
+        <article>
+          
+
+          <div class="toc">
+            <div class="toc-title">Contents</div>
+            <ol>
+              <li><a href="#disciplines">Disciplines associated with HCI</a></li>
+              <li><a href="#senses">Human senses and input/output</a></li>
+              <li><a href="#prototypes">Prototypes and types</a></li>
+              <li><a href="#hcd">Human Centred Design</a></li>
+              <li><a href="#universal">Universal Design and Irish equality legislation</a></li>
+              <li><a href="#usability">Usability</a></li>
+              <li><a href="#summary">Summary table</a></li>
+            </ol>
+          </div>
+
+          <section id="disciplines">
+            <h2>Q1 (a) Disciplines associated with HCI</h2>
+            <p class="hatnote">Main idea: HCI is interdisciplinary.</p>
+
+            <div class="definition">
+              <strong>Definition:</strong> Human Computer Interaction is interdisciplinary because it combines knowledge from different fields to improve how people interact with computers and digital systems.
+            </div>
+
+            <table class="wikitable">
+              <thead>
+                <tr>
+                  <th>Discipline</th>
+                  <th>Contribution to HCI</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Computer Science</td><td>Designs and develops software, systems, interfaces, and interaction methods.</td></tr>
+                <tr><td>Psychology</td><td>Explains human behaviour, attention, learning, perception, and memory.</td></tr>
+                <tr><td>Cognitive Science</td><td>Studies how people think, solve problems, and process information.</td></tr>
+                <tr><td>Sociology</td><td>Studies how people use technology in groups, organisations, and society.</td></tr>
+                <tr><td>Graphic Design</td><td>Improves visual layout, colour, typography, and screen presentation.</td></tr>
+                <tr><td>Ergonomics</td><td>Focuses on comfort, safety, physical interaction, and reducing strain.</td></tr>
+                <tr><td>Anthropology</td><td>Studies human culture, habits, and behaviour in real-world contexts.</td></tr>
+                <tr><td>Linguistics</td><td>Supports clear communication, labels, commands, and language-based interaction.</td></tr>
+              </tbody>
+            </table>
+
+            <div class="answer">
+              <div class="answer-title">Exam answer</div>
+              HCI is interdisciplinary because it combines fields such as computer science, psychology, cognitive science, sociology, ergonomics, graphic design, anthropology, and linguistics. These fields help designers understand both the human user and the technical system.
+            </div>
+          </section>
+
+          <section id="senses">
+            <h2>Q1 (b) Human senses and input/output</h2>
+            <p class="hatnote">Main idea: users provide input to the system and receive output from it.</p>
+
+            <div class="definition">
+              <strong>Definition:</strong> Users interact with computers by providing input to the system and receiving output from the system. Human senses help users receive and interpret information.
+            </div>
+
+            <h3>Input and output</h3>
+            <table class="wikitable">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Meaning</th>
+                  <th>Examples</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Input</td><td>Information sent from the user to the computer.</td><td>Keyboard, mouse, touchscreen, microphone, scanner.</td></tr>
+                <tr><td>Output</td><td>Information sent from the computer to the user.</td><td>Monitor, speakers, vibration, printer, notifications.</td></tr>
+              </tbody>
+            </table>
+
+            <h3>Human senses in HCI</h3>
+            <table class="wikitable">
+              <thead>
+                <tr>
+                  <th>Sense</th>
+                  <th>Use in HCI</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Sight</td><td>Reading text, viewing icons, images, videos, colours, and layouts.</td></tr>
+                <tr><td>Hearing</td><td>Audio alerts, speech output, music, warning sounds, and voice assistants.</td></tr>
+                <tr><td>Touch</td><td>Keyboard use, mouse use, touchscreen interaction, vibration, and haptic feedback.</td></tr>
+                <tr><td>Smell</td><td>Rarely used, but possible in specialist simulations or virtual reality systems.</td></tr>
+                <tr><td>Taste</td><td>Very rarely used in HCI. Mostly experimental or specialist research.</td></tr>
+              </tbody>
+            </table>
+
+            <div class="answer">
+              <div class="answer-title">Exam answer</div>
+              A user may use sight to read text or view icons on a screen, hearing to receive alerts or speech output, and touch to use a keyboard, mouse, or touchscreen. Input devices allow users to send information to the computer, while output devices return information from the computer to the user.
+            </div>
+          </section>
+
+          <section id="prototypes">
+            <h2>Q1 (c) Prototypes and types of prototypes</h2>
+            <p class="hatnote">Main idea: prototypes are early test versions of a system.</p>
+
+            <div class="definition">
+              <strong>Definition:</strong> A prototype is an early version or model of a system used to test design ideas, functionality, and user interaction before final development.
+            </div>
+
+            <h3>Purpose of prototypes</h3>
+            <ul>
+              <li>Test design ideas early.</li>
+              <li>Collect user feedback.</li>
+              <li>Find usability problems.</li>
+              <li>Reduce development risk.</li>
+              <li>Improve the final system before full implementation.</li>
+            </ul>
+
+            <table class="wikitable">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Description</th>
+                  <th>Examples</th>
+                  <th>Advantages</th>
+                  <th>Limitations</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Low-fidelity prototype</td>
+                  <td>A simple and rough version of the design.</td>
+                  <td>Paper sketches, basic wireframes.</td>
+                  <td>Cheap, quick, easy to change.</td>
+                  <td>Limited realism and interaction.</td>
+                </tr>
+                <tr>
+                  <td>Medium-fidelity prototype</td>
+                  <td>A more detailed version with some interaction.</td>
+                  <td>Clickable wireframes, digital mockups.</td>
+                  <td>Useful for testing flow and navigation.</td>
+                  <td>Still incomplete and not fully realistic.</td>
+                </tr>
+                <tr>
+                  <td>High-fidelity prototype</td>
+                  <td>A realistic version close to the final system.</td>
+                  <td>Interactive app mockups, coded interfaces.</td>
+                  <td>Detailed testing and realistic feedback.</td>
+                  <td>More expensive and time-consuming.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="answer">
+              <div class="answer-title">Exam answer</div>
+              A prototype is an early model of a system used to test and evaluate design ideas. Low-fidelity prototypes are simple sketches, medium-fidelity prototypes include more detail and some interaction, and high-fidelity prototypes closely resemble the final system.
+            </div>
+          </section>
+
+          <section id="hcd">
+            <h2>Q1 (d) Human Centred Design</h2>
+            <p class="hatnote">Main idea: design should focus on real users throughout the process.</p>
+
+            <div class="definition">
+              <strong>Definition:</strong> Human Centred Design is a design approach that focuses on users’ needs, abilities, limitations, and feedback throughout the design process.
+            </div>
+
+            <table class="wikitable">
+              <thead>
+                <tr>
+                  <th>Principle</th>
+                  <th>Meaning</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>User involvement</td><td>Users are involved during research, design, testing, and evaluation.</td></tr>
+                <tr><td>Understanding user needs</td><td>Design decisions are based on real user requirements.</td></tr>
+                <tr><td>Iterative design</td><td>The design is repeatedly tested and improved.</td></tr>
+                <tr><td>Accessibility</td><td>The system should support users with different abilities and needs.</td></tr>
+                <tr><td>Usability focus</td><td>The system should be easy, effective, efficient, and satisfying to use.</td></tr>
+                <tr><td>Evaluation</td><td>The design should be tested to check whether it works for users.</td></tr>
+              </tbody>
+            </table>
+
+            <h3>Benefits</h3>
+            <ul>
+              <li>Improves usability.</li>
+              <li>Improves user satisfaction.</li>
+              <li>Reduces user errors.</li>
+              <li>Reduces training needs.</li>
+              <li>Creates systems that better match user requirements.</li>
+            </ul>
+
+            <div class="answer">
+              <div class="answer-title">Exam answer</div>
+              Human Centred Design focuses on designing systems around users’ needs, abilities, and limitations. Key principles include user involvement, understanding user needs, iterative design, accessibility, usability, and evaluation.
+            </div>
+          </section>
+
+          <section id="universal">
+            <h2>Q1 (e) Universal Design and Irish equality legislation</h2>
+            <p class="hatnote">Main idea: design should support the widest possible range of users.</p>
+
+            <div class="definition">
+              <strong>Definition:</strong> Universal Design means designing products, services, environments, and systems so they can be used by as many people as possible, regardless of age, size, ability, or disability.
+            </div>
+
+            <h3>Main factors influencing Universal Design</h3>
+            <table class="wikitable">
+              <thead>
+                <tr>
+                  <th>Factor</th>
+                  <th>Meaning</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Accessibility</td><td>Systems should support users with disabilities, including visual, hearing, motor, and cognitive impairments.</td></tr>
+                <tr><td>Usability</td><td>Systems should be easy to learn, efficient, understandable, and comfortable to use.</td></tr>
+                <tr><td>Inclusivity</td><td>Systems should consider users with different ages, abilities, backgrounds, and contexts.</td></tr>
+              </tbody>
+            </table>
+
+            <h3>Irish equality legislation</h3>
+            <table class="wikitable">
+              <thead>
+                <tr>
+                  <th>Legislation / framework</th>
+                  <th>Connection to Universal Design</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Equal Status Acts</td><td>Support equal access and help prevent discrimination in goods and services.</td></tr>
+                <tr><td>Disability Act 2005</td><td>Supports accessibility and participation for people with disabilities.</td></tr>
+                <tr><td>Public sector accessibility expectations</td><td>Encourage accessible public information, digital systems, and services.</td></tr>
+              </tbody>
+            </table>
+
+            <h3>Examples</h3>
+            <ul>
+              <li>Captions on videos for users with hearing impairments.</li>
+              <li>Screen reader support for users with visual impairments.</li>
+              <li>Keyboard navigation for users who cannot use a mouse.</li>
+              <li>Clear text and simple layouts for all users.</li>
+              <li>Ramps and automatic doors in physical environments.</li>
+            </ul>
+
+            <div class="answer">
+              <div class="answer-title">Exam answer</div>
+              Universal Design is the design of products and systems that can be used by the widest possible range of people, regardless of age, ability, or disability. In Ireland, equality and disability legislation support accessible and inclusive services. The main factors influencing Universal Design are accessibility, usability, and inclusivity.
+            </div>
+          </section>
+
+          <section id="usability">
+            <h2>Q1 (f) Usability</h2>
+            <p class="hatnote">Main idea: usability measures how easy and successful a system is to use.</p>
+
+            <div class="definition">
+              <strong>Definition:</strong> Usability refers to how easy, effective, efficient, and satisfying a system is to use.
+            </div>
+
+            <table class="wikitable">
+              <thead>
+                <tr>
+                  <th>Aspect</th>
+                  <th>Meaning</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Learnability</td><td>New users can learn how to use the system quickly.</td></tr>
+                <tr><td>Efficiency</td><td>Users can complete tasks quickly with minimal effort.</td></tr>
+                <tr><td>Effectiveness</td><td>Users can successfully complete their intended tasks.</td></tr>
+                <tr><td>Memorability</td><td>Users can return later and remember how to use the system.</td></tr>
+                <tr><td>Error prevention and recovery</td><td>The system prevents mistakes and helps users recover from errors.</td></tr>
+                <tr><td>Satisfaction</td><td>Users find the system pleasant and comfortable to use.</td></tr>
+              </tbody>
+            </table>
+
+            <h3>Examples</h3>
+            <table class="wikitable">
+              <thead>
+                <tr>
+                  <th>Good usability</th>
+                  <th>Poor usability</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Clear buttons, simple navigation, readable text, helpful error messages.</td>
+                  <td>Confusing menus, unclear icons, small text, hidden actions, poor feedback.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="answer">
+              <div class="answer-title">Exam answer</div>
+              Usability is the measure of how easy and effective a system is to use. A usable system should be learnable, efficient, effective, memorable, tolerant of errors, and satisfying for the user.
+            </div>
+          </section>
+
+          <section id="summary">
+            <h2>Summary</h2>
+            <table class="wikitable">
+              <thead>
+                <tr>
+                  <th>Topic</th>
+                  <th>Key points</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Disciplines</td><td>Computer Science, Psychology, Cognitive Science, Sociology, Design, Ergonomics, Anthropology, Linguistics.</td></tr>
+                <tr><td>Human senses and I/O</td><td>Sight, hearing, and touch are most important. Input goes to the computer. Output comes from the computer.</td></tr>
+                <tr><td>Prototypes</td><td>Early models used for testing. Low-fidelity, medium-fidelity, and high-fidelity.</td></tr>
+                <tr><td>Human Centred Design</td><td>Focuses on user needs, user involvement, iteration, accessibility, usability, and evaluation.</td></tr>
+                <tr><td>Universal Design</td><td>Design for the widest possible range of users. Accessibility, usability, and inclusivity.</td></tr>
+                <tr><td>Usability</td><td>Easy, effective, efficient, memorable, low-error, and satisfying use.</td></tr>
+              </tbody>
+            </table>
+          </section>
+
+          <div class="reference-box">
+            This study article is limited to the listed Question 1 topics only.
+          </div>
+        </article>
+
+        <aside>
+          <div class="infobox">
+            <div class="infobox-title">HCI Question 1</div>
+            <table>
+              <tr><th>Module</th><td>Human Computer Interaction</td></tr>
+              <tr><th>Code</th><td>CMPU2008</td></tr>
+              <tr><th>Focus</th><td>Compulsory short-answer theory</td></tr>
+              <tr><th>Topics</th><td>6</td></tr>
+              <tr><th>Best use</th><td>Definitions, lists, short examples</td></tr>
+            </table>
+          </div>
+        </aside>
+      </div>
+    </main>
+  </div>
+  <script>
+    const themeToggle = document.getElementById("themeToggle");
+    const savedTheme = localStorage.getItem("hci-theme");
+
+    function applyTheme(theme) {
+      const isDark = theme === "dark";
+      document.body.classList.toggle("dark-mode", isDark);
+      themeToggle.textContent = isDark ? "Light mode" : "Dark mode";
+      themeToggle.setAttribute("aria-pressed", String(isDark));
+      localStorage.setItem("hci-theme", theme);
+    }
+
+    if (savedTheme) {
+      applyTheme(savedTheme);
+    }
+
+    themeToggle.addEventListener("click", () => {
+      const nextTheme = document.body.classList.contains("dark-mode") ? "light" : "dark";
+      applyTheme(nextTheme);
+    });
+  </script>
+</body>
+</html>
