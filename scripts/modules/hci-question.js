@@ -1,17 +1,15 @@
 (() => {
-  const themeToggle = document.getElementById("themeToggle");
+  const themeToggles = Array.from(document.querySelectorAll(".theme-toggle"));
   const themeStorageKey = "hci-theme";
   const legacyStorageKeys = ["hci-q2-theme", "hci-q3-theme", "hci-q4-theme"];
-
-  if (!themeToggle) {
-    return;
-  }
 
   function applyTheme(theme) {
     const isDark = theme === "dark";
     document.body.classList.toggle("dark-mode", isDark);
-    themeToggle.textContent = isDark ? "Light mode" : "Dark mode";
-    themeToggle.setAttribute("aria-pressed", String(isDark));
+    themeToggles.forEach((themeToggle) => {
+      themeToggle.textContent = isDark ? "Light mode" : "Dark mode";
+      themeToggle.setAttribute("aria-pressed", String(isDark));
+    });
     localStorage.setItem(themeStorageKey, theme);
     legacyStorageKeys.forEach((key) => localStorage.removeItem(key));
   }
@@ -22,9 +20,11 @@
     applyTheme(savedTheme);
   }
 
-  themeToggle.addEventListener("click", () => {
-    const nextTheme = document.body.classList.contains("dark-mode") ? "light" : "dark";
-    applyTheme(nextTheme);
+  themeToggles.forEach((themeToggle) => {
+    themeToggle.addEventListener("click", () => {
+      const nextTheme = document.body.classList.contains("dark-mode") ? "light" : "dark";
+      applyTheme(nextTheme);
+    });
   });
 
   const menuButton = document.querySelector(".mobile-menu-button");

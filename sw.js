@@ -1,4 +1,4 @@
-const CACHE_NAME = "tutor-notes-v43";
+const CACHE_NAME = "tutor-notes-v44";
 
 const CORE_ASSETS = [
   "./catalog.json",
@@ -11,8 +11,8 @@ const CORE_ASSETS = [
   "./assets/loading/editorial-seal.jpg"
 ];
 
-const FRESH_JSON_PATHS = ["/catalog.json", "/greetings.json", "/favourites.json"];
-const FRESH_DESTINATIONS = ["script", "style", "worker"];
+const FRESH_JSON_PATHS = ["/catalog.json", "/greetings.json", "/favourites.json", "/manifest.webmanifest"];
+const FRESH_DESTINATIONS = ["script", "style", "worker", "manifest"];
 
 function cacheResponse(request, response) {
   if (!response || !response.ok) {

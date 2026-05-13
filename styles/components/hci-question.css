@@ -192,6 +192,10 @@ a:hover {
   background: var(--button-hover);
 }
 
+.theme-toggle--mobile {
+  display: none;
+}
+
 h1,
 h2 {
   font-family: Georgia, "Times New Roman", serif;
@@ -478,7 +482,19 @@ li {
   }
 
   .mobile-search-button {
+    margin-left: 0;
+  }
+
+  .theme-toggle--mobile {
+    display: inline-flex;
+    flex: 0 0 auto;
+    justify-content: center;
+    min-width: 70px;
+    min-height: 34px;
     margin-left: auto;
+    padding: 5px 8px;
+    font-size: 12px;
+    white-space: nowrap;
   }
 
   .wiki-shell {
@@ -710,6 +726,10 @@ li {
 
   .mobile-search-button {
     display: none;
+  }
+
+  .theme-toggle--mobile {
+    margin-left: 8px;
   }
 
   .content {
