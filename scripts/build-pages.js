@@ -22,20 +22,20 @@ pages.forEach((page) => {
   const bodyPath = path.join(root, page.body);
   const body = fs.readFileSync(bodyPath, "utf8").trimEnd();
   const loader = applyTokens(loaderTemplate, {
-    basePath: page.basePath,
+    basePath: "/",
     loaderMicro: page.loaderMicro,
     loaderMarkLabel: page.loaderMarkLabel,
     loaderMarkA: page.loaderMarkA,
     loaderMarkB: page.loaderMarkB,
   });
   const componentStyles = (page.componentStyles || [])
-    .map((href) => `    <link rel="stylesheet" href="${page.basePath}${href}" />`)
+    .map((href) => `    <link rel="stylesheet" href="/${href}" />`)
     .join("\n");
 
   const html = applyTokens(layout, {
     title: page.title,
     description: page.description,
-    basePath: page.basePath,
+    basePath: "/",
     mainCssVersion: page.mainCssVersion,
     componentStyles,
     feedbackCssVersion: page.feedbackCssVersion,

@@ -80,7 +80,7 @@ class SimplePDFReader {
         window.history.back();
         return;
       }
-      window.location.href = "../../index.html";
+      window.location.href = "/";
     });
 
     if (this.fileInput) {
