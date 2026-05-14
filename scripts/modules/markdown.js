@@ -62,6 +62,23 @@ function prettifyImageName(filename) {
     .replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
+function resolveMarkdownImageBase(imageBase, source) {
+  if (!imageBase) {
+    return "";
+  }
+
+  if (/^(?:[a-z][a-z0-9+.-]*:|\/)/i.test(imageBase)) {
+    return imageBase;
+  }
+
+  try {
+    const sourceUrl = new URL(source, window.location.href);
+    return new URL(imageBase, sourceUrl).href;
+  } catch {
+    return imageBase;
+  }
+}
+
 export function parseMarkdown(markdown) {
   const lines = markdown.replace(/\r\n?/g, "\n").split("\n");
   const blocks = [];
@@ -1034,7 +1051,7 @@ export async function initMarkdownPage() {
 
     const guideBlocks = blocks.filter((block) => block !== introBlock);
     const guideOptions = {
-      imageBase: page.dataset.markdownImageBase || "",
+      imageBase: resolveMarkdownImageBase(page.dataset.markdownImageBase || "", source),
     };
     const guide = page.dataset.markdownMode === "mcq"
       ? buildMcqGuide(guideBlocks, guideOptions)
