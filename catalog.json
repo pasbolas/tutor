@@ -88,6 +88,12 @@
               "type": "file",
               "href": "content/algorithm-and-dsa/notes/",
               "meta": "Algorithm 01"
+            },
+            {
+              "name": "Pseudocode Exam Revision",
+              "type": "file",
+              "href": "content/algorithm-and-dsa/pseudocode/",
+              "meta": "Algorithm 04"
             }
           ]
         },

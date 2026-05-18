@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data Structures and Algorithms Exam Revision</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --background: #ffffff;
+      --surface: #f8f9fa;
+      --border: #a2a9b1;
+      --border-soft: #c8ccd1;
+      --text: #202122;
+      --muted: #54595d;
+      --link: #0645ad;
+      --heading-line: #a2a9b1;
+      --code-bg: #f8f9fa;
+      --table-head: #eaecf0;
+      --note-bg: #f8f9fa;
+      --note-border: #c8ccd1;
+      --tab-gradient: linear-gradient(#ffffff, #f8f9fa);
+      --active-tab-bg: #ffffff;
+      --wordmark-bg: #ffffff;
+      --toggle-bg: #eaecf0;
+      --toggle-knob: #ffffff;
+      --toggle-icon: #54595d;
+      --serif: Linux Libertine, Georgia, Times, serif;
+      --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Lato, Helvetica, Arial, sans-serif;
+      --mono: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+    }
+
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --background: #101418;
+      --surface: #161b22;
+      --border: #6b727c;
+      --border-soft: #343b44;
+      --text: #e6edf3;
+      --muted: #9aa4af;
+      --link: #8ab4ff;
+      --heading-line: #3d444d;
+      --code-bg: #0d1117;
+      --table-head: #21262d;
+      --note-bg: #161b22;
+      --note-border: #3d444d;
+      --tab-gradient: linear-gradient(#1c222a, #161b22);
+      --active-tab-bg: #101418;
+      --wordmark-bg: #101418;
+      --toggle-bg: #30363d;
+      --toggle-knob: #e6edf3;
+      --toggle-icon: #f0d96d;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--background);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    body.sidebar-open {
+      overflow: hidden;
+    }
+
+    a {
+      color: var(--link);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 176px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      align-self: start;
+      height: 100vh;
+      overflow-y: auto;
+      border-right: 1px solid var(--border-soft);
+      background: var(--surface);
+      padding: 16px 14px;
+    }
+
+    .wordmark {
+      display: grid;
+      gap: 2px;
+      margin-bottom: 24px;
+      text-align: center;
+      color: var(--text);
+    }
+
+    .wordmark-symbol {
+      width: 54px;
+      height: 54px;
+      margin: 0 auto 6px;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-family: var(--serif);
+      font-size: 30px;
+      background: var(--wordmark-bg);
+    }
+
+    .wordmark-title {
+      font-family: var(--serif);
+      font-size: 21px;
+      line-height: 1;
+    }
+
+    .wordmark-subtitle {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .sidebar h2 {
+      margin: 14px 0 6px;
+      padding-bottom: 3px;
+      border-bottom: 1px solid var(--border-soft);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .sidebar ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .sidebar li {
+      margin: 4px 0;
+      font-size: 11px;
+    }
+
+    .content {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 240px;
+      gap: 28px;
+      padding: 0 28px 48px;
+    }
+
+    .article {
+      max-width: 1050px;
+      padding-top: 18px;
+    }
+
+    .top-tabs {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 18px;
+      font-size: 13px;
+    }
+
+    .tab-group {
+      display: flex;
+      gap: 2px;
+    }
+
+    .tab {
+      padding: 8px 12px 7px;
+      border: 1px solid transparent;
+      border-bottom: 0;
+      color: var(--link);
+      background: var(--tab-gradient);
+    }
+
+    .tab.active {
+      color: var(--text);
+      border-color: var(--border);
+      background: var(--active-tab-bg);
+      margin-bottom: -1px;
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid var(--heading-line);
+      font-family: var(--serif);
+      font-size: 34px;
+      font-weight: 400;
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .toc-box {
+      width: min(360px, 100%);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      padding: 10px 14px;
+      margin: 18px 0 22px;
+    }
+
+    .toc-box h2 {
+      margin: 0 0 8px;
+      border: 0;
+      font-family: var(--sans);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .toc-box ol {
+      margin: 0;
+      padding-left: 22px;
+    }
+
+    .toc-box li {
+      margin: 3px 0;
+    }
+
+    h2 {
+      margin: 28px 0 8px;
+      padding-bottom: 3px;
+      border-bottom: 1px solid var(--heading-line);
+      font-family: var(--serif);
+      font-size: 25px;
+      font-weight: 400;
+      line-height: 1.25;
+    }
+
+    h3 {
+      margin: 18px 0 6px;
+      font-family: var(--sans);
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    p {
+      margin: 8px 0 12px;
+    }
+
+    .definition {
+      margin: 8px 0 14px;
+    }
+
+    pre {
+      margin: 8px 0 14px;
+      padding: 12px 14px;
+      overflow-x: auto;
+      border: 1px solid var(--border-soft);
+      background: var(--code-bg);
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.45;
+      white-space: pre;
+    }
+
+    code {
+      font-family: var(--mono);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0 16px;
+      font-size: 13px;
+    }
+
+    th,
+    td {
+      border: 1px solid var(--border);
+      padding: 7px 9px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--table-head);
+      font-weight: 700;
+    }
+
+    .exam-box {
+      margin: 12px 0 16px;
+      padding: 10px 14px;
+      border: 1px solid var(--note-border);
+      background: var(--note-bg);
+    }
+
+    .exam-box h3 {
+      margin-top: 0;
+    }
+
+    ul {
+      margin: 6px 0 12px;
+      padding-left: 24px;
+    }
+
+    li {
+      margin: 4px 0;
+    }
+
+    .compare-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin: 10px 0 14px;
+    }
+
+    .compare-card {
+      border: 1px solid var(--border-soft);
+      background: var(--surface);
+      padding: 10px 12px;
+    }
+
+    .compare-card h3 {
+      margin: 0 0 4px;
+      font-size: 15px;
+    }
+
+    .infobox {
+      position: sticky;
+      top: 12px;
+      align-self: start;
+      margin-top: 72px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-size: 12px;
+    }
+
+    .infobox-title {
+      padding: 8px 10px;
+      background: var(--table-head);
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .infobox table {
+      margin: 0;
+      font-size: 12px;
+    }
+
+    .infobox th,
+    .infobox td {
+      border-width: 0 0 1px 0;
+      background: transparent;
+      padding: 7px 8px;
+    }
+
+    .infobox th {
+      width: 42%;
+      color: var(--text);
+    }
+
+    footer {
+      margin-top: 34px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-soft);
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .theme-toggle {
+      width: 100%;
+      margin: 12px 0 2px;
+      padding: 5px 7px;
+      border: 1px solid var(--border-soft);
+      background: var(--surface);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font: inherit;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .theme-toggle:hover {
+      border-color: var(--border);
+    }
+
+    .theme-toggle-label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .theme-toggle-track {
+      position: relative;
+      width: 34px;
+      height: 18px;
+      border: 1px solid var(--border-soft);
+      border-radius: 999px;
+      background: var(--toggle-bg);
+      flex: 0 0 auto;
+    }
+
+    .theme-toggle-knob {
+      position: absolute;
+      top: 1px;
+      left: 1px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--toggle-knob);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+      transition: transform 160ms ease;
+    }
+
+    .theme-toggle-icon {
+      color: var(--toggle-icon);
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    .sidebar-toggle {
+      display: none;
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      z-index: 1200;
+      width: 42px;
+      height: 38px;
+      border: 1px solid var(--border-soft);
+      background: var(--surface);
+      color: var(--text);
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.14);
+    }
+
+    .sidebar-toggle:hover {
+      border-color: var(--border);
+    }
+
+    .sidebar-toggle-lines {
+      position: relative;
+      width: 16px;
+      height: 12px;
+      display: block;
+    }
+
+    .sidebar-toggle-lines::before,
+    .sidebar-toggle-lines::after,
+    .sidebar-toggle-lines span {
+      content: "";
+      position: absolute;
+      left: 0;
+      width: 16px;
+      height: 1px;
+      background: var(--text);
+      transition: transform 160ms ease, opacity 160ms ease, top 160ms ease;
+    }
+
+    .sidebar-toggle-lines::before {
+      top: 0;
+    }
+
+    .sidebar-toggle-lines span {
+      top: 5px;
+    }
+
+    .sidebar-toggle-lines::after {
+      top: 10px;
+    }
+
+    .sidebar-toggle[aria-expanded="true"] .sidebar-toggle-lines::before {
+      top: 5px;
+      transform: rotate(45deg);
+    }
+
+    .sidebar-toggle[aria-expanded="true"] .sidebar-toggle-lines span {
+      opacity: 0;
+    }
+
+    .sidebar-toggle[aria-expanded="true"] .sidebar-toggle-lines::after {
+      top: 5px;
+      transform: rotate(-45deg);
+    }
+
+    .sidebar-backdrop {
+      display: none;
+    }
+
+    html[data-theme="dark"] .theme-toggle-knob {
+      transform: translateX(16px);
+    }
+
+    @media (max-width: 980px) {
+      .layout {
+        grid-template-columns: 1fr;
+        padding: 0;
+        gap: 0;
+      }
+
+      .sidebar-toggle {
+        display: flex;
+      }
+
+      .sidebar-backdrop {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        background: rgba(0, 0, 0, 0.28);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 160ms ease;
+      }
+
+      body.sidebar-open .sidebar-backdrop {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1100;
+        width: min(276px, 84vw);
+        height: 100vh;
+        overflow-y: auto;
+        border-right: 1px solid var(--border-soft);
+        border-bottom: 0;
+        transform: translateX(-100%);
+        transition: transform 180ms ease;
+        padding-top: 58px;
+      }
+
+      body.sidebar-open .sidebar {
+        transform: translateX(0);
+      }
+
+      .wordmark {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 10px;
+        text-align: left;
+        margin-bottom: 12px;
+      }
+
+      .wordmark-symbol {
+        width: 38px;
+        height: 38px;
+        margin: 0;
+        font-size: 21px;
+      }
+
+      .sidebar nav ul {
+        columns: 2;
+      }
+
+      .content {
+        grid-template-columns: 1fr;
+        padding: 72px 18px 36px;
+      }
+
+      .infobox {
+        display: none;
+      }
+    }
+
+    @media (max-width: 640px) {
+      body {
+        font-size: 13px;
+      }
+
+      .top-tabs {
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+
+      h2 {
+        font-size: 22px;
+      }
+
+      .compare-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar nav ul {
+        columns: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button class="sidebar-toggle" type="button" id="sidebarToggle" aria-label="Open navigation menu" aria-controls="siteSidebar" aria-expanded="false">
+    <span class="sidebar-toggle-lines" aria-hidden="true"><span></span></span>
+  </button>
+  <div class="sidebar-backdrop" id="sidebarBackdrop" aria-hidden="true"></div>
+
+  <div class="layout">
+    <aside class="sidebar" id="siteSidebar" aria-label="Site navigation">
+      <div class="wordmark">
+        <div class="wordmark-symbol">A</div>
+        <div>
+          <div class="wordmark-title">Algorithm Notes</div>
+          <div class="wordmark-subtitle">Exam revision</div>
+        </div>
+      </div>
+
+      <button class="theme-toggle" type="button" id="themeToggle" aria-label="Switch to dark mode" aria-pressed="false">
+        <span class="theme-toggle-label">
+          <span class="theme-toggle-icon" id="themeToggleIcon" aria-hidden="true"></span>
+          <span id="themeToggleText">Dark mode</span>
+        </span>
+        <span class="theme-toggle-track" aria-hidden="true">
+          <span class="theme-toggle-knob"></span>
+        </span>
+      </button>
+
+      <nav>
+        <h2>Contents</h2>
+        <ul>
+          <li><a href="#heap">Heap operations</a></li>
+          <li><a href="#dfs">Depth-first search</a></li>
+          <li><a href="#dijkstra">Dijkstra's algorithm</a></li>
+          <li><a href="#prim">Prim's algorithm</a></li>
+          <li><a href="#kruskal">Kruskal's algorithm</a></li>
+          <li><a href="#union-find">Union-Find example</a></li>
+          <li><a href="#bst-avl">BST and AVL trees</a></li>
+        </ul>
+
+        <h2>Exam focus</h2>
+        <ul>
+          <li><a href="#complexities">Complexities</a></li>
+          <li><a href="#final-revision">Final revision checklist</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="content">
+      <article class="article">
+        <nav class="top-tabs" aria-label="Page navigation">
+          <div class="tab-group">
+            <a class="tab" href="../../">Home</a>
+            <a class="tab active" href="#top">Revision</a>
+          </div>
+          <div class="tab-group">
+            <a class="tab" href="#final-revision">Checklist</a>
+          </div>
+        </nav>
+
+        <h1 id="top">Data Structures and Algorithms Exam Revision</h1>
+        <p class="subtitle">Pseudocode and exam-focused notes for common graph, heap, tree, and minimum spanning tree questions.</p>
+
+        <section class="toc-box" aria-label="Table of contents">
+          <h2>Contents</h2>
+          <ol>
+            <li><a href="#heap">Heap insert, maxHeapify, and siftDown</a></li>
+            <li><a href="#dfs">DFS timestamps and complexity</a></li>
+            <li><a href="#dijkstra">Dijkstra table, relaxation, and complexity</a></li>
+            <li><a href="#prim">Prim compared with Dijkstra</a></li>
+            <li><a href="#kruskal">Kruskal and Union-Find</a></li>
+            <li><a href="#union-find">Union-Find treeParent[] example</a></li>
+            <li><a href="#bst-avl">BST and AVL trees</a></li>
+            <li><a href="#final-revision">Final revision checklist</a></li>
+          </ol>
+        </section>
+
+        <section id="heap">
+          <h2>Heap insert, maxHeapify, and siftDown</h2>
+          <p class="definition">A <strong>max heap</strong> is a complete binary tree where every parent is greater than or equal to its children. Therefore, the largest value is stored at the root.</p>
+
+          <h3>Heap insert</h3>
+          <pre><code>heapInsert(H, value):
+    H.size = H.size + 1
+    i = H.size
+    H[i] = value
+
+    while i &gt; 1 and H[parent(i)] &lt; H[i]:
+        swap H[i] and H[parent(i)]
+        i = parent(i)</code></pre>
+
+          <h3>Recursive maxHeapify</h3>
+          <pre><code>maxHeapify(H, k):
+    left = 2 * k
+    right = 2 * k + 1
+    largest = k
+
+    if left &lt;= H.size and H[left] &gt; H[largest]:
+        largest = left
+
+    if right &lt;= H.size and H[right] &gt; H[largest]:
+        largest = right
+
+    if largest != k:
+        swap H[k] and H[largest]
+        maxHeapify(H, largest)</code></pre>
+
+          <h3>Iterative siftDown</h3>
+          <pre><code>siftDown(H, k):
+    while k has at least one child:
+        left = 2 * k
+        right = 2 * k + 1
+        largest = k
+
+        if left &lt;= H.size and H[left] &gt; H[largest]:
+            largest = left
+
+        if right &lt;= H.size and H[right] &gt; H[largest]:
+            largest = right
+
+        if largest == k:
+            break
+
+        swap H[k] and H[largest]
+        k = largest</code></pre>
+
+          <table>
+            <tr><th>Operation</th><th>Complexity</th><th>Exam reason</th></tr>
+            <tr><td>Insert</td><td>O(log n)</td><td>The inserted value may move upward through the height of the heap.</td></tr>
+            <tr><td>maxHeapify / siftDown</td><td>O(log n)</td><td>The value may move downward through the height of the heap.</td></tr>
+            <tr><td>Build heap</td><td>O(n)</td><td>Heapify is applied from the last internal node back to the root.</td></tr>
+          </table>
+
+          <div class="exam-box">
+            <h3>Exam points</h3>
+            <ul>
+              <li>Insertion places the new item at the end, then restores heap order by moving upward.</li>
+              <li>siftDown starts at a node and repeatedly swaps it with the larger child if needed.</li>
+              <li>maxHeapify assumes the left and right subtrees are already valid heaps.</li>
+              <li>Duplicate values are allowed in a heap.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="dfs">
+          <h2>DFS timestamps and complexity</h2>
+          <p class="definition"><strong>Depth-first search</strong> explores as far as possible along a path before backtracking. Discovery and finish times record when each vertex is first reached and when all its neighbours have been processed.</p>
+
+          <h3>Main algorithm</h3>
+          <pre><code>DFS(G):
+    time = 0
+
+    for each vertex u in G.V:
+        colour[u] = WHITE
+        parent[u] = NIL
+
+    for each vertex u in G.V:
+        if colour[u] == WHITE:
+            DFSVisit(G, u)</code></pre>
+
+          <h3>Recursive visit</h3>
+          <pre><code>DFSVisit(G, u):
+    colour[u] = GREY
+    time = time + 1
+    discover[u] = time
+
+    for each vertex v in Adj[u]:
+        if colour[v] == WHITE:
+            parent[v] = u
+            DFSVisit(G, v)
+
+    colour[u] = BLACK
+    time = time + 1
+    finish[u] = time</code></pre>
+
+          <table>
+            <tr><th>Representation</th><th>Complexity</th><th>Exam reason</th></tr>
+            <tr><td>Adjacency list</td><td>O(V + E)</td><td>Each vertex is visited once and each edge is checked once.</td></tr>
+            <tr><td>Adjacency matrix</td><td>O(V^2)</td><td>Each vertex checks a full row of possible neighbours.</td></tr>
+          </table>
+
+          <div class="exam-box">
+            <h3>Exam points</h3>
+            <ul>
+              <li>WHITE means unvisited.</li>
+              <li>GREY means discovered but not finished.</li>
+              <li>BLACK means fully processed.</li>
+              <li>For a connected graph stored using adjacency lists, DFS runs in O(V + E).</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="dijkstra">
+          <h2>Dijkstra table, relaxation, and complexity</h2>
+          <p class="definition"><strong>Dijkstra's algorithm</strong> finds the shortest path from one source vertex to all other vertices in a weighted graph with non-negative edge weights.</p>
+
+          <h3>Exam table columns</h3>
+          <table>
+            <tr><th>Column</th><th>Meaning</th></tr>
+            <tr><td>Vertex</td><td>The vertex currently being tracked.</td></tr>
+            <tr><td>Distance</td><td>The best known distance from the source.</td></tr>
+            <tr><td>Parent</td><td>The previous vertex on the best known path.</td></tr>
+            <tr><td>Known / Visited</td><td>Whether the shortest distance has been finalised.</td></tr>
+          </table>
+
+          <h3>Relaxation</h3>
+          <pre><code>relax(u, v, weight):
+    if dist[v] &gt; dist[u] + weight(u, v):
+        dist[v] = dist[u] + weight(u, v)
+        parent[v] = u</code></pre>
+
+          <h3>Pseudocode</h3>
+          <pre><code>Dijkstra(G, source):
+    for each vertex v in G.V:
+        dist[v] = infinity
+        parent[v] = NIL
+        visited[v] = false
+
+    dist[source] = 0
+    Q = all vertices in G
+
+    while Q is not empty:
+        u = vertex in Q with smallest dist[u]
+        remove u from Q
+        visited[u] = true
+
+        for each edge (u, v) in Adj[u]:
+            if visited[v] == false:
+                relax(u, v, weight)</code></pre>
+
+          <table>
+            <tr><th>Implementation</th><th>Complexity</th><th>Exam reason</th></tr>
+            <tr><td>Simple array / unsorted list</td><td>O(V^2)</td><td>Finding the minimum distance vertex costs O(V), repeated V times.</td></tr>
+            <tr><td>Binary heap priority queue</td><td>O((V + E) log V)</td><td>Priority queue updates and removals cost logarithmic time.</td></tr>
+          </table>
+
+          <div class="exam-box">
+            <h3>Exam points</h3>
+            <ul>
+              <li>The source distance starts at 0.</li>
+              <li>All other distances start at infinity.</li>
+              <li>The next selected vertex is the unvisited vertex with the smallest current distance.</li>
+              <li>Relaxation checks whether a better path to v exists through u.</li>
+              <li>Dijkstra is not valid for graphs with negative edge weights.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="prim">
+          <h2>Prim compared with Dijkstra</h2>
+          <p class="definition"><strong>Prim's algorithm</strong> constructs a minimum spanning tree. It is similar in shape to Dijkstra's algorithm, but the update rule is different.</p>
+
+          <div class="compare-grid">
+            <div class="compare-card">
+              <h3>Dijkstra</h3>
+              <p>Chooses the next vertex using the smallest total distance from the source.</p>
+            </div>
+            <div class="compare-card">
+              <h3>Prim</h3>
+              <p>Chooses the next vertex using the cheapest edge connecting it to the current tree.</p>
+            </div>
+          </div>
+
+          <h3>Prim pseudocode</h3>
+          <pre><code>Prim(G, start):
+    for each vertex v in G.V:
+        key[v] = infinity
+        parent[v] = NIL
+        inMST[v] = false
+
+    key[start] = 0
+    Q = all vertices in G
+
+    while Q is not empty:
+        u = vertex in Q with smallest key[u]
+        remove u from Q
+        inMST[u] = true
+
+        for each edge (u, v) in Adj[u]:
+            if v is in Q and weight(u, v) &lt; key[v]:
+                key[v] = weight(u, v)
+                parent[v] = u</code></pre>
+
+          <h3>Key difference in the update rule</h3>
+          <pre><code>Dijkstra:
+    if dist[v] &gt; dist[u] + weight(u, v):
+        dist[v] = dist[u] + weight(u, v)
+        parent[v] = u
+
+Prim:
+    if weight(u, v) &lt; key[v]:
+        key[v] = weight(u, v)
+        parent[v] = u</code></pre>
+
+          <table>
+            <tr><th>Algorithm</th><th>Goal</th><th>Update rule</th></tr>
+            <tr><td>Dijkstra</td><td>Shortest path tree</td><td>Uses total distance from the source: dist[u] + edge weight.</td></tr>
+            <tr><td>Prim</td><td>Minimum spanning tree</td><td>Uses only the edge weight connecting the vertex to the tree.</td></tr>
+          </table>
+
+          <div class="exam-box">
+            <h3>Exam points</h3>
+            <ul>
+              <li>Prim does not calculate shortest paths from the start vertex.</li>
+              <li>Prim only cares about the cheapest edge that expands the tree.</li>
+              <li>Dijkstra gives shortest paths; Prim gives a minimum spanning tree.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="kruskal">
+          <h2>Kruskal and Union-Find</h2>
+          <p class="definition"><strong>Kruskal's algorithm</strong> constructs a minimum spanning tree by considering edges in increasing order of weight and adding an edge only if it does not create a cycle.</p>
+
+          <h3>Kruskal pseudocode</h3>
+          <pre><code>Kruskal(G):
+    MST = empty set
+
+    for each vertex v in G.V:
+        makeSet(v)
+
+    sort all edges by increasing weight
+
+    for each edge (u, v) in sorted edges:
+        if find(u) != find(v):
+            add edge (u, v) to MST
+            union(u, v)
+
+    return MST</code></pre>
+
+          <h3>Union-Find operations</h3>
+          <pre><code>makeSet(x):
+    parent[x] = x
+    rank[x] = 0
+
+find(x):
+    if parent[x] != x:
+        parent[x] = find(parent[x])
+    return parent[x]
+
+union(x, y):
+    rootX = find(x)
+    rootY = find(y)
+
+    if rootX == rootY:
+        return
+
+    if rank[rootX] &lt; rank[rootY]:
+        parent[rootX] = rootY
+    else if rank[rootX] &gt; rank[rootY]:
+        parent[rootY] = rootX
+    else:
+        parent[rootY] = rootX
+        rank[rootX] = rank[rootX] + 1</code></pre>
+
+          <table>
+            <tr><th>Step</th><th>Complexity</th><th>Exam reason</th></tr>
+            <tr><td>Sort edges</td><td>O(E log E)</td><td>The edge list is sorted by increasing weight.</td></tr>
+            <tr><td>Union-Find checks</td><td>Almost O(1) each</td><td>Path compression and union by rank make operations very fast.</td></tr>
+            <tr><td>Overall</td><td>O(E log E)</td><td>Sorting dominates the running time.</td></tr>
+          </table>
+
+          <div class="exam-box">
+            <h3>Exam points</h3>
+            <ul>
+              <li>Sort edges from smallest weight to largest weight.</li>
+              <li>Add an edge only if its endpoints are in different sets.</li>
+              <li>If find(u) == find(v), adding the edge would create a cycle.</li>
+              <li>Union-Find is used to test connectivity efficiently.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="union-find">
+          <h2>Union-Find treeParent[] example</h2>
+          <p class="definition"><strong>Union-Find</strong> stores disjoint sets. In a simple treeParent[] implementation, treeParent[x] stores the parent of x. A root is identified by treeParent[x] = x.</p>
+
+          <h3>Simple implementation</h3>
+          <pre><code>makeSet(x):
+    treeParent[x] = x
+
+find(x):
+    while treeParent[x] != x:
+        x = treeParent[x]
+    return x
+
+union(x, y):
+    rootX = find(x)
+    rootY = find(y)
+
+    if rootX != rootY:
+        treeParent[rootY] = rootX</code></pre>
+
+          <h3>Worked example</h3>
+          <pre><code>Initial:
+    treeParent[A] = A
+    treeParent[B] = B
+    treeParent[C] = C
+    treeParent[D] = D
+
+union(A, B):
+    treeParent[B] = A
+
+union(C, D):
+    treeParent[D] = C
+
+union(B, D):
+    find(B) returns A
+    find(D) returns C
+    treeParent[C] = A</code></pre>
+
+          <table>
+            <tr><th>Vertex</th><th>treeParent[]</th><th>Meaning</th></tr>
+            <tr><td>A</td><td>A</td><td>A is the root.</td></tr>
+            <tr><td>B</td><td>A</td><td>B is in A's set.</td></tr>
+            <tr><td>C</td><td>A</td><td>C is in A's set.</td></tr>
+            <tr><td>D</td><td>C</td><td>D reaches A through C.</td></tr>
+          </table>
+
+          <div class="exam-box">
+            <h3>Exam points</h3>
+            <ul>
+              <li>find(x) follows parent links until it reaches a root.</li>
+              <li>union(x, y) joins two different sets.</li>
+              <li>If two vertices have the same root, they are already connected.</li>
+              <li>Path compression makes future find operations faster by pointing nodes directly to the root.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="bst-avl">
+          <h2>BST and AVL trees</h2>
+          <p class="definition">A <strong>binary search tree</strong> stores smaller values in the left subtree and larger values in the right subtree. An <strong>AVL tree</strong> is a binary search tree that keeps itself height-balanced using rotations.</p>
+
+          <h3>BST search</h3>
+          <pre><code>BSTSearch(root, key):
+    if root == NIL or root.value == key:
+        return root
+
+    if key &lt; root.value:
+        return BSTSearch(root.left, key)
+    else:
+        return BSTSearch(root.right, key)</code></pre>
+
+          <h3>BST insert</h3>
+          <pre><code>BSTInsert(root, value):
+    if root == NIL:
+        return new Node(value)
+
+    if value &lt; root.value:
+        root.left = BSTInsert(root.left, value)
+    else:
+        root.right = BSTInsert(root.right, value)
+
+    return root</code></pre>
+
+          <h3>AVL height and balance factor</h3>
+          <pre><code>height(node):
+    if node == NIL:
+        return 0
+    return node.height
+
+balanceFactor(node):
+    return height(node.left) - height(node.right)</code></pre>
+
+          <h3>AVL rotations</h3>
+          <pre><code>rightRotate(y):
+    x = y.left
+    T2 = x.right
+
+    x.right = y
+    y.left = T2
+
+    update height of y
+    update height of x
+
+    return x
+
+leftRotate(x):
+    y = x.right
+    T2 = y.left
+
+    y.left = x
+    x.right = T2
+
+    update height of x
+    update height of y
+
+    return y</code></pre>
+
+          <h3>AVL insert</h3>
+          <pre><code>AVLInsert(node, value):
+    if node == NIL:
+        return new Node(value)
+
+    if value &lt; node.value:
+        node.left = AVLInsert(node.left, value)
+    else if value &gt; node.value:
+        node.right = AVLInsert(node.right, value)
+    else:
+        return node
+
+    update height of node
+    balance = balanceFactor(node)
+
+    if balance &gt; 1 and value &lt; node.left.value:
+        return rightRotate(node)
+
+    if balance &lt; -1 and value &gt; node.right.value:
+        return leftRotate(node)
+
+    if balance &gt; 1 and value &gt; node.left.value:
+        node.left = leftRotate(node.left)
+        return rightRotate(node)
+
+    if balance &lt; -1 and value &lt; node.right.value:
+        node.right = rightRotate(node.right)
+        return leftRotate(node)
+
+    return node</code></pre>
+
+          <table>
+            <tr><th>Tree</th><th>Search</th><th>Insert</th><th>Worst case</th></tr>
+            <tr><td>BST</td><td>O(h)</td><td>O(h)</td><td>O(n), if the tree becomes skewed.</td></tr>
+            <tr><td>AVL</td><td>O(log n)</td><td>O(log n)</td><td>O(log n), because the tree remains balanced.</td></tr>
+          </table>
+
+          <div class="exam-box">
+            <h3>Exam points</h3>
+            <ul>
+              <li>BST rule: left subtree contains smaller values, right subtree contains larger values.</li>
+              <li>AVL balance factor must be -1, 0, or +1.</li>
+              <li>LL case uses a right rotation.</li>
+              <li>RR case uses a left rotation.</li>
+              <li>LR case uses a left rotation on the child, then a right rotation.</li>
+              <li>RL case uses a right rotation on the child, then a left rotation.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="complexities">
+          <h2>Complexities</h2>
+          <table>
+            <tr><th>Topic</th><th>Expected complexity</th><th>Important condition</th></tr>
+            <tr><td>Heap insert</td><td>O(log n)</td><td>Value may move up the height of the heap.</td></tr>
+            <tr><td>maxHeapify / siftDown</td><td>O(log n)</td><td>Value may move down the height of the heap.</td></tr>
+            <tr><td>DFS using adjacency lists</td><td>O(V + E)</td><td>Each vertex and edge is processed once.</td></tr>
+            <tr><td>Dijkstra using simple array</td><td>O(V^2)</td><td>Minimum vertex selection is linear.</td></tr>
+            <tr><td>Dijkstra using binary heap</td><td>O((V + E) log V)</td><td>Priority queue operations cost log V.</td></tr>
+            <tr><td>Prim using simple array</td><td>O(V^2)</td><td>Similar minimum key selection cost.</td></tr>
+            <tr><td>Kruskal</td><td>O(E log E)</td><td>Sorting edges dominates.</td></tr>
+            <tr><td>BST operations</td><td>O(h)</td><td>Depends on tree height.</td></tr>
+            <tr><td>AVL operations</td><td>O(log n)</td><td>Tree is height-balanced.</td></tr>
+          </table>
+        </section>
+
+        <section id="final-revision">
+          <h2>Final revision checklist</h2>
+          <ul>
+            <li>For heap questions, state whether the operation moves upward or downward.</li>
+            <li>For DFS questions, mention WHITE, GREY, BLACK and discovery/finish timestamps.</li>
+            <li>For Dijkstra questions, show distance, parent, and visited columns clearly.</li>
+            <li>For Prim questions, remember that the key value is the cheapest connecting edge, not total path distance.</li>
+            <li>For Kruskal questions, sort edges first and reject edges that create cycles.</li>
+            <li>For Union-Find questions, explain roots and parent links before giving the final array.</li>
+            <li>For AVL questions, identify the case first: LL, RR, LR, or RL.</li>
+          </ul>
+        </section>
+
+        <footer>
+          Data Structures and Algorithms revision page. Prepared for exam practice.
+        </footer>
+      </article>
+
+      <aside class="infobox" aria-label="Summary table">
+        <div class="infobox-title">Exam revision summary</div>
+        <table>
+          <tr><th>Subject</th><td>Data Structures and Algorithms</td></tr>
+          <tr><th>Focus</th><td>Pseudocode and complexity</td></tr>
+          <tr><th>Graph topics</th><td>DFS, Dijkstra, Prim, Kruskal</td></tr>
+          <tr><th>Tree topics</th><td>Heap, BST, AVL</td></tr>
+          <tr><th>Key skill</th><td>Trace tables and update rules</td></tr>
+          <tr><th>Exam style</th><td>Short explanations with clear steps</td></tr>
+        </table>
+      </aside>
+    </main>
+  </div>
+  <script>
+    const root = document.documentElement;
+    const toggle = document.getElementById('themeToggle');
+    const toggleText = document.getElementById('themeToggleText');
+    const toggleIcon = document.getElementById('themeToggleIcon');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+    const sidebarLinks = document.querySelectorAll('.sidebar a');
+
+    const savedTheme = localStorage.getItem('examRevisionTheme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const initialTheme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+
+    function applyTheme(theme) {
+      const isDark = theme === 'dark';
+      root.setAttribute('data-theme', theme);
+      toggle.setAttribute('aria-pressed', String(isDark));
+      toggle.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+      toggleText.textContent = isDark ? 'Light mode' : 'Dark mode';
+      toggleIcon.textContent = '';
+      localStorage.setItem('examRevisionTheme', theme);
+    }
+
+    applyTheme(initialTheme);
+
+    toggle.addEventListener('click', () => {
+      const currentTheme = root.getAttribute('data-theme') || 'light';
+      applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+    });
+
+    function setSidebarOpen(isOpen) {
+      document.body.classList.toggle('sidebar-open', isOpen);
+      sidebarToggle.setAttribute('aria-expanded', String(isOpen));
+      sidebarToggle.setAttribute('aria-label', isOpen ? 'Close navigation menu' : 'Open navigation menu');
+    }
+
+    sidebarToggle.addEventListener('click', () => {
+      const isOpen = document.body.classList.contains('sidebar-open');
+      setSidebarOpen(!isOpen);
+    });
+
+    sidebarBackdrop.addEventListener('click', () => {
+      setSidebarOpen(false);
+    });
+
+    sidebarLinks.forEach((link) => {
+      link.addEventListener('click', () => {
+        if (window.matchMedia('(max-width: 980px)').matches) {
+          setSidebarOpen(false);
+        }
+      });
+    });
+
+    window.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        setSidebarOpen(false);
+      }
+    });
+
+    window.addEventListener('resize', () => {
+      if (!window.matchMedia('(max-width: 980px)').matches) {
+        setSidebarOpen(false);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -14,6 +14,10 @@
       "destination": "/content/algorithm-and-dsa/previous-year-paper-solutions.html"
     },
     {
+      "source": "/content/algorithm-and-dsa/pseudocode/",
+      "destination": "/content/algorithm-and-dsa/pseudocode.html"
+    },
+    {
       "source": "/content/data-communication/channel-capacity-pdf/",
       "destination": "/content/data-communication/channel-capacity-pdf.html"
     },
