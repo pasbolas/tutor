@@ -58,6 +58,7 @@
 
     html {
       scroll-behavior: smooth;
+      overflow-x: hidden;
     }
 
     body {
@@ -67,6 +68,7 @@
       font-family: var(--sans);
       font-size: 11px;
       line-height: 1.6;
+      overflow-x: hidden;
     }
 
     body.sidebar-open {
@@ -574,7 +576,13 @@
 
       .content {
         grid-template-columns: 1fr;
-        padding: 72px 18px 36px;
+        padding: 68px 16px 36px;
+        min-width: 0;
+      }
+
+      .article {
+        max-width: 100%;
+        min-width: 0;
       }
 
       .infobox {
@@ -584,20 +592,62 @@
 
     @media (max-width: 640px) {
       body {
-        font-size: 13px;
+        font-size: 14px;
       }
 
       .top-tabs {
+        gap: 8px;
         overflow-x: auto;
         white-space: nowrap;
+        scrollbar-width: thin;
+      }
+
+      .tab {
+        padding: 7px 10px 6px;
+        font-size: 12px;
       }
 
       h1 {
-        font-size: 28px;
+        font-size: 26px;
       }
 
       h2 {
-        font-size: 22px;
+        font-size: 21px;
+      }
+
+      h3 {
+        font-size: 15px;
+      }
+
+      .content {
+        padding: 64px 12px 32px;
+      }
+
+      .toc-box,
+      .exam-box,
+      .compare-card {
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+
+      pre {
+        max-width: 100%;
+        padding: 10px;
+        font-size: 12px;
+        line-height: 1.5;
+      }
+
+      table {
+        display: block;
+        max-width: 100%;
+        overflow-x: auto;
+        font-size: 12px;
+        white-space: nowrap;
+      }
+
+      th,
+      td {
+        padding: 7px 8px;
       }
 
       .compare-grid {
@@ -606,6 +656,23 @@
 
       .sidebar nav ul {
         columns: 1;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .content {
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      .subtitle,
+      p,
+      li {
+        font-size: 13px;
       }
     }
   </style>
