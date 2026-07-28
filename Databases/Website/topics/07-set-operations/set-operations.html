@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Set Operations · The Databases Review</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<div class="progress-bar"></div>
+<div class="topbar-mini"><div class="wrap">
+  <a class="mini-logo" href="../../../../">The Databases Review</a>
+  <button class="back-btn" onclick="history.back()" aria-label="Go back">&#8592; Back</button>
+  <div class="crumbs"><a href="../../../../">Home</a><span class="sep">/</span><a href="index.html">Topic 07</a><span class="sep">/</span><span class="current">Set Operations</span></div>
+  <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">&#9789;</button>
+</div></div>
+
+<div class="article-header wrap-narrow">
+  <span class="kicker">Lecture 4 &middot; Topic 07</span>
+  <h1>Set Operations</h1>
+  <p class="dek">Combining, intersecting and subtracting result sets with UNION, INTERSECT and EXCEPT.</p>
+  <div class="byline"><span><b>CMPU2007</b> Databases 1</span><span>5 min read</span><span>9 sections</span></div>
+</div>
+<div class="wrap">
+  <div class="article-body">
+    <nav class="side-toc">
+      <div class="contents-title">Contents</div>
+      <a href="#sec-1" data-target="sec-1"><span class="toc-num">01</span><span class="toc-text">Combining tables without a shared key</span></a><a href="#sec-2" data-target="sec-2"><span class="toc-num">02</span><span class="toc-text">UNION Operator</span></a><a href="#sec-3" data-target="sec-3"><span class="toc-num">03</span><span class="toc-text">Syntax</span></a><a href="#sec-4" data-target="sec-4"><span class="toc-num">04</span><span class="toc-text">Using the UNION Operator</span></a><a href="#sec-5" data-target="sec-5"><span class="toc-num">05</span><span class="toc-text">Using the INTERSECT Operator</span></a><a href="#sec-6" data-target="sec-6"><span class="toc-num">06</span><span class="toc-text">EXCEPT Operator</span></a><a href="#sec-7" data-target="sec-7"><span class="toc-num">07</span><span class="toc-text">Using the EXCEPT operator</span></a><a href="#sec-8" data-target="sec-8"><span class="toc-num">08</span><span class="toc-text">UNION, INTERSECT and EXCEPT</span></a><a href="#sec-9" data-target="sec-9"><span class="toc-num">09</span><span class="toc-text">Joins x Set Operations</span></a>
+    </nav>
+    <div class="prose">
+      <section id="sec-1">
+<h2><span class="section-no">01&nbsp;</span>Combining tables without a shared key</h2>
+<p>We've learned how to combine related tables by matching keys. That's a horizontal combination, with results displayed side by side. But what if you want to merge or compare results that have the same structure but no connection between them? That's where set operations come in, providing a vertical combination, since the resulting output is tables stacked on top of each other.</p>
+<p>While joins combine rows based on related columns, set operations work on entire result sets, connected or not. Joins are used to retrieve related data from multiple tables, whereas set operations are used to manipulate entire sets of data from separate queries.</p>
+<p>To run a set operation between two queries, both queries must have the same number of columns, with compatible data types.</p>
+<p>A quick overview of the four set operations:</p>
+<ul>
+<li>UNION: combines results and removes duplicates</li>
+<li>UNION ALL: combines results and keeps duplicates</li>
+<li>INTERSECT: returns rows common to both queries</li>
+<li>EXCEPT: returns rows in the first query that aren't in the second query</li>
+</ul>
+<p>Let's see some examples using our football database.</p>
+</section>
+<section id="sec-2">
+<h2><span class="section-no">02&nbsp;</span>UNION Operator</h2>
+<p>The UNION operator returns the union of two SELECT statements: every row that appears in either one, with duplicates removed.</p>
+</section>
+<section id="sec-3">
+<h2><span class="section-no">03&nbsp;</span>Syntax</h2>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT column_list FROM table1
+UNION
+SELECT column_list FROM table2;</code></pre></figure>
+<p>Consider two tables, project and employee. They have the same column, department, but they are not connected by any foreign key.</p>
+</section>
+<section id="sec-4">
+<h2><span class="section-no">04&nbsp;</span>Using the UNION Operator</h2>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT department FROM project
+UNION
+SELECT department FROM employee;</code></pre></figure>
+<ul>
+<li>Every SELECT statement within a UNION must have the same number of columns</li>
+<li>Having columns with the same data types across different SELECT statements within a UNION is also mandatory.</li>
+<li>PostgreSQL can convert data types, but not always. Situations where one attribute is numeric and the other is int, for example, are allowed. But text and int won’t work.</li>
+<li>Also, if you want the results to be ordered, you must use ORDER BY. Otherwise, PostgreSQL will display in whatever order is cheaper to the system.</li>
+</ul>
+<ul>
+<li>Example using the Football schema</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>--Check the data types
+SELECT DISTINCT pg_typeof(player_id) FROM players;
+SELECT DISTINCT pg_typeof(club_id) FROM clubs;
+--Will result in an error as data types are different
+SELECT player_id, &#x27;players&#x27; --we manually create another column with the name of the table
+FROM players
+UNION
+SELECT club_id, &#x27;clubs&#x27;
+FROM clubs;
+--Casting to make it work
+SELECT player_id::text, &#x27;players&#x27;
+FROM players
+UNION
+SELECT club_id, &#x27;clubs&#x27;
+FROM clubs;</code></pre></figure>
+<p>We can order the combined result too. Using ORDER BY on the first selected attribute works:</p>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>--We can order by the first attribute selected
+SELECT player_id::text, 'players' "Source table"
+FROM players
+UNION
+SELECT club_id, 'clubs' "Source table"
+FROM clubs ORDER BY player_id;
+--If we try to order by the second attribute, we get an error as it no longer exists -- it was merged with the first one
+SELECT player_id::text, 'players' "Source table"
+FROM players
+UNION
+SELECT club_id, 'clubs' "Source table"
+FROM clubs ORDER BY club_id;</code></pre></figure>
+<ul>
+<li>This example shows that ordering by player_id works, but by club_id doesn’t as club_id was already merged to player_id when we ORDER BY.</li>
+<li>However, we can use ORDER BY 2 instead – no errors and ordinal ordering is more efficient.</li>
+</ul>
+<p><b>UNION ALL</b> will output data from both tables, including any duplicates. In the schema we're using, both player_attributes and player_contracts have a jersey_number column. Let's check for duplicates:</p>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT jersey_number, 'player_attributes' "Source table"
+FROM player_attributes
+UNION ALL
+SELECT jersey_number, 'player_contracts' "Source table"
+FROM player_contracts ORDER BY 1;</code></pre></figure>
+<p>The INTERSECT operator returns rows with values common to both queries.</p>
+</section>
+<section id="sec-5">
+<h2><span class="section-no">05&nbsp;</span>Using the INTERSECT Operator</h2>
+<ul>
+<li>Every SELECT statement within INTERSECT must have the same number of columns</li>
+<li>The columns should also have the same data types</li>
+<li>The columns in every SELECT statement must also be in the same order</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT column_list FROM table1
+INTERSECT
+SELECT column_list FROM table2;</code></pre></figure>
+<p>Suppose the employee Patrick Delaney changed to the HR department. Now, the employees table has a department that the project table does not have.</p>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT department FROM project
+INTERSECT
+SELECT department FROM employee;</code></pre></figure>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT player_id
+FROM player_contracts
+INTERSECT ALL
+SELECT player_id
+FROM player_attributes;</code></pre></figure>
+<ul>
+<li>The intersect will show the unique values shared by player_id in both tables.</li>
+<li>In this case, we won’t be able to know the source table as only one value is shown.</li>
+</ul>
+</section>
+<section id="sec-6">
+<h2><span class="section-no">06&nbsp;</span>EXCEPT Operator</h2>
+<p>The EXCEPT operator returns rows in the first query that are not present in the second query.</p>
+</section>
+<section id="sec-7">
+<h2><span class="section-no">07&nbsp;</span>Using the EXCEPT operator</h2>
+<ul>
+<li>Every SELECT statement within EXCEPT must have the same number of columns</li>
+<li>The columns must also have the same data types</li>
+<li>The columns in every SELECT statement must also be in the same order</li>
+</ul>
+<p>If we want to select the department attribute from the table project, minus the department attribute from the table employee, what result would we get?</p>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT department FROM employee
+EXCEPT
+SELECT department FROM project;</code></pre></figure>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>--EXCEPT: Players that have data on attributes but no contract
+SELECT player_id
+FROM players
+EXCEPT
+SELECT player_id
+FROM player_contracts;
+--We can confirm the number using count in a join
+SELECT COUNT(*)
+FROM players
+LEFT JOIN player_contracts USING (player_id)
+WHERE player_contracts.player_id IS NULL;</code></pre></figure>
+</section>
+<section id="sec-8">
+<h2><span class="section-no">08&nbsp;</span>UNION, INTERSECT and EXCEPT</h2>
+<ul>
+<li>Treat the tables as sets and are the usual set operators of union, intersection, and difference</li>
+<li>They all combine the results from two select statements</li>
+<li>The results of the two selects must have the same columns and data types</li>
+</ul>
+</section>
+<section id="sec-9">
+<h2><span class="section-no">09&nbsp;</span>Joins x Set Operations</h2>
+<ul>
+<li>In certain scenarios, joins can be more efficient, particularly when working with large datasets.</li>
+<li>Joins offer more customisation in specifying how tables should be combined based on specific criteria.</li>
+<li>Use Joins when you need data from different tables based on their relationships and want a more complex, context-rich result set.</li>
+<li>Use Set Operations when you want to combine results from tables that are not connected.</li>
+</ul>
+</section>
+    </div>
+  </div>
+</div>
+<script src="../../assets/app.js"></script>
+</body></html>

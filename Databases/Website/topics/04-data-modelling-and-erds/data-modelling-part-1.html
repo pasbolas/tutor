@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data Modelling — Part 1 · The Databases Review</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<div class="progress-bar"></div>
+<div class="topbar-mini"><div class="wrap">
+  <a class="mini-logo" href="../../../../">The Databases Review</a>
+  <button class="back-btn" onclick="history.back()" aria-label="Go back">&#8592; Back</button>
+  <div class="crumbs"><a href="../../../../">Home</a><span class="sep">/</span><a href="index.html">Topic 04</a><span class="sep">/</span><span class="current">Data Modelling — Part 1</span></div>
+  <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">&#9789;</button>
+</div></div>
+
+<div class="article-header wrap-narrow">
+  <span class="kicker">Lecture 2 &middot; Topic 04</span>
+  <h1>Data Modelling — Part 1</h1>
+  <p class="dek">Why we model data before building it, and the building blocks of an ERD.</p>
+  <div class="byline"><span><b>CMPU2007</b> Databases 1</span><span>10 min read</span><span>25 sections</span></div>
+</div>
+<div class="wrap">
+  <div class="article-body">
+    <nav class="side-toc">
+      <div class="contents-title">Contents</div>
+      <a href="#sec-1" data-target="sec-1"><span class="toc-num">01</span><span class="toc-text">Models - Purpose</span></a><a href="#sec-2" data-target="sec-2"><span class="toc-num">02</span><span class="toc-text">Data Models</span></a><a href="#sec-3" data-target="sec-3"><span class="toc-num">03</span><span class="toc-text">The Entity-Relationship Model</span></a><a href="#sec-4" data-target="sec-4"><span class="toc-num">04</span><span class="toc-text">ERD</span></a><a href="#sec-5" data-target="sec-5"><span class="toc-num">05</span><span class="toc-text">ERD - entities</span></a><a href="#sec-6" data-target="sec-6"><span class="toc-num">06</span><span class="toc-text">Step 1: Find the entities</span></a><a href="#sec-7" data-target="sec-7"><span class="toc-num">07</span><span class="toc-text">Example</span></a><a href="#sec-8" data-target="sec-8"><span class="toc-num">08</span><span class="toc-text">Step 2: Allocate the attributes to entities</span></a><a href="#sec-9" data-target="sec-9"><span class="toc-num">09</span><span class="toc-text">Data types Logical</span></a><a href="#sec-10" data-target="sec-10"><span class="toc-num">10</span><span class="toc-text">Our Example</span></a><a href="#sec-11" data-target="sec-11"><span class="toc-num">11</span><span class="toc-text">Our Example – What are the datatypes?</span></a><a href="#sec-12" data-target="sec-12"><span class="toc-num">12</span><span class="toc-text">Step 3: Entity Constraints</span></a><a href="#sec-13" data-target="sec-13"><span class="toc-num">13</span><span class="toc-text">Constraints</span></a><a href="#sec-14" data-target="sec-14"><span class="toc-num">14</span><span class="toc-text">NULL and NOT NULL</span></a><a href="#sec-15" data-target="sec-15"><span class="toc-num">15</span><span class="toc-text">Our Example – Entity Integrity</span></a><a href="#sec-16" data-target="sec-16"><span class="toc-num">16</span><span class="toc-text">Key Constraints – Primary Key</span></a><a href="#sec-17" data-target="sec-17"><span class="toc-num">17</span><span class="toc-text">Step 4: Define the Relationships</span></a><a href="#sec-18" data-target="sec-18"><span class="toc-num">18</span><span class="toc-text">One-to-one (1:1)</span></a><a href="#sec-19" data-target="sec-19"><span class="toc-num">19</span><span class="toc-text">One-to-many (1:N)</span></a><a href="#sec-20" data-target="sec-20"><span class="toc-num">20</span><span class="toc-text">Many-to-one (M:1)</span></a><a href="#sec-21" data-target="sec-21"><span class="toc-num">21</span><span class="toc-text">Many-to-many (M:N)</span></a><a href="#sec-22" data-target="sec-22"><span class="toc-num">22</span><span class="toc-text">Resolving Many-to-many</span></a><a href="#sec-23" data-target="sec-23"><span class="toc-num">23</span><span class="toc-text">Foreign Key</span></a><a href="#sec-24" data-target="sec-24"><span class="toc-num">24</span><span class="toc-text">Parent and Child entities</span></a><a href="#sec-25" data-target="sec-25"><span class="toc-num">25</span><span class="toc-text">Data Modeling: One to one in pgadmin</span></a>
+    </nav>
+    <div class="prose">
+      <section id="sec-1">
+<h2><span class="section-no">01&nbsp;</span>Models - Purpose</h2>
+<ul>
+<li>The objective of data modelling is to produce a model that:</li>
+<ul>
+<li>can be understood by an end user,</li>
+<li>contains sufficient detail for a developer to build a physical database.</li>
+</ul>
+</ul>
+</section>
+<section id="sec-2">
+<h2><span class="section-no">02&nbsp;</span>Data Models</h2>
+<blockquote class="pull">Data Models
+Models are a cornerstone of design. Engineers build a model of a car to work out any details before putting it into production. In the same manner, system designers develop models to explore ideas and improve the understanding of database design.<cite>Lecturer&#8217;s note</cite></blockquote>
+</section>
+<section id="sec-3">
+<h2><span class="section-no">03&nbsp;</span>The Entity-Relationship Model</h2>
+<ul>
+<li>Relational databases use ERD models to represent the database considering:</li>
+<ul>
+<li>Entities involved (things about which data is to be stored)</li>
+<li>Relationships (or associations) among those entities and</li>
+<li>Attributes (properties) of both the entities and their relationships</li>
+</ul>
+</ul>
+</section>
+<section id="sec-4">
+<h2><span class="section-no">04&nbsp;</span>ERD</h2>
+<ul>
+<li>Used to define the structure of entities and the pattern of relationships between them.</li>
+<li>When we implement that structure and pattern in a physical database, then we can populate it with data about the entity.</li>
+<li>The ERD is implementation-independent</li>
+<ul>
+<li>You can implement the same conceptual model in any relational database (PostgreSQL, Oracle etc.)</li>
+<li>There may be small implementation differences (for example, data types), but the structure and relationships will be the same.</li>
+</ul>
+</ul>
+</section>
+<section id="sec-5">
+<h2><span class="section-no">05&nbsp;</span>ERD - entities</h2>
+<ul>
+<li>The entities in a relational database are the tables.</li>
+<li>There are two types of entities:</li>
+<ul>
+<li>Strong entities: exist independently</li>
+<li>Weak entities: depend on another entity</li>
+</ul>
+</ul>
+</section>
+<section id="sec-6">
+<h2><span class="section-no">06&nbsp;</span>Step 1: Find the entities</h2>
+<ul>
+<li>Discover the entities about which you need to store data</li>
+<ul>
+<li>Conduct Interviews and Document analysis</li>
+<li>Ask what things they would like to capture, store, produce information about</li>
+<li>Study forms, files, reports</li>
+<li>Identify key words</li>
+<li>Some identify event entities e.g. orders, payments etc.</li>
+<li>Look for relationships between things</li>
+</ul>
+</ul>
+<ul>
+<li>Find the pieces of data required and then group them into entities</li>
+<li>Give entities meaningful names</li>
+<ul>
+<li>Name with NOUNS</li>
+<li>Define them in business terms</li>
+</ul>
+</ul>
+</section>
+<section id="sec-7">
+<h2><span class="section-no">07&nbsp;</span>Example</h2>
+<ul>
+<li>Local county councils organise football competitions for school children.</li>
+<ul>
+<li>Each local county council has a unique identifier and a name.</li>
+</ul>
+<li>Competitions are held on different dates for different age groups with fees and prizes.</li>
+<ul>
+<li>Each competition has a unique ID and a name.</li>
+</ul>
+<li>There are lots of teams who compete.</li>
+<ul>
+<li>Each team has a unique identifier, a name and an age group.</li>
+</ul>
+<li>What are the entities?</li>
+</ul>
+</section>
+<section id="sec-8">
+<h2><span class="section-no">08&nbsp;</span>Step 2: Allocate the attributes to entities</h2>
+<ul>
+<li>For each entity</li>
+<ul>
+<li>Identify its attributes</li>
+<li>Decide on a name for each (starting with lowercase)</li>
+<li>Identify the correct data type and size required for each</li>
+</ul>
+</ul>
+</section>
+<section id="sec-9">
+<h2><span class="section-no">09&nbsp;</span>Data types Logical</h2>
+<ul>
+<li>These are different to the physical datatypes</li>
+<ul>
+<li>Characters or character strings (CHAR, VARCHAR)</li>
+<li>Numeric Data</li>
+<li>Date and time</li>
+<li>Binary</li>
+</ul>
+<li>Each attribute can only be of one data type</li>
+<li>At design stage, you need to clearly identify the data type</li>
+<ul>
+<li>It will then be translated into the correct datatype in the relational model so that it can be correctly implemented in a physical database when it is built from the design</li>
+</ul>
+</ul>
+</section>
+<section id="sec-10">
+<h2><span class="section-no">10&nbsp;</span>Our Example</h2>
+<ul>
+<li>Local county councils organise football competitions for school children.</li>
+<ul>
+<li>Each local county council has a unique identifier and a name.</li>
+</ul>
+<li>Competitions are held on different dates for different age groups with fees and prizes.</li>
+<ul>
+<li>Each competition has a unique ID and a name.</li>
+</ul>
+<li>There are lots of teams who compete.</li>
+<ul>
+<li>Each team has an ID, a name and an age group.</li>
+</ul>
+<li>What are the attributes and their datatypes?</li>
+</ul>
+</section>
+<section id="sec-11">
+<h2><span class="section-no">11&nbsp;</span>Our Example – What are the datatypes?</h2>
+<ul>
+<li>Each council has</li>
+<ul>
+<li>a unique ID (INT)</li>
+<li>a name VARCHAR (40)</li>
+</ul>
+<li>Each team has</li>
+<ul>
+<li>a unique numeric ID INT</li>
+<li>an age group INT</li>
+</ul>
+</ul>
+<ul>
+<li>Each competition has</li>
+<ul>
+<li>a unique ID (INT)</li>
+<li>a name VARCHAR (40)</li>
+<li>an entrance fee (which could store values up to 999.99) &mdash; NUMERIC, precision 5, scale 2</li>
+<li>a prize (which could store values up to 9999.99) &mdash; NUMERIC, precision 6, scale 2</li>
+<li>the date on which the competition will happen (DATE)</li>
+</ul>
+</ul>
+</section>
+<section id="sec-12">
+<h2><span class="section-no">12&nbsp;</span>Step 3: Entity Constraints</h2>
+<ul>
+<li>Identify relevant value constraints on the attributes we can define at this stage</li>
+<li>Constraints are rules that the data must follow to belong to a given entity.</li>
+<li>Constraints are rules that the data must follow to be removed from a given entity.</li>
+<li>Constraints enforce rules.</li>
+<li>Ensures that whoever uses your data can be confident that the data will be consistent.</li>
+</ul>
+</section>
+<section id="sec-13">
+<h2><span class="section-no">13&nbsp;</span>Constraints</h2>
+<ul>
+<li>ENTITY Integrity</li>
+<ul>
+<li>Primary Key</li>
+</ul>
+<li>REFERENTIAL Integrity</li>
+<ul>
+<li>Foreign Key</li>
+</ul>
+<li>DOMAIN Integrity</li>
+<ul>
+<li>Datatype</li>
+<li>Value Constraints</li>
+<ul>
+<li>Define</li>
+<ul>
+<li>if NULL values are disallowed</li>
+<li>if UNIQUE values are required</li>
+<li>and if only a certain set of values is allowed in a column.</li>
+</ul>
+</ul>
+</ul>
+</ul>
+</section>
+<section id="sec-14">
+<h2><span class="section-no">14&nbsp;</span>NULL and NOT NULL</h2>
+<ul>
+<li>What is NULL?</li>
+<ul>
+<li>Null is a non-value</li>
+<li>It is not zero, it is not blank</li>
+</ul>
+<li>NULL is a special name to denote a valueless column in a row.</li>
+<li>If the column must contain a non-null value, the constraint ‘NOT NULL’ should be put on it.</li>
+<li>This will prevent a user from adding a row that has no value for this column</li>
+<li>The default is NULL. Unless you specify NOT NULL, nulls will be allowed.</li>
+</ul>
+</section>
+<section id="sec-15">
+<h2><span class="section-no">15&nbsp;</span>Our Example – Entity Integrity</h2>
+<ul>
+<li>Each council must have</li>
+<ul>
+<li>a unique numeric ID (INT)</li>
+</ul>
+<li>Each competition must have</li>
+<ul>
+<li>a unique numeric ID (INT)</li>
+</ul>
+<li>Each team must have</li>
+<ul>
+<li>a unique numeric ID (INT)</li>
+</ul>
+</ul>
+</section>
+<section id="sec-16">
+<h2><span class="section-no">16&nbsp;</span>Key Constraints – Primary Key</h2>
+<ul>
+<li>For each entity</li>
+<ul>
+<li>Identify which attribute will uniquely identify it. Three rules should be considered:</li>
+<ul>
+<li>Value of key should not change over lifetime of entity</li>
+<li>Value of key cannot be null</li>
+<li>Value must be unique</li>
+</ul>
+<li>Possibilities:</li>
+<ul>
+<ul>
+<li>Reuse attributes</li>
+<li>Invent a key</li>
+<li>Combine a number of attributes</li>
+</ul>
+</ul>
+</ul>
+</ul>
+<ul>
+<li>Is an attribute or a set of attributes that uniquely identify a specific instance of an entity.</li>
+<li>Every entity in the data model must have a primary key whose values uniquely identify instances of the entity.</li>
+<li>Enforce entity integrity by uniquely identifying entity instances.</li>
+</ul>
+<ul>
+<li>Sometimes an entity will have more than one attribute that can serve as a primary key.</li>
+<li>Any key or minimum set of keys that could be a primary key is called a candidate key.</li>
+<li>Once candidate keys are identified, choose one, and only one, primary key for each entity.</li>
+<ul>
+<li>Choose the identifier most commonly used by the user as long as it conforms to the properties required of a primary key.</li>
+</ul>
+<li>Candidate keys which are not chosen as the primary key are known as alternate keys.</li>
+</ul>
+</section>
+<section id="sec-17">
+<h2><span class="section-no">17&nbsp;</span>Step 4: Define the Relationships</h2>
+<ul>
+<li>A relationship is a link or an association between two entities which is meaningful for the organisation</li>
+<ul>
+<li>For example, a Customer ‘places’ an Order</li>
+</ul>
+<li>A relationship is a natural business association that exists between one or more entities.</li>
+<li>Relationships can represent an event or a logical affinity</li>
+<li>Relationships usually arise because of</li>
+<ul>
+<li>association - a Customer ‘places’ an Order</li>
+<li>structure - an Order ‘consists’ of Order-Lines</li>
+</ul>
+<li>All relationships that are usable only involve two entities.</li>
+</ul>
+<ul>
+<li>We relate entities to each other in quantitative terms (Cardinality).</li>
+<li>The relationship is defined by the number of rows in one table that are related to the number of rows in another table.</li>
+<li>All relationships are bi-directional, so cardinality must be defined in both directions for every relationship.</li>
+<li>Also called complexity or degree of the relationship.</li>
+</ul>
+<ul>
+<li>Examples</li>
+<ul>
+<li>A customer places one or more orders</li>
+<li>An order is placed by one</li>
+<li>An order consists of one or more products</li>
+<li>A product appears on zero, one or more orders</li>
+<li>A student enrols on one or more modules</li>
+</ul>
+</ul>
+<ul>
+<li>Define the type and optionality of each relationship</li>
+<ul>
+<li>How many instances of each entity are involved?</li>
+<li>Does the relationship have to exist for all instances?</li>
+</ul>
+<li>Define the Cardinality/Complexity/Degree of relationships</li>
+<ul>
+<li>Need to ask questions about the relationship</li>
+<ul>
+<li>Must a customer exist for every order?</li>
+<li>Must an order exist for every customer?</li>
+<li>Must an order always include a product?</li>
+<li>How many products can an order include?</li>
+<li>Must a product appear on an order?</li>
+</ul>
+</ul>
+</ul>
+<blockquote class="pull">Lecturer&#8217;s note
+Entities don&#8217;t exist in isolation. The things they represent interact with and impact one another to support the business mission, so we introduce the concept of a relationship. Bold, underlined verb phrases are used to define business relationships between two entities.<cite>Lecturer&#8217;s note</cite></blockquote>
+</section>
+<section id="sec-18">
+<h2><span class="section-no">18&nbsp;</span>One-to-one (1:1)</h2>
+<ul>
+<li>In a one-to-one relationship, a single record in Table A is associated with a single record in Table B, and vice versa. This means that for every instance of Table A, there is exactly one corresponding instance in Table B.</li>
+<li>Notation: Typically represented by a line connecting the two entities, with a &quot;1&quot; at both ends.</li>
+<li>For example, a person has one passport, and each passport belongs to one person.</li>
+</ul>
+</section>
+<section id="sec-19">
+<h2><span class="section-no">19&nbsp;</span>One-to-many (1:N)</h2>
+<ul>
+<li>In a one-to-many relationship, a single record in Table A can be associated with multiple records in Table B. Still, a record in Table B can only relate to one record in Table A.</li>
+<li>Notation: Represented by a line connecting the two entities, with a &quot;1&quot; at the Table A end and an &quot;N&quot; (or &quot;M&quot;) at the Table B end.</li>
+<li>A library can have many books, but each book belongs to only one library.</li>
+</ul>
+</section>
+<section id="sec-20">
+<h2><span class="section-no">20&nbsp;</span>Many-to-one (M:1)</h2>
+<ul>
+<li>This is essentially the reverse of a one-to-many relationship. Many records in Table B can relate back to a single record in Table A, but a record in Table A can relate to many records in Table B.</li>
+<li>Notation: Represented similarly to the one-to-many notation, with an &quot;N&quot; (or &quot;M&quot;) at the Table B end and a &quot;1&quot; at the Table A end.</li>
+<li>Many students can belong to one classroom.</li>
+</ul>
+</section>
+<section id="sec-21">
+<h2><span class="section-no">21&nbsp;</span>Many-to-many (M:N)</h2>
+<ul>
+<li>In a many-to-many relationship, multiple records in Table A can relate to multiple records in Table B, and vice versa. This relationship usually requires a junction table to facilitate the connection.</li>
+<li>Notation: Represented by a line connecting the two entities, with an &quot;M&quot; (or &quot;N&quot;) at both ends.</li>
+<li>Students can enrol in multiple courses, and each course can have multiple students enrolled.</li>
+</ul>
+</section>
+<section id="sec-22">
+<h2><span class="section-no">22&nbsp;</span>Resolving Many-to-many</h2>
+<ul>
+<li>Many-to-many relationships are prone to error as managing a large number of rows that relates to another large number of rows can be challenging</li>
+<li>We resolve many-to-many relationships by introducing a junction table, also known as a weak entity.</li>
+</ul>
+</section>
+<section id="sec-23">
+<h2><span class="section-no">23&nbsp;</span>Foreign Key</h2>
+<ul>
+<li>When one table needs to be related to another table, you must include a common attribute(s).</li>
+<li>The common attribute(s) will be the primary key in one table and the foreign key in another table.</li>
+<li>Foreign keys enforce referential integrity – the values should be the same in both tables for that specific attribute.</li>
+</ul>
+<ul>
+<li>A foreign key value must match an existing value in the parent table or be NULL.</li>
+<li>Foreign keys are based on data values and are purely logical, rather than physical, pointers.</li>
+</ul>
+</section>
+<section id="sec-24">
+<h2><span class="section-no">24&nbsp;</span>Parent and Child entities</h2>
+<ul>
+<li>Parent entity</li>
+<ul>
+<li>An entity that contributes one or more attributes to another entity, called the parent.</li>
+<li>In a one-to-many relationship the parent is the entity on the &quot;one&quot; side.</li>
+</ul>
+<li>Child entity</li>
+<ul>
+<li>An entity that derives one or more attributes from another entity, called the child.</li>
+<li>In a one-to-many relationship the child is the entity on the &quot;many&quot; side.</li>
+</ul>
+</ul>
+<blockquote class="pull">Teaching Notes
+These concepts are illustrated on the next slide.<cite>Lecturer&#8217;s note</cite></blockquote>
+</section>
+<section id="sec-25">
+<h2><span class="section-no">25&nbsp;</span>Data Modeling: One to one in pgadmin</h2>
+<ul>
+<li>Pgadmin is an open-source, free database management system that allows us to build ERDs using forward engineering</li>
+<li>However, pgadmin considers one-to-one relationships a special case of one-to-many relationships</li>
+<li>There is no representation of one to one in the pgadmin notation</li>
+<li>We can work around that by making the FK on the table at the many side a UNIQUE value</li>
+<li>For example: build an ERD for two tables that include information about employees and company_cars, considering that each employee can have only one car assigned to them.</li>
+</ul>
+</section>
+    </div>
+  </div>
+</div>
+<script src="../../assets/app.js"></script>
+</body></html>

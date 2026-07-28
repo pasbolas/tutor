@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Module Review — Part 2 · The Databases Review</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<div class="progress-bar"></div>
+<div class="topbar-mini"><div class="wrap">
+  <a class="mini-logo" href="../../../../">The Databases Review</a>
+  <button class="back-btn" onclick="history.back()" aria-label="Go back">&#8592; Back</button>
+  <div class="crumbs"><a href="../../../../">Home</a><span class="sep">/</span><a href="index.html">Topic 16</a><span class="sep">/</span><span class="current">Module Review — Part 2</span></div>
+  <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">&#9789;</button>
+</div></div>
+
+<div class="article-header wrap-narrow">
+  <span class="kicker">Lecture 12 &middot; Topic 16</span>
+  <h1>Module Review — Part 2</h1>
+  <p class="dek">Revisiting inserting data, functions, normalisation and everything since.</p>
+  <div class="byline"><span><b>CMPU2007</b> Databases 1</span><span>9 min read</span><span>26 sections</span></div>
+</div>
+<div class="wrap">
+  <div class="article-body">
+    <nav class="side-toc">
+      <div class="contents-title">Contents</div>
+      <a href="#sec-1" data-target="sec-1"><span class="toc-num">01</span><span class="toc-text">Inserting data</span></a><a href="#sec-2" data-target="sec-2"><span class="toc-num">02</span><span class="toc-text">Winter exam – 2023/24</span></a><a href="#sec-3" data-target="sec-3"><span class="toc-num">03</span><span class="toc-text">Using the NULL Conditions</span></a><a href="#sec-4" data-target="sec-4"><span class="toc-num">04</span><span class="toc-text">Winter exam – 2023/24</span></a><a href="#sec-5" data-target="sec-5"><span class="toc-num">05</span><span class="toc-text">SQL Functions</span></a><a href="#sec-6" data-target="sec-6"><span class="toc-num">06</span><span class="toc-text">Two Types of SQL Functions</span></a><a href="#sec-7" data-target="sec-7"><span class="toc-num">07</span><span class="toc-text">Winter exam – 2024/25</span></a><a href="#sec-8" data-target="sec-8"><span class="toc-num">08</span><span class="toc-text">Types of Group Functions</span></a><a href="#sec-9" data-target="sec-9"><span class="toc-num">09</span><span class="toc-text">Restricting group results with the HAVING clause</span></a><a href="#sec-10" data-target="sec-10"><span class="toc-num">10</span><span class="toc-text">Winter exam – 2016/2017</span></a><a href="#sec-11" data-target="sec-11"><span class="toc-num">11</span><span class="toc-text">Winter exam – 2023/2024</span></a><a href="#sec-12" data-target="sec-12"><span class="toc-num">12</span><span class="toc-text">JOINS</span></a><a href="#sec-13" data-target="sec-13"><span class="toc-num">13</span><span class="toc-text">Inner join</span></a><a href="#sec-14" data-target="sec-14"><span class="toc-num">14</span><span class="toc-text">Full outer join</span></a><a href="#sec-15" data-target="sec-15"><span class="toc-num">15</span><span class="toc-text">Left outer join</span></a><a href="#sec-16" data-target="sec-16"><span class="toc-num">16</span><span class="toc-text">Right outer join</span></a><a href="#sec-17" data-target="sec-17"><span class="toc-num">17</span><span class="toc-text">Winter exam – 2022/2023</span></a><a href="#sec-18" data-target="sec-18"><span class="toc-num">18</span><span class="toc-text">Semester 2 exam – 2024/2025 – TU857</span></a><a href="#sec-19" data-target="sec-19"><span class="toc-num">19</span><span class="toc-text">VIEWS</span></a><a href="#sec-20" data-target="sec-20"><span class="toc-num">20</span><span class="toc-text">Defining Views</span></a><a href="#sec-21" data-target="sec-21"><span class="toc-num">21</span><span class="toc-text">Winter exam – 2018/2019</span></a><a href="#sec-22" data-target="sec-22"><span class="toc-num">22</span><span class="toc-text">Using the UNION Operator</span></a><a href="#sec-23" data-target="sec-23"><span class="toc-num">23</span><span class="toc-text">Using the UNION ALL Operator</span></a><a href="#sec-24" data-target="sec-24"><span class="toc-num">24</span><span class="toc-text">Using the INTERSECT Operator</span></a><a href="#sec-25" data-target="sec-25"><span class="toc-num">25</span><span class="toc-text">EXCEPT Operator</span></a><a href="#sec-26" data-target="sec-26"><span class="toc-num">26</span><span class="toc-text">Winter exam – 2018/2019</span></a>
+    </nav>
+    <div class="prose">
+      <section id="sec-1">
+<h2><span class="section-no">01&nbsp;</span>Inserting data</h2>
+<ul>
+<ul>
+<li>Before inserting data, consider:</li>
+<ul>
+<li>The format of the table (the columns and their constraints)</li>
+<li>The type of insert:</li>
+<ul>
+<li>Full insert</li>
+<li>Partial insert</li>
+</ul>
+</ul>
+<li>All CHAR,VARCHAR and DATE fields must have their values surrounded by single quotes.</li>
+<li>If we do not include a column list, PostgreSQL assumes you are inserting data in the column order it expects.</li>
+</ul>
+</ul>
+<ul>
+<li>INSERT INTO table (column1, column2, ... column_n ) VALUES (expression1, expression2, ... expression_n );</li>
+</ul>
+</section>
+<section id="sec-2">
+<h2><span class="section-no">02&nbsp;</span>Winter exam – 2023/24</h2>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>The following SQL queries were written as an attempt to insert data into the video game database. However, each query returned an error. Identify and explain the errors in the queries below:
+INSERT INTO Movie
+VALUES (102, &#x27;The Shawshank Redemption&#x27;, 1994, &#x27;Frank Darabont&#x27;);
+INSERT INTO Actor (ActorID, FirstName, LastName)
+VALUES (201, Tom, Hanks);
+INSERT INTO Movie (MovieID, Title, ReleaseYear, GenreID, Director)
+VALUES (101, &#x27;Inception&#x27;, 2010, 1, &#x27;Christopher Nolan&#x27;, &#x27;christopher.nolan@gmail.com&#x27;);</code></pre></figure>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>INSERT INTO Movie
+VALUES (102, &#x27;The Shawshank Redemption&#x27;, 1994, &#x27;Frank Darabont&#x27;);
+INSERT INTO Actor (ActorID, FirstName, LastName)
+VALUES (201, Tom, Hanks);
+INSERT INTO Movie (MovieID, Title, ReleaseYear, GenreID, Director)
+VALUES (101, &#x27;Inception&#x27;, 2010, 1, &#x27;Christopher Nolan&#x27;, &#x27;christopher.nolan@gmail.com&#x27;);</code></pre></figure>
+<ul>
+<li>The first SQL statement attempts to do a partial insertion without listing the attributes, which results in a “not enough values” error.</li>
+<li>The second SQL statement attempts to insert a string value without single quotes, which results in an error.</li>
+<li>The third SQL statement attempts to insert more values than attributes available, resulting in the error “too many values”.</li>
+</ul>
+</section>
+<section id="sec-3">
+<h2><span class="section-no">03&nbsp;</span>Using the NULL Conditions</h2>
+<ul>
+<li>Test for nulls with the IS NULL operator.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT firstname, lastname FROM mm_customer
+WHERE on_mailing_list IS NULL;</code></pre></figure>
+<ul>
+<li>Test for non null values with the IS NOT NULL operator.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT firstname, lastname FROM mm_customer
+WHERE on_mailing_list IS NOT NULL;</code></pre></figure>
+</section>
+<section id="sec-4">
+<h2><span class="section-no">04&nbsp;</span>Winter exam – 2023/24</h2>
+<ul>
+<li>Write an SQL query to list the full names of actors who have never been in any movies.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT CONCAT(A.FirstName, &#x27; &#x27;, A.LastName) &quot;FullActorName&quot;
+FROM Actor A
+LEFT JOIN MovieActor MA ON A.ActorID = MA.ActorID
+WHERE MA.MovieID IS NULL;</code></pre></figure>
+</section>
+<section id="sec-5">
+<h2><span class="section-no">05&nbsp;</span>SQL Functions</h2>
+<ul>
+<li>Function</li>
+</ul>
+<ul>
+<li>Input</li>
+</ul>
+<ul>
+<li>arg 1</li>
+</ul>
+<ul>
+<li>arg 2</li>
+</ul>
+<ul>
+<li>arg n</li>
+</ul>
+<ul>
+<li>Function performs action</li>
+</ul>
+<ul>
+<li>Output</li>
+</ul>
+<ul>
+<li>Result value</li>
+</ul>
+</section>
+<section id="sec-6">
+<h2><span class="section-no">06&nbsp;</span>Two Types of SQL Functions</h2>
+<ul>
+<li>Single-row functions</li>
+</ul>
+<ul>
+<li>Multiple-row functions</li>
+</ul>
+<ul>
+<li>Return one result per row</li>
+</ul>
+<ul>
+<li>Return one result per set of rows</li>
+</ul>
+<ul>
+<li>Functions</li>
+</ul>
+</section>
+<section id="sec-7">
+<h2><span class="section-no">07&nbsp;</span>Winter exam – 2024/25</h2>
+<ul>
+<li>The following relational schema and interpretation will be used in subsequent questions:</li>
+<li>A team of developers designed a database system for managing information related to a social media platform. This platform allows users to share posts, like posts, and connect with friends.</li>
+<li>The database structure includes tables such as User, Post, Like, and Friendship. Users can view posts shared by their friends, besides being able to like posts, and interact with the platform by sharing their own content.</li>
+</ul>
+<ul>
+<li>Write an SQL query to retrieve each post&#x27;s title along with its average number of likes.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT P.Title, AVG(L.LikeCount) AS AverageLikes
+FROM Post P
+JOIN &quot;Like&quot; L ON P.PostID = L.PostID
+GROUP BY P.Title;</code></pre></figure>
+</section>
+<section id="sec-8">
+<h2><span class="section-no">08&nbsp;</span>Types of Group Functions</h2>
+<ul>
+<li>AVG</li>
+<li>COUNT</li>
+<li>MAX</li>
+<li>MIN</li>
+<li>SUM</li>
+</ul>
+<ul>
+<li>Group functions</li>
+</ul>
+</section>
+<section id="sec-9">
+<h2><span class="section-no">09&nbsp;</span>Restricting group results with the HAVING clause</h2>
+<ul>
+<li>SELECT FROM [WHERE</li>
+</ul>
+<ul>
+<li>column, group_function table</li>
+<li>condition]</li>
+</ul>
+<ul>
+<li>[GROUP BY group_by_expression] [HAVING group_condition] [ORDER BY column];</li>
+</ul>
+<ul>
+<li>When you use the HAVING clause, the PostgreSQL server restricts groups as follows:</li>
+<ul>
+<li>Rows are grouped by the expression you have given.</li>
+<li>The group function is applied.</li>
+<li>Groups matching the HAVING clause are displayed.</li>
+</ul>
+</ul>
+</section>
+<section id="sec-10">
+<h2><span class="section-no">10&nbsp;</span>Winter exam – 2016/2017</h2>
+<ul>
+<li>Suppose we want to calculate the total number of services used by a guest on a particular visit. Write SQL to achieve this.</li>
+<li>Restrict the output so that only bookings with IDs between 1001 and 1005 are included. Format your output to follow this template:</li>
+<li>‘The number of services used in by &lt;guestID&gt; in &lt;bookingID&gt; is &lt;no. of services&gt;.’</li>
+<li>Hint: You do not include the &lt; &gt; in your output. Retrieve bookingID, guestID and calculate the no. of product.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT &#x27;The total number of services used in booking &#x27; || bookingId || &#x27; by &#x27; || guestId || &#x27; is &#x27; || count(serviceID)
+FROM serviceBooking
+GROUP BY bookingId,guestID
+HAVING bookingID BETWEEN 1001 AND 1005;</code></pre></figure>
+</section>
+<section id="sec-11">
+<h2><span class="section-no">11&nbsp;</span>Winter exam – 2023/2024</h2>
+<ul>
+<li>Write an SQL query that retrieves the average rating for each movie in the Review table, along with the movie title.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT M.Title, AVG(R.Rating) &quot;Average Rating&quot;
+FROM Movie AS M
+JOIN Review AS R ON M.MovieID = R.MovieID
+GROUP BY M.Title;</code></pre></figure>
+</section>
+<section id="sec-12">
+<h2><span class="section-no">12&nbsp;</span>JOINS</h2>
+<ul>
+<li>Inner Join: returns only matched rows between two tables</li>
+<li>Outer Join: a join between two tables that returns the results of the inner join as well as the unmatched rows from the left (or right) tables is called a left (or right) outer join.</li>
+</ul>
+</section>
+<section id="sec-13">
+<h2><span class="section-no">13&nbsp;</span>Inner join</h2>
+<ul>
+<li>Return the set of records that match in both Table A and Table B.</li>
+</ul>
+</section>
+<section id="sec-14">
+<h2><span class="section-no">14&nbsp;</span>Full outer join</h2>
+<ul>
+<li>Return the set of all records in Table A and Table B, with matching records from both sides where available.</li>
+<li>If there is no match, the columns from the missing side will be returned as null.</li>
+</ul>
+</section>
+<section id="sec-15">
+<h2><span class="section-no">15&nbsp;</span>Left outer join</h2>
+<ul>
+<li>Return the set of records from Table A, with the matching records (where available) in Table B. If there is no match, the columns from the right side will contain null.</li>
+</ul>
+</section>
+<section id="sec-16">
+<h2><span class="section-no">16&nbsp;</span>Right outer join</h2>
+<ul>
+<li>Table A</li>
+</ul>
+<ul>
+<li>Table B</li>
+</ul>
+<ul>
+<li>Return the set of records from Table B, with the matching records (where available) in Table A.</li>
+<li>If there is no match, the columns from the left side will contain null.</li>
+</ul>
+</section>
+<section id="sec-17">
+<h2><span class="section-no">17&nbsp;</span>Winter exam – 2022/2023</h2>
+<ul>
+<li>Q2a) Considering the relations between the tables game, game_publisher and sale, write the SQL query to retrieve the game_name, genre_id, publisher_name, and number_of_sales.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT game_name, genre_id, publisher_name, number_of_sales
+FROM game
+JOIN game_publisher USING (publisher_id)
+JOIN sale USING (publisher_id);</code></pre></figure>
+<ul>
+<li>Q2b) Rewrite the query you provided in question 2 (a) but modify the output by:</li>
+<li>Renaming the columns as “Game Title”, “Genre Identifier”, “Name of the publisher”, “Sales”.</li>
+<li>Display game_name and publisher_name in lowercase</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT lower(game_name) “Game title”, genre_id “Genre identifier”, lower(publisher_name) “Name of the publisher”, number_of_sales “Sales”
+FROM game
+JOIN game_publisher USING (publisher_id)
+JOIN sale USING (publisher_id);</code></pre></figure>
+<ul>
+<li>Q3d) (d) To implement an efficient and consistent database, some integrity rules should be followed. Explain each of the following integrities and give examples of how these were followed in the video game database presented in question 1.</li>
+<li>Entity integrity</li>
+<li>Domain integrity</li>
+<li>Referential integrity</li>
+</ul>
+<ul>
+<li>Entity integrity: Ensures a unique, non-null value per row by using a unique identifier (primary key). One example is the attribute publisher_id.</li>
+<li>Domain integrity: Ensures that only valid values can be input into columns, according to their datatype and value constraints. One example is the constraint added to the attribute publisher_email.</li>
+<li>Referential integrity: Ensure consistency of values in tables that are related by adding a primary key of one table as a foreign key of another table. One example is the attribute publisher_id in the table game.</li>
+</ul>
+</section>
+<section id="sec-18">
+<h2><span class="section-no">18&nbsp;</span>Semester 2 exam – 2024/2025 – TU857</h2>
+<ul>
+<li>FitLife is a social fitness tracking app designed for people who want to track workouts, set fitness goals, and engage with friends in a social fitness environment. The app allows users to:</li>
+<li>Log workouts (e.g., running, weightlifting, yoga).</li>
+<li>Set fitness goals and track progress.</li>
+<li>Connect with friends and compare stats.</li>
+<li>Leave comments on workouts to encourage each other.</li>
+<li>The database stores users, workouts, fitness goals, comments, and friendships.</li>
+<li>The following ERD represents the database that is part of the FitLife app.</li>
+</ul>
+<ul>
+<li>Q1(b) Write an SQL query to retrieve the usernames of users who have never logged a workout.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT Username
+FROM UserProfile
+LEFT JOIN Workout USING (UserID)
+WHERE Workout.UserID IS NULL;</code></pre></figure>
+<ul>
+<li>Q1(c) Write an SQL query to retrieve the user’s name and the total calories burned by each user. Rename the resulting columns as “Name” and “Total Calories”</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT UserProfile.Username “Name”, SUM(Workout.CaloriesBurned) “Total Calories”
+FROM UserProfile
+LEFT JOIN Workout USING (UserID)
+GROUP BY UserProfile.Username;</code></pre></figure>
+</section>
+<section id="sec-19">
+<h2><span class="section-no">19&nbsp;</span>VIEWS</h2>
+<ul>
+<li>A database view is a logical or virtual table based on a query.</li>
+<li>It is useful to think of a view as a stored query.</li>
+<li>They are useful ways of presenting different information to different users.</li>
+<li>Views are created through use of a CREATE VIEW command that incorporates use of the SELECT statement and queried just like tables.</li>
+</ul>
+</section>
+<section id="sec-20">
+<h2><span class="section-no">20&nbsp;</span>Defining Views</h2>
+<ul>
+<li>Suppose we have the following table:</li>
+<ul>
+<li>Employee(PRSINO, name, department, project, salary)</li>
+</ul>
+<li>Our HR department has permission to view information about all employees but the manager of the IT department only has permission to view the name of their staff and the name of the project on which they are currently working</li>
+<li>We can create a view for the IT manager</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>CREATE VIEW IT AS
+SELECT name, project FROM Employee
+WHERE department = ‘IT’;</code></pre></figure>
+</section>
+<section id="sec-21">
+<h2><span class="section-no">21&nbsp;</span>Winter exam – 2018/2019</h2>
+<ul>
+<li>Using UNION write the SQL needed to create a VIEW called FacilityUse which has details about the number of bookings for each facility. You need to:</li>
+<li>Include a column facility which is the facility description;</li>
+<li>Include a column bookings which holds the number of bookings for that facility.</li>
+<li>The SQL should be based on the SQL you wrote for parts (a) and (b) so you will need to ensure a row is included for each facility whether it has bookings or not.</li>
+</ul>
+<ul>
+<li>Winter exam – 2018/2019</li>
+</ul>
+<ul>
+<li>CREATE VIEW FacilityUse AS</li>
+<li>SELECT facilitydesc AS facility, count(teamno) AS bookings</li>
+<li>FROM facilitybooking</li>
+<li>JOIN sportfacility USING (facilityid)</li>
+<li>GROUP BY facilitydesc</li>
+<li>UNION</li>
+<li>RIGHT OUTER JOIN sportfacility USING(facilityid)</li>
+<li>HAVING count(teamno)=0;</li>
+</ul>
+<ul>
+<li>UNION/UNION ALL</li>
+</ul>
+<ul>
+<li>A</li>
+</ul>
+<ul>
+<li>B</li>
+</ul>
+<ul>
+<li>A</li>
+</ul>
+<ul>
+<li>B</li>
+</ul>
+<ul>
+<li>INTERSECT</li>
+</ul>
+<ul>
+<li>A</li>
+</ul>
+<ul>
+<li>B</li>
+</ul>
+<ul>
+<li>MINUS</li>
+</ul>
+<ul>
+<li>Set Operators</li>
+</ul>
+<ul>
+<li>A</li>
+</ul>
+<ul>
+<li>B</li>
+</ul>
+</section>
+<section id="sec-22">
+<h2><span class="section-no">22&nbsp;</span>Using the UNION Operator</h2>
+<ul>
+<li>Display the current and previous job details of all employees. Display each employee only once, removing duplicates.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT employee_id, job_id FROM employees
+UNION
+SELECT employee_id, job_id FROM job_history;</code></pre></figure>
+</section>
+<section id="sec-23">
+<h2><span class="section-no">23&nbsp;</span>Using the UNION ALL Operator</h2>
+<ul>
+<li>Display the current and previous departments of all employees, including duplicates.</li>
+</ul>
+<ul>
+<li>…</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT employee_id, job_id, department_id FROM employees
+UNION ALL
+SELECT employee_id, job_id, department_id FROM job_history
+ORDER BY employee_id;</code></pre></figure>
+</section>
+<section id="sec-24">
+<h2><span class="section-no">24&nbsp;</span>Using the INTERSECT Operator</h2>
+<ul>
+<li>Display the employee IDs and job IDs of those employees who currently have a job title that is the same as their job title when they were initially hired (that is, they changed jobs but have now gone back to doing their original job).</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT employee_id, job_id FROM employees
+INTERSECT
+SELECT employee_id, job_id FROM job_history;</code></pre></figure>
+</section>
+<section id="sec-25">
+<h2><span class="section-no">25&nbsp;</span>EXCEPT Operator</h2>
+<ul>
+<li>Display the employee IDs of those employees who have not changed their jobs even once.</li>
+</ul>
+<ul>
+<li>…</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT employee_id,job_id FROM employees
+EXCEPT
+SELECT employee_id,job_id FROM job_history;</code></pre></figure>
+</section>
+<section id="sec-26">
+<h2><span class="section-no">26&nbsp;</span>Winter exam – 2018/2019</h2>
+<ul>
+<li>Using INTERSECT, write the SQL to find the students who are captain of at least one team and a player for at least one other.</li>
+<li>You need only output studentno, firstname and lastname.</li>
+</ul>
+<ul>
+<li>Winter exam – 2018/2019</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT studentno, firstname, lastname
+FROM teammember
+JOIN student USING (studentno)
+WHERE teamrole=&#x27;Captain&#x27;
+INTERSECT
+SELECT studentno, firstname, lastname
+FROM teammember
+JOIN student USING (studentno)
+WHERE teamrole=&#x27;Player’ OR teamrole IS NULL;</code></pre></figure>
+</section>
+    </div>
+  </div>
+</div>
+<script src="../../assets/app.js"></script>
+</body></html>

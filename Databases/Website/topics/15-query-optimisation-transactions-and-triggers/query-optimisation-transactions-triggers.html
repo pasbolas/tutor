@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Query Optimisation, Transactions and Triggers · The Databases Review</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<div class="progress-bar"></div>
+<div class="topbar-mini"><div class="wrap">
+  <a class="mini-logo" href="../../../../">The Databases Review</a>
+  <button class="back-btn" onclick="history.back()" aria-label="Go back">&#8592; Back</button>
+  <div class="crumbs"><a href="../../../../">Home</a><span class="sep">/</span><a href="index.html">Topic 15</a><span class="sep">/</span><span class="current">Query Optimisation, Transactions and Triggers</span></div>
+  <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">&#9789;</button>
+</div></div>
+
+<div class="article-header wrap-narrow">
+  <span class="kicker">Lecture 11 &middot; Topic 15</span>
+  <h1>Query Optimisation, Transactions and Triggers</h1>
+  <p class="dek">Writing faster queries, and keeping data consistent with transactions and triggers.</p>
+  <div class="byline"><span><b>CMPU2007</b> Databases 1</span><span>5 min read</span><span>9 sections</span></div>
+</div>
+<div class="wrap">
+  <div class="article-body">
+    <nav class="side-toc">
+      <div class="contents-title">Contents</div>
+      <a href="#sec-1" data-target="sec-1"><span class="toc-num">01</span><span class="toc-text">Query optimisation</span></a><a href="#sec-2" data-target="sec-2"><span class="toc-num">02</span><span class="toc-text">LIMIT number of results</span></a><a href="#sec-3" data-target="sec-3"><span class="toc-num">03</span><span class="toc-text">Use JOINS instead of subqueries</span></a><a href="#sec-4" data-target="sec-4"><span class="toc-num">04</span><span class="toc-text">PREPARE</span></a><a href="#sec-5" data-target="sec-5"><span class="toc-num">05</span><span class="toc-text">SPECIFIC QUERIES</span></a><a href="#sec-6" data-target="sec-6"><span class="toc-num">06</span><span class="toc-text">Transactions</span></a><a href="#sec-7" data-target="sec-7"><span class="toc-num">07</span><span class="toc-text">ACID Properties</span></a><a href="#sec-8" data-target="sec-8"><span class="toc-num">08</span><span class="toc-text">Trigger</span></a><a href="#sec-9" data-target="sec-9"><span class="toc-num">09</span><span class="toc-text">Common Table Expression (CTE)</span></a>
+    </nav>
+    <div class="prose">
+      <section id="sec-1">
+<h2><span class="section-no">01&nbsp;</span>Query optimisation</h2>
+<ul>
+<li>Improve performance and reduce execution time</li>
+<li>Reduce load on the database server</li>
+<li>Improve scalability for large datasets</li>
+<li>Make application code more efficient and stable</li>
+<li>We can use a number of strategies to optimise our queries</li>
+</ul>
+</section>
+<section id="sec-2">
+<h2><span class="section-no">02&nbsp;</span>LIMIT number of results</h2>
+<ul>
+<li>In large tables like player_statistics, a plain SELECT * can be slow and unnecessary.</li>
+<li>When we just want to peek at the data, we can use LIMIT to restrict the number of rows.</li>
+<li>This is useful when exploring a new table or debugging queries.</li>
+<li>Using LIMIT also makes EXPLAIN ANALYZE faster and easier to read.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>-- Without LIMIT: reads the whole table
+EXPLAIN ANALYZE
+SELECT *
+FROM nba.player_statistics;
+-- With LIMIT: just sample 10 rows
+EXPLAIN ANALYZE
+SELECT *
+FROM nba.player_statistics
+LIMIT 10;</code></pre></figure>
+</section>
+<section id="sec-3">
+<h2><span class="section-no">03&nbsp;</span>Use JOINS instead of subqueries</h2>
+<ul>
+<li>We have learned subqueries can be very useful to retrieve data from tables that are not connected</li>
+<li>However, they are not very efficient as the system needs to access each table individually and work on them as sets</li>
+<li>If the tables are connected, give preference to JOINs, as they access one table and, through the connected attribute, access the second table.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>--JOIN X SUBQUERY
+-- Get the city of the home team for each game
+--Using a SUBQUERY
+EXPLAIN ANALYZE SELECT game_id,
+(SELECT team_city
+FROM nba.teams t
+WHERE t.team_id = g.home_team_id) AS home_city
+FROM nba.games g;
+--Using a JOIN: notice how team_id is treated like an index that facilitates data identification
+EXPLAIN ANALYZE SELECT game_id,
+team_city &quot;Home city&quot;
+FROM games g
+JOIN teams t
+ON (t.team_id = g.home_team_id);</code></pre></figure>
+</section>
+<section id="sec-4">
+<h2><span class="section-no">04&nbsp;</span>PREPARE</h2>
+<ul>
+<li>The PREPARE statement allows to define a query once and reuse it multiple times with different parameters</li>
+<li>The database server parses, plans, and optimizes the query once when the PREPARE statement is executed.</li>
+<li>A placeholder ($1, $2, etc.) is used for parameters in the query.</li>
+<li>For queries that are executed frequently or in loops, using PREPARE significantly reduces execution time.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>--PREPARE
+-- Prepare a parameterised query: (int, text)
+PREPARE get_player_stats (int, text) AS
+SELECT ps.game_id,
+ps.points,
+ps.assists,
+ps.rebounds_total,
+g.game_date,
+g.game_type
+FROM player_statistics ps
+JOIN games g USING (game_id)
+WHERE ps.person_id = $1 -- player id
+AND g.game_type = $2; -- for example, &#x27;Regular Season&#x27;, &#x27;Playoffs&#x27;</code></pre></figure>
+</section>
+<section id="sec-5">
+<h2><span class="section-no">05&nbsp;</span>SPECIFIC QUERIES</h2>
+<ul>
+<li>Avoid SELECT * in production queries:</li>
+<ul>
+<li>Unnecessary I/O (reads columns we do not use).</li>
+<li>Queries break if later columns are added or removed.</li>
+<li>Instead, select only the columns you need and filter rows early.</li>
+</ul>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>--Avoid SELECT *
+SELECT *
+FROM nba.player_statistics
+WHERE points &gt; 30;
+--Prefer specifying the columns
+SELECT person_id,
+game_id,
+points,
+assists,
+rebounds_total
+FROM nba.player_statistics
+WHERE points &gt; 30;</code></pre></figure>
+</section>
+<section id="sec-6">
+<h2><span class="section-no">06&nbsp;</span>Transactions</h2>
+<ul>
+<li>Transactions group SQL statements into atomic, consistent, isolated, and durable operations.</li>
+<li>Transactions encapsulate multiple steps into a single, all-or-nothing operation.</li>
+<li>The intermediate states between the steps are not visible to other concurrent transactions.</li>
+<li>Therefore, if anything goes wrong, it prevents the transaction from completing, then none of the steps affect the database at all.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>BEGIN: A transaction always starts with the BEGIN keyword, indicating to the DB a transaction is starting, with multiple in it.
+COMMIT: keyword used so the changes made by the transaction are effective. All the queries after the COMMIT persist in the database.
+ROLLBACK: Allows us to undo changes promoted by the queries. If the system crashes during the transaction after writing thousands of queries, we are able to rollback.</code></pre></figure>
+<ul>
+<li>In an NBA context, imagine correcting stats for a game:</li>
+<ul>
+<li>Remove the old stats rows for a game.</li>
+<li>Insert corrected stats.</li>
+<li>Update the game’s final score.</li>
+</ul>
+<li>Either all of these changes should happen, or none.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>-- 1. Start the transaction
+BEGIN;
+-- 2. Delete old statistics
+DELETE FROM player_statistics
+WHERE game_id = 22400677;
+-- 3. Insert corrected statistics
+INSERT INTO player_statistics (
+person_id, game_id, game_date,
+points, assists, rebounds_total
+)
+VALUES
+(201939, 22400677, &#x27;2025-11-01&#x27;, 32, 8, 5),
+(2544, 22400677, &#x27;2025-11-01&#x27;, 28, 7, 9);
+-- 4. Update the game final score
+UPDATE games
+SET home_score = 110,
+away_score = 105
+WHERE game_id = 22400677;</code></pre></figure>
+</section>
+<section id="sec-7">
+<h2><span class="section-no">07&nbsp;</span>ACID Properties</h2>
+<ul>
+<li>Transactions follow the principals of ACID properties:</li>
+<ul>
+<li>Atomicity – all or nothing. Example: Adjusting stats for a game involves deleting old stats and inserting corrected ones. If the insertion fails, none of the deletions or updates should be kept.</li>
+<li>Consistency – valid state. Example: After a game is updated, home_score and away_score must still equal the sum of individual players’ points, and foreign keys (home_team_id, away_team_id) must still reference valid teams.</li>
+<li>Isolation – independent execution. Example: Two analysts might be editing stats for different games at the same time. Each transaction should not see the other’s intermediate, half-finished changes.</li>
+<li>Durability – permanent changes. Example: Once corrected stats for the NBA finals are committed, the database guarantees that those changes will survive a server restart or power failure.</li>
+</ul>
+</ul>
+</section>
+<section id="sec-8">
+<h2><span class="section-no">08&nbsp;</span>Trigger</h2>
+<ul>
+<li>A trigger specifies that the database should automatically execute a particular function whenever a certain type of operation is performed.</li>
+<li>Triggers can be performed on tables, being executed before or after an INSERT, UPDATE or DELETE statement.</li>
+</ul>
+<ul>
+<li>A trigger in the NBA schema can automatically:</li>
+<ul>
+<li>Update a team’s total wins/losses when a game is inserted.</li>
+<li>Maintain a summary table with each player’s career totals whenever player_statistics changes.</li>
+<li>We can define triggers as row-level (per row) or statement-level (per statement).</li>
+</ul>
+</ul>
+<ul>
+<li>Triggers can be:</li>
+<ul>
+<li>Row-Level Trigger ensures immediate updates for individual inserts.</li>
+<li>Statement-Level Trigger ensures consistency after bulk operations, catching any discrepancies caused by operations like manual changes or bulk inserts.</li>
+<li>The differences between the two kinds are how many times the trigger is invoked and at what time. For example, if you issue an UPDATE statement that modifies 20 rows, the row-level trigger will be invoked 20 times, while the statement-level trigger will be invoked only once.</li>
+</ul>
+</ul>
+<ul>
+<li>Use ROW-LEVEL trigger when:</li>
+<ul>
+<li>Your logic depends on the individual values of each inserted/updated row</li>
+<li>You need to modify the row before it is stored</li>
+<li>You want consistent per-row behaviour</li>
+</ul>
+<li>Use STATEMENT-LEVEL trigger when:</li>
+<ul>
+<li>Your logic applies to the whole table, not individual rows</li>
+<li>You are working with bulk operations (INSERT…SELECT, UPDATE many rows)</li>
+<li>You want to avoid running the same logic hundreds or thousands of times</li>
+</ul>
+</ul>
+</section>
+<section id="sec-9">
+<h2><span class="section-no">09&nbsp;</span>Common Table Expression (CTE)</h2>
+<ul>
+<li>Temporary result set that can be referenced within a SELECT, INSERT, UPDATE, or DELETE statement.</li>
+<li>It provides a way to break down complex queries into more manageable and readable parts.</li>
+<li>Good for multi-step calculations. In our NBA example: finding top scorers per team, or average points per game.</li>
+</ul>
+<ul>
+<li>Even though CTEs and Views are used to reorganise and reuse data, they have different purposes.</li>
+<li>A CTE is temporary and only exists for the duration of that query.</li>
+<li>Views are persistent and can be queried like regular tables.</li>
+</ul>
+</section>
+    </div>
+  </div>
+</div>
+<script src="../../assets/app.js"></script>
+</body></html>

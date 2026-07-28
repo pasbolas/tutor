@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Introduction to Databases · The Databases Review</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<div class="progress-bar"></div>
+<div class="topbar-mini"><div class="wrap">
+  <a class="mini-logo" href="../../../../">The Databases Review</a>
+  <button class="back-btn" onclick="history.back()" aria-label="Go back">&#8592; Back</button>
+  <div class="crumbs"><a href="../../../../">Home</a><span class="sep">/</span><a href="index.html">Topic 01</a><span class="sep">/</span><span class="current">Introduction to Databases</span></div>
+  <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">&#9789;</button>
+</div></div>
+
+<div class="article-header wrap-narrow">
+  <span class="kicker">Lecture 1 &middot; Topic 01</span>
+  <h1>Introduction to Databases</h1>
+  <p class="dek">What data actually means, why relational databases became the standard, and the vocabulary you&#x27;ll need for the rest of the module.</p>
+  <div class="byline"><span><b>CMPU2007</b> Databases 1</span><span>6 min read</span><span>25 sections</span></div>
+</div>
+<div class="wrap">
+  <div class="article-body">
+    <nav class="side-toc">
+      <div class="contents-title">Contents</div>
+      <a href="#sec-1" data-target="sec-1"><span class="toc-num">01</span><span class="toc-text">Learning Objectives</span></a><a href="#sec-2" data-target="sec-2"><span class="toc-num">02</span><span class="toc-text">What is data?</span></a><a href="#sec-3" data-target="sec-3"><span class="toc-num">03</span><span class="toc-text">What is database?</span></a><a href="#sec-4" data-target="sec-4"><span class="toc-num">04</span><span class="toc-text">Databases are everywhere</span></a><a href="#sec-5" data-target="sec-5"><span class="toc-num">05</span><span class="toc-text">Backend</span></a><a href="#sec-6" data-target="sec-6"><span class="toc-num">06</span><span class="toc-text">So are we talking about spreadsheets?</span></a><a href="#sec-7" data-target="sec-7"><span class="toc-num">07</span><span class="toc-text">Spreadsheet</span></a><a href="#sec-8" data-target="sec-8"><span class="toc-num">08</span><span class="toc-text">Relational databases</span></a><a href="#sec-9" data-target="sec-9"><span class="toc-num">09</span><span class="toc-text">Advantage of relational databases</span></a><a href="#sec-10" data-target="sec-10"><span class="toc-num">10</span><span class="toc-text">Database management system</span></a><a href="#sec-11" data-target="sec-11"><span class="toc-num">11</span><span class="toc-text">Relational Database</span></a><a href="#sec-12" data-target="sec-12"><span class="toc-num">12</span><span class="toc-text">Relational databases - Rules</span></a><a href="#sec-13" data-target="sec-13"><span class="toc-num">13</span><span class="toc-text">ACID model</span></a><a href="#sec-14" data-target="sec-14"><span class="toc-num">14</span><span class="toc-text">Exercise – database brainstorm</span></a><a href="#sec-15" data-target="sec-15"><span class="toc-num">15</span><span class="toc-text">DB constraints - Primary key (PK)</span></a><a href="#sec-16" data-target="sec-16"><span class="toc-num">16</span><span class="toc-text">Primary key (PK)</span></a><a href="#sec-17" data-target="sec-17"><span class="toc-num">17</span><span class="toc-text">DB constraints - Foreign key (PK)</span></a><a href="#sec-18" data-target="sec-18"><span class="toc-num">18</span><span class="toc-text">Foreign key (PK)</span></a><a href="#sec-19" data-target="sec-19"><span class="toc-num">19</span><span class="toc-text">Metadata</span></a><a href="#sec-20" data-target="sec-20"><span class="toc-num">20</span><span class="toc-text">Data Definition Language (DDL)</span></a><a href="#sec-21" data-target="sec-21"><span class="toc-num">21</span><span class="toc-text">Data Manipulation Language (DML)</span></a><a href="#sec-22" data-target="sec-22"><span class="toc-num">22</span><span class="toc-text">Queries</span></a><a href="#sec-23" data-target="sec-23"><span class="toc-num">23</span><span class="toc-text">Let’s implement it using SQL</span></a><a href="#sec-24" data-target="sec-24"><span class="toc-num">24</span><span class="toc-text">Postgres and GenAI – database.build</span></a><a href="#sec-25" data-target="sec-25"><span class="toc-num">25</span><span class="toc-text">Learning outcomes</span></a>
+    </nav>
+    <div class="prose">
+      <section id="sec-1">
+<h2><span class="section-no">01&nbsp;</span>Learning Objectives</h2>
+<ul>
+<li>Understand the concept of data</li>
+<li>Understand the concept of relational databases</li>
+<li>Familiarise with technical vocabulary</li>
+<li>Familiarise with SQL syntax</li>
+</ul>
+</section>
+<section id="sec-2">
+<h2><span class="section-no">02&nbsp;</span>What is data?</h2>
+<ul>
+<li>From a Human perspective: Collection of values in a format that a human can conveniently read. Some human-readable formats, such as PDF, are not machine-readable as they are not structured data.</li>
+<li>From a machine perspective: Collection of values in a format that can be automatically read and processed by a computer, such as CSV,  JSON,  XML,  etc. Machine-readable data must be structured data.</li>
+</ul>
+</section>
+<section id="sec-3">
+<h2><span class="section-no">03&nbsp;</span>What is database?</h2>
+<ul>
+<li>A database is a machine-readable, structured collection of data, organised to model some aspect of reality, typically available to a community of users with possibly varying requirements.</li>
+</ul>
+</section>
+<section id="sec-4">
+<h2><span class="section-no">04&nbsp;</span>Databases are everywhere</h2>
+<ul>
+<li>Databases form foundation of IT systems in areas such as</li>
+<ul>
+<li>public administration (for example, Central Applications Office - CAO)</li>
+<li>payroll, banking (account info)</li>
+<li>retail (inventory)</li>
+<li>health, electronic health records</li>
+</ul>
+</ul>
+</section>
+<section id="sec-5">
+<h2><span class="section-no">05&nbsp;</span>Backend</h2>
+<ul>
+<li>Database is usually protected in the backend</li>
+<li>Not directly accessible by user</li>
+<li>Only your programs can talk directly to it</li>
+</ul>
+</section>
+<section id="sec-6">
+<h2><span class="section-no">06&nbsp;</span>So are we talking about spreadsheets?</h2>
+<ul>
+<li>Not exactly. Spreadsheets have static information – stored data can be formatted, edited and manipulated within the cell.</li>
+<li>Spreadsheets are suitable for small datasets.</li>
+<li>Databases support:</li>
+<ul>
+<li>Multi-user access</li>
+<li>Security and permissions</li>
+<li>Data integrity rules</li>
+<li>Complex relationships</li>
+</ul>
+</ul>
+</section>
+<section id="sec-7">
+<h2><span class="section-no">07&nbsp;</span>Spreadsheet</h2>
+<ul>
+<li>What issues could we have if this spreadsheet had 10,000 rows?</li>
+</ul>
+</section>
+<section id="sec-8">
+<h2><span class="section-no">08&nbsp;</span>Relational databases</h2>
+<ul>
+<li>Instead of spreadsheets, we will focus on relational databases.</li>
+<li>Relational DBs are structured to organise the data in one or more tables, also called entities.</li>
+<li>The tables include columns (attributes) and rows. A specific ID identifies each row.</li>
+</ul>
+</section>
+<section id="sec-9">
+<h2><span class="section-no">09&nbsp;</span>Advantage of relational databases</h2>
+<ul>
+<li>Data can be easily tracked</li>
+<li>Data can be kept safe and correct (data integrity)</li>
+<li>Data is always consistency in any platform (for example, same account balance across banking mobile app, ATM, website...)</li>
+<li>Insulation between programs and data</li>
+</ul>
+</section>
+<section id="sec-10">
+<h2><span class="section-no">10&nbsp;</span>Database management system</h2>
+<ul>
+<li>A Database Management System is software that manages databases.</li>
+<li>Examples: PostgreSQL, MySQL, Oracle, SQLite</li>
+<li>It handles data storage, querying, backups, and security.</li>
+</ul>
+<ul>
+<li>In this module, we will use PostgreSQL for managing our databases. This will be combined with the client-side DBeaver, the GUI used to write the code needed.</li>
+<li>We will write and manage the databases using the domain-specific language Structured Query Language (SQL).</li>
+<li>SQL can be used as a Data Definition Language (DDL, language for defining the data) and a Data Manipulation Language (DML, language for storing, retrieving and updating data in the DB).</li>
+</ul>
+</section>
+<section id="sec-11">
+<h2><span class="section-no">11&nbsp;</span>Relational Database</h2>
+<ul>
+<li>Each table usually represents a ‘thing’ we are interested in storing data about</li>
+<li>Each row represents a single occurrence of this ‘thing’</li>
+<li>Each column represents a piece of data we want to store about this ‘thing’</li>
+<li>If two tables are related, the common data item appears on BOTH tables and allows us to navigate to the other table to retrieve additional data.</li>
+</ul>
+</section>
+<section id="sec-12">
+<h2><span class="section-no">12&nbsp;</span>Relational databases - Rules</h2>
+<ul>
+<li>According to the relational model, all rows should be distinct.</li>
+<li>Values must be atomic (cannot be divided). No lists, sets, or arrays as single values (in theory).</li>
+<li>Every relation has a key (identifier).</li>
+<li>Data can be protected via constraints to ensure only data that conforms to requirements can be stored.</li>
+</ul>
+</section>
+<section id="sec-13">
+<h2><span class="section-no">13&nbsp;</span>ACID model</h2>
+<ul>
+<li>Atomicity: A transaction must complete entirely or not at all – if one step fails, the entire operation fails. Transferring from account A to B only happens if account A has enough money.</li>
+<li>Consistency: The database must move from one valid state to another valid state, following all rules (constraints, types, relationships). You can&#x27;t add a student to a course if the course ID doesn’t exist.</li>
+<li>Isolation: Even when many transactions happen at once, each one should act as if it’s the only one running. For example, two people booking the last ticket at the same time should not both succeed.</li>
+<li>Durability: If a transaction is completed and committed, it will be saved — even in the event of a crash or power failure. If you book a hotel room and get confirmation, that reservation won&#x27;t disappear due to a server restart.</li>
+</ul>
+</section>
+<section id="sec-14">
+<h2><span class="section-no">14&nbsp;</span>Exercise – database brainstorm</h2>
+<ul>
+<li>In pairs, choose a real-world system you use (such as Netflix, Instagram, Brightspace).</li>
+<li>Identify 3 tables and columns that their database can use.</li>
+<li>How are these tables related?</li>
+<li>What data types did you identify?</li>
+</ul>
+</section>
+<section id="sec-15">
+<h2><span class="section-no">15&nbsp;</span>DB constraints - Primary key (PK)</h2>
+<ul>
+<li>A primary key is the column containing values that uniquely identify each row in a table.</li>
+<li>The values in the primary key column cannot change.</li>
+<li>It must always have a value</li>
+<ul>
+<li>For example, students are always assigned a number as soon as they register. This value is unique, never changes and is always there.</li>
+</ul>
+</ul>
+</section>
+<section id="sec-16">
+<h2><span class="section-no">16&nbsp;</span>Primary key (PK)</h2>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>CREATE TABLE students (
+student_id TEXT primary key,
+name TEXT NOT NULL
+);</code></pre></figure>
+</section>
+<section id="sec-17">
+<h2><span class="section-no">17&nbsp;</span>DB constraints - Foreign key (PK)</h2>
+<ul>
+<li>Foreign keys define relationships between tables</li>
+<li>A foreign key is a constraint that establishes a link between two tables by ensuring that the values in one table&#x27;s column(s) match the values in another table&#x27;s primary key column(s).</li>
+<li>That happens when a column of one table is the same as the primary key of another.</li>
+</ul>
+</section>
+<section id="sec-18">
+<h2><span class="section-no">18&nbsp;</span>Foreign key (PK)</h2>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>CREATE TABLE registration (
+student_id TEXT,
+course_code TEXT,
+foreign key (student_id) references students(student_id),
+primary key(student_id, course_code)
+);</code></pre></figure>
+</section>
+<section id="sec-19">
+<h2><span class="section-no">19&nbsp;</span>Metadata</h2>
+<ul>
+<li>A database system contains not only the database itself but also a complete definition of the database structure and constraints (rules that the data must comply with).</li>
+<li>The metadata describes, for instance, characteristics of the data that can be stored in a particular column.</li>
+</ul>
+</section>
+<section id="sec-20">
+<h2><span class="section-no">20&nbsp;</span>Data Definition Language (DDL)</h2>
+<ul>
+<li>Syntax for creating, editing, deleting:</li>
+<ul>
+<li>Databases</li>
+<li>Tables</li>
+<li>Views</li>
+<li>Indexes</li>
+<li>Constraints</li>
+<li>Users</li>
+<li>Privileges</li>
+</ul>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>drop table example;
+create table example (example_name varchar(100), size int, Gc decimal(5), Accession varchar(10), release date, center varchar(100));
+alter table example add sequence varchar;</code></pre></figure>
+</section>
+<section id="sec-21">
+<h2><span class="section-no">21&nbsp;</span>Data Manipulation Language (DML)</h2>
+<p>DML is the syntax for executing queries, and for updating, inserting, and deleting records:</p>
+<ul>
+<li><b>SELECT</b> &mdash; extracts data from one or more tables</li>
+<li><b>INSERT INTO</b> &mdash; inserts new data into a table</li>
+<li><b>UPDATE</b> &mdash; updates data in a table</li>
+<li><b>DELETE FROM</b> &mdash; deletes data from a table</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>select * from example;</code></pre></figure>
+</section>
+<section id="sec-22">
+<h2><span class="section-no">22&nbsp;</span>Queries</h2>
+<ul>
+<li>Queries are the information retrieval requests you make to the database</li>
+<li>Your queries are all about the information you are trying to gather (from that stored in the database)</li>
+<li>Queries = Question</li>
+</ul>
+<ul>
+<li>SELECT firstname, lastname</li>
+<li>FROM student</li>
+<li>WHERE points &gt;= 300;</li>
+<li>Meaning “Extract names (first and last) of all students with at least 300 points”</li>
+<li>SELECT, FROM, WHERE are keywords</li>
+<li>Other words are names of tables/columns</li>
+<li>&gt;= means greater than or equal to</li>
+<li>Terminate query with a semicolon</li>
+</ul>
+</section>
+<section id="sec-23">
+<h2><span class="section-no">23&nbsp;</span>Let’s implement it using SQL</h2>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>--Database with info on students
+--Dropping tables
+DROP TABLE IF EXISTS registration;
+DROP TABLE IF EXISTS students;
+DROP TABLE IF EXISTS courses;
+--Create tables student, course, registration
+CREATE TABLE courses (
+course_code TEXT primary key,
+course_title TEXT
+);
+CREATE TABLE students (
+student_id TEXT primary key,
+name TEXT NOT NULL
+);
+CREATE TABLE registration (
+student_id TEXT,
+course_code TEXT,
+foreign key (student_id) references students(student_id),
+foreign key (course_code) references courses(course_code),
+primary key(student_id, course_code));</code></pre></figure>
+</section>
+<section id="sec-24">
+<h2><span class="section-no">24&nbsp;</span>Postgres and GenAI – database.build</h2>
+<ul>
+<li>database.build is a free browser-based tool that uses AI to convert plain English descriptions into relational database schemas.</li>
+<li>You simply type a description into the browser, and it instantly generates an ER diagram, SQL CREATE TABLE statements, and a downloadable schema. Everything runs directly in the browser, with no installation or login required.</li>
+</ul>
+<ul>
+<li>Let’s use a CSV dataset from Kaggle to check the database.build out.</li>
+</ul>
+</section>
+<section id="sec-25">
+<h2><span class="section-no">25&nbsp;</span>Learning outcomes</h2>
+<ul>
+<li>By the end of this lesson, you should:</li>
+<ul>
+<li>Understand what a relational database is</li>
+<li>The basic structure of a relational database</li>
+<li>Be familiar with some of the technical vocabulary used for databases</li>
+<li>Have been introduced to SQL (Structured Query Language)</li>
+</ul>
+</ul>
+</section>
+    </div>
+  </div>
+</div>
+<script src="../../assets/app.js"></script>
+</body></html>

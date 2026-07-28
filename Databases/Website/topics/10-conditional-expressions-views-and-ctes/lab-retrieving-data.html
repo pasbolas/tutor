@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab — Retrieving Data · The Databases Review</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<div class="progress-bar"></div>
+<div class="topbar-mini"><div class="wrap">
+  <a class="mini-logo" href="../../../../">The Databases Review</a>
+  <button class="back-btn" onclick="history.back()" aria-label="Go back">&#8592; Back</button>
+  <div class="crumbs"><a href="../../../../">Home</a><span class="sep">/</span><a href="index.html">Topic 10</a><span class="sep">/</span><span class="current">Lab — Retrieving Data</span></div>
+  <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">&#9789;</button>
+</div></div>
+
+<div class="article-header wrap-narrow">
+  <span class="kicker">Lab 8 &middot; Topic 10</span>
+  <h1>Lab — Retrieving Data</h1>
+  <p class="dek">Practising subqueries and conditional expressions to retrieve data.</p>
+  <div class="byline"><span><b>CMPU2007</b> Databases 1</span><span>1 min read</span><span>3 sections</span></div>
+</div>
+<div class="wrap">
+  <div class="article-body">
+    <nav class="side-toc">
+      <div class="contents-title">Contents</div>
+      <a href="#sec-1" data-target="sec-1"><span class="toc-num">01</span><span class="toc-text">What is this assignment about?</span></a><a href="#sec-2" data-target="sec-2"><span class="toc-num">02</span><span class="toc-text">Retrieving data</span></a><a href="#sec-3" data-target="sec-3"><span class="toc-num">03</span><span class="toc-text">Questions</span></a>
+    </nav>
+    <div class="prose">
+      <section id="sec-1">
+<h2><span class="section-no">01&nbsp;</span>What is this assignment about?</h2>
+<p>In this assignment, you will practice your knowledge of joins, subqueries and functions to retrieve data from multiple tables in the football database.</p>
+<figure class="inline-image"><img src="images/lab-retrieving-data-1.png" loading="lazy" alt=""></figure>
+</section>
+<section id="sec-2">
+<h2><span class="section-no">02&nbsp;</span>Retrieving data</h2>
+<p>To complete this lab, answer the following questions using SQL queries.</p>
+<p>For every SQL query, make sure you:</p>
+<ul>
+<li>Name each column in the resulting view table.</li>
+<li>Comment each query explicitly, saying what question you are answering.</li>
+</ul>
+</section>
+<section id="sec-3">
+<h2><span class="section-no">03&nbsp;</span>Questions</h2>
+<p>Question 1: List each club name and the number of players currently under contract. Show only clubs that have more than 10 players, and sort the results from the highest to the lowest number of players.</p>
+<p>Question 2: Display the player name, club name, and number of years remaining on their contract. Only include players whose contracts have not yet expired. Be ready to explain the results when you demonstrate your lab.</p>
+<p>Question 3: Find the average wage for each nationality. Show only the nationalities whose average wage is higher than the overall average wage across all players.</p>
+<p>Question 4: List the player names and club names for players who play in a club that has at least one player earning €50,000 or more per week.</p>
+<p>Question 5: Return the names of clubs that currently have no players under contract.</p>
+<p>Question 6: Write a query to achieve the following output:</p>
+<ul>
+<li>The first column should display each player’s name</li>
+<li>The second column should show their preferred foot</li>
+<li>The third column should show values “Left-footed” if the player’s preferred foot is Left, “Right-footed” if the preferred foot is Right, and “Unknown” if the preferred foot is NULL.</li>
+</ul>
+</section>
+    </div>
+  </div>
+</div>
+<script src="../../assets/app.js"></script>
+</body></html>

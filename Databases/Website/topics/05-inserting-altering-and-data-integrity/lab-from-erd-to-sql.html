@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab — From ERD to SQL · The Databases Review</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<div class="progress-bar"></div>
+<div class="topbar-mini"><div class="wrap">
+  <a class="mini-logo" href="../../../../">The Databases Review</a>
+  <button class="back-btn" onclick="history.back()" aria-label="Go back">&#8592; Back</button>
+  <div class="crumbs"><a href="../../../../">Home</a><span class="sep">/</span><a href="index.html">Topic 05</a><span class="sep">/</span><span class="current">Lab — From ERD to SQL</span></div>
+  <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">&#9789;</button>
+</div></div>
+
+<div class="article-header wrap-narrow">
+  <span class="kicker">Lab 3 &middot; Topic 05</span>
+  <h1>Lab — From ERD to SQL</h1>
+  <p class="dek">Turning an entity-relationship diagram into real CREATE TABLE statements.</p>
+  <div class="byline"><span><b>CMPU2007</b> Databases 1</span><span>1 min read</span><span>2 sections</span></div>
+</div>
+<div class="wrap">
+  <div class="article-body">
+    <nav class="side-toc">
+      <div class="contents-title">Contents</div>
+      <a href="#sec-1" data-target="sec-1"><span class="toc-num">01</span><span class="toc-text">CMPU 2007 Databases 1 – Lab 3</span></a><a href="#sec-2" data-target="sec-2"><span class="toc-num">02</span><span class="toc-text">Creating and modifying the database</span></a>
+    </nav>
+    <div class="prose">
+      <section id="sec-1">
+<h2><span class="section-no">01&nbsp;</span>CMPU 2007 Databases 1 – Lab 3</h2>
+<p>In this assignment, you will create a relational database based on an Entity Relationship Diagram (ERD). Then, you will modify the database using SQL commands.</p>
+<p>If you are experiencing issues with DBeaver and PostgreSQL installation, please use online tools like OneCompiler or DB Fiddle (ensure you select PostgreSQL in the top left corner) to complete your lab.</p>
+</section>
+<section id="sec-2">
+<h2><span class="section-no">02&nbsp;</span>Creating and modifying the database</h2>
+<p>Consider the following ERD:</p>
+<figure class="inline-image"><img src="images/lab-from-erd-to-sql-1.png" loading="lazy" alt=""></figure>
+<p>In one unique SQL file, answer the following requests. Make sure you add comments to your script:</p>
+<p>Request 1: Provide the Data Definition Language (DDL) script to show the implementation of the database presented in the ERD.</p>
+<p>Request 2: Add a bonus column to player_contracts with a default of 0 and a non-negative check.</p>
+<p>Request 3: List the name and age of players whose nationality is Irish OR English. Make sure you rename the columns in the output as “Player’s name” and “Player’s age”.</p>
+</section>
+    </div>
+  </div>
+</div>
+<script src="../../assets/app.js"></script>
+</body></html>

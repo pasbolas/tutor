@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Conditional Expressions and Views — Examples · The Databases Review</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<div class="progress-bar"></div>
+<div class="topbar-mini"><div class="wrap">
+  <a class="mini-logo" href="../../../../">The Databases Review</a>
+  <button class="back-btn" onclick="history.back()" aria-label="Go back">&#8592; Back</button>
+  <div class="crumbs"><a href="../../../../">Home</a><span class="sep">/</span><a href="index.html">Topic 10</a><span class="sep">/</span><span class="current">Conditional Expressions and Views — Examples</span></div>
+  <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">&#9789;</button>
+</div></div>
+
+<div class="article-header wrap-narrow">
+  <span class="kicker">Reference &middot; Topic 10</span>
+  <h1>Conditional Expressions and Views — Examples</h1>
+  <p class="dek">Worked CASE expressions, subqueries and view definitions.</p>
+  <div class="byline"><span><b>CMPU2007</b> Databases 1</span><span>3 min read</span><span>19 sections</span></div>
+</div>
+<div class="wrap">
+  <div class="article-body">
+    <nav class="side-toc">
+      <div class="contents-title">Contents</div>
+      <a href="#sec-1" data-target="sec-1"><span class="toc-num">01</span><span class="toc-text">Simple CASE</span></a><a href="#sec-2" data-target="sec-2"><span class="toc-num">02</span><span class="toc-text">Search CASE</span></a><a href="#sec-3" data-target="sec-3"><span class="toc-num">03</span><span class="toc-text">CASE and WHERE</span></a><a href="#sec-4" data-target="sec-4"><span class="toc-num">04</span><span class="toc-text">CASE and Maths</span></a><a href="#sec-5" data-target="sec-5"><span class="toc-num">05</span><span class="toc-text">CASE and functions</span></a><a href="#sec-6" data-target="sec-6"><span class="toc-num">06</span><span class="toc-text">CASE and LIKE</span></a><a href="#sec-7" data-target="sec-7"><span class="toc-num">07</span><span class="toc-text">CASE and ORDER BY</span></a><a href="#sec-8" data-target="sec-8"><span class="toc-num">08</span><span class="toc-text">Single-row subquery</span></a><a href="#sec-9" data-target="sec-9"><span class="toc-num">09</span><span class="toc-text">combining single-row subqueries</span></a><a href="#sec-10" data-target="sec-10"><span class="toc-num">10</span><span class="toc-text">Exists</span></a><a href="#sec-11" data-target="sec-11"><span class="toc-num">11</span><span class="toc-text">IN</span></a><a href="#sec-12" data-target="sec-12"><span class="toc-num">12</span><span class="toc-text">NOT IN</span></a><a href="#sec-13" data-target="sec-13"><span class="toc-num">13</span><span class="toc-text">ANY</span></a><a href="#sec-14" data-target="sec-14"><span class="toc-num">14</span><span class="toc-text">ALL</span></a><a href="#sec-15" data-target="sec-15"><span class="toc-num">15</span><span class="toc-text">DELETE</span></a><a href="#sec-16" data-target="sec-16"><span class="toc-num">16</span><span class="toc-text">Confirming the DELETE worked</span></a><a href="#sec-17" data-target="sec-17"><span class="toc-num">17</span><span class="toc-text">TRUNCATE</span></a><a href="#sec-18" data-target="sec-18"><span class="toc-num">18</span><span class="toc-text">UPDATE</span></a><a href="#sec-19" data-target="sec-19"><span class="toc-num">19</span><span class="toc-text">UPDATE with subquery</span></a>
+    </nav>
+    <div class="prose">
+      <section id="sec-1">
+<h2><span class="section-no">01&nbsp;</span>Simple CASE</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT
+    p.player_name,
+    pa.position,
+    CASE pa.position
+        WHEN &#x27;GK&#x27; THEN &#x27;Goalkeeper&#x27;
+        WHEN &#x27;CB&#x27; THEN &#x27;Defender&#x27;
+        WHEN &#x27;RB&#x27; THEN &#x27;Defender&#x27;
+        WHEN &#x27;LB&#x27; THEN &#x27;Defender&#x27;
+        WHEN &#x27;CM&#x27; THEN &#x27;Midfielder&#x27;
+        WHEN &#x27;CDM&#x27; THEN &#x27;Midfielder&#x27;
+        WHEN &#x27;CAM&#x27; THEN &#x27;Attacker&#x27;
+        WHEN &#x27;LW&#x27; THEN &#x27;Attacker&#x27;
+        WHEN &#x27;RW&#x27; THEN &#x27;Attacker&#x27;
+        WHEN &#x27;ST&#x27; THEN &#x27;Attacker&#x27;
+        ELSE &#x27;Other / Utility&#x27;
+    END &quot;Position category&quot;
+FROM players p
+JOIN player_attributes pa USING (player_id)
+LIMIT 15;</code></pre></figure>
+</section>
+<section id="sec-2">
+<h2><span class="section-no">02&nbsp;</span>Search CASE</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT
+    pc.player_id,
+    p.player_name,
+    pc.wage,
+    CASE
+        WHEN pc.wage &gt;= 50000 THEN &#x27;Tier 1: Elite&#x27;
+        WHEN pc.wage &gt;= 10000 THEN &#x27;Tier 2: First Team&#x27;
+        WHEN pc.wage &gt;= 2000  THEN &#x27;Tier 3: Rotation&#x27;
+        WHEN pc.wage IS NULL THEN &#x27;No contract / unknown&#x27;
+        ELSE &#x27;Tier 4: Youth / Low cost&#x27;
+    END &quot;Salary band&quot; 
+FROM player_contracts pc
+JOIN players p USING (player_id);</code></pre></figure>
+</section>
+<section id="sec-3">
+<h2><span class="section-no">03&nbsp;</span>CASE and WHERE</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT
+    p.player_name,
+    c.club_name,
+    pc.wage
+FROM players p
+JOIN player_contracts pc USING (player_id)
+JOIN clubs c USING (club_id)
+WHERE
+    pc.wage &gt;
+    CASE
+        WHEN c.club_name IN (&#x27;Real Madrid&#x27;, &#x27;Chelsea&#x27;) THEN 50000
+        ELSE 5000
+    END
+ORDER BY c.club_name, pc.wage DESC;</code></pre></figure>
+</section>
+<section id="sec-4">
+<h2><span class="section-no">04&nbsp;</span>CASE and Maths</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT
+    p.player_name,
+    c.club_name,
+    pc.wage,
+    CASE
+        WHEN pc.wage &lt; 10000 THEN pc.wage * 1.10
+        WHEN pc.wage BETWEEN 10000 AND 50000 THEN pc.wage * 1.05 
+        ELSE pc.wage                                 
+    END &quot;Projected wage&quot;
+FROM players p
+JOIN player_contracts pc USING (player_id)
+JOIN clubs c USING (club_id)
+WHERE pc.wage IS NOT NULL
+ORDER BY c.club_name, pc.wage DESC;</code></pre></figure>
+</section>
+<section id="sec-5">
+<h2><span class="section-no">05&nbsp;</span>CASE and functions</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT
+    c.club_name,
+    ROUND(AVG(pc.wage)) &quot;Average wage&quot;,
+    CASE
+        WHEN AVG(pc.wage) &gt;= 40000 THEN &#x27;High Budget Club&#x27;
+        WHEN AVG(pc.wage) BETWEEN 10000 AND 39999 THEN &#x27;Medium Budget Club&#x27;
+        WHEN AVG(pc.wage) &lt; 10000 THEN &#x27;Low Budget Club&#x27;
+        ELSE &#x27;No Data&#x27;
+    END &quot;Budget category&quot;
+FROM clubs c
+JOIN player_contracts pc USING (club_id)
+WHERE pc.wage IS NOT NULL
+GROUP BY c.club_name
+ORDER BY AVG(pc.wage) DESC;</code></pre></figure>
+</section>
+<section id="sec-6">
+<h2><span class="section-no">06&nbsp;</span>CASE and LIKE</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT
+    p.player_name,
+    CASE
+        WHEN p.player_name LIKE &#x27;%Junior%&#x27; THEN &#x27;Brazilian-style name&#x27;
+        WHEN p.player_name LIKE &#x27;%inho&#x27; THEN &#x27;Brazilian-style name&#x27;
+        ELSE &#x27;Other pattern&#x27;
+    END AS name_pattern
+FROM players p
+ORDER BY 2 ASC;</code></pre></figure>
+</section>
+<section id="sec-7">
+<h2><span class="section-no">07&nbsp;</span>CASE and ORDER BY</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT
+    p.player_name,
+    pa.position,
+    pa.overall
+FROM players p
+JOIN player_attributes pa USING (player_id)
+ORDER BY
+    CASE
+        WHEN pa.position IN (&#x27;ST&#x27;, &#x27;LW&#x27;, &#x27;RW&#x27;, &#x27;CAM&#x27;) THEN 1   -- Attackers
+        WHEN pa.position IN (&#x27;CM&#x27;, &#x27;CDM&#x27;, &#x27;LM&#x27;, &#x27;RM&#x27;) THEN 2   -- Midfielders
+        WHEN pa.position IN (&#x27;CB&#x27;, &#x27;LB&#x27;, &#x27;RB&#x27;, &#x27;RWB&#x27;, &#x27;LWB&#x27;) THEN 3  -- Defenders
+        WHEN pa.position = &#x27;GK&#x27; THEN 4                          -- Goalkeepers
+        ELSE 5                                                  -- Unknown / other
+    END;</code></pre></figure>
+</section>
+<section id="sec-8">
+<h2><span class="section-no">08&nbsp;</span>Single-row subquery</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT
+    p.player_name,
+    pc.wage
+FROM players p
+JOIN player_contracts pc USING (player_id)
+WHERE pc.wage &gt;
+    (SELECT AVG(wage) FROM player_contracts);</code></pre></figure>
+</section>
+<section id="sec-9">
+<h2><span class="section-no">09&nbsp;</span>combining single-row subqueries</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT p.player_name, pc.wage
+FROM players p
+JOIN player_contracts pc USING (player_id)
+WHERE pc.wage &gt; (
+        SELECT MAX(wage) FROM player_contracts WHERE club_id = &#x27;CL137&#x27;  -- Chelsea
+      )
+AND pc.value &gt; (
+        SELECT AVG(value) FROM player_contracts WHERE club_id = &#x27;CL473&#x27;  -- Real Madrid
+      );</code></pre></figure>
+</section>
+<section id="sec-10">
+<h2><span class="section-no">10&nbsp;</span>Exists</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT c.club_id, c.club_name
+FROM clubs c
+WHERE EXISTS (
+    SELECT 1
+    FROM player_contracts pc
+    WHERE pc.club_id = c.club_id --we want a club_id that is also in the clubs table
+      AND pc.wage &gt;= 50000
+);</code></pre></figure>
+</section>
+<section id="sec-11">
+<h2><span class="section-no">11&nbsp;</span>IN</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT
+    p.player_name,
+    c.club_name,
+    pc.wage
+FROM players p
+JOIN player_contracts pc USING (player_id)
+JOIN clubs c USING (club_id)
+WHERE pc.club_id IN (
+    SELECT DISTINCT club_id
+    FROM player_contracts
+    WHERE wage &gt;= 50000
+);</code></pre></figure>
+</section>
+<section id="sec-12">
+<h2><span class="section-no">12&nbsp;</span>NOT IN</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT
+    p.player_name
+FROM players p
+WHERE p.player_id NOT IN (
+    SELECT player_id
+    FROM player_contracts
+);</code></pre></figure>
+</section>
+<section id="sec-13">
+<h2><span class="section-no">13&nbsp;</span>ANY</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT
+    p.player_name,
+    pc.wage
+FROM players p
+JOIN player_contracts pc USING (player_id)
+WHERE pc.wage &gt; ANY (
+    SELECT wage
+    FROM player_contracts
+    WHERE club_id = &#x27;CL137&#x27;   -- Chelsea
+);</code></pre></figure>
+</section>
+<section id="sec-14">
+<h2><span class="section-no">14&nbsp;</span>ALL</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT
+    p.player_name,
+    pc.wage
+FROM players p
+JOIN player_contracts pc USING (player_id)
+WHERE pc.wage &gt; ALL (
+    SELECT wage
+    FROM player_contracts
+    WHERE club_id = &#x27;CL137&#x27;   -- Chelsea
+);</code></pre></figure>
+</section>
+<section id="sec-15">
+<h2><span class="section-no">15&nbsp;</span>DELETE</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>DELETE FROM player_contracts
+WHERE contract_valid_until &lt; 2020;</code></pre></figure>
+</section>
+<section id="sec-16">
+<h2><span class="section-no">16&nbsp;</span>Confirming the DELETE worked</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT * FROM player_contracts WHERE contract_valid_until &lt; 2020;</code></pre></figure>
+</section>
+<section id="sec-17">
+<h2><span class="section-no">17&nbsp;</span>TRUNCATE</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>TRUNCATE TABLE player_attributes;</code></pre></figure>
+</section>
+<section id="sec-18">
+<h2><span class="section-no">18&nbsp;</span>UPDATE</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>UPDATE player_contracts
+SET wage = wage * 1.10
+WHERE wage &lt; 10000;</code></pre></figure>
+</section>
+<section id="sec-19">
+<h2><span class="section-no">19&nbsp;</span>UPDATE with subquery</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>UPDATE player_contracts
+SET wage = (
+    SELECT ROUND(AVG(wage))
+    FROM player_contracts
+    WHERE wage IS NOT NULL
+)
+WHERE wage IS NULL;</code></pre></figure>
+</section>
+    </div>
+  </div>
+</div>
+<script src="../../assets/app.js"></script>
+</body></html>

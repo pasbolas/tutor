@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Creating Data Structures · The Databases Review</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<div class="progress-bar"></div>
+<div class="topbar-mini"><div class="wrap">
+  <a class="mini-logo" href="../../../../">The Databases Review</a>
+  <button class="back-btn" onclick="history.back()" aria-label="Go back">&#8592; Back</button>
+  <div class="crumbs"><a href="../../../../">Home</a><span class="sep">/</span><a href="index.html">Topic 03</a><span class="sep">/</span><span class="current">Creating Data Structures</span></div>
+  <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">&#9789;</button>
+</div></div>
+
+<div class="article-header wrap-narrow">
+  <span class="kicker">Lecture 1 &middot; Topic 03</span>
+  <h1>Creating Data Structures</h1>
+  <p class="dek">How to define tables, columns and data types in PostgreSQL using CREATE TABLE.</p>
+  <div class="byline"><span><b>CMPU2007</b> Databases 1</span><span>8 min read</span><span>25 sections</span></div>
+</div>
+<div class="wrap">
+  <div class="article-body">
+    <nav class="side-toc">
+      <div class="contents-title">Contents</div>
+      <a href="#sec-1" data-target="sec-1"><span class="toc-num">01</span><span class="toc-text">Before we start</span></a><a href="#sec-2" data-target="sec-2"><span class="toc-num">02</span><span class="toc-text">Learning Objectives</span></a><a href="#sec-3" data-target="sec-3"><span class="toc-num">03</span><span class="toc-text">What have we learned so far?</span></a><a href="#sec-4" data-target="sec-4"><span class="toc-num">04</span><span class="toc-text">How do we instruct the DBMS?</span></a><a href="#sec-5" data-target="sec-5"><span class="toc-num">05</span><span class="toc-text">Tables</span></a><a href="#sec-6" data-target="sec-6"><span class="toc-num">06</span><span class="toc-text">Creating a table</span></a><a href="#sec-7" data-target="sec-7"><span class="toc-num">07</span><span class="toc-text">Creating a table - process</span></a><a href="#sec-8" data-target="sec-8"><span class="toc-num">08</span><span class="toc-text">Creating a table - example</span></a><a href="#sec-9" data-target="sec-9"><span class="toc-num">09</span><span class="toc-text">Creating a table - example</span></a><a href="#sec-10" data-target="sec-10"><span class="toc-num">10</span><span class="toc-text">Naming tables</span></a><a href="#sec-11" data-target="sec-11"><span class="toc-num">11</span><span class="toc-text">Key constraints – Primary Key</span></a><a href="#sec-12" data-target="sec-12"><span class="toc-num">12</span><span class="toc-text">Defining a primary key – Column level</span></a><a href="#sec-13" data-target="sec-13"><span class="toc-num">13</span><span class="toc-text">Defining a primary key – table level</span></a><a href="#sec-14" data-target="sec-14"><span class="toc-num">14</span><span class="toc-text">Defining a primary key – naming PK</span></a><a href="#sec-15" data-target="sec-15"><span class="toc-num">15</span><span class="toc-text">IMDb Example</span></a><a href="#sec-16" data-target="sec-16"><span class="toc-num">16</span><span class="toc-text">IMDb Example – movieCast</span></a><a href="#sec-17" data-target="sec-17"><span class="toc-num">17</span><span class="toc-text">Compound primary key</span></a><a href="#sec-18" data-target="sec-18"><span class="toc-num">18</span><span class="toc-text">IMDb structure</span></a><a href="#sec-19" data-target="sec-19"><span class="toc-num">19</span><span class="toc-text">Defining table relationships</span></a><a href="#sec-20" data-target="sec-20"><span class="toc-num">20</span><span class="toc-text">Foreign Keys</span></a><a href="#sec-21" data-target="sec-21"><span class="toc-num">21</span><span class="toc-text">Defining foreign keys</span></a><a href="#sec-22" data-target="sec-22"><span class="toc-num">22</span><span class="toc-text">Foreign keys</span></a><a href="#sec-23" data-target="sec-23"><span class="toc-num">23</span><span class="toc-text">The order of creation</span></a><a href="#sec-24" data-target="sec-24"><span class="toc-num">24</span><span class="toc-text">DROP TABLE</span></a><a href="#sec-25" data-target="sec-25"><span class="toc-num">25</span><span class="toc-text">DROP TABLE - order</span></a>
+    </nav>
+    <div class="prose">
+      <section id="sec-1">
+<h2><span class="section-no">01&nbsp;</span>Before we start</h2>
+<ul>
+<li>Please scan the QR Code and provide your details (name, student number and email address).</li>
+</ul>
+</section>
+<section id="sec-2">
+<h2><span class="section-no">02&nbsp;</span>Learning Objectives</h2>
+<ul>
+<li>Review the main concepts covered last week</li>
+<li>Understand the syntax to create table</li>
+<li>Understand the syntax to connect tables</li>
+<li>Familiarise with the key constraints</li>
+</ul>
+</section>
+<section id="sec-3">
+<h2><span class="section-no">03&nbsp;</span>What have we learned so far?</h2>
+<ul>
+<li>Relational Database</li>
+<ul>
+<li>A collection of related records called rows (consisting of variables called columns), organized into tables</li>
+<li>Tables are connected based on common variables</li>
+<ul>
+<li>Records are related based on having common values for these common variables</li>
+</ul>
+</ul>
+<li>Database Management System (DBMS)</li>
+<ul>
+<li>System software that allows us to manage the content/information stored in a database</li>
+</ul>
+</ul>
+</section>
+<section id="sec-4">
+<h2><span class="section-no">04&nbsp;</span>How do we instruct the DBMS?</h2>
+<ul>
+<li>SQL (Structured Query Language)</li>
+<li>Includes:</li>
+<ul>
+<li>Data Manipulation Language (DML)</li>
+<li>Data Definition Language (DDL)</li>
+</ul>
+<li>Before we can manipulate data, we need to</li>
+<ul>
+<li>Define the data structure</li>
+<li>Populate the data adhering to the constraints (outlined in the meta-data)</li>
+</ul>
+</ul>
+<ul>
+<li>SQL is case-insensitive – to the DBMS, CREATE or create means the same</li>
+<li>However, there is a need to work on some convention in case other developers need to read your code</li>
+<li>To practice that, we will write SQL keywords in uppercase letters, data type in uppercase letters, and table names and properties in lowercase letters.</li>
+</ul>
+</section>
+<section id="sec-5">
+<h2><span class="section-no">05&nbsp;</span>Tables</h2>
+<ul>
+<li>Fundamental structure in the relational model</li>
+<li>Organised collection of symbols</li>
+<li>Organised into rows and columns</li>
+</ul>
+</section>
+<section id="sec-6">
+<h2><span class="section-no">06&nbsp;</span>Creating a table</h2>
+<ul>
+<li>A table is an object that can store data in a database.</li>
+<li>You will create a table for each ‘thing’ you want to store data about.</li>
+<li>When you create a table, you must specify:</li>
+<ul>
+<li>the table name,</li>
+<li>the name of each column,</li>
+<li>the data type of each column,</li>
+<li>the size of each column</li>
+<li>any constraints on the data that each column can contain</li>
+</ul>
+</ul>
+</section>
+<section id="sec-7">
+<h2><span class="section-no">07&nbsp;</span>Creating a table - process</h2>
+<ul>
+<li>Sometimes, we want to create a table that already exists</li>
+<li>If you are sure you do not need a table with that name, use the DROP TABLE DDL statement before creating the new table</li>
+<li>In Postgres, it is good practice to use DROP TABLE IF EXISTS. This statement will check if the table exists before trying to drop it.</li>
+<li>It is good practice to drop tables in the opposite order they were created</li>
+<li>Do not forget to comment on your code to make it clearer. Double dash (--) is used for single-line comments, while /* */is used to enclose multi-line comments.</li>
+</ul>
+</section>
+<section id="sec-8">
+<h2><span class="section-no">08&nbsp;</span>Creating a table - example</h2>
+<ul>
+<li>Suppose we want to model a very basic version of IMDb (Internet Movie Database)</li>
+</ul>
+<ul>
+<li>We want to store data about movies and actors</li>
+<li>We need TWO basic tables: movies and actors</li>
+<li>Let’s work on it together. Open DBeaver on your laptop or use the https://onecompiler.com/postgresql website to create the tables. Consider:</li>
+<ul>
+<li>What commands will you use?</li>
+<li>What columns will you include?</li>
+<li>Which of these columns will be the unique identifier?</li>
+<li>What types of data will you insert?</li>
+</ul>
+</ul>
+<ul>
+<li>What piece of data is unique?</li>
+</ul>
+<p>For <b>Movies</b>: movieId, movieTitle, releaseYear, Director, Budget, Profit. For <b>Actors</b>: actorId, actorName.</p>
+</section>
+<section id="sec-9">
+<h2><span class="section-no">09&nbsp;</span>Creating a table - example</h2>
+<p>Here's the movies and actors tables written out in SQL:</p>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>CREATE TABLE movies (movieId SERIAL PRIMARY KEY, movieTitle VARCHAR(50), releaseYear INT, director VARCHAR(30), budget INT, profit INT);
+CREATE TABLE actors (actorId SERIAL PRIMARY KEY, actorName VARCHAR(30));</code></pre></figure>
+</section>
+<section id="sec-10">
+<h2><span class="section-no">10&nbsp;</span>Naming tables</h2>
+<ul>
+<li>The table name</li>
+<ul>
+<li>Call your table a name that is short and sensible.</li>
+<li>Reflect the names in your design.</li>
+</ul>
+<li>Table names and column names:</li>
+<ul>
+<li>Must begin with a letter</li>
+<li>Must be 1–30 characters long</li>
+<li>Must contain characters between A–Z, a–z, 0–9, _, $, and # (no spaces, hyphens (-), or quotation marks)</li>
+<li>Must not duplicate the name of another object owned by the same user</li>
+<li>Must not be a PostgreSQL server reserved word</li>
+</ul>
+</ul>
+</section>
+<section id="sec-11">
+<h2><span class="section-no">11&nbsp;</span>Key constraints – Primary Key</h2>
+<ul>
+<li>Column or a set of columns that uniquely identify a specific instance of the thing a table represents</li>
+<li>Every entity in the data model must have a primary key whose values uniquely identify instances of the entity.</li>
+<li>The primary key enforces entity integrity by uniquely identifying entity instances.</li>
+</ul>
+<ul>
+<li>To qualify as a primary key, a column must have the following properties:</li>
+<ul>
+<li>it must have a non-null value for each instance of the entity</li>
+<li>the value must be unique for each instance of an entity</li>
+<li>the values must not change or become null during the life of each entity instance</li>
+<li>Can you think of a real-life example?</li>
+</ul>
+</ul>
+<ul>
+<li>Let&#x27;s assume that for each employee in an organisation, there are three candidate keys:</li>
+<ul>
+<li>Employee ID, PPS Number, and Name.</li>
+<li>Which one we should pick as the primary key?</li>
+</ul>
+</ul>
+</section>
+<section id="sec-12">
+<h2><span class="section-no">12&nbsp;</span>Defining a primary key – Column level</h2>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>CREATE TABLE Actor(
+actorID SERIAL PRIMARY KEY,
+actorName VARCHAR(30)
+);</code></pre></figure>
+<ul>
+<li>The primary key can be defined at a column level, inserting the keywords PRIMARY KEY in line with the chosen column.</li>
+</ul>
+</section>
+<section id="sec-13">
+<h2><span class="section-no">13&nbsp;</span>Defining a primary key – table level</h2>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>CREATE TABLE Actor(
+actorID SERIAL,
+actorName VARCHAR(30),
+PRIMARY KEY (actorID)
+);</code></pre></figure>
+<ul>
+<li>The primary key can also be defined at the table level, adding the information to the end of the SQL DDL query.</li>
+</ul>
+</section>
+<section id="sec-14">
+<h2><span class="section-no">14&nbsp;</span>Defining a primary key – naming PK</h2>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>CREATE TABLE Actor(
+actorID SERIAL,
+actorName VARCHAR(30),
+CONSTRAINT actors_pk PRIMARY KEY (actorID)
+);</code></pre></figure>
+<ul>
+<li>It is also possible to give a name to the primary key constraint. This action facilitates maintenance and allows informative error messages.</li>
+</ul>
+</section>
+<section id="sec-15">
+<h2><span class="section-no">15&nbsp;</span>IMDb Example</h2>
+<ul>
+<li>We have now created data structures</li>
+<ul>
+<li>Two basic tables</li>
+</ul>
+<li>Each table represents one thing we want to store data about (Movie and Actor)</li>
+<li>Each table has a set of columns which define the type of data we want to store about the thing the table represents</li>
+<li>Each table has a primary key defined through which we can retrieve specific rows of data</li>
+<li>However, we do not have a mechanism to store data about a movie cast, i.e. the actors who appeared in a movie</li>
+</ul>
+<ul>
+<li>Title: Jumanji: Welcome to the Jungle</li>
+<li>Year: 2017</li>
+<li>Director: Jake Kasdan</li>
+<li>Budget: 90 million</li>
+<li>Profit: 962,077,546</li>
+<li>Dwayne Johnson is part of the cast</li>
+</ul>
+<ul>
+<li>What else has Dwayne Johnson appeared in?</li>
+</ul>
+</section>
+<section id="sec-16">
+<h2><span class="section-no">16&nbsp;</span>IMDb Example – movieCast</h2>
+<ul>
+<li>Suppose we include the actorID and name of the character played on the Movies table</li>
+<li>Our primary key is now incorrect</li>
+<li>We would have multiple rows of data for each movie</li>
+<ul>
+<li>One for every actor who appeared in the movie</li>
+<li>We would be storing the movieId, movie title, year, director, budget and profit on each row</li>
+<li>This is wasteful and, if we need to change something, we have to change it all</li>
+</ul>
+</ul>
+<ul>
+<li>The resulting table is redundant.</li>
+</ul>
+<ul>
+<li>Possible solution: introduce the table Cast</li>
+<li>It has the attributes movieId, actorId and role name</li>
+<li>What should our primary key be?</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>CREATE TABLE cast(
+movieID SERIAL,
+actorID SERIAL,
+rolePlayed VARCHAR(50)
+);</code></pre></figure>
+</section>
+<section id="sec-17">
+<h2><span class="section-no">17&nbsp;</span>Compound primary key</h2>
+<ul>
+<li>Suppose we decide that the combination of movieID and actorID is unique</li>
+<li>We need a Compound Primary Key</li>
+<li>Remember: Compound primary keys can only be created at the table level</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>CREATE TABLE movieCast(
+movieID SERIAL,
+actorID SERIAL,
+rolePlayed VARCHAR(50),
+PRIMARY KEY (movieID, actorID)
+);</code></pre></figure>
+</section>
+<section id="sec-18">
+<h2><span class="section-no">18&nbsp;</span>IMDb structure</h2>
+<ul>
+<li>Three tables:</li>
+<li>movieCast has a common data element with movies (movieId)</li>
+<li>movieCast has a common data element with actors (actorId)</li>
+<li>We must ensure this is expressed in the metadata to protect our data’s integrity.</li>
+</ul>
+<p>The three tables so far: movies, actors, and movieCast.</p>
+</section>
+<section id="sec-19">
+<h2><span class="section-no">19&nbsp;</span>Defining table relationships</h2>
+<ul>
+<li>Foreign keys define relationships between tables</li>
+<li>A foreign key is a constraint that establishes a link between two tables by ensuring that the values in one table&#x27;s column(s) match the values in another table&#x27;s primary key column(s). That happens when a column of one table is the same as the primary key of another</li>
+<li>So we need to include something in our CREATE statement for movieCast to indicate which attribute is the foreign key</li>
+</ul>
+</section>
+<section id="sec-20">
+<h2><span class="section-no">20&nbsp;</span>Foreign Keys</h2>
+<ul>
+<li>We know that Cast has two foreign keys: actorID and movieID</li>
+</ul>
+</section>
+<section id="sec-21">
+<h2><span class="section-no">21&nbsp;</span>Defining foreign keys</h2>
+<ul>
+<li>To define a foreign key between two tables, we declare the foreign key at a table level (after declaring the columns) and state from which table we are retrieving the data.</li>
+<li>FOREIGN KEY: Defines the column in the child table at the table-constraint level</li>
+<li>REFERENCES: Identifies the table and column in the parent table</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>CREATE TABLE movieCast(
+movieID SERIAL,
+actorID SERIAL,
+rolePlayed VARCHAR(50),
+CONSTRAINT cast_actor_fk FOREIGN KEY (actorId) REFERENCES actors (actorID),
+CONSTRAINT cast_movie_fk FOREIGN KEY (movieId) REFERENCES movies (movieID),
+PRIMARY KEY (movieID, actorID));</code></pre></figure>
+</section>
+<section id="sec-22">
+<h2><span class="section-no">22&nbsp;</span>Foreign keys</h2>
+<ul>
+<li>Foreign keys provide a method for maintaining integrity in the data (called referential integrity) and navigating between different instances of an entity.</li>
+<li>Every relationship between tables must be supported by a foreign key.</li>
+<li>Foreign key attributes are indicated by the notation (FK) beside them on database models.</li>
+</ul>
+</section>
+<section id="sec-23">
+<h2><span class="section-no">23&nbsp;</span>The order of creation</h2>
+<ul>
+<li>We need to create the tables in order</li>
+<ul>
+<li>Movie</li>
+<li>Actor</li>
+<li>Cast</li>
+</ul>
+<li>Why?</li>
+</ul>
+<ul>
+<li>First</li>
+<ul>
+<li>Create tables that have no dependencies</li>
+</ul>
+<li>Second</li>
+<ul>
+<li>Create tables that depend on those tables but only have one dependency</li>
+</ul>
+<li>Third</li>
+<ul>
+<li>Create tables with multiple dependencies</li>
+</ul>
+</ul>
+</section>
+<section id="sec-24">
+<h2><span class="section-no">24&nbsp;</span>DROP TABLE</h2>
+<ul>
+<li>All data and structure in the table are deleted.</li>
+<li>Any pending TRANSACTION is committed.</li>
+<li>All indexes are dropped.</li>
+<li>All constraints are dropped.</li>
+<li>Once the table is dropped, there is no turning back</li>
+</ul>
+</section>
+<section id="sec-25">
+<h2><span class="section-no">25&nbsp;</span>DROP TABLE - order</h2>
+<ul>
+<li>The order used to drop the table also matters.</li>
+<li>We should drop tables in the opposite order they were created</li>
+<li>If we try to drop a table that contains a column that is a foreign key in another existing table, we get an error</li>
+<li>First, delete tables with multiple dependencies, then tables with no dependencies</li>
+</ul>
+<ul>
+<li>When we create a set of SQL in a script to create and insert data, we include statements to drop the tables at the start of that script</li>
+<li>This will make sure our script clears out any old versions of our tables</li>
+<li>If no tables exist, then we will get an error message</li>
+<li>You can also use DROP TABLE IF EXISTS to skip that message</li>
+</ul>
+</section>
+    </div>
+  </div>
+</div>
+<script src="../../assets/app.js"></script>
+</body></html>

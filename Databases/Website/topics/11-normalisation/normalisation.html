@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Normalisation · The Databases Review</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<div class="progress-bar"></div>
+<div class="topbar-mini"><div class="wrap">
+  <a class="mini-logo" href="../../../../">The Databases Review</a>
+  <button class="back-btn" onclick="history.back()" aria-label="Go back">&#8592; Back</button>
+  <div class="crumbs"><a href="../../../../">Home</a><span class="sep">/</span><a href="index.html">Topic 11</a><span class="sep">/</span><span class="current">Normalisation</span></div>
+  <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">&#9789;</button>
+</div></div>
+
+<div class="article-header wrap-narrow">
+  <span class="kicker">Lecture 9 &middot; Topic 11</span>
+  <h1>Normalisation</h1>
+  <p class="dek">Why unnormalised tables cause anomalies, and how the normal forms fix them.</p>
+  <div class="byline"><span><b>CMPU2007</b> Databases 1</span><span>8 min read</span><span>25 sections</span></div>
+</div>
+<div class="wrap">
+  <div class="article-body">
+    <nav class="side-toc">
+      <div class="contents-title">Contents</div>
+      <a href="#sec-1" data-target="sec-1"><span class="toc-num">01</span><span class="toc-text">Data model</span></a><a href="#sec-2" data-target="sec-2"><span class="toc-num">02</span><span class="toc-text">Data design – start at the conceptual level</span></a><a href="#sec-3" data-target="sec-3"><span class="toc-num">03</span><span class="toc-text">Entity Relationship Diagram (ERD)</span></a><a href="#sec-4" data-target="sec-4"><span class="toc-num">04</span><span class="toc-text">ERD components</span></a><a href="#sec-5" data-target="sec-5"><span class="toc-num">05</span><span class="toc-text">Entity</span></a><a href="#sec-6" data-target="sec-6"><span class="toc-num">06</span><span class="toc-text">Attribute</span></a><a href="#sec-7" data-target="sec-7"><span class="toc-num">07</span><span class="toc-text">Relationship</span></a><a href="#sec-8" data-target="sec-8"><span class="toc-num">08</span><span class="toc-text">ERD - Structures and relationships</span></a><a href="#sec-9" data-target="sec-9"><span class="toc-num">09</span><span class="toc-text">Conceptual model</span></a><a href="#sec-10" data-target="sec-10"><span class="toc-num">10</span><span class="toc-text">Logical model</span></a><a href="#sec-11" data-target="sec-11"><span class="toc-num">11</span><span class="toc-text">Physical model</span></a><a href="#sec-12" data-target="sec-12"><span class="toc-num">12</span><span class="toc-text">Data redundancy</span></a><a href="#sec-13" data-target="sec-13"><span class="toc-num">13</span><span class="toc-text">Key constraints – Foreign key</span></a><a href="#sec-14" data-target="sec-14"><span class="toc-num">14</span><span class="toc-text">Normalisation</span></a><a href="#sec-15" data-target="sec-15"><span class="toc-num">15</span><span class="toc-text">Data anomalies</span></a><a href="#sec-16" data-target="sec-16"><span class="toc-num">16</span><span class="toc-text">First normal form (1NF)</span></a><a href="#sec-17" data-target="sec-17"><span class="toc-num">17</span><span class="toc-text">Second normal form (2NF)</span></a><a href="#sec-18" data-target="sec-18"><span class="toc-num">18</span><span class="toc-text">Third normal form (3NF)</span></a><a href="#sec-19" data-target="sec-19"><span class="toc-num">19</span><span class="toc-text">Transitive dependencies</span></a><a href="#sec-20" data-target="sec-20"><span class="toc-num">20</span><span class="toc-text">Normalisation</span></a><a href="#sec-21" data-target="sec-21"><span class="toc-num">21</span><span class="toc-text">What are normal forms?</span></a><a href="#sec-22" data-target="sec-22"><span class="toc-num">22</span><span class="toc-text">1NF</span></a><a href="#sec-23" data-target="sec-23"><span class="toc-num">23</span><span class="toc-text">2NF</span></a><a href="#sec-24" data-target="sec-24"><span class="toc-num">24</span><span class="toc-text">3NF</span></a><a href="#sec-25" data-target="sec-25"><span class="toc-num">25</span><span class="toc-text">Process of data normalisation</span></a>
+    </nav>
+    <div class="prose">
+      <section id="sec-1">
+<h2><span class="section-no">01&nbsp;</span>Data model</h2>
+<ul>
+<li>Model in client’s mind</li>
+</ul>
+<ul>
+<li>Logical model</li>
+</ul>
+<ul>
+<li>Tables on the disk</li>
+</ul>
+<ul>
+<li>Databases server</li>
+</ul>
+<ul>
+<li>Physical model</li>
+</ul>
+</section>
+<section id="sec-2">
+<h2><span class="section-no">02&nbsp;</span>Data design – start at the conceptual level</h2>
+<ul>
+<li>Figuring out what information purposes the database is to serve:</li>
+<ul>
+<li>What questions do the users need to be able to ask of the database?</li>
+<li>What pieces of data make up this information? What type of data is it?</li>
+<li>What things do these pieces of data describe?</li>
+<li>How the things we want to store data about can be linked together to provide the information needed?</li>
+</ul>
+<li>The result is the Logical Data Model.</li>
+</ul>
+</section>
+<section id="sec-3">
+<h2><span class="section-no">03&nbsp;</span>Entity Relationship Diagram (ERD)</h2>
+<ul>
+<li>An Entity Relationship Diagram (ERD) shows how different entities (such as people, customers, or other objects) relate to each other in an application or a database.</li>
+</ul>
+</section>
+<section id="sec-4">
+<h2><span class="section-no">04&nbsp;</span>ERD components</h2>
+<ul>
+<li>An Entity Relationship Diagram is made up of many different components:</li>
+<li>Entity</li>
+<li>Attribute</li>
+<li>Relationship</li>
+</ul>
+</section>
+<section id="sec-5">
+<h2><span class="section-no">05&nbsp;</span>Entity</h2>
+<ul>
+<li>The entity is a thing or object of interest to the organisation being modelled. For instance, a person, a place, an object, an event, a concept</li>
+<li>Something about which data needs to be stored to fulfil some function</li>
+<li>Possible Entities:</li>
+<ul>
+<li>Obvious physical things</li>
+<li>Persons, places, objects</li>
+<li>Transactions or events</li>
+<li>Orders, Sales, Hospital Admissions, reservation</li>
+<li>Plan, Schedule, Account, Course, Fund</li>
+</ul>
+</ul>
+</section>
+<section id="sec-6">
+<h2><span class="section-no">06&nbsp;</span>Attribute</h2>
+<ul>
+<li>An entity is represented by a set of attributes, which are descriptive properties possessed by all members of an entity set.</li>
+<li>Attribute of an entity can be:</li>
+<ul>
+<li>pieces of data we want to store about an entity</li>
+<li>a descriptive property or characteristic of an entity</li>
+</ul>
+<li>We only want to record attributes that are of significance to the organisation</li>
+<li>The value of an attribute is the value of that attribute for a particular entity occurrence (or instance)</li>
+</ul>
+</section>
+<section id="sec-7">
+<h2><span class="section-no">07&nbsp;</span>Relationship</h2>
+<ul>
+<li>A relationship in an ERD defines how two entities are related to each other. There are several types of relationships that are represented on an ERD:</li>
+<li>One-to-one: One record of an entity is directly related to another record of an entity</li>
+<li>One-to-many: One record of an entity is related to one or more records of another entity.</li>
+<li>Many to many: Many records of one entity can be related to many records of another entity.</li>
+</ul>
+</section>
+<section id="sec-8">
+<h2><span class="section-no">08&nbsp;</span>ERD - Structures and relationships</h2>
+<ul>
+<li>So what are we doing when building an ERD?</li>
+<li>We are defining the structure of entities and the pattern of relationships between them</li>
+<li>When we implement that structure and pattern in a physical database then we can populate it with instances of the entity</li>
+</ul>
+<ul>
+<li>It is implementation independent of the DBMS</li>
+<li>You can implement the same conceptual model in any relational database (PostgreSQL, Oracle etc.)</li>
+<li>There may be small implementation differences, but the structure and relationships will be the same</li>
+<li>An Entity Relationship Diagram can be drawn at three different levels:</li>
+<ul>
+<li>Conceptual</li>
+<li>Logical</li>
+<li>Physical</li>
+</ul>
+</ul>
+</section>
+<section id="sec-9">
+<h2><span class="section-no">09&nbsp;</span>Conceptual model</h2>
+<ul>
+<li>A high level representation of the model showing the main entities (which may not end up as tables) mapped from design requirements</li>
+</ul>
+</section>
+<section id="sec-10">
+<h2><span class="section-no">10&nbsp;</span>Logical model</h2>
+<ul>
+<li>A logical model is a more detailed version of a conceptual data model. Attributes are added to each entity, and further entities can be added that represent areas to capture data in the system.</li>
+</ul>
+</section>
+<section id="sec-11">
+<h2><span class="section-no">11&nbsp;</span>Physical model</h2>
+<ul>
+<li>The physical data model is the most detailed data model in this process. It defines a set of tables and columns and how they relate to each other. It includes primary and foreign keys, as well as the data types for each column.</li>
+</ul>
+<ul>
+<li>Building the model right:</li>
+<li>Translating your logical model into the relational model</li>
+<li>Understanding the rules</li>
+<li>Eliminating redundancy</li>
+<li>From which the physical database can be built</li>
+</ul>
+</section>
+<section id="sec-12">
+<h2><span class="section-no">12&nbsp;</span>Data redundancy</h2>
+<ul>
+<li>Duplication of data in separate tables</li>
+<li>Leads to waste and potential inconsistency</li>
+<li>How to overcome this?</li>
+</ul>
+</section>
+<section id="sec-13">
+<h2><span class="section-no">13&nbsp;</span>Key constraints – Foreign key</h2>
+<ul>
+<li>An attribute of one table that represents the relationship between this table and another</li>
+<li>The attribute is the primary key of the other table</li>
+<li>Foreign keys provide a method for maintaining integrity in the data (called referential integrity) and for navigating between different instances of an entity.</li>
+<li>Every relationship between tables must be supported by a foreign key.</li>
+<li>Foreign keys attributes are indicated by the notation (FK) beside them on database models.</li>
+</ul>
+</section>
+<section id="sec-14">
+<h2><span class="section-no">14&nbsp;</span>Normalisation</h2>
+<ul>
+<li>A formal process involves reflecting on tables, attributes, and relationships to be created when developing a database most efficiently.</li>
+<li>The objective of normalisation is to create relations where every dependency is on the key, the whole key, and nothing but the key.</li>
+<li>Normalisation reduces data redundancy and increases data integrity, making it easier to save space on the server and maintain and access the data</li>
+</ul>
+</section>
+<section id="sec-15">
+<h2><span class="section-no">15&nbsp;</span>Data anomalies</h2>
+<ul>
+<li>Normalisation came as a solution to data anomalies, like data redundancy, which takes memory space and make it hard to manage the data.</li>
+<li>There are three types of anomalies:</li>
+<ul>
+<li>Update anomalies: happen when the data is stored redundantly in the same table and someone when trying to update the data, misses some of the values.</li>
+<li>Insertion anomalies: happen when inserting vital data into the database is not possible because other data is not there.</li>
+<li>Deletion anomalies: happen when the deletion of unwanted information causes desired information to be deleted as well.</li>
+</ul>
+</ul>
+</section>
+<section id="sec-16">
+<h2><span class="section-no">16&nbsp;</span>First normal form (1NF)</h2>
+<ul>
+<li>Each cell should contain a single value (atomic value)</li>
+<li>All values in a column should be of the same type</li>
+<li>Each column should be uniquely identified</li>
+</ul>
+<ul>
+<li>In the following table, we have cells containing more than one value.</li>
+</ul>
+<ul>
+<li>How can we fix it?</li>
+</ul>
+</section>
+<section id="sec-17">
+<h2><span class="section-no">17&nbsp;</span>Second normal form (2NF)</h2>
+<ul>
+<li>For a table to be in 2NF:</li>
+<ul>
+<li>The database is in its first normal form (1NF)</li>
+<li>Every attribute should be dependent on the primary key</li>
+</ul>
+</ul>
+<ul>
+<li>Here, our potential key = (InvoiceID, ProductLine).</li>
+<li>Attributes that depend only on InvoiceID move to an Invoice table.</li>
+</ul>
+<ul>
+<ul>
+<li>Invoice table</li>
+</ul>
+</ul>
+<ul>
+<ul>
+<li>InvoiceItems</li>
+</ul>
+</ul>
+</section>
+<section id="sec-18">
+<h2><span class="section-no">18&nbsp;</span>Third normal form (3NF)</h2>
+<ul>
+<li>For a table to be in 3NF, there are two requirements:</li>
+<ul>
+<li>The table should be in the second normal form.</li>
+<li>All attributes should be determined (dependent) on the primary key and no other column. This means no attribute should be transitively dependent on the primary key. That happens when an attribute is not directly dependent on the primary key, but of another non-key attribute.</li>
+</ul>
+</ul>
+</section>
+<section id="sec-19">
+<h2><span class="section-no">19&nbsp;</span>Transitive dependencies</h2>
+<ul>
+<li>We still have transitive dependencies:</li>
+<ul>
+<li>InvoiceID → CustomerName → City: city depends on the customer, not directly on the invoice.</li>
+<li>(InvoiceID, ProductLine) → ProductLine → UnitPrice: the price depends only on the product, not on the invoice.</li>
+<li>(InvoiceID, ProductLine) → (UnitPrice, Quantity) → Total: Total is derived from other non-key attributes (price × quantity).</li>
+</ul>
+</ul>
+</section>
+<section id="sec-20">
+<h2><span class="section-no">20&nbsp;</span>Normalisation</h2>
+<ul>
+<li>There are up to six normal forms available. It is recommended we try to normalise the database up to the 3NF.</li>
+<li>We can keep dividing the tables more and more – however, we need to always reflect on how necessary those divisions are</li>
+</ul>
+<ul>
+<li>Database normalisation:</li>
+<ul>
+<li>makes the database more efficient.</li>
+<li>prevents the same data from being stored in more than one place (called an “insert anomaly”)</li>
+<li>prevents updates from being made to some data but not others (called an “update anomaly”)</li>
+<li>prevents data not being deleted when it is supposed to be or data from being lost when it is not supposed to be (called a “delete anomaly”)</li>
+<li>ensures the data is accurate</li>
+<li>reduces the storage space that a database takes up</li>
+<li>ensures the queries on a database run as fast as possible</li>
+</ul>
+</ul>
+</section>
+<section id="sec-21">
+<h2><span class="section-no">21&nbsp;</span>What are normal forms?</h2>
+<ul>
+<li>The process of normalisation involves applying rules to a set of data. Each of these rules transforms the data to a certain structure, called a normal form.</li>
+<li>There are three main normal forms that you should consider</li>
+<li>Whenever the first rule is applied, the data is in “first normal form“. Then, the second rule is applied and the data is in “second normal form“. The third rule is then applied and the data is in “third normal form“.</li>
+</ul>
+</section>
+<section id="sec-22">
+<h2><span class="section-no">22&nbsp;</span>1NF</h2>
+<ul>
+<li>If repeating groups are present, they have to be broken down into individuals’ records and a primary key has to be assigned.</li>
+<li>In the example above, we need to find a key for the table.</li>
+<li>The composite key StudentID + CourseID + ExamDate is unique and it will represent our primary key.</li>
+</ul>
+</section>
+<section id="sec-23">
+<h2><span class="section-no">23&nbsp;</span>2NF</h2>
+<ul>
+<li>A partial dependency is a dependency between a non-key field (a field that is not part of the primary key) and a field that is part of the primary key.</li>
+<li>For instance, in our example, the student name depends on the studentID.</li>
+<li>The studentID is enough to tell us studentName. We do not need to know the full table key (StudentID+CourseID+ExamDate).</li>
+</ul>
+<ul>
+<li>In the second normal form, the starting table most likely has to be divided in smaller tables so that every field in each table depends on the full primary key of that table.</li>
+<li>In this way the partial dependencies are removed.</li>
+</ul>
+<ul>
+<li>StudentID -&gt; StudentName, StudentAge, Student Nationality (if I know the studentID, I can know the StudentName, StudentAge and Student Nationality)</li>
+<li>CourseID -&gt; Course Description, Course ECTS (if I know the CourseID, I can know the Course Description and the ECTS (European credits).</li>
+<li>StudentID, CourseID, ExamDate -&gt; ExamMarks (if I know the studentID+CourseID+ExamDate, I can know the marks the student got for that exam that day).</li>
+</ul>
+</section>
+<section id="sec-24">
+<h2><span class="section-no">24&nbsp;</span>3NF</h2>
+<ul>
+<li>In the third normal form we need to ensure that every attribute that is not the primary key must depend on the primary key and the primary key only.</li>
+<li>The set of the three tables in our example have no transitive dependencies and are already in the third normal form.</li>
+<li>We can stop the normalisation process here.</li>
+</ul>
+</section>
+<section id="sec-25">
+<h2><span class="section-no">25&nbsp;</span>Process of data normalisation</h2>
+<ul>
+<li>ELIMINATE REPEATING GROUPS</li>
+<ul>
+<li>Make a separate table for each set of related attributes and give each table a primary key.</li>
+</ul>
+<li>ELIMINATE REDUNDANT DATA</li>
+<ul>
+<li>If an attribute/column depends on only part of a multivalued key, remove it to a separate table.</li>
+</ul>
+<li>ELIMINATE COLUMNS NOT DEPENDENT ON KEY</li>
+<ul>
+<li>If attributes/columns do not contribute to a description of the key, remove them to a separate table.</li>
+<li>Everything should depend on the key the whole key and nothing but the key.</li>
+</ul>
+</ul>
+</section>
+    </div>
+  </div>
+</div>
+<script src="../../assets/app.js"></script>
+</body></html>

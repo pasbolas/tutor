@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Number and Date Functions, and NULLs · The Databases Review</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<div class="progress-bar"></div>
+<div class="topbar-mini"><div class="wrap">
+  <a class="mini-logo" href="../../../../">The Databases Review</a>
+  <button class="back-btn" onclick="history.back()" aria-label="Go back">&#8592; Back</button>
+  <div class="crumbs"><a href="../../../../">Home</a><span class="sep">/</span><a href="index.html">Topic 08</a><span class="sep">/</span><span class="current">Number and Date Functions, and NULLs</span></div>
+  <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">&#9789;</button>
+</div></div>
+
+<div class="article-header wrap-narrow">
+  <span class="kicker">Lecture 5 &middot; Topic 08</span>
+  <h1>Number and Date Functions, and NULLs</h1>
+  <p class="dek">Rounding numbers, working with dates, and handling NULL values safely.</p>
+  <div class="byline"><span><b>CMPU2007</b> Databases 1</span><span>14 min read</span><span>20 sections</span></div>
+</div>
+<div class="wrap">
+  <div class="article-body">
+    <nav class="side-toc">
+      <div class="contents-title">Contents</div>
+      <a href="#sec-1" data-target="sec-1"><span class="toc-num">01</span><span class="toc-text">Single-row functions, recap</span></a><a href="#sec-2" data-target="sec-2"><span class="toc-num">02</span><span class="toc-text">nullif(x,y)</span></a><a href="#sec-3" data-target="sec-3"><span class="toc-num">03</span><span class="toc-text">coalesce( )</span></a><a href="#sec-4" data-target="sec-4"><span class="toc-num">04</span><span class="toc-text">greatest( )</span></a><a href="#sec-5" data-target="sec-5"><span class="toc-num">05</span><span class="toc-text">least( )</span></a><a href="#sec-6" data-target="sec-6"><span class="toc-num">06</span><span class="toc-text">Number functions</span></a><a href="#sec-7" data-target="sec-7"><span class="toc-num">07</span><span class="toc-text">Using the ROUND Function</span></a><a href="#sec-8" data-target="sec-8"><span class="toc-num">08</span><span class="toc-text">Using the TRUNC Function</span></a><a href="#sec-9" data-target="sec-9"><span class="toc-num">09</span><span class="toc-text">Mod</span></a><a href="#sec-10" data-target="sec-10"><span class="toc-num">10</span><span class="toc-text">abs( )</span></a><a href="#sec-11" data-target="sec-11"><span class="toc-num">11</span><span class="toc-text">Working with Dates - formatting</span></a><a href="#sec-12" data-target="sec-12"><span class="toc-num">12</span><span class="toc-text">Working with Dates – current time</span></a><a href="#sec-13" data-target="sec-13"><span class="toc-num">13</span><span class="toc-text">Arithmetic with Dates</span></a><a href="#sec-14" data-target="sec-14"><span class="toc-num">14</span><span class="toc-text">Conversion Functions</span></a><a href="#sec-15" data-target="sec-15"><span class="toc-num">15</span><span class="toc-text">Cast( )</span></a><a href="#sec-16" data-target="sec-16"><span class="toc-num">16</span><span class="toc-text">Using the TO_CHAR Function with Dates</span></a><a href="#sec-17" data-target="sec-17"><span class="toc-num">17</span><span class="toc-text">Date Format of to_char</span></a><a href="#sec-18" data-target="sec-18"><span class="toc-num">18</span><span class="toc-text">Using the TO_CHAR Function with Numbers</span></a><a href="#sec-19" data-target="sec-19"><span class="toc-num">19</span><span class="toc-text">Create your own function (PL/pgSQL)</span></a><a href="#sec-20" data-target="sec-20"><span class="toc-num">20</span><span class="toc-text">Syntax</span></a>
+    </nav>
+    <div class="prose">
+
+<section id="sec-1">
+<h2><span class="section-no">01&nbsp;</span>Single-row functions, recap</h2>
+<p>Single-row functions run once per row and return one result per row. Last lecture covered character functions. This lecture covers the rest of the set:</p>
+<ul>
+<li><b>Number functions</b> &mdash; accept numeric input, return a numeric value.</li>
+<li><b>Date functions</b> &mdash; operate on the DATE data type. Every date function returns a DATE, except MONTHS_BETWEEN, which returns a number.</li>
+<li><b>Conversion functions</b> &mdash; convert a value from one data type to another.</li>
+<li><b>General functions</b> &mdash; handle NULLs, or pick a return value based on a condition: NVL, NVL2, NULLIF, COALESCE, CASE, DECODE.</li>
+</ul>
+<blockquote class="pull">Lecturer&#8217;s note
+Number functions accept numeric input and return numeric values. This section covers only some of the available number functions &mdash; see &#8220;Number Functions&#8221; in the Oracle SQL Reference for the full list.<cite>Lecturer&#8217;s note</cite></blockquote>
+</section>
+
+<section id="sec-2">
+<h2><span class="section-no">02&nbsp;</span>nullif(x,y)</h2>
+<p>NULLIF takes two arguments and returns NULL if they're equal. Otherwise it returns the first argument. It's useful when you want to replace one specific value with NULL, for example to hide a value you don't want the user to see.</p>
+<p>Suppose we don't want the user to see SFI as one of the sponsors:</p>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT sponsor, nullif(sponsor, 'SFI') FROM grant_funding;</code></pre></figure>
+</section>
+
+<section id="sec-3">
+<h2><span class="section-no">03&nbsp;</span>coalesce( )</h2>
+<p>COALESCE handles NULLs by returning the first non-NULL value from a list of expressions or columns. It gives you a default, or fallback, value whenever NULL turns up in the data.</p>
+<p>Suppose we want the scientist's date of birth, and to fall back to their first name if that date is missing:</p>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT coalesce(birth_date::text, firstname) FROM scientist;</code></pre></figure>
+</section>
+
+<section id="sec-4">
+<h2><span class="section-no">04&nbsp;</span>greatest( )</h2>
+<p>GREATEST returns the largest value from a list of values. Suppose we want to know which is more recent: a project's end date, or today's date.</p>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT research_id, title, GREATEST(end_date, CURRENT_DATE) "Most recent date" FROM research;</code></pre></figure>
+</section>
+
+<section id="sec-5">
+<h2><span class="section-no">05&nbsp;</span>least( )</h2>
+<p>LEAST is the opposite of GREATEST: it returns the smallest value from a list of values. Suppose we want to know which is older: a project's end date, or today's date.</p>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT research_id, title, LEAST(end_date, CURRENT_DATE) "Oldest date" FROM research;</code></pre></figure>
+</section>
+
+<section id="sec-6">
+<h2><span class="section-no">06&nbsp;</span>Number functions</h2>
+<ul>
+<li><b>ROUND</b> &mdash; rounds a value to a specified number of decimal places.</li>
+<li><b>TRUNC</b> &mdash; truncates (cuts off) a value at a specified number of decimal places, without rounding.</li>
+<li><b>MOD</b> &mdash; returns the remainder of a division.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>-- Round
+SELECT grant_id, amount, ROUND(amount, 1) "Rounded amount" FROM grant_funding;
+-- we could also do round(amount) for no decimal places</code></pre></figure>
+<p>Two more useful ones: CEIL rounds up to the nearest integer, and FLOOR rounds down to the nearest integer.</p>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>-- Ceil, floor and round
+SELECT grant_id, amount, ROUND(amount) "Round", ceil(amount) "Round up", floor(amount) "Round down" FROM grant_funding;</code></pre></figure>
+</section>
+
+<section id="sec-7">
+<h2><span class="section-no">07&nbsp;</span>Using the ROUND Function</h2>
+<p>A negative second argument rounds to the left of the decimal point instead of the right. Using -1 rounds to the nearest 10, -2 to the nearest 100, -3 to the nearest 1000, and so on.</p>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT
+  ROUND(450.9234),
+  ROUND(450.9234, -1), -- nearest 10s
+  ROUND(450.9234, -2), -- nearest 100s
+  ROUND(450.9234, -3); -- nearest 1000s</code></pre></figure>
+<blockquote class="pull">ROUND Function
+ROUND rounds a column, expression, or value to n decimal places. If the second argument is 0 or missing, it rounds to zero decimal places. A second argument of 2 rounds to two decimal places; a second argument of -2 rounds to the nearest 100.
+ROUND can also be used with dates &mdash; you'll see examples later in this lesson.<cite>Lecturer&#8217;s note</cite></blockquote>
+</section>
+
+<section id="sec-8">
+<h2><span class="section-no">08&nbsp;</span>Using the TRUNC Function</h2>
+<p>TRUNC works like ROUND, but it never rounds: it just drops the digits past the cutoff. With a negative second argument, TRUNC zeroes out digits to the left of the decimal point, so 45 becomes 40.</p>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>-- Truncate
+SELECT
+  TRUNC(450.923, -1), -- truncate to nearest 10s
+  TRUNC(450.923, -2), -- truncate to nearest 100s
+  TRUNC(450.923, -3); -- truncate to nearest 1000s</code></pre></figure>
+<p>In finance, TRUNC avoids the rounding that could quietly inflate or deflate a balance. It's also handy anywhere a system enforces a strict threshold: if an app operates with fixed resource limits, truncating keeps a count within bounds instead of rounding it up over the limit.</p>
+<blockquote class="pull">TRUNC Function
+TRUNC truncates a column, expression, or value to n decimal places, using the same argument rules as ROUND. If the second argument is 0 or missing, it truncates to zero decimal places; -2 truncates two places to the left; -1 truncates one place to the left.
+Like ROUND, TRUNC can also be used with dates.<cite>Lecturer&#8217;s note</cite></blockquote>
+</section>
+
+<section id="sec-9">
+<h2><span class="section-no">09&nbsp;</span>Mod</h2>
+<p>MOD returns the remainder of a division. It's commonly used to detect even/odd patterns, or to categorise rows based on a numerical pattern.</p>
+<p>Suppose a university reviews new research projects, and each project must be assigned to one of 3 review committees. Instead of assigning them by hand, we want a quick rule that spreads the projects evenly. Taking the MOD of the research_id against 3 does exactly that.</p>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT
+  research_id,
+  title,
+  MOD(research_id, 3) "Assigned committee"
+FROM research r
+ORDER BY 3;</code></pre></figure>
+</section>
+
+<section id="sec-10">
+<h2><span class="section-no">10&nbsp;</span>abs( )</h2>
+<p>ABS returns the absolute value of a number, turning a negative into a positive. Suppose we want the difference, in days, between a research project's end date and its grant's end date &mdash; and we don't want negative values in the result.</p>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>-- Difference in days between the end of the research and the end of the grant
+SELECT
+  r.end_date "Research ends",
+  g.end_date "Grant ends",
+  abs(g.end_date - r.end_date) "Days variance"
+FROM research r
+JOIN research_grant rg USING (research_id)
+JOIN grant_funding g USING (grant_id);</code></pre></figure>
+<blockquote class="pull">SYSDATE Function
+SYSDATE is a date function that returns the current database server date and time. You use it like any other column name &mdash; for example, selecting it from a dummy table called DUAL:
+SELECT SYSDATE FROM DUAL;<cite>Lecturer&#8217;s note</cite></blockquote>
+</section>
+
+<section id="sec-11">
+<h2><span class="section-no">11&nbsp;</span>Working with Dates - formatting</h2>
+<p>The TO_CHAR function displays a date in whatever format you specify.</p>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT birth_date, to_char(birth_date, 'DD/MM/YYYY') FROM scientist;</code></pre></figure>
+<blockquote class="pull">DUAL Table
+The DUAL table is owned by the user SYS and can be accessed by all users. It has one column, DUMMY, and one row with the value X. It's useful whenever you want to return a single value &mdash; a constant, a pseudocolumn, or an expression that isn't derived from a real table &mdash; since SELECT and FROM are both mandatory even when there's nothing to select from.<cite>Lecturer&#8217;s note</cite></blockquote>
+</section>
+
+<section id="sec-12">
+<h2><span class="section-no">12&nbsp;</span>Working with Dates – current time</h2>
+<p>The now( ) function retrieves the current date and time, returned as a timestamp.</p>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>-- current time
+SELECT now();
+SELECT current_date;
+-- current time data type
+SELECT pg_typeof(now());</code></pre></figure>
+</section>
+
+<section id="sec-13">
+<h2><span class="section-no">13&nbsp;</span>Arithmetic with Dates</h2>
+<p>Because the database stores dates as numbers under the hood, you can add and subtract with them directly. Adding 7 to a date column gives you a date one week later. To work out a project's duration in weeks, divide the number of days by 7.</p>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>-- date one week from now
+SELECT current_date + 7;</code></pre></figure>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>-- project duration in weeks
+SELECT (end_date - begin_date) / 7 FROM research;</code></pre></figure>
+<p>The age( ) function gives you the difference between the current date and a given date directly, without you doing the subtraction yourself:</p>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>-- calculate a scientist's age
+SELECT age(birth_date) FROM scientist;
+-- calculate a project's age
+SELECT age(begin_date) FROM research;</code></pre></figure>
+<blockquote class="pull">Arithmetic with Dates
+Because the database stores dates as numbers, you can perform calculations on them using arithmetic operators such as addition and subtraction, mixing in number constants as well as other dates.<cite>Lecturer&#8217;s note</cite></blockquote>
+</section>
+
+<section id="sec-14">
+<h2><span class="section-no">14&nbsp;</span>Conversion Functions</h2>
+<blockquote class="pull">Conversion Functions
+Columns can be defined using ANSI, DB2, or SQL/DS data types as well as native ones; the server internally converts these to its own data types. When the server encounters data of one type where it expects another, it converts it automatically (implicit conversion) &mdash; or you can convert it yourself using a conversion function (explicit conversion). Conversion function names generally follow the pattern datatype_TO_datatype: the first is the input type, the second the output type.
+Implicit conversion exists, but explicit conversion is recommended, since it keeps your SQL statements reliable and predictable.<cite>Lecturer&#8217;s note</cite></blockquote>
+</section>
+
+<section id="sec-15">
+<h2><span class="section-no">15&nbsp;</span>Cast( )</h2>
+<p>CAST(attribute AS data_type) converts a value to another data type for processing. The double-colon syntax (::) is shorthand for the same thing.</p>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT pg_typeof(cast(begin_date AS TEXT)) FROM research;
+SELECT pg_typeof(amount::text) FROM grant_funding;</code></pre></figure>
+</section>
+
+<section id="sec-16">
+<h2><span class="section-no">16&nbsp;</span>Using the TO_CHAR Function with Dates</h2>
+<p>Two format options worth knowing for TO_CHAR with dates:</p>
+<ul>
+<li><b>fm</b> (fill mode) strips the leading spaces or padding that some format elements add by default.</li>
+<li><b>th</b> formats a number as a spelt-out ordinal, with the correct suffix ("st", "nd", "rd", "th").</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT firstname, TO_CHAR(birth_date, 'Month DDspth') FROM scientist;
+SELECT firstname, TO_CHAR(birth_date, 'fmDD Month YYYY') FROM scientist;</code></pre></figure>
+</section>
+
+<section id="sec-17">
+<h2><span class="section-no">17&nbsp;</span>Date Format of to_char</h2>
+<p>Suffixes you can add to a date format, for the day number:</p>
+<ul>
+<li><b>TH</b> &mdash; ordinal suffix only, e.g. DDTH &rarr; 4TH</li>
+<li><b>SP</b> &mdash; spelled out, e.g. DDSP &rarr; FOUR</li>
+<li><b>SPTH</b> &mdash; spelled out plus ordinal, e.g. DDSPTH &rarr; FOURTH</li>
+</ul>
+</section>
+
+<section id="sec-18">
+<h2><span class="section-no">18&nbsp;</span>Using the TO_CHAR Function with Numbers</h2>
+<p>TO_CHAR(number, 'format_model') also works on numbers, letting you display one as formatted text, for example with a currency symbol and thousands separators:</p>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>-- currency sign
+SELECT to_char(amount, '€999,999.99') FROM grant_funding;</code></pre></figure>
+<blockquote class="pull">Using the TO_CHAR Function with Numbers
+Converting numbers to character strings with TO_CHAR is especially useful when you need to concatenate them with other text.<cite>Lecturer&#8217;s note</cite></blockquote>
+<blockquote class="pull">Guidelines
+If a whole number's digits exceed the number of digits provided in the format model, the server displays a string of number signs (#) instead. The stored decimal value is rounded to the number of decimal places given in the format model.<cite>Lecturer&#8217;s note</cite></blockquote>
+</section>
+
+<section id="sec-19">
+<h2><span class="section-no">19&nbsp;</span>Create your own function (PL/pgSQL)</h2>
+<p>PL/pgSQL (Procedural Language/PostgreSQL) lets you write reusable, named blocks of code for logic that's too complex for a single query. It extends plain SQL with control structures like loops and conditionals, and functions written in it are often used as triggers, running automatically in response to an INSERT, UPDATE, or DELETE on a table.</p>
+</section>
+
+<section id="sec-20">
+<h2><span class="section-no">20&nbsp;</span>Syntax</h2>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>CREATE OR REPLACE FUNCTION function_name(parameter_name data_type)
+RETURNS return_type AS $$
+BEGIN
+  RETURN something;
+END;
+$$ LANGUAGE plpgsql;</code></pre></figure>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>-- PL/pgSQL
+CREATE OR REPLACE FUNCTION get_project_status(begin_d DATE, end_d DATE)
+RETURNS TEXT AS $$
+BEGIN
+  IF current_date BETWEEN begin_d AND end_d THEN
+    RETURN 'Active';
+  ELSEIF current_date < begin_d THEN
+    RETURN 'Upcoming';
+  ELSE
+    RETURN 'Completed';
+  END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT research_id, title,
+  get_project_status(begin_date, end_date) AS project_status
+FROM research
+LIMIT 5;</code></pre></figure>
+</section>
+
+    </div>
+  </div>
+</div>
+<footer></footer>
+<script src="../../assets/app.js"></script>
+</body></html>

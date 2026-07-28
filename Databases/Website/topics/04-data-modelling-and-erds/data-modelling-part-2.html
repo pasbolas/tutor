@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data Modelling — Part 2 · The Databases Review</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<div class="progress-bar"></div>
+<div class="topbar-mini"><div class="wrap">
+  <a class="mini-logo" href="../../../../">The Databases Review</a>
+  <button class="back-btn" onclick="history.back()" aria-label="Go back">&#8592; Back</button>
+  <div class="crumbs"><a href="../../../../">Home</a><span class="sep">/</span><a href="index.html">Topic 04</a><span class="sep">/</span><span class="current">Data Modelling — Part 2</span></div>
+  <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">&#9789;</button>
+</div></div>
+
+<div class="article-header wrap-narrow">
+  <span class="kicker">Lecture 2 &middot; Topic 04</span>
+  <h1>Data Modelling — Part 2</h1>
+  <p class="dek">Moving from logical to physical design, and the relationships that hold a schema together.</p>
+  <div class="byline"><span><b>CMPU2007</b> Databases 1</span><span>5 min read</span><span>14 sections</span></div>
+</div>
+<div class="wrap">
+  <div class="article-body">
+    <nav class="side-toc">
+      <div class="contents-title">Contents</div>
+      <a href="#sec-1" data-target="sec-1"><span class="toc-num">01</span><span class="toc-text">Difference between Logical and Physical Design</span></a><a href="#sec-2" data-target="sec-2"><span class="toc-num">02</span><span class="toc-text">Our Example</span></a><a href="#sec-3" data-target="sec-3"><span class="toc-num">03</span><span class="toc-text">Another example – let’s build the model</span></a><a href="#sec-4" data-target="sec-4"><span class="toc-num">04</span><span class="toc-text">Identify the entities</span></a><a href="#sec-5" data-target="sec-5"><span class="toc-num">05</span><span class="toc-text">Additional Information</span></a><a href="#sec-6" data-target="sec-6"><span class="toc-num">06</span><span class="toc-text">What are the attributes and datatypes</span></a><a href="#sec-7" data-target="sec-7"><span class="toc-num">07</span><span class="toc-text">What are the primary keys?</span></a><a href="#sec-8" data-target="sec-8"><span class="toc-num">08</span><span class="toc-text">What are the constraints?</span></a><a href="#sec-9" data-target="sec-9"><span class="toc-num">09</span><span class="toc-text">What are the relationships?</span></a><a href="#sec-10" data-target="sec-10"><span class="toc-num">10</span><span class="toc-text">The model</span></a><a href="#sec-11" data-target="sec-11"><span class="toc-num">11</span><span class="toc-text">Summary</span></a><a href="#sec-12" data-target="sec-12"><span class="toc-num">12</span><span class="toc-text">How to create an ERD?</span></a><a href="#sec-13" data-target="sec-13"><span class="toc-num">13</span><span class="toc-text">Using Dbeaver – Reverse engineering</span></a><a href="#sec-14" data-target="sec-14"><span class="toc-num">14</span><span class="toc-text">Using pgAdmin 4 – Forward engineering</span></a>
+    </nav>
+    <div class="prose">
+      <section id="sec-1">
+<h2><span class="section-no">01&nbsp;</span>Difference between Logical and Physical Design</h2>
+<ul>
+<li>Logical Modelling</li>
+<ul>
+<li>Conceptual</li>
+<li>Revolves around the needs of the business, not the database, although the needs of the business are used to establish the needs of the database.</li>
+<li>Involves gathering information about business processes, business entities (categories of data), and organizational units</li>
+<li>It is ok to have many to many relationships</li>
+</ul>
+</ul>
+<ul>
+<li>Physical</li>
+<ul>
+<li>Involves the actual design of a database according to the requirements that were established during logical modelling</li>
+<li>Needs to be implementable in the type of database you are working with so we are converting our logical model to a relational data model</li>
+<li>Need to resolve the many to many into a series of one to many introducing a weak entity</li>
+</ul>
+</ul>
+</section>
+<section id="sec-2">
+<h2><span class="section-no">02&nbsp;</span>Our Example</h2>
+<ul>
+<li>What relationships exist between entities?</li>
+<li>A council can have many competitions.</li>
+<li>A competitions is run by a single council.</li>
+<li>Teams enrol in competitions.</li>
+<li>A team can enrol in many competitions.</li>
+<li>A competition can have many teams.</li>
+<li>What are the relationships at logical level?</li>
+<li>How do we resolve the Logical to a Physical Design?</li>
+</ul>
+</section>
+<section id="sec-3">
+<h2><span class="section-no">03&nbsp;</span>Another example – let’s build the model</h2>
+<ul>
+<li>A college contains many departments</li>
+<li>Each department can offer any number of courses</li>
+<li>Many instructors can work in a department</li>
+<li>An instructor can work only in one department</li>
+<li>For each department, there is a Manager</li>
+<li>Each manager can manage only one department</li>
+<li>Each instructor can take any number of courses</li>
+<li>A course can be taught by only one instructor</li>
+<li>A student can enrol for any number of courses</li>
+<li>Each course can have any number of students</li>
+</ul>
+</section>
+<section id="sec-4">
+<h2><span class="section-no">04&nbsp;</span>Identify the entities</h2>
+<ul>
+<li>What are the entities here?</li>
+<li>From the statements given, the entities are</li>
+<ul>
+<li>College</li>
+<li>Department</li>
+<li>Course</li>
+<li>Instructor</li>
+<li>Student</li>
+<li>Manager</li>
+</ul>
+</ul>
+</section>
+<section id="sec-5">
+<h2><span class="section-no">05&nbsp;</span>Additional Information</h2>
+<ul>
+<li>Each department has a unique identifier, a name and a location associated with it</li>
+<li>Each course has a name and a duration</li>
+<li>Instructors and Students and Managers have first names, last names and phone numbers</li>
+<li>Each department, course, instructor, manager, and student have a unique id</li>
+</ul>
+</section>
+<section id="sec-6">
+<h2><span class="section-no">06&nbsp;</span>What are the attributes and datatypes</h2>
+<ul>
+<li>For the department entity, attributes are id, name, location</li>
+<li>For course entity, attributes are id, course_name, duration</li>
+<li>For instructor entity, attributes are id, first_name, last_name, phone</li>
+<li>For student entity, attributes are id, first_name, last_name, phone</li>
+</ul>
+</section>
+<section id="sec-7">
+<h2><span class="section-no">07&nbsp;</span>What are the primary keys?</h2>
+<ul>
+<li>ID can identify a department uniquely. Hence Department_ID is the key attribute for the Entity &quot;Department&quot;.</li>
+<li>Course_ID is the key attribute for &quot;Course&quot; Entity.</li>
+<li>Student_ID is the key attribute for &quot;Student&quot; Entity.</li>
+<li>Instructor_ID is the key attribute for &quot;Instructor&quot; Entity.</li>
+</ul>
+</section>
+<section id="sec-8">
+<h2><span class="section-no">08&nbsp;</span>What are the constraints?</h2>
+<ul>
+<li>Each department must have a name and a location associated with it</li>
+<li>Each course must have a name and a duration</li>
+<li>Instructors and Students and Managers must have first names, last names and phone numbers</li>
+</ul>
+</section>
+<section id="sec-9">
+<h2><span class="section-no">09&nbsp;</span>What are the relationships?</h2>
+<ul>
+<li>One department offers many courses. But one particular course can be offered by only one department.</li>
+<ul>
+<li>Hence the cardinality between department and course is One to Many (1:N)</li>
+</ul>
+<li>One department has multiple instructors . But instructor belongs to only one department.</li>
+<ul>
+<li>Hence the cardinality between department and instructor is One to Many (1:N)</li>
+</ul>
+<li>One department has only one manager and one manager can manage only one department.</li>
+<ul>
+<li>Hence the cardinality is one to one. (1:1)</li>
+</ul>
+</ul>
+<ul>
+<li>One course can enrol many students and one student can enrol for many courses.</li>
+<ul>
+<li>Hence the cardinality between course and student is Many to Many (M:N)</li>
+</ul>
+<li>One course is taught by only one instructor. But one instructor teaches many courses.</li>
+<ul>
+<li>Hence the cardinality between course and instructor is Many to One (N :1)</li>
+</ul>
+</ul>
+</section>
+<section id="sec-10">
+<h2><span class="section-no">10&nbsp;</span>The model</h2>
+<ul>
+<li>College is not shown but could be</li>
+</ul>
+<ul>
+<li>Primary keys are shown above the link</li>
+<li>Foreign Keys indicated by (FK) beside the column</li>
+</ul>
+</section>
+<section id="sec-11">
+<h2><span class="section-no">11&nbsp;</span>Summary</h2>
+<ul>
+<li>A good data model is simple.</li>
+<ul>
+<li>Data attributes that describe any given entity should describe only that entity.</li>
+<li>Each attribute of an entity instance can have only one value.</li>
+</ul>
+<li>A good data model is essentially non-redundant.</li>
+<ul>
+<li>Each data attribute describes at most one entity.</li>
+<li>Look for the same attribute recorded more than once under different names.</li>
+</ul>
+<li>A good data model should be flexible and adaptable to future needs.</li>
+</ul>
+</section>
+<section id="sec-12">
+<h2><span class="section-no">12&nbsp;</span>How to create an ERD?</h2>
+<ul>
+<li>To create an Entity Relationship Diagram, you can use:</li>
+<li><b>Reverse engineering</b>
+<ul>
+<li>The process of creating an ERD from an existing database system &mdash; essentially the reverse of the typical database design process.</li>
+<li>Used when you have an operational database but lack formal documentation or a clear understanding of its structure.</li>
+</ul>
+</li>
+<li><b>Forward engineering</b>
+<ul>
+<li>The process of designing a database from scratch, or making significant changes to an existing one, based on a well-defined data model.</li>
+<li>You start with an ERD or data model representing the structure of the database you want to create, including its entities, attributes, and relationships.</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="sec-13">
+<h2><span class="section-no">13&nbsp;</span>Using Dbeaver – Reverse engineering</h2>
+<ul>
+<li>The community (free version) of DBeaver only allows us to work with reverse engineering.</li>
+<li>To create the ERD using reverse engineering:
+<ul>
+<li>Run the code for your database creation (DDL).</li>
+<li>Drop down the menu on the left until you can see the list of tables. If you run the code and still can't see any tables, right-click and select Refresh.</li>
+<li>Right-click on Tables and select View Diagram.</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="sec-14">
+<h2><span class="section-no">14&nbsp;</span>Using pgAdmin 4 – Forward engineering</h2>
+<ul>
+<li>You can use reverse and forward engineering on pgAdmin 4 (free, open-source). To do that:
+<ul>
+<li>Connect to the server (we will be using localhost).</li>
+<li>Click on Tools and choose ERD Tool.</li>
+<li>Click on the + sign to add a table.</li>
+</ul>
+</li>
+</ul>
+</section>
+    </div>
+  </div>
+</div>
+<script src="../../assets/app.js"></script>
+</body></html>

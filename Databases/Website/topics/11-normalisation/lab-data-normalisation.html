@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab — Data Normalisation · The Databases Review</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<div class="progress-bar"></div>
+<div class="topbar-mini"><div class="wrap">
+  <a class="mini-logo" href="../../../../">The Databases Review</a>
+  <button class="back-btn" onclick="history.back()" aria-label="Go back">&#8592; Back</button>
+  <div class="crumbs"><a href="../../../../">Home</a><span class="sep">/</span><a href="index.html">Topic 11</a><span class="sep">/</span><span class="current">Lab — Data Normalisation</span></div>
+  <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">&#9789;</button>
+</div></div>
+
+<div class="article-header wrap-narrow">
+  <span class="kicker">Lab 9 &middot; Topic 11</span>
+  <h1>Lab — Data Normalisation</h1>
+  <p class="dek">Working through normalising a messy table step by step.</p>
+  <div class="byline"><span><b>CMPU2007</b> Databases 1</span><span>1 min read</span><span>5 sections</span></div>
+</div>
+<div class="wrap">
+  <div class="article-body">
+    <nav class="side-toc">
+      <div class="contents-title">Contents</div>
+      <a href="#sec-1" data-target="sec-1"><span class="toc-num">01</span><span class="toc-text">Case Study: the music streaming app</span></a><a href="#sec-2" data-target="sec-2"><span class="toc-num">02</span><span class="toc-text">Task 1: Identify problems</span></a><a href="#sec-3" data-target="sec-3"><span class="toc-num">03</span><span class="toc-text">Task 2: Transform to first normal form (1NF)</span></a><a href="#sec-4" data-target="sec-4"><span class="toc-num">04</span><span class="toc-text">Task 3: Transform to second normal form (2NF)</span></a><a href="#sec-5" data-target="sec-5"><span class="toc-num">05</span><span class="toc-text">Task 4: Transform to third normal form (3NF)</span></a>
+    </nav>
+    <div class="prose">
+      <section id="sec-1">
+<h2><span class="section-no">01&nbsp;</span>Case Study: the music streaming app</h2>
+<p>You have been hired by a start-up developing a music streaming platform called TuneTrack. The founders began tracking songs, artists, users, and playlists in a single spreadsheet, but the data is a mess.</p>
+<p>Check below a snapshot of the current data:</p>
+<div class="table-wrap"><table><tr><th>PlaylistID</th><th>PlaylistName</th><th>UserName</th><th>UserEmail</th><th>Songs (Title – Artist – Album – Year – Genre – Duration)</th></tr><tr><td>P001</td><td>Chill Vibes</td><td>Ana Lopez</td><td>ana@gmail.com</td><td>Yellow – Coldplay – Parachutes – 2000 – Rock – 269; Vienna – Billy Joel – The Stranger – 1977 – Soft Rock – 217</td></tr><tr><td>P002</td><td>Study Mix</td><td>Ben Murphy</td><td>ben@gmail.com</td><td>Blinding Lights – The Weeknd – After Hours – 2020 – Pop – 200; Yellow – Coldplay – Parachutes – 2000 – Rock – 269</td></tr><tr><td>P003</td><td>Gym Pump</td><td>Ciara Ryan</td><td>ciara@gmail.com</td><td>Can’t Hold Us – Macklemore – The Heist – 2012 – Hip-Hop – 280</td></tr></table></div>
+<p>On an SQL file, work on the tasks below. For the text answers, write them as a comment on your SQL code.</p>
+</section>
+<section id="sec-2">
+<h2><span class="section-no">02&nbsp;</span>Task 1: Identify problems</h2>
+<ul>
+<li>Identify two anomalies that could occur in this design (such as update, insertion, or deletion).</li>
+<li>Give one concrete example of redundancy in the data.</li>
+<li>Explain why this structure violates First Normal Form (1NF).</li>
+</ul>
+</section>
+<section id="sec-3">
+<h2><span class="section-no">03&nbsp;</span>Task 2: Transform to first normal form (1NF)</h2>
+<ul>
+<li>Identify which attribute(s) could serve as a primary key.</li>
+<li>Write SQL code to create a table that satisfies 1NF:</li>
+<li>every cell contains a single atomic value</li>
+<li>columns contain values of the same type</li>
+<li>the table has a defined primary key</li>
+<li>Insert the sample data provided.</li>
+</ul>
+</section>
+<section id="sec-4">
+<h2><span class="section-no">04&nbsp;</span>Task 3: Transform to second normal form (2NF)</h2>
+<ul>
+<li>In your own words, define partial dependency.</li>
+<li>Are there any partial dependencies on your 1NF version of the data? If yes, provide examples.</li>
+<li>Write your own SQL code to divide your 1NF table into smaller tables, removing partial dependencies. Insert the sample data provided into those tables.</li>
+</ul>
+</section>
+<section id="sec-5">
+<h2><span class="section-no">05&nbsp;</span>Task 4: Transform to third normal form (3NF)</h2>
+<ul>
+<li>In your own words, define transitive dependency.</li>
+<li>Are there any transitive dependencies on your 2NF version of the data? If yes, provide examples.</li>
+<li>Write your own SQL code to divide your 2NF tables into smaller tables, removing transitive dependencies. Insert the sample data provided into those tables.</li>
+</ul>
+</section>
+    </div>
+  </div>
+</div>
+<script src="../../assets/app.js"></script>
+</body></html>

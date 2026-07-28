@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab — Indexes · The Databases Review</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<div class="progress-bar"></div>
+<div class="topbar-mini"><div class="wrap">
+  <a class="mini-logo" href="../../../../">The Databases Review</a>
+  <button class="back-btn" onclick="history.back()" aria-label="Go back">&#8592; Back</button>
+  <div class="crumbs"><a href="../../../../">Home</a><span class="sep">/</span><a href="index.html">Topic 14</a><span class="sep">/</span><span class="current">Lab — Indexes</span></div>
+  <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">&#9789;</button>
+</div></div>
+
+<div class="article-header wrap-narrow">
+  <span class="kicker">Lab 11 &middot; Topic 14</span>
+  <h1>Lab — Indexes</h1>
+  <p class="dek">Hands-on practice creating indexes and measuring query performance.</p>
+  <div class="byline"><span><b>CMPU2007</b> Databases 1</span><span>2 min read</span><span>3 sections</span></div>
+</div>
+<div class="wrap">
+  <div class="article-body">
+    <nav class="side-toc">
+      <div class="contents-title">Contents</div>
+      <a href="#sec-1" data-target="sec-1"><span class="toc-num">01</span><span class="toc-text">What is this assignment about?</span></a><a href="#sec-2" data-target="sec-2"><span class="toc-num">02</span><span class="toc-text">Before you start</span></a><a href="#sec-3" data-target="sec-3"><span class="toc-num">03</span><span class="toc-text">Questions</span></a>
+    </nav>
+    <div class="prose">
+      <section id="sec-1">
+<h2><span class="section-no">01&nbsp;</span>What is this assignment about?</h2>
+<p>In this assignment, you will create indexes for the football database.</p>
+<figure class="inline-image"><img src="images/lab-indexes-1.png" loading="lazy" alt=""></figure>
+</section>
+<section id="sec-2">
+<h2><span class="section-no">02&nbsp;</span>Before you start</h2>
+<ul>
+<li>If you do not have access to the football database, run the file football.sql.</li>
+<li>Make sure you comment each query explicitly with the question number and the question you are answering.</li>
+<li>Show the efficiency of the index through EXPLAIN ANALYZE before and after creating the index (check classroom examples if you are unsure).</li>
+</ul>
+</section>
+<section id="sec-3">
+<h2><span class="section-no">03&nbsp;</span>Questions</h2>
+<p>Question 1: Your manager complains that reports for specific nationalities are slow.</p>
+<ul>
+<li>Write a query to list all players from Germany. Show player_name, age and nationality. Check how long this query takes to run.</li>
+<li>Now, create an index on players(nationality) and re-run the query you wrote for part a.</li>
+<li>Write a comment on your SQL script explaining if there were any improvements after creating the index.</li>
+</ul>
+<p>Question 2: The finance team frequently wants a report with the top-paid players across all clubs.</p>
+<ul>
+<li>Write a query that returns player_name, club_name, and wage. Use EXPLAIN ANALYZE to check how long that query takes to run.</li>
+<li>Create an index on the wage column and re-run the query you wrote for part a.</li>
+<li>Write a comment on your SQL script explaining if there were any improvements after creating the index.</li>
+</ul>
+<p>Question 3: Your manager wants details on expensive players, with market_value above 5,000,000.</p>
+<ul>
+<li>Write a query to list all players whose market)value &gt; 5,000,000, displaying the player_name, club_name, value and wage. Use EXPLAIN ANALYZE to check how long that query takes to run.</li>
+<li>Create a partial index that only stores rows with market_value above 5,000,000. Re-run the query you wrote for part a.</li>
+<li>Write a comment on your SQL script explaining if there were any improvements after creating the index.</li>
+</ul>
+<p>Question 4: The whole team is happy with your efficient new queries, except for the people in charge of the server – they say you might be using too much space and ask for a report. Write a query that shows the space used by each index you created. Your results should be presented in a single table, with each row showing the size of each index.</p>
+</section>
+    </div>
+  </div>
+</div>
+<script src="../../assets/app.js"></script>
+</body></html>

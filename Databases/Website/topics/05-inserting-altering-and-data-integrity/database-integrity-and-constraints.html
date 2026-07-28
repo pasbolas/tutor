@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Database Integrity and Constraints · The Databases Review</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<div class="progress-bar"></div>
+<div class="topbar-mini"><div class="wrap">
+  <a class="mini-logo" href="../../../../">The Databases Review</a>
+  <button class="back-btn" onclick="history.back()" aria-label="Go back">&#8592; Back</button>
+  <div class="crumbs"><a href="../../../../">Home</a><span class="sep">/</span><a href="index.html">Topic 05</a><span class="sep">/</span><span class="current">Database Integrity and Constraints</span></div>
+  <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">&#9789;</button>
+</div></div>
+
+<div class="article-header wrap-narrow">
+  <span class="kicker">Lecture 3 &middot; Topic 05</span>
+  <h1>Database Integrity and Constraints</h1>
+  <p class="dek">Keeping data correct with key, type and referential constraints.</p>
+  <div class="byline"><span><b>CMPU2007</b> Databases 1</span><span>6 min read</span><span>19 sections</span></div>
+</div>
+<div class="wrap">
+  <div class="article-body">
+    <nav class="side-toc">
+      <div class="contents-title">Contents</div>
+      <a href="#sec-1" data-target="sec-1"><span class="toc-num">01</span><span class="toc-text">Constraints</span></a><a href="#sec-2" data-target="sec-2"><span class="toc-num">02</span><span class="toc-text">Entity integrity</span></a><a href="#sec-3" data-target="sec-3"><span class="toc-num">03</span><span class="toc-text">Foreign Keys can be NULL sometimes</span></a><a href="#sec-4" data-target="sec-4"><span class="toc-num">04</span><span class="toc-text">Foreign Key - Syntax</span></a><a href="#sec-5" data-target="sec-5"><span class="toc-num">05</span><span class="toc-text">DROP TABLE CASCADE</span></a><a href="#sec-6" data-target="sec-6"><span class="toc-num">06</span><span class="toc-text">ON DELETE CASCADE</span></a><a href="#sec-7" data-target="sec-7"><span class="toc-num">07</span><span class="toc-text">ON UPDATE CASCADE</span></a><a href="#sec-8" data-target="sec-8"><span class="toc-num">08</span><span class="toc-text">When to use CASCADE</span></a><a href="#sec-9" data-target="sec-9"><span class="toc-num">09</span><span class="toc-text">When not to use CASCADE</span></a><a href="#sec-10" data-target="sec-10"><span class="toc-num">10</span><span class="toc-text">Domain integrity</span></a><a href="#sec-11" data-target="sec-11"><span class="toc-num">11</span><span class="toc-text">NULL and NOT NULL</span></a><a href="#sec-12" data-target="sec-12"><span class="toc-num">12</span><span class="toc-text">NOT NULL</span></a><a href="#sec-13" data-target="sec-13"><span class="toc-num">13</span><span class="toc-text">DEFAULT</span></a><a href="#sec-14" data-target="sec-14"><span class="toc-num">14</span><span class="toc-text">UNIQUE</span></a><a href="#sec-15" data-target="sec-15"><span class="toc-num">15</span><span class="toc-text">CHECK</span></a><a href="#sec-16" data-target="sec-16"><span class="toc-num">16</span><span class="toc-text">BETWEEN conditions</span></a><a href="#sec-17" data-target="sec-17"><span class="toc-num">17</span><span class="toc-text">IN operator</span></a><a href="#sec-18" data-target="sec-18"><span class="toc-num">18</span><span class="toc-text">LIKE operator</span></a><a href="#sec-19" data-target="sec-19"><span class="toc-num">19</span><span class="toc-text">User-defined</span></a>
+    </nav>
+    <div class="prose">
+      <section id="sec-1">
+<h2><span class="section-no">01&nbsp;</span>Constraints</h2>
+<ul>
+<li>Constraints are rules that the data must follow to be included in or excluded from a given entity.</li>
+<li>Ensures that whoever uses your data can be confident that the data will be consistent.</li>
+</ul>
+</section>
+<section id="sec-2">
+<h2><span class="section-no">02&nbsp;</span>Entity integrity</h2>
+<ul>
+<li>Entity integrity: Every table must have a primary key, and its values must be unique, not null and cannot change. This ensures each row is identifiable.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>CREATE TABLE clubs (
+club_id TEXT PRIMARY KEY, -- club id must be unique, not null and cannot change
+club_name VARCHAR(120) UNIQUE NOT NULL);</code></pre></figure>
+</section>
+<section id="sec-3">
+<h2><span class="section-no">03&nbsp;</span>Foreign Keys can be NULL sometimes</h2>
+<ul>
+<li>In this example, manager_id is a FK coming from the table employees.</li>
+<li>A project can exist without a manager assigned to it, so the record of the manager_id (foreign key) would be null.</li>
+</ul>
+</section>
+<section id="sec-4">
+<h2><span class="section-no">04&nbsp;</span>Foreign Key - Syntax</h2>
+<ul>
+<li>FOREIGN KEY: Defines the column in the child table at the table- constraint level</li>
+<li>REFERENCES: Identifies the table and column in the parent table</li>
+<li>Additional things you can add to the constraint:</li>
+<ul>
+<li>ON DELETE CASCADE: Deletes the dependent rows in the child table when a row in the parent table is deleted</li>
+<li>ON DELETE SET NULL: Converts dependent foreign key values to null</li>
+</ul>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>-- Create the Employees table (parent table)
+CREATE TABLE Employees (
+employee_id INT PRIMARY KEY,
+employee_name VARCHAR(100)
+);
+-- Create the Projects table (child table)
+-- We have two options of foreign key constraints:
+-- 1. ON DELETE CASCADE: If an employee is deleted, the associated project will also be deleted.
+-- 2. ON DELETE SET NULL: If an employee is deleted, the manager_id of the associated project will be set to NULL.
+CREATE table Projects (
+project_id INT PRIMARY KEY,
+project_name VARCHAR(100),
+manager_id INT,
+FOREIGN KEY (manager_id) REFERENCES Employees(employee_id) ON DELETE SET NULL
+);</code></pre></figure>
+</section>
+<section id="sec-5">
+<h2><span class="section-no">05&nbsp;</span>DROP TABLE CASCADE</h2>
+<ul>
+<li>CASCADE is an option you can set on foreign keys or DROP TABLE statements. You are telling the system that, if the parent table changes or is deleted, the same applies to the child tables.</li>
+<li>Considering our football database, if we run:</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>DROP TABLE players CASCADE;</code></pre></figure>
+<p>This will drop the foreign key constraint in the table player_contracts. The values for player_id and club_id in the table persist, but only club_id is still considered a foreign key.</p>
+</section>
+<section id="sec-6">
+<h2><span class="section-no">06&nbsp;</span>ON DELETE CASCADE</h2>
+<p>With ON DELETE CASCADE set on the foreign key, deleting a player automatically deletes their contracts too:</p>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>CREATE TABLE player_contracts (
+player_contract_id SERIAL PRIMARY KEY,
+player_id INT REFERENCES players(player_id) ON DELETE CASCADE,
+club_id TEXT REFERENCES clubs(club_id),
+joined DATE,
+contract_valid_until INT,
+jersey_number INT,
+wage NUMERIC(12,0)
+);</code></pre></figure>
+<p>If we run:</p>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>DELETE FROM players WHERE player_id = 101;</code></pre></figure>
+<p>The entire row in player_contracts where player_id = 101 will be deleted. The foreign key still exists, but the original player is gone, so all contracts for that player should also be gone.</p>
+</section>
+<section id="sec-7">
+<h2><span class="section-no">07&nbsp;</span>ON UPDATE CASCADE</h2>
+<p>Suppose we added a club named "FC Barcelona" to the table clubs:</p>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>CREATE TABLE matches (
+match_id TEXT PRIMARY KEY,
+match_date DATE,
+location TEXT,
+home_club_id TEXT REFERENCES clubs(club_id) ON UPDATE CASCADE,
+away_club_id TEXT REFERENCES clubs(club_id) ON UPDATE CASCADE
+);</code></pre></figure>
+<p>If we run:</p>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>UPDATE clubs SET club_name = 'BARCA' WHERE club_name = 'FC Barcelona';</code></pre></figure>
+<p>The clubs table now has 'BARCA' instead of 'FC Barcelona'. Because of ON UPDATE CASCADE, matches.home_club_id (and any other reference to that club) is automatically updated to match &mdash; no manual fix needed.</p>
+</section>
+<section id="sec-8">
+<h2><span class="section-no">08&nbsp;</span>When to use CASCADE</h2>
+<ul>
+<li><b>ON DELETE CASCADE</b> &mdash; use when the child record only makes sense while the parent exists.</li>
+<li><b>ON UPDATE CASCADE</b> &mdash; use if the parent key values might change and the children should follow along.</li>
+</ul>
+</section>
+<section id="sec-9">
+<h2><span class="section-no">09&nbsp;</span>When not to use CASCADE</h2>
+<ul>
+<li>When NOT to use CASCADE:</li>
+<li>Data should be preserved for history</li>
+<li>Considering player_contracts: if a club is deleted, should all contracts vanish? Maybe contracts might need to be preserved for history.</li>
+<li>Auditing/legal reasons.</li>
+<li>You might want to prevent deleting a club if contracts exist → use ON DELETE RESTRICT instead.</li>
+<li>DROP TABLE CASCADE: Useful in development/testing when you want to remove everything quickly. It is, though, dangerous in production — it removes dependent objects automatically, which may not be what you want. Avoid using DROP TABLE CASCADE.</li>
+</ul>
+</section>
+<section id="sec-10">
+<h2><span class="section-no">10&nbsp;</span>Domain integrity</h2>
+<ul>
+<li>Define that values must obey rules for data type, format and acceptable range.</li>
+<li>Includes use of commands such as NOT NULL, UNIQUE, CHECK, LIKE, and DEFAULT..</li>
+</ul>
+</section>
+<section id="sec-11">
+<h2><span class="section-no">11&nbsp;</span>NULL and NOT NULL</h2>
+<ul>
+<li>What is NULL?</li>
+<ul>
+<li>Null is a non-value</li>
+<li>It is not zero</li>
+<li>It is not blank</li>
+</ul>
+<li>NULL is a special name to denote a valueless column in a row.</li>
+<li>If the column must contain a non-null value, the constraint ‘NOT NULL’ should be put on it.</li>
+<li>This will prevent a user from adding a row that has no value for this column. For example, there is no sense in adding a student without a name. There is no sense in adding a stock item without a description.</li>
+<li>The default is NULL</li>
+<ul>
+<li>Unless you specify NOT NULL, nulls will be allowed.</li>
+</ul>
+</ul>
+</section>
+<section id="sec-12">
+<h2><span class="section-no">12&nbsp;</span>NOT NULL</h2>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>CREATE TABLE players (
+player_id INT PRIMARY KEY,
+player_name TEXT NOT NULL, -- must always have a name
+age INT,
+nationality TEXT,
+preferred_foot TEXT,
+body_type TEXT,
+height TEXT,
+weight TEXT
+);</code></pre></figure>
+</section>
+<section id="sec-13">
+<h2><span class="section-no">13&nbsp;</span>DEFAULT</h2>
+<ul>
+<li>Provides an automatic value for a column if no value is supplied during an INSERT.</li>
+<li>Suppose when a new contract is created, if no wage is specified, it should default to 0.</li>
+<li>If a wage is specified, its value overrides the 0.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>CREATE TABLE player_contracts (
+player_contract_id SERIAL PRIMARY KEY,
+player_id INT REFERENCES players(player_id),
+club_id TEXT REFERENCES clubs(club_id),
+joined DATE DEFAULT CURRENT_DATE,
+contract_valid_until INT,
+jersey_number INT,
+value NUMERIC(12,0) DEFAULT 0,
+wage INT DEFAULT 0,
+release_clause INT
+);</code></pre></figure>
+</section>
+<section id="sec-14">
+<h2><span class="section-no">14&nbsp;</span>UNIQUE</h2>
+<ul>
+<li>This allows the column value to be checked against all other values in that column in the table.</li>
+<li>This constraint can be applied even if the column allows null values.</li>
+<ul>
+<li>For example, an e-mail address is not necessary, but if it is present, it must be unique: no other member can have the same e-mail address.</li>
+</ul>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>CREATE TABLE clubs (
+club_id TEXT PRIMARY KEY,
+club_name VARCHAR(120) UNIQUE NOT NULL -- club names must be unique
+);</code></pre></figure>
+</section>
+<section id="sec-15">
+<h2><span class="section-no">15&nbsp;</span>CHECK</h2>
+<ul>
+<li>Defines a condition that each row must satisfy</li>
+<li>This allows the column value to be checked</li>
+<ul>
+<li>against a range of values</li>
+<ul>
+<li>E.g. &lt; value, &gt; value, between n and m, etc.</li>
+</ul>
+<li>or selection of values.</li>
+<ul>
+<li>E.g. IN (‘Monday’,’Tuesday’,’Wednesday’)</li>
+</ul>
+</ul>
+<li>A single column can have multiple CHECK constraints that refer to the column in its definition.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>CREATE TABLE players (
+player_id INT PRIMARY KEY,
+player_name TEXT NOT NULL,
+age INT CHECK (age &gt;= 16) CHECK (age &gt; 0) -- two checks
+);</code></pre></figure>
+</section>
+<section id="sec-16">
+<h2><span class="section-no">16&nbsp;</span>BETWEEN conditions</h2>
+<ul>
+<li>Use the BETWEEN condition to restrict values to a particular range</li>
+</ul>
+<ul>
+<li>The BETWEEN operator works like any other comparison (e.g., &gt;, &lt;, =), but it needs to be part of a CHECK constraint for it to have an effect.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>ALTER TABLE players
+ADD CONSTRAINT age_range CHECK (age BETWEEN 16 AND 50);</code></pre></figure>
+</section>
+<section id="sec-17">
+<h2><span class="section-no">17&nbsp;</span>IN operator</h2>
+<ul>
+<li>Use the IN membership condition to test for values in a list</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>CREATE TABLE players (
+player_id INT PRIMARY KEY,
+player_name TEXT NOT NULL,
+age INT CHECK (age BETWEEN 16 AND 50),
+nationality TEXT,
+preferred_foot TEXT CHECK (preferred_foot IN (&#x27;Left&#x27;,&#x27;Right&#x27;,&#x27;Both&#x27;)));</code></pre></figure>
+</section>
+<section id="sec-18">
+<h2><span class="section-no">18&nbsp;</span>LIKE operator</h2>
+<ul>
+<li>Use the LIKE condition to pattern match valid string values.</li>
+<li>Conditions can contain either literal characters or numbers:</li>
+<li>% denotes zero or many characters.</li>
+<li>_ denotes one character.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>CREATE TABLE clubs (
+club_id TEXT PRIMARY KEY CHECK (club_id LIKE 'CLB-%'), -- must start with CLB-
+club_name VARCHAR(120) UNIQUE NOT NULL
+);</code></pre></figure>
+</section>
+<section id="sec-19">
+<h2><span class="section-no">19&nbsp;</span>User-defined</h2>
+<ul>
+<li>They are part of domain constraints, but can be decided based on the business logic, not general logic.</li>
+<li>For example, the club managers could decide that player_contract should have a release_clause, and this column should have values at least twice the wage.</li>
+<li>That prevents players from being bought too cheaply.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>CREATE TABLE player_contracts (
+player_contract_id SERIAL PRIMARY KEY,
+player_id INT NOT NULL,
+club_id TEXT,
+wage INT NOT NULL CHECK (wage &gt;= 0),
+release_clause INT CHECK (release_clause &gt;= 2 * wage)
+);</code></pre></figure>
+</section>
+    </div>
+  </div>
+</div>
+<script src="../../assets/app.js"></script>
+</body></html>

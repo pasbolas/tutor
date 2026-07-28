@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Exploratory Data Analysis · The Databases Review</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<div class="progress-bar"></div>
+<div class="topbar-mini"><div class="wrap">
+  <a class="mini-logo" href="../../../../">The Databases Review</a>
+  <button class="back-btn" onclick="history.back()" aria-label="Go back">&#8592; Back</button>
+  <div class="crumbs"><a href="../../../../">Home</a><span class="sep">/</span><a href="index.html">Topic 12</a><span class="sep">/</span><span class="current">Exploratory Data Analysis</span></div>
+  <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">&#9789;</button>
+</div></div>
+
+<div class="article-header wrap-narrow">
+  <span class="kicker">Lecture 9 &middot; Topic 12</span>
+  <h1>Exploratory Data Analysis</h1>
+  <p class="dek">Getting a feel for a new dataset using SQL before you start asking real questions of it.</p>
+  <div class="byline"><span><b>CMPU2007</b> Databases 1</span><span>7 min read</span><span>28 sections</span></div>
+</div>
+<div class="wrap">
+  <div class="article-body">
+    <nav class="side-toc">
+      <div class="contents-title">Contents</div>
+      <a href="#sec-1" data-target="sec-1"><span class="toc-num">01</span><span class="toc-text">Learning Objectives</span></a><a href="#sec-2" data-target="sec-2"><span class="toc-num">02</span><span class="toc-text">Exploratory Data Analysis (EDA)</span></a><a href="#sec-3" data-target="sec-3"><span class="toc-num">03</span><span class="toc-text">EDA Steps</span></a><a href="#sec-4" data-target="sec-4"><span class="toc-num">04</span><span class="toc-text">Step 1: Understand the structure (tables, relationships, metadata)</span></a><a href="#sec-5" data-target="sec-5"><span class="toc-num">05</span><span class="toc-text">Step 1.1: Gather tables names</span></a><a href="#sec-6" data-target="sec-6"><span class="toc-num">06</span><span class="toc-text">Step 1.2: Identify columns, data types and nullability</span></a><a href="#sec-7" data-target="sec-7"><span class="toc-num">07</span><span class="toc-text">Step 1.3: Identify the tables’ constraints</span></a><a href="#sec-8" data-target="sec-8"><span class="toc-num">08</span><span class="toc-text">Step 2: Preview the data (sample rows, counts)</span></a><a href="#sec-9" data-target="sec-9"><span class="toc-num">09</span><span class="toc-text">Step 2.1: Cross-table coverage</span></a><a href="#sec-10" data-target="sec-10"><span class="toc-num">10</span><span class="toc-text">Step 2.2: Preview data – first 10 rows</span></a><a href="#sec-11" data-target="sec-11"><span class="toc-num">11</span><span class="toc-text">Step 2.3: Preview specific conditions</span></a><a href="#sec-12" data-target="sec-12"><span class="toc-num">12</span><span class="toc-text">Step 2.4: Preview maximum and minimum values</span></a><a href="#sec-13" data-target="sec-13"><span class="toc-num">13</span><span class="toc-text">Step 2.5: How big are the clubs?</span></a><a href="#sec-14" data-target="sec-14"><span class="toc-num">14</span><span class="toc-text">Step 3: Data quality checks</span></a><a href="#sec-15" data-target="sec-15"><span class="toc-num">15</span><span class="toc-text">Step 3.1: Null profiling</span></a><a href="#sec-16" data-target="sec-16"><span class="toc-num">16</span><span class="toc-text">Step 3.2: Duplicates</span></a><a href="#sec-17" data-target="sec-17"><span class="toc-num">17</span><span class="toc-text">Step 3.3: Orphan references</span></a><a href="#sec-18" data-target="sec-18"><span class="toc-num">18</span><span class="toc-text">Step 4: Descriptive statistics</span></a><a href="#sec-19" data-target="sec-19"><span class="toc-num">19</span><span class="toc-text">Step 4.1: Summaries</span></a><a href="#sec-20" data-target="sec-20"><span class="toc-num">20</span><span class="toc-text">Step 4.3: Measure central tendency and spread for financial attributes</span></a><a href="#sec-21" data-target="sec-21"><span class="toc-num">21</span><span class="toc-text">Step 5: Relationahips</span></a><a href="#sec-22" data-target="sec-22"><span class="toc-num">22</span><span class="toc-text">Step 5.1: Overview of main attributes of all tables</span></a><a href="#sec-23" data-target="sec-23"><span class="toc-num">23</span><span class="toc-text">Step 5.2: Club spend vs average rating</span></a><a href="#sec-24" data-target="sec-24"><span class="toc-num">24</span><span class="toc-text">Step 5.3: Players registered but without a contract</span></a><a href="#sec-25" data-target="sec-25"><span class="toc-num">25</span><span class="toc-text">Step 6: Anomalies and outliers</span></a><a href="#sec-26" data-target="sec-26"><span class="toc-num">26</span><span class="toc-text">Step 6.1: Joined date after expiring date</span></a><a href="#sec-27" data-target="sec-27"><span class="toc-num">27</span><span class="toc-text">Step 6.2: Unrealistic ages</span></a><a href="#sec-28" data-target="sec-28"><span class="toc-num">28</span><span class="toc-text">Step 6.3: Wage outliers</span></a>
+    </nav>
+    <div class="prose">
+      <section id="sec-1">
+<h2><span class="section-no">01&nbsp;</span>Learning Objectives</h2>
+<ul>
+<li>Understand the concept of Exploratory Data Analysis (EDA)</li>
+<li>Understand the application of SQL to deliver an EDA report</li>
+</ul>
+</section>
+<section id="sec-2">
+<h2><span class="section-no">02&nbsp;</span>Exploratory Data Analysis (EDA)</h2>
+<ul>
+<li>Exploratory Data Analysis is applied to identify patterns and relationships between different variables on the data, helping us to generate hypotheses for further analysis.</li>
+<li>We will use EDA as a way to review some important SQL concepts for data retrieval.</li>
+</ul>
+</section>
+<section id="sec-3">
+<h2><span class="section-no">03&nbsp;</span>EDA Steps</h2>
+<ul>
+<li>Step 1: Understand the structure (tables, relationships, metadata).</li>
+<li>Step 2: Preview the data (sample rows, counts).</li>
+<li>Step 3: Data quality checks (missing values, duplicates, inconsistent codes).</li>
+<li>Step 4: Descriptive statistics (distributions, averages, counts).</li>
+<li>Step 5: Relationships (joins between tables, correlations, group comparisons).</li>
+<li>Step 6: Identify anomalies/outliers.</li>
+</ul>
+</section>
+<section id="sec-4">
+<h2><span class="section-no">04&nbsp;</span>Step 1: Understand the structure (tables, relationships, metadata)</h2>
+<ul>
+<li>To perform that step, we can use the information.schema, a set of views that contain information about the objects defined in the current database.</li>
+<li>It acts as a repository for metadata, which is data about the data and its structure within the database.</li>
+</ul>
+</section>
+<section id="sec-5">
+<h2><span class="section-no">05&nbsp;</span>Step 1.1: Gather tables names</h2>
+<ul>
+<li>The first step is to identify what tables are stored in our schema.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT table_name
+FROM information_schema.tables
+WHERE table_schema = &#x27;football&#x27;
+AND table_type = &#x27;BASE TABLE&#x27; --rather than a view
+ORDER BY table_name;</code></pre></figure>
+</section>
+<section id="sec-6">
+<h2><span class="section-no">06&nbsp;</span>Step 1.2: Identify columns, data types and nullability</h2>
+<ul>
+<li>We will select the attributes table_name, column_name, data_type and is_nullable.</li>
+<li>This should be repeated for each table in the schema.</li>
+<li>We also order by ordinal position, which is the order in which the columns were created.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT table_name, column_name, data_type, is_nullable
+FROM information_schema.columns
+WHERE table_schema = &#x27;football&#x27; AND table_name = &#x27;players&#x27;
+ORDER BY ordinal_position;</code></pre></figure>
+</section>
+<section id="sec-7">
+<h2><span class="section-no">07&nbsp;</span>Step 1.3: Identify the tables’ constraints</h2>
+<ul>
+<li>Allow us to know what constraints were established and how PostgreSQL named them.</li>
+</ul>
+<ul>
+<li>SELECT table_name, constraint_name, constraint_type FROM information_schema.table_constraints WHERE table_schema = &#x27;football&#x27;;</li>
+</ul>
+</section>
+<section id="sec-8">
+<h2><span class="section-no">08&nbsp;</span>Step 2: Preview the data (sample rows, counts)</h2>
+<ul>
+<li>Now, we will retrieve data straight from the tables using aggregate formulas and filtering commands (order by, limit, group by etc.).</li>
+</ul>
+</section>
+<section id="sec-9">
+<h2><span class="section-no">09&nbsp;</span>Step 2.1: Cross-table coverage</h2>
+<ul>
+<li>The command below uses subqueries to count the number of rows in each table for comparison.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT
+(SELECT COUNT(player_id) FROM players) &quot;Total number of players&quot;,
+(SELECT COUNT(club_id) FROM clubs) &quot;Number of clubs&quot;,
+(SELECT COUNT(DISTINCT player_id) FROM player_attributes) &quot;Number of players with attributes&quot;,
+(SELECT COUNT(DISTINCT player_id) FROM player_contracts) &quot;Number of players with contracts&quot;;</code></pre></figure>
+</section>
+<section id="sec-10">
+<h2><span class="section-no">10&nbsp;</span>Step 2.2: Preview data – first 10 rows</h2>
+<ul>
+<li>We can also take a quick look at the first 10 rows of each table using the command LIMIT 10.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>-- Show the first 10 rows of a table
+SELECT * FROM players LIMIT 10;</code></pre></figure>
+</section>
+<section id="sec-11">
+<h2><span class="section-no">11&nbsp;</span>Step 2.3: Preview specific conditions</h2>
+<ul>
+<li>Other data preview can be more specific.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>-- Show distinct values of a column
+SELECT DISTINCT nationality
+FROM players;
+-- Random sample of 5 rows
+SELECT * FROM players ORDER BY RANDOM() LIMIT 5;
+-- Preview top players by rating
+SELECT player_id, overall
+FROM player_attributes
+ORDER BY overall DESC
+LIMIT 10;</code></pre></figure>
+</section>
+<section id="sec-12">
+<h2><span class="section-no">12&nbsp;</span>Step 2.4: Preview maximum and minimum values</h2>
+<ul>
+<li>Part of the preview can also be done considering the maximum and minimum values. This gives us an idea of the range of values available in the database.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT MIN(joined) &quot;First contract date&quot;,
+MAX(joined) &quot;Last contract date&quot;,
+MIN(contract_valid_until) &quot;Minimum expiry year&quot;,
+MAX(contract_valid_until) &quot;Maximum expiry year&quot;
+FROM player_contracts;</code></pre></figure>
+</section>
+<section id="sec-13">
+<h2><span class="section-no">13&nbsp;</span>Step 2.5: How big are the clubs?</h2>
+<ul>
+<li>Another interesting measure is to identify how many contracts each club has.</li>
+<li>As we are grouping the contracts according to the club name, we need to use the GROUP BY command.</li>
+</ul>
+<ul>
+<li>SELECT club_name, COUNT(*) &quot;Number of contracts&quot;</li>
+<li>FROM player_contracts</li>
+<li>JOIN clubs USING (club_id)</li>
+<li>GROUP BY club_name</li>
+<li>ORDER BY contracts DESC</li>
+<li>LIMIT 10;</li>
+</ul>
+</section>
+<section id="sec-14">
+<h2><span class="section-no">14&nbsp;</span>Step 3: Data quality checks</h2>
+<ul>
+<li>We will retrieve data straight from the tables considering specific scenarios such as null data, duplicates and orphan values.</li>
+</ul>
+</section>
+<section id="sec-15">
+<h2><span class="section-no">15&nbsp;</span>Step 3.1: Null profiling</h2>
+<ul>
+<li>We start by checking how many rows are NULL for a certain attribute. This can be repeated for different tables and different attributes.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT
+COUNT(*) &quot;Total number of rows&quot;,
+COUNT(*) FILTER (WHERE heading_accuracy IS NULL) &quot;Number of rows where heading accuracy is NULL&quot;,
+COUNT(*) FILTER (WHERE weight IS NULL) &quot;Number of rows where weight is NULL&quot;,
+COUNT(*) FILTER (WHERE overall IS NULL) &quot;Number of rows where overall is NULL&quot;
+FROM player_attributes;</code></pre></figure>
+</section>
+<section id="sec-16">
+<h2><span class="section-no">16&nbsp;</span>Step 3.2: Duplicates</h2>
+<ul>
+<li>We now want to evaluate if there are duplicates in our data. That’s important as it might require data cleaning before progressing with the analysis.</li>
+<li>For example, we do not expect the same player to have multiple rows in the player_attributes table, so we can try to identify that.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT player_id, COUNT(*) &quot;Rows per player&quot;
+FROM player_attributes
+GROUP BY player_id
+HAVING COUNT(*) &gt; 1
+ORDER BY rows_per_player DESC;</code></pre></figure>
+</section>
+<section id="sec-17">
+<h2><span class="section-no">17&nbsp;</span>Step 3.3: Orphan references</h2>
+<ul>
+<li>In a relational database, an orphan value is a child record that refers to a parent that doesn’t exist. This can happen when foreign keys are not enforced or when values are deleted in the parent table.</li>
+<li>For example, we can check if there are any contracts pointing to clubs that no longer exist.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT pc.player_contract_id, pc.player_id, pc.club_id, pc.joined, pc.contract_valid_until
+FROM player_contracts pc
+LEFT JOIN clubs c
+USING (club_id)
+WHERE c.club_id IS NULL;</code></pre></figure>
+</section>
+<section id="sec-18">
+<h2><span class="section-no">18&nbsp;</span>Step 4: Descriptive statistics</h2>
+<ul>
+<li>In EDA, we use descriptive statistics to identify measures of central tendency (central values like mean) and measures of variability (such as minimum and maximum values).</li>
+</ul>
+</section>
+<section id="sec-19">
+<h2><span class="section-no">19&nbsp;</span>Step 4.1: Summaries</h2>
+<ul>
+<li>The summary can include:</li>
+<ul>
+<li>total number of values for an attribute</li>
+<li>minimum value</li>
+<li>average (sum of all values divided by the number of values)</li>
+</ul>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT
+COUNT(*) &quot;Total players&quot;,
+COUNT(age) &quot;Total players with age value&quot;,
+MIN(age) &quot;Minimum value for age&quot;,
+MAX(age) &quot;Maximum value for age&quot;,
+AVG(age) &quot;Average value for age”
+FROM players;</code></pre></figure>
+</section>
+<section id="sec-20">
+<h2><span class="section-no">20&nbsp;</span>Step 4.3: Measure central tendency and spread for financial attributes</h2>
+<ul>
+<li>We can combine central tendency and spread values to identify patterns.</li>
+<li>For example, we are looking into minimum and maximum wages, the average wage, and the median wage.</li>
+<li>Compare mean vs median: if mean &gt; median, our data is skewed by a few top earners.</li>
+<li>When we look at the average result, we might think football players make a lot of money – however, this is skewed by the top earners.</li>
+</ul>
+</section>
+<section id="sec-21">
+<h2><span class="section-no">21&nbsp;</span>Step 5: Relationahips</h2>
+<ul>
+<li>We now start to attempt to understand how variables interact. We might also use JOINs to check the interaction between different tables.</li>
+</ul>
+</section>
+<section id="sec-22">
+<h2><span class="section-no">22&nbsp;</span>Step 5.1: Overview of main attributes of all tables</h2>
+<ul>
+<li>This creates a single analytical view of each player: who they are, how good they are, where they play, and how much they earn.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT
+player_name,
+overall,
+potential,
+wage,
+club_name
+FROM players
+JOIN player_attributes USING (player_id)
+JOIN player_contracts USING (player_id)
+JOIN clubs USING (club_id);</code></pre></figure>
+</section>
+<section id="sec-23">
+<h2><span class="section-no">23&nbsp;</span>Step 5.2: Club spend vs average rating</h2>
+<ul>
+<li>We can run two joins to evaluate if the money spent by a club is in line with the overall rating.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT club_name &quot;Club&quot;,
+COUNT(*) &quot;Number of players&quot;,
+SUM(wage) &quot;Spent on wage&quot;,
+AVG(overall) &quot;Overall rate&quot;
+FROM player_contracts
+JOIN clubs USING (club_id)
+LEFT JOIN player_attributes USING (player_id)
+GROUP BY club_name
+ORDER BY 3 DESC NULLS LAST;</code></pre></figure>
+</section>
+<section id="sec-24">
+<h2><span class="section-no">24&nbsp;</span>Step 5.3: Players registered but without a contract</h2>
+<ul>
+<li>We can check if a player is registered on the database but has no contract (missing links between tables player_attributes and player_contracts).</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT p.player_id, p.player_name, pc.player_contract_id
+FROM players p
+JOIN player_attributes pa USING (player_id)
+LEFT JOIN player_contracts pc USING (player_id)
+WHERE pc.player_id IS NULL
+ORDER BY p.player_name;</code></pre></figure>
+</section>
+<section id="sec-25">
+<h2><span class="section-no">25&nbsp;</span>Step 6: Anomalies and outliers</h2>
+<ul>
+<li>Finally, we will check if there is any weird pattern or data out of place.</li>
+</ul>
+</section>
+<section id="sec-26">
+<h2><span class="section-no">26&nbsp;</span>Step 6.1: Joined date after expiring date</h2>
+<ul>
+<li>We want to check if the joining year (joined) is greater than the expiring year of the contract (contract_valid_until).</li>
+<li>Notice that joined is a date data type and contract_valid_until is an integer. We need to extract the year from the attribute joined.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT player_id, joined, contract_valid_until
+FROM player_contracts
+WHERE contract_valid_until IS NOT NULL
+AND joined IS NOT NULL
+--joined is a date data type, we need to extract the year
+AND EXTRACT(YEAR FROM joined) &gt; contract_valid_until;</code></pre></figure>
+</section>
+<section id="sec-27">
+<h2><span class="section-no">27&nbsp;</span>Step 6.2: Unrealistic ages</h2>
+<ul>
+<li>In the case of our database, we do not expect to find players younger than 14 years old and older than 50 years old.</li>
+<li>We can try to catch those outliers.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT player_id, player_name, age
+FROM players
+WHERE age &lt; 14 OR age &gt; 50;</code></pre></figure>
+</section>
+<section id="sec-28">
+<h2><span class="section-no">28&nbsp;</span>Step 6.3: Wage outliers</h2>
+<ul>
+<li>We can try to identify which players make more money than average and how much more they make.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT
+p.player_name,
+c.club_name,
+pc.wage,
+pa.overall,
+--we use a subquery because avg() expects a group by at the end
+ROUND(pc.wage / (SELECT AVG(wage) FROM player_contracts WHERE wage IS NOT NULL), 2) &quot;Times above the average&quot;
+FROM player_contracts pc
+JOIN players p USING (player_id)
+LEFT JOIN player_attributes pa USING (player_id)
+LEFT JOIN clubs c USING (club_id)
+WHERE pc.wage IS NOT NULL
+ORDER BY pc.wage DESC LIMIT 10;</code></pre></figure>
+</section>
+    </div>
+  </div>
+</div>
+<script src="../../assets/app.js"></script>
+</body></html>

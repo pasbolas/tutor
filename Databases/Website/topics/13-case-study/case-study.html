@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Case Study · The Databases Review</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<div class="progress-bar"></div>
+<div class="topbar-mini"><div class="wrap">
+  <a class="mini-logo" href="../../../../">The Databases Review</a>
+  <button class="back-btn" onclick="history.back()" aria-label="Go back">&#8592; Back</button>
+  <div class="crumbs"><a href="../../../../">Home</a><span class="sep">/</span><a href="index.html">Topic 13</a><span class="sep">/</span><span class="current">Case Study</span></div>
+  <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">&#9789;</button>
+</div></div>
+
+<div class="article-header wrap-narrow">
+  <span class="kicker">Lecture 10 &middot; Topic 13</span>
+  <h1>Case Study</h1>
+  <p class="dek">Putting the whole module together on one applied, end-to-end scenario.</p>
+  <div class="byline"><span><b>CMPU2007</b> Databases 1</span><span>2 min read</span><span>14 sections</span></div>
+</div>
+<div class="wrap">
+  <div class="article-body">
+    <nav class="side-toc">
+      <div class="contents-title">Contents</div>
+      <a href="#sec-1" data-target="sec-1"><span class="toc-num">01</span><span class="toc-text">Objectives</span></a><a href="#sec-2" data-target="sec-2"><span class="toc-num">02</span><span class="toc-text">SoundWave Festival</span></a><a href="#sec-3" data-target="sec-3"><span class="toc-num">03</span><span class="toc-text">Building the tables</span></a><a href="#sec-4" data-target="sec-4"><span class="toc-num">04</span><span class="toc-text">Adding data</span></a><a href="#sec-5" data-target="sec-5"><span class="toc-num">05</span><span class="toc-text">Questions</span></a><a href="#sec-6" data-target="sec-6"><span class="toc-num">06</span><span class="toc-text">Question 1</span></a><a href="#sec-7" data-target="sec-7"><span class="toc-num">07</span><span class="toc-text">Question 2</span></a><a href="#sec-8" data-target="sec-8"><span class="toc-num">08</span><span class="toc-text">Question 3</span></a><a href="#sec-9" data-target="sec-9"><span class="toc-num">09</span><span class="toc-text">Question 4</span></a><a href="#sec-10" data-target="sec-10"><span class="toc-num">10</span><span class="toc-text">Question 5</span></a><a href="#sec-11" data-target="sec-11"><span class="toc-num">11</span><span class="toc-text">Question 6</span></a><a href="#sec-12" data-target="sec-12"><span class="toc-num">12</span><span class="toc-text">Question 7</span></a><a href="#sec-13" data-target="sec-13"><span class="toc-num">13</span><span class="toc-text">Question 8</span></a><a href="#sec-14" data-target="sec-14"><span class="toc-num">14</span><span class="toc-text">Question 9</span></a>
+    </nav>
+    <div class="prose">
+      <section id="sec-1">
+<h2><span class="section-no">01&nbsp;</span>Objectives</h2>
+<ul>
+<li>Build a database from scratch</li>
+<li>Populate the database using GenAI</li>
+<li>Answer queries about the database</li>
+<li>Modify the database</li>
+</ul>
+</section>
+<section id="sec-2">
+<h2><span class="section-no">02&nbsp;</span>SoundWave Festival</h2>
+<ul>
+<li>SoundWave is an annual music festival that hosts several concerts over a few days. Each concert is performed by a single artist, takes place on one stage, and is attended by many customers who purchase tickets. The organisers want to build a simple database to manage festival information, including artists, stages, concerts, customers, and bookings. The database should store:</li>
+<ul>
+<li>Details of each artist, such as their name and music genre.</li>
+<li>Information about each stage, including its name and audience capacity.</li>
+<li>Records of every concert, linking the artist performing, the stage, the concert date, and start time.</li>
+<li>Information about customers, including their full name and city.</li>
+<li>Each booking, showing which customer attended which concert, how many tickets they bought, and the total price paid.</li>
+</ul>
+</ul>
+</section>
+<section id="sec-3">
+<h2><span class="section-no">03&nbsp;</span>Building the tables</h2>
+<ul>
+<li>Use SQL to:</li>
+<ul>
+<li>Build the tables</li>
+<li>List the attributes</li>
+<li>Establish data types and constraints</li>
+</ul>
+</ul>
+</section>
+<section id="sec-4">
+<h2><span class="section-no">04&nbsp;</span>Adding data</h2>
+<ul>
+<li>Using a Gen AI tool, insert at least 20 rows into each table you created.</li>
+</ul>
+</section>
+<section id="sec-5">
+<h2><span class="section-no">05&nbsp;</span>Questions</h2>
+<ul>
+<li>Now, let’s take some time to answer the following questions.</li>
+</ul>
+</section>
+<section id="sec-6">
+<h2><span class="section-no">06&nbsp;</span>Question 1</h2>
+<ul>
+<li>Show each customer’s name, artist they went to see, and total tickets they booked.</li>
+<li>Then, modify your query to also retrieve the name of the stage where the concert took place.</li>
+</ul>
+</section>
+<section id="sec-7">
+<h2><span class="section-no">07&nbsp;</span>Question 2</h2>
+<ul>
+<li>Find average ticket price per artist. Your resulting table should show two columns: one with the artist name, and another one with the average price paid for their concerts.</li>
+</ul>
+</section>
+<section id="sec-8">
+<h2><span class="section-no">08&nbsp;</span>Question 3</h2>
+<ul>
+<li>Which artists sold more than 3 tickets in total? Your resulting table should show two columns: one with the name of the artist, and another one with how many tickets they sold in total.</li>
+</ul>
+</section>
+<section id="sec-9">
+<h2><span class="section-no">09&nbsp;</span>Question 4</h2>
+<ul>
+<li>Classify stages by size: ‘Large’ if capacity ≥4000, else ‘Medium. Your resulting query should show two columns: one with the name of the stage, and another one with the capacity classification.</li>
+</ul>
+</section>
+<section id="sec-10">
+<h2><span class="section-no">10&nbsp;</span>Question 5</h2>
+<ul>
+<li>List concerts happening on the largest stage. Your resulting query should show 3 columns:</li>
+<ul>
+<li>The ID of the concert</li>
+<li>The name of the artist</li>
+<li>The name of the stage</li>
+</ul>
+</ul>
+</section>
+<section id="sec-11">
+<h2><span class="section-no">11&nbsp;</span>Question 6</h2>
+<ul>
+<li>For each city, show total revenue of bookings.</li>
+</ul>
+</section>
+<section id="sec-12">
+<h2><span class="section-no">12&nbsp;</span>Question 7</h2>
+<ul>
+<li>Write a query that shows something interesting about the festival data.</li>
+</ul>
+</section>
+<section id="sec-13">
+<h2><span class="section-no">13&nbsp;</span>Question 8</h2>
+<ul>
+<li>The festival organisation team decided to standardise pricing. Update all bookings so that any booking for concerts performed by Pop artists has its total_price increased by 10% compared to its current value.</li>
+</ul>
+</section>
+<section id="sec-14">
+<h2><span class="section-no">14&nbsp;</span>Question 9</h2>
+<ul>
+<li>One stage, called Arena, is being renovated and all its concerts are cancelled.</li>
+<li>Remove all bookings linked to concerts that were scheduled on this stage.</li>
+</ul>
+</section>
+    </div>
+  </div>
+</div>
+<script src="../../assets/app.js"></script>
+</body></html>

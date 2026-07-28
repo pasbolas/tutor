@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Security, Views and CTEs · The Databases Review</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<div class="progress-bar"></div>
+<div class="topbar-mini"><div class="wrap">
+  <a class="mini-logo" href="../../../../">The Databases Review</a>
+  <button class="back-btn" onclick="history.back()" aria-label="Go back">&#8592; Back</button>
+  <div class="crumbs"><a href="../../../../">Home</a><span class="sep">/</span><a href="index.html">Topic 10</a><span class="sep">/</span><span class="current">Security, Views and CTEs</span></div>
+  <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">&#9789;</button>
+</div></div>
+
+<div class="article-header wrap-narrow">
+  <span class="kicker">Lecture 8 &middot; Topic 10</span>
+  <h1>Security, Views and CTEs</h1>
+  <p class="dek">Guarding against SQL injection, and organising complex queries with views and CTEs.</p>
+  <div class="byline"><span><b>CMPU2007</b> Databases 1</span><span>8 min read</span><span>24 sections</span></div>
+</div>
+<div class="wrap">
+  <div class="article-body">
+    <nav class="side-toc">
+      <div class="contents-title">Contents</div>
+      <a href="#sec-1" data-target="sec-1"><span class="toc-num">01</span><span class="toc-text">Learning outcomes</span></a><a href="#sec-2" data-target="sec-2"><span class="toc-num">02</span><span class="toc-text">Why database security is essential</span></a><a href="#sec-3" data-target="sec-3"><span class="toc-num">03</span><span class="toc-text">CIA Triad</span></a><a href="#sec-4" data-target="sec-4"><span class="toc-num">04</span><span class="toc-text">Common threats to databases</span></a><a href="#sec-5" data-target="sec-5"><span class="toc-num">05</span><span class="toc-text">SQL injections</span></a><a href="#sec-6" data-target="sec-6"><span class="toc-num">06</span><span class="toc-text">SQL injections – safe query</span></a><a href="#sec-7" data-target="sec-7"><span class="toc-num">07</span><span class="toc-text">SQL injections – vulnerable query</span></a><a href="#sec-8" data-target="sec-8"><span class="toc-num">08</span><span class="toc-text">SQL Injections</span></a><a href="#sec-9" data-target="sec-9"><span class="toc-num">09</span><span class="toc-text">Legal and regulatory obligations</span></a><a href="#sec-10" data-target="sec-10"><span class="toc-num">10</span><span class="toc-text">Security in a DBMS</span></a><a href="#sec-11" data-target="sec-11"><span class="toc-num">11</span><span class="toc-text">Authentication</span></a><a href="#sec-12" data-target="sec-12"><span class="toc-num">12</span><span class="toc-text">Authentication – access control</span></a><a href="#sec-13" data-target="sec-13"><span class="toc-num">13</span><span class="toc-text">Roles and privileges</span></a><a href="#sec-14" data-target="sec-14"><span class="toc-num">14</span><span class="toc-text">Integrity constraints</span></a><a href="#sec-15" data-target="sec-15"><span class="toc-num">15</span><span class="toc-text">Encryption</span></a><a href="#sec-16" data-target="sec-16"><span class="toc-num">16</span><span class="toc-text">Backup and recovery</span></a><a href="#sec-17" data-target="sec-17"><span class="toc-num">17</span><span class="toc-text">Views for security</span></a><a href="#sec-18" data-target="sec-18"><span class="toc-num">18</span><span class="toc-text">Views for different roles</span></a><a href="#sec-19" data-target="sec-19"><span class="toc-num">19</span><span class="toc-text">Public rosters</span></a><a href="#sec-20" data-target="sec-20"><span class="toc-num">20</span><span class="toc-text">HR and Payroll</span></a><a href="#sec-21" data-target="sec-21"><span class="toc-num">21</span><span class="toc-text">Coach and analyst</span></a><a href="#sec-22" data-target="sec-22"><span class="toc-num">22</span><span class="toc-text">Changing data through view</span></a><a href="#sec-23" data-target="sec-23"><span class="toc-num">23</span><span class="toc-text">Update through views</span></a><a href="#sec-24" data-target="sec-24"><span class="toc-num">24</span><span class="toc-text">Can I always update through a view?</span></a>
+    </nav>
+    <div class="prose">
+      <section id="sec-1">
+<h2><span class="section-no">01&nbsp;</span>Learning outcomes</h2>
+<ul>
+<li>Understand why database security is essential in a relational database system.</li>
+<li>Understand how security and integrity controls are implemented in PostgreSQL.</li>
+<li>Evaluate how views and common table expressions (CTEs) can support secure, efficient, and modular query design.</li>
+</ul>
+</section>
+<section id="sec-2">
+<h2><span class="section-no">02&nbsp;</span>Why database security is essential</h2>
+<ul>
+<li>Database security protects the organisation’s most valuable asset: its data.</li>
+<li>Losing or corrupting data can lead to financial losses, reputational damage, or even legal action.</li>
+<li>Security ensures that data is accessed only by authorized users and remains accurate and available.</li>
+<li>We often describe this using the CIA Triad: Confidentiality, Integrity, and Availability.</li>
+</ul>
+</section>
+<section id="sec-3">
+<h2><span class="section-no">03&nbsp;</span>CIA Triad</h2>
+<ul>
+<li>Confidentiality: Only authorised users should see the data. For example, a student database should not allow other students to see personal details.</li>
+<li>Integrity: Data must remain accurate and consistent. For example, we must prevent duplicate IDs or negative salaries.</li>
+<li>Availability: Authorised users must access data when needed. For example, databases must recover quickly after a crash.</li>
+</ul>
+</section>
+<section id="sec-4">
+<h2><span class="section-no">04&nbsp;</span>Common threats to databases</h2>
+<ul>
+<li>Databases face many security risks:</li>
+<li>Unauthorised access or privilege misuse.</li>
+<li>SQL injection attacks.</li>
+<li>Accidental data deletion or corruption.</li>
+<li>Loss of availability due to hardware failure or ransomware.</li>
+<li>Therefore, every database must include preventive and recovery measures.</li>
+</ul>
+</section>
+<section id="sec-5">
+<h2><span class="section-no">05&nbsp;</span>SQL injections</h2>
+<ul>
+<li>SQL Injection is a common web security vulnerability where an attacker manipulates SQL queries by injecting malicious input.</li>
+<li>Attackers gain unauthorised access to the database, being able to retrieve, modify, or delete sensitive data.</li>
+<li>SQL Injection commonly occurs when user input is directly embedded in SQL queries without proper sanitisation, allowing attackers to execute arbitrary SQL commands.</li>
+</ul>
+<p>The following example is prone to SQL injection. It builds the query by directly concatenating user input into it, with no sanitisation:</p>
+<figure class="code-figure"><figcaption>Vulnerable query construction</figcaption><pre><code>"SELECT * FROM users WHERE username = '" + user_input_username + "' AND password = '" + user_input_password + "'"</code></pre></figure>
+<p>The attacker can log in as any user without a password by adding the comment sequence (--) to remove the password check from the WHERE clause. For example, submitting the username <code>admin--</code> and a blank password produces this query:</p>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT * FROM users WHERE username = 'admin'-- ' AND password = ''</code></pre></figure>
+<p>Everything after <code>--</code> is now a comment, so the password check never runs. This query returns the row for the user "admin" and successfully logs the attacker in as that user.</p>
+</section>
+<section id="sec-6">
+<h2><span class="section-no">06&nbsp;</span>SQL injections – safe query</h2>
+<ul>
+<li>This query is secure because it is parameterised -- it uses placeholders instead of directly concatenating user input into the query.</li>
+<li>The user_input_name and user_input_password variables are directly passed to the WHERE clause. PostgreSQL treats these variables as data, not as part of the SQL syntax.</li>
+<li>The query is pre-parsed by PostgreSQL, and variables are substituted securely.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>BEGIN
+-- Secure query using placeholders and parameters
+EXECUTE &#x27;SELECT * FROM users WHERE username = $1 AND password = $2&#x27;
+INTO result
+USING user_input_username, user_input_password;
+-- Output the result
+IF result &gt; 0 THEN
+RAISE NOTICE &#x27;Authentication successful!&#x27;;
+ELSE
+RAISE NOTICE &#x27;Authentication failed!&#x27;;
+END IF;</code></pre></figure>
+</section>
+<section id="sec-7">
+<h2><span class="section-no">07&nbsp;</span>SQL injections – vulnerable query</h2>
+<ul>
+<li>Check the sql_injection.sql example</li>
+</ul>
+</section>
+<section id="sec-8">
+<h2><span class="section-no">08&nbsp;</span>SQL Injections</h2>
+<p>Access the following website to simulate an SQL injection: <a href="https://www.hacksplaining.com/lessons/sql-injection/start">hacksplaining.com/lessons/sql-injection/start</a></p>
+</section>
+<section id="sec-9">
+<h2><span class="section-no">09&nbsp;</span>Legal and regulatory obligations</h2>
+<ul>
+<li>In Europe, database systems must comply with:</li>
+<ul>
+<li>GDPR (2018) – requires data protection, consent, and breach notification.</li>
+<li>Data Protection Act (2018) – enforces how personal data is stored and processed.</li>
+<li>Database administrators are legally responsible for ensuring compliance, logging, and auditability.</li>
+</ul>
+</ul>
+</section>
+<section id="sec-10">
+<h2><span class="section-no">10&nbsp;</span>Security in a DBMS</h2>
+<ul>
+<li>Security mechanisms are built into all relational database management systems. These include:</li>
+<ul>
+<li>Authentication (checking user identity)</li>
+<li>Authorisation and access control</li>
+<li>Integrity constraints</li>
+<li>Views</li>
+<li>Backup and recovery</li>
+<li>Encryption and auditing</li>
+</ul>
+<li>PostgreSQL supports all these through SQL commands and configuration files.</li>
+</ul>
+</section>
+<section id="sec-11">
+<h2><span class="section-no">11&nbsp;</span>Authentication</h2>
+<ul>
+<li>Authentication verifies who is trying to connect.</li>
+<li>PostgreSQL supports:</li>
+<ul>
+<li>Password-based login (default)</li>
+<li>Peer authentication (local OS user)</li>
+<li>Enterprise-level authentication systems that work as servers holding people’s details.</li>
+</ul>
+<li>Example, which creates a new user role with login privileges:</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>CREATE ROLE mariana LOGIN PASSWORD 'StrongPass!';</code></pre></figure>
+</section>
+<section id="sec-12">
+<h2><span class="section-no">12&nbsp;</span>Authentication – access control</h2>
+<ul>
+<li>Authorization defines what an authenticated user can do.</li>
+<li>Privileges include: SELECT, INSERT, UPDATE, DELETE, REFERENCES, etc.</li>
+<li>Example:</li>
+<li>This gives Mariana permission to read and add records, but not delete them.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>GRANT SELECT, INSERT ON employees TO mariana;
+REVOKE DELETE ON employees FROM mariana;</code></pre></figure>
+</section>
+<section id="sec-13">
+<h2><span class="section-no">13&nbsp;</span>Roles and privileges</h2>
+<ul>
+<li>Roles can represent individuals or groups.</li>
+<li>You can create a role, assign privileges, and grant that role to multiple users:</li>
+<li>Mariana now inherits all privileges from the manager role.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>CREATE ROLE manager;
+GRANT SELECT, UPDATE ON employees TO manager;
+GRANT manager TO mariana;</code></pre></figure>
+</section>
+<section id="sec-14">
+<h2><span class="section-no">14&nbsp;</span>Integrity constraints</h2>
+<ul>
+<li>Integrity controls ensure data remains valid.</li>
+<li>PostgreSQL uses:</li>
+<ul>
+<li>PRIMARY KEY – enforces unique identification.</li>
+<li>FOREIGN KEY – maintains referential integrity.</li>
+<li>CHECK – ensures logical conditions are met.</li>
+<li>NOT NULL – prevents missing values.</li>
+</ul>
+</ul>
+</section>
+<section id="sec-15">
+<h2><span class="section-no">15&nbsp;</span>Encryption</h2>
+<ul>
+<li>PostgreSQL has also a module named pgcrypto that protects data stored in the database itself, protecting data at rest.</li>
+<li>Secure Sockets Layer (SSL connections) encrypts all data sent across the network: the password, the queries, and the data returned. This protects the data in transit.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>-- Enable the pgcrypto extension (run once per database)
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+-- demo table
+DROP TABLE IF EXISTS secure_customers;
+CREATE TABLE secure_customers (
+id SERIAL PRIMARY KEY,
+full_name TEXT NOT NULL,
+national_id BYTEA -- this column will store encrypted data, BYTEA stores arbitrary strings
+);
+INSERT INTO secure_customers (full_name, national_id)
+VALUES (&#x27;Alice Murphy&#x27;, convert_to(&#x27;123456789&#x27;, &#x27;UTF8&#x27;)); --making sure the value is converted into bytea
+-- View the plain text
+SELECT id, full_name, convert_from(national_id, &#x27;UTF8&#x27;) AS national_id_plain
+FROM secure_customers;
+-- Encrypt the data using a symmetric key
+UPDATE secure_customers
+SET national_id = pgp_sym_encrypt(&#x27;123456789&#x27;, &#x27;mysecretkey123&#x27;) --this function takes the data and a key to encrypt, the same key is used to decrypt
+WHERE full_name = &#x27;Alice Murphy&#x27;;
+SELECT id, full_name, national_id FROM secure_customers;</code></pre></figure>
+</section>
+<section id="sec-16">
+<h2><span class="section-no">16&nbsp;</span>Backup and recovery</h2>
+<ul>
+<li>A backup is a copy of your database data and structure that can be restored if something goes wrong.</li>
+<li>Without backups, you risk permanent data loss from:</li>
+<ul>
+<li>Hardware failures</li>
+<li>Accidental DROP TABLE or DELETE</li>
+<li>Software corruption</li>
+<li>Ransomware or malicious attacks</li>
+</ul>
+</ul>
+<p>If we want to create a backup of the football database, we can run the following in the terminal:</p>
+<figure class="code-figure"><figcaption>Terminal</figcaption><pre><code>pg_dump -h localhost -p 54321 -U postgres -d postgres -n football -v -f football_backup.sql
+ls -lh football_backup.sql</code></pre></figure>
+</section>
+<section id="sec-17">
+<h2><span class="section-no">17&nbsp;</span>Views for security</h2>
+<ul>
+<li>A database view is a logical or virtual table based on a query.</li>
+<li>It is useful to think of a view as a stored query.</li>
+<li>It helps to avoid writing the same query over and over again.</li>
+<li>Useful ways of presenting different information to different users.</li>
+</ul>
+<ul>
+<li>The view is called a virtual table. It does not store a table physically -- instead, it represents a complex query, avoiding the need to rewrite it many times.</li>
+<li>Think about the complex JOINS we have encountered before. If you need to write those joins many times, instead of copying and pasting the code, you can create and recall a view</li>
+<li>Views can also be helpful in complying with specific needs of specific users</li>
+</ul>
+</section>
+<section id="sec-18">
+<h2><span class="section-no">18&nbsp;</span>Views for different roles</h2>
+<ul>
+<li>Considering the football database, we can have different people accessing the same data with different needs.</li>
+<li>We can protect our data and make the access easier by creating roles and views:</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>-- Example roles
+CREATE ROLE analyst NOLOGIN;
+CREATE ROLE hr_payroll NOLOGIN;
+CREATE ROLE coach NOLOGIN;
+CREATE ROLE public_web NOLOGIN;</code></pre></figure>
+</section>
+<section id="sec-19">
+<h2><span class="section-no">19&nbsp;</span>Public rosters</h2>
+<ul>
+<li>Consider basic data about the players that anyone can see: name, nationality, preferred_foot and club</li>
+<li>We can create a view and associate it with specific roles, so they can see that data when they login.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>CREATE OR REPLACE VIEW v_public_rosters AS
+SELECT
+p.player_id,
+p.player_name,
+p.nationality,
+p.preferred_foot,
+c.club_name
+FROM football.players p
+JOIN football.player_contracts pc USING (player_id)
+JOIN football.clubs c USING (club_id);
+
+-- grant to specific roles
+GRANT SELECT ON v_public_rosters TO public_web, analyst, coach;</code></pre></figure>
+</section>
+<section id="sec-20">
+<h2><span class="section-no">20&nbsp;</span>HR and Payroll</h2>
+<ul>
+<li>Some users might need to know how much money the players make and other info on their contracts.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>CREATE OR REPLACE VIEW v_hr_contracts AS
+SELECT
+pc.player_contract_id,
+pc.player_id,
+pc.club_id,
+pc.joined,
+pc.contract_valid_until,
+pc.jersey_number,
+pc.value,
+pc.wage,
+pc.release_clause
+FROM football.player_contracts pc;
+GRANT SELECT, INSERT, UPDATE, DELETE ON v_hr_contracts TO hr_payroll;</code></pre></figure>
+</section>
+<section id="sec-21">
+<h2><span class="section-no">21&nbsp;</span>Coach and analyst</h2>
+<ul>
+<li>The coach and the analyst might need to know details about the players, but nothing about their salaries.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>CREATE OR REPLACE VIEW v_coach_scout AS
+SELECT
+p.player_id,
+p.player_name,
+p.age,
+p.nationality,
+pa.overall,
+pa.potential,
+pa.&quot;position&quot;,
+pa.preferred_foot,
+pa.body_type
+FROM football.players p
+LEFT JOIN football.player_attributes pa USING (player_id);
+GRANT SELECT ON football.v_coach_scout TO coach, analyst;</code></pre></figure>
+</section>
+<section id="sec-22">
+<h2><span class="section-no">22&nbsp;</span>Changing data through view</h2>
+<ul>
+<li>Even though the view is not the physical table, just a virtual version of it, we still can use it to insert and delete data from the original table.</li>
+<li>This is done using an insert or update statements on the view</li>
+<li>Doing this through a view makes the process more secure and simple to the user.</li>
+</ul>
+</section>
+<section id="sec-23">
+<h2><span class="section-no">23&nbsp;</span>Update through views</h2>
+<ul>
+<li>When we created a view to HR, we granted the possibility of updating the data through the view.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>UPDATE v_hr_contracts
+SET wage = 14000
+WHERE player_id = 999999
+AND club_id = &#x27;CL4&#x27;;</code></pre></figure>
+</section>
+<section id="sec-24">
+<h2><span class="section-no">24&nbsp;</span>Can I always update through a view?</h2>
+<ul>
+<li>Even though updating data through a view can be handy, PostgreSQL does not always allow that.</li>
+<li>This is a security measure. Consider that views are often used by other users, mainly non-developers, and might combine multiple tables and attributes to allow the user to retrieve the information required.</li>
+<li>However, for more complex views (involving joins, for example), users might try to insert duplicated or incorrect data, damaging the integrity of the database.</li>
+</ul>
+<ul>
+<li>You can only insert, delete and update views that:</li>
+<ul>
+<li>Are based on one single base table (not a join).</li>
+<li>Don’t use aggregates, DISTINCT, GROUP BY, HAVING, UNION, or set operations.</li>
+<li>Include all mandatory (NOT NULL) columns from the base table, or those have defaults.</li>
+</ul>
+</ul>
+</section>
+    </div>
+  </div>
+</div>
+<script src="../../assets/app.js"></script>
+</body></html>

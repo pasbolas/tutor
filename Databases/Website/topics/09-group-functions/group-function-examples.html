@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Group Function Examples · The Databases Review</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<div class="progress-bar"></div>
+<div class="topbar-mini"><div class="wrap">
+  <a class="mini-logo" href="../../../../">The Databases Review</a>
+  <button class="back-btn" onclick="history.back()" aria-label="Go back">&#8592; Back</button>
+  <div class="crumbs"><a href="../../../../">Home</a><span class="sep">/</span><a href="index.html">Topic 09</a><span class="sep">/</span><span class="current">Group Function Examples</span></div>
+  <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">&#9789;</button>
+</div></div>
+
+<div class="article-header wrap-narrow">
+  <span class="kicker">Reference &middot; Topic 09</span>
+  <h1>Group Function Examples</h1>
+  <p class="dek">Worked GROUP BY and aggregate function queries.</p>
+  <div class="byline"><span><b>CMPU2007</b> Databases 1</span><span>3 min read</span><span>19 sections</span></div>
+</div>
+<div class="wrap">
+  <div class="article-body">
+    <nav class="side-toc">
+      <div class="contents-title">Contents</div>
+      <a href="#sec-1" data-target="sec-1"><span class="toc-num">01</span><span class="toc-text">Count()</span></a><a href="#sec-2" data-target="sec-2"><span class="toc-num">02</span><span class="toc-text">Using subqueries to count all rows in one unique query</span></a><a href="#sec-3" data-target="sec-3"><span class="toc-num">03</span><span class="toc-text">Count only contracts that have a non-null wage</span></a><a href="#sec-4" data-target="sec-4"><span class="toc-num">04</span><span class="toc-text">How many distinct clubs appear in the contracts table?</span></a><a href="#sec-5" data-target="sec-5"><span class="toc-num">05</span><span class="toc-text">count( ) and group by</span></a><a href="#sec-6" data-target="sec-6"><span class="toc-num">06</span><span class="toc-text">grouping by multiple columns</span></a><a href="#sec-7" data-target="sec-7"><span class="toc-num">07</span><span class="toc-text">avg()</span></a><a href="#sec-8" data-target="sec-8"><span class="toc-num">08</span><span class="toc-text">Average overall per nationality</span></a><a href="#sec-9" data-target="sec-9"><span class="toc-num">09</span><span class="toc-text">Combining avg( ) and count( )</span></a><a href="#sec-10" data-target="sec-10"><span class="toc-num">10</span><span class="toc-text">sum( )</span></a><a href="#sec-11" data-target="sec-11"><span class="toc-num">11</span><span class="toc-text">min( ) and max( )</span></a><a href="#sec-12" data-target="sec-12"><span class="toc-num">12</span><span class="toc-text">Earliest and latest contract end dates</span></a><a href="#sec-13" data-target="sec-13"><span class="toc-num">13</span><span class="toc-text">Min and max dealing with strings</span></a><a href="#sec-14" data-target="sec-14"><span class="toc-num">14</span><span class="toc-text">Clubs with average wage higher than 50,000</span></a><a href="#sec-15" data-target="sec-15"><span class="toc-num">15</span><span class="toc-text">SELECT from clubs</span></a><a href="#sec-16" data-target="sec-16"><span class="toc-num">16</span><span class="toc-text">Nesting aggregates -- not allowed</span></a><a href="#sec-17" data-target="sec-17"><span class="toc-num">17</span><span class="toc-text">We can retrieve that data using a subquery</span></a><a href="#sec-18" data-target="sec-18"><span class="toc-num">18</span><span class="toc-text">string_agg( )</span></a><a href="#sec-19" data-target="sec-19"><span class="toc-num">19</span><span class="toc-text">Dashboard combining different functions</span></a>
+    </nav>
+    <div class="prose">
+      <section id="sec-1">
+<h2><span class="section-no">01&nbsp;</span>Count()</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>-- Total number of rows in each key table (simple counts)
+SELECT COUNT(*) &quot;Total players&quot; FROM players;
+SELECT COUNT(*) &quot;Total clubs&quot;   FROM clubs;
+SELECT COUNT(*) &quot;Total contracts&quot; FROM player_contracts;
+SELECT COUNT(*) &quot;Total attributes&quot; FROM player_attributes;</code></pre></figure>
+</section>
+<section id="sec-2">
+<h2><span class="section-no">02&nbsp;</span>Using subqueries to count all rows in one unique query</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT
+(SELECT COUNT(player_id) FROM players) &quot;Total number of players&quot;,
+(SELECT COUNT(club_id) FROM clubs) &quot;Number of clubs&quot;,
+(SELECT COUNT(DISTINCT player_id) FROM player_attributes) &quot;Number of players with attributes&quot;,
+(SELECT COUNT(DISTINCT player_id) FROM player_contracts) &quot;Number of players with contracts&quot;;</code></pre></figure>
+</section>
+<section id="sec-3">
+<h2><span class="section-no">03&nbsp;</span>Count only contracts that have a non-null wage</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT COUNT(wage) &quot;Contracts with wage&quot; FROM player_contracts;</code></pre></figure>
+</section>
+<section id="sec-4">
+<h2><span class="section-no">04&nbsp;</span>How many distinct clubs appear in the contracts table?</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT COUNT(DISTINCT club_id) &quot;Unique wage values&quot; FROM player_contracts;</code></pre></figure>
+</section>
+<section id="sec-5">
+<h2><span class="section-no">05&nbsp;</span>count( ) and group by</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT
+  club_name,
+  COUNT(player_contracts.player_id) &quot;Players with contract&quot;
+FROM clubs
+LEFT JOIN player_contracts USING (club_id)
+GROUP BY club_name;</code></pre></figure>
+</section>
+<section id="sec-6">
+<h2><span class="section-no">06&nbsp;</span>grouping by multiple columns</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>-- Average wage per club and country
+SELECT
+  club_name,
+  nationality,
+  ROUND(AVG(wage), 2) &quot;Average wage&quot;
+FROM player_contracts
+JOIN players USING (player_id)
+JOIN clubs USING (club_id)
+GROUP BY club_name, nationality
+ORDER BY 2, 3 DESC;</code></pre></figure>
+</section>
+<section id="sec-7">
+<h2><span class="section-no">07&nbsp;</span>avg()</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>-- Average wage per club (ignore NULL wages by default)
+SELECT
+  club_name,
+  ROUND(AVG(player_contracts.wage), 2) &quot;Average wage&quot;
+FROM clubs
+JOIN player_contracts USING (club_id)
+GROUP BY club_name
+ORDER BY 2 DESC;</code></pre></figure>
+</section>
+<section id="sec-8">
+<h2><span class="section-no">08&nbsp;</span>Average overall per nationality</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT
+  nationality,
+  AVG(overall) &quot;Average overall&quot;
+FROM players
+JOIN player_attributes USING (player_id)
+GROUP BY nationality
+ORDER BY 2 DESC;</code></pre></figure>
+</section>
+<section id="sec-9">
+<h2><span class="section-no">09&nbsp;</span>Combining avg( ) and count( )</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT nationality &quot;Nationality&quot;,
+COUNT(*) &quot;Number of players&quot;,
+ROUND(AVG(age), 1) &quot;Average age&quot;
+FROM players
+GROUP BY nationality
+ORDER BY 2 DESC;</code></pre></figure>
+</section>
+<section id="sec-10">
+<h2><span class="section-no">10&nbsp;</span>sum( )</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>--How much each club spends on wage
+SELECT
+  clubs.club_name,
+  SUM(wage) &quot;Wage bill&quot;
+FROM clubs
+JOIN player_contracts USING (club_id)
+GROUP BY club_name
+ORDER BY 2 DESC;</code></pre></figure>
+</section>
+<section id="sec-11">
+<h2><span class="section-no">11&nbsp;</span>min( ) and max( )</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>-- Highest and lowest player wage overall
+SELECT
+  MIN(wage) &quot;Minimum wage&quot;,
+  MAX(wage) &quot;Maximum wage&quot;
+FROM player_contracts;</code></pre></figure>
+</section>
+<section id="sec-12">
+<h2><span class="section-no">12&nbsp;</span>Earliest and latest contract end dates</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT
+  MIN(joined) &quot;Earliest contract&quot;,
+  MAX(contract_valid_until) &quot;Latest contract&quot;
+FROM player_contracts;</code></pre></figure>
+</section>
+<section id="sec-13">
+<h2><span class="section-no">13&nbsp;</span>Min and max dealing with strings</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT 
+MIN(player_name),
+MAX(player_name)
+FROM players;</code></pre></figure>
+</section>
+<section id="sec-14">
+<h2><span class="section-no">14&nbsp;</span>Clubs with average wage higher than 50,000</h2>
+<p>This version errors, because WHERE can't filter on an aggregate:</p>
+<figure class="code-figure"><figcaption>SQL — this errors</figcaption><pre><code>SELECT club_id, ROUND(AVG(wage), 2) "Average wage"
+FROM player_contracts
+GROUP BY club_id
+WHERE AVG(wage) &gt; 50000;</code></pre></figure>
+<p>Use HAVING instead, which filters after the grouping and aggregation happens:</p>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT club_id, ROUND(AVG(wage), 2) "Average wage"
+FROM player_contracts
+GROUP BY club_id
+HAVING AVG(wage) &gt; 50000;</code></pre></figure>
+</section>
+<section id="sec-15">
+<h2><span class="section-no">15&nbsp;</span>SELECT from clubs</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT
+  club_name,
+  COUNT(player_id),
+  COUNT(player_id) FILTER (WHERE wage IS NOT NULL) &quot;With wage&quot;,
+  COUNT(player_id) FILTER (WHERE wage IS NULL) &quot;Without wage&quot;
+FROM clubs
+LEFT JOIN player_contracts USING (club_id)
+GROUP BY club_name
+ORDER BY club_name;</code></pre></figure>
+</section>
+<section id="sec-16">
+<h2><span class="section-no">16&nbsp;</span>Nesting aggregates -- not allowed</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>--The highest average wage (returns an error)
+SELECT 
+  MAX(AVG(wage)) 
+FROM player_contracts;</code></pre></figure>
+</section>
+<section id="sec-17">
+<h2><span class="section-no">17&nbsp;</span>We can retrieve that data using a subquery</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT ROUND(MAX(&quot;Average wage&quot;), 2) &quot;Maximum wage&quot; --notice I can nest round and max because round is a single-row function
+FROM (
+  SELECT AVG(wage) &quot;Average wage&quot;
+  FROM player_contracts
+  GROUP BY club_id
+) &quot;Subquery&quot;;</code></pre></figure>
+</section>
+<section id="sec-18">
+<h2><span class="section-no">18&nbsp;</span>string_agg( )</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>-- All player full names in a single comma-separated string per club, alphabetically
+SELECT
+  club_name,
+  STRING_AGG(player_name, &#x27;, &#x27; ORDER BY players.player_name) &quot;Players list&quot;
+FROM clubs
+JOIN player_contracts USING (club_id)
+JOIN players USING (player_id)
+GROUP BY club_name
+ORDER BY club_name;</code></pre></figure>
+</section>
+<section id="sec-19">
+<h2><span class="section-no">19&nbsp;</span>Dashboard combining different functions</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT
+ club_name,
+  COUNT(DISTINCT player_id) &quot;Number of players&quot;,
+  ROUND(AVG(wage), 2)  &quot;Average wage&quot;,
+  SUM(wage) &quot;Total wage bill&quot;,
+  MIN(wage) &quot;Minimum wage&quot;,
+  MAX(wage) &quot;Maximum wage&quot;,
+  COUNT(*) FILTER (WHERE contract_valid_until &lt;= EXTRACT(YEAR FROM CURRENT_DATE)) &quot;Number of valid contracts&quot;,
+  STRING_AGG(DISTINCT player_name, &#x27;, &#x27; ORDER BY player_name) &quot;Players list&quot;
+FROM clubs
+LEFT JOIN player_contracts USING (club_id)
+LEFT JOIN players USING (player_id)
+GROUP BY club_name
+ORDER BY 3 DESC NULLS LAST;</code></pre></figure>
+</section>
+    </div>
+  </div>
+</div>
+<script src="../../assets/app.js"></script>
+</body></html>

@@ -155,6 +155,133 @@
       ]
     },
     {
+      "name": "Databases",
+      "id": "databases",
+      "type": "folder",
+      "children": [
+        {
+          "name": "Course Topics",
+          "type": "folder",
+          "children": [
+            {
+              "name": "01. Introduction to Databases",
+              "type": "file",
+              "href": "Databases/Website/topics/01-introduction-to-databases/",
+              "meta": "Topic 01"
+            },
+            {
+              "name": "02. Installing PostgreSQL",
+              "type": "file",
+              "href": "Databases/Website/topics/02-installing-postgresql/",
+              "meta": "Topic 02"
+            },
+            {
+              "name": "03. Creating Structures (DDL)",
+              "type": "file",
+              "href": "Databases/Website/topics/03-creating-structures-ddl/",
+              "meta": "Topic 03"
+            },
+            {
+              "name": "04. Data Modelling and ERDs",
+              "type": "file",
+              "href": "Databases/Website/topics/04-data-modelling-and-erds/",
+              "meta": "Topic 04"
+            },
+            {
+              "name": "05. Inserting, Altering and Data Integrity",
+              "type": "file",
+              "href": "Databases/Website/topics/05-inserting-altering-and-data-integrity/",
+              "meta": "Topic 05"
+            },
+            {
+              "name": "06. JOINs",
+              "type": "file",
+              "href": "Databases/Website/topics/06-joins/",
+              "meta": "Topic 06"
+            },
+            {
+              "name": "07. Set Operations",
+              "type": "file",
+              "href": "Databases/Website/topics/07-set-operations/",
+              "meta": "Topic 07"
+            },
+            {
+              "name": "08. Character, Number and Date Functions",
+              "type": "file",
+              "href": "Databases/Website/topics/08-character-number-and-date-functions/",
+              "meta": "Topic 08"
+            },
+            {
+              "name": "09. Group Functions",
+              "type": "file",
+              "href": "Databases/Website/topics/09-group-functions/",
+              "meta": "Topic 09"
+            },
+            {
+              "name": "10. Conditional Expressions, Views and CTEs",
+              "type": "file",
+              "href": "Databases/Website/topics/10-conditional-expressions-views-and-ctes/",
+              "meta": "Topic 10"
+            },
+            {
+              "name": "11. Normalisation",
+              "type": "file",
+              "href": "Databases/Website/topics/11-normalisation/",
+              "meta": "Topic 11"
+            },
+            {
+              "name": "12. Exploratory Data Analysis",
+              "type": "file",
+              "href": "Databases/Website/topics/12-exploratory-data-analysis/",
+              "meta": "Topic 12"
+            },
+            {
+              "name": "13. Case Study",
+              "type": "file",
+              "href": "Databases/Website/topics/13-case-study/",
+              "meta": "Topic 13"
+            },
+            {
+              "name": "14. Indexes",
+              "type": "file",
+              "href": "Databases/Website/topics/14-indexes/",
+              "meta": "Topic 14"
+            },
+            {
+              "name": "15. Query Optimisation, Transactions and Triggers",
+              "type": "file",
+              "href": "Databases/Website/topics/15-query-optimisation-transactions-and-triggers/",
+              "meta": "Topic 15"
+            },
+            {
+              "name": "16. Course Review",
+              "type": "file",
+              "href": "Databases/Website/topics/16-course-review/",
+              "meta": "Topic 16"
+            }
+          ]
+        },
+        {
+          "name": "Exam and Reference Material",
+          "type": "folder",
+          "children": [
+            {
+              "name": "Exam Papers",
+              "type": "file",
+              "href": "Databases/Website/topics/exam-papers/",
+              "meta": "Exam archive"
+            },
+            {
+              "name": "Reference Material",
+              "type": "file",
+              "href": "Databases/Website/topics/reference-material/",
+              "meta": "Cheat sheets"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "name": "Data Communication",
       "id": "data-communication",
       "type": "folder",

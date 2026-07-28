@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aggregate Functions · The Databases Review</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<div class="progress-bar"></div>
+<div class="topbar-mini"><div class="wrap">
+  <a class="mini-logo" href="../../../../">The Databases Review</a>
+  <button class="back-btn" onclick="history.back()" aria-label="Go back">&#8592; Back</button>
+  <div class="crumbs"><a href="../../../../">Home</a><span class="sep">/</span><a href="index.html">Topic 09</a><span class="sep">/</span><span class="current">Aggregate Functions</span></div>
+  <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">&#9789;</button>
+</div></div>
+
+<div class="article-header wrap-narrow">
+  <span class="kicker">Lecture 6 &middot; Topic 09</span>
+  <h1>Aggregate Functions</h1>
+  <p class="dek">Summarising data with COUNT, SUM, AVG and GROUP BY.</p>
+  <div class="byline"><span><b>CMPU2007</b> Databases 1</span><span>7 min read</span><span>22 sections</span></div>
+</div>
+<div class="wrap">
+  <div class="article-body">
+    <nav class="side-toc">
+      <div class="contents-title">Contents</div>
+      <a href="#sec-1" data-target="sec-1"><span class="toc-num">01</span><span class="toc-text">Single-row vs. group functions, recap</span></a><a href="#sec-2" data-target="sec-2"><span class="toc-num">02</span><span class="toc-text">Remember: SQL has single and multiple row functions</span></a><a href="#sec-3" data-target="sec-3"><span class="toc-num">03</span><span class="toc-text">The count( ) function</span></a><a href="#sec-4" data-target="sec-4"><span class="toc-num">04</span><span class="toc-text">Group functions and NULL values</span></a><a href="#sec-5" data-target="sec-5"><span class="toc-num">05</span><span class="toc-text">Cross-table coverage</span></a><a href="#sec-6" data-target="sec-6"><span class="toc-num">06</span><span class="toc-text">Creating Groups of Data: GROUP BY</span></a><a href="#sec-7" data-target="sec-7"><span class="toc-num">07</span><span class="toc-text">Grouping by multiple groups</span></a><a href="#sec-8" data-target="sec-8"><span class="toc-num">08</span><span class="toc-text">The avg( ) function</span></a><a href="#sec-9" data-target="sec-9"><span class="toc-num">09</span><span class="toc-text">Combining avg( ) and count( )</span></a><a href="#sec-10" data-target="sec-10"><span class="toc-num">10</span><span class="toc-text">The sum( ) function</span></a><a href="#sec-11" data-target="sec-11"><span class="toc-num">11</span><span class="toc-text">min( ) and max( )</span></a><a href="#sec-12" data-target="sec-12"><span class="toc-num">12</span><span class="toc-text">min( ) and max( ) with dates</span></a><a href="#sec-13" data-target="sec-13"><span class="toc-num">13</span><span class="toc-text">min( ) and max( ) with string</span></a><a href="#sec-14" data-target="sec-14"><span class="toc-num">14</span><span class="toc-text">HAVING</span></a><a href="#sec-15" data-target="sec-15"><span class="toc-num">15</span><span class="toc-text">WHERE and HAVING</span></a><a href="#sec-16" data-target="sec-16"><span class="toc-num">16</span><span class="toc-text">Restricting group results with HAVING</span></a><a href="#sec-17" data-target="sec-17"><span class="toc-num">17</span><span class="toc-text">FILTER + WHERE</span></a><a href="#sec-18" data-target="sec-18"><span class="toc-num">18</span><span class="toc-text">Filter</span></a><a href="#sec-19" data-target="sec-19"><span class="toc-num">19</span><span class="toc-text">FILTER x HAVING</span></a><a href="#sec-20" data-target="sec-20"><span class="toc-num">20</span><span class="toc-text">Nesting group functions – not allowed</span></a><a href="#sec-21" data-target="sec-21"><span class="toc-num">21</span><span class="toc-text">String aggregation</span></a><a href="#sec-22" data-target="sec-22"><span class="toc-num">22</span><span class="toc-text">Dashboard for overview</span></a>
+    </nav>
+    <div class="prose">
+      <section id="sec-1">
+<h2><span class="section-no">01&nbsp;</span>Single-row vs. group functions, recap</h2>
+<p>SQL has two categories of functions. Single-row functions (character, number, date, conversion, general) act on each row individually and return one result per row &mdash; that's what the last few lectures covered. Multiple-row functions, also called group functions, work the other way round: they take a whole group of rows and collapse them into a single result per group. That's what this lecture is about.</p>
+</section>
+<section id="sec-2">
+<h2><span class="section-no">02&nbsp;</span>Remember: SQL has single and multiple row functions</h2>
+<ul>
+<li>Aggregates collapse many rows into one. If you mix aggregated and non-aggregated columns, you must use a GROUP BY clause (we will see an example).</li>
+</ul>
+</section>
+<section id="sec-3">
+<h2><span class="section-no">03&nbsp;</span>The count( ) function</h2>
+<ul>
+<li>The count( ) function counts how many rows are available in a table.</li>
+<li>The * symbol means all, so we are counting all rows without setting up a specific condition. That results in a single row with the number of table rows.</li>
+</ul>
+<ul>
+<li>SELECT COUNT(*) FROM table_name;</li>
+</ul>
+</section>
+<section id="sec-4">
+<h2><span class="section-no">04&nbsp;</span>Group functions and NULL values</h2>
+<ul>
+<li>In general, NULL functions will ignore NULL values by default.</li>
+<li>However, when we use count(*), NULL values are included as we want to count all rows in a table whether they have a value or not.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT COUNT(*) &quot;Total players&quot; FROM players;
+SELECT COUNT(*) &quot;Total clubs&quot; FROM clubs;
+SELECT COUNT(*) &quot;Total contracts&quot; FROM player_contracts;
+SELECT COUNT(*) &quot;Total attributes&quot; FROM player_attributes;</code></pre></figure>
+</section>
+<section id="sec-5">
+<h2><span class="section-no">05&nbsp;</span>Cross-table coverage</h2>
+<ul>
+<li>The command below uses subqueries to count the number of rows in each table for comparison.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT
+(SELECT COUNT(player_id) FROM players) &quot;Total number of players&quot;,
+(SELECT COUNT(club_id) FROM clubs) &quot;Number of clubs&quot;,
+(SELECT COUNT(DISTINCT player_id) FROM player_attributes) &quot;Number of players with attributes&quot;,
+(SELECT COUNT(DISTINCT player_id) FROM player_contracts) &quot;Number of players with contracts&quot;;</code></pre></figure>
+<ul>
+<li>Using distinct, we can gather unique values for a specific attribute.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>-- Count only contracts that have a non-null wage
+SELECT COUNT(wage) &quot;Contracts with wage&quot; FROM player_contracts;
+-- How many distinct clubs appear in the contracts table?
+SELECT COUNT(DISTINCT club_id) &quot;Unique wage values&quot; FROM player_contracts;</code></pre></figure>
+</section>
+<section id="sec-6">
+<h2><span class="section-no">06&nbsp;</span>Creating Groups of Data: GROUP BY</h2>
+<ul>
+<li>When our select query mixes single row values with aggregate results, we must use GROUP BY, a statement used to aggregate specific values of an attribute according to a certain group.</li>
+<li>For example: if I want to count how many players each club has, I need to group the count values according to the club_name.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT
+club_name,
+COUNT(player_contracts.player_id) &quot;Players with contract&quot;
+FROM clubs
+LEFT JOIN player_contracts USING (club_id)
+GROUP BY club_name;</code></pre></figure>
+</section>
+<section id="sec-7">
+<h2><span class="section-no">07&nbsp;</span>Grouping by multiple groups</h2>
+<ul>
+<li>You can group by more than one attribute to get summaries at different levels.</li>
+<li>In this example, we are calculating the average wage of players based on their club name and nationality. You will have duplicates on the nationality, as players from the same nationality can be in different clubs.</li>
+<li>We then order the data by two attributes: first, by nationality, then by average wage.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT
+club_name,
+nationality,
+ROUND(AVG(wage), 2) &quot;Average wage&quot;
+FROM player_contracts
+JOIN players USING (player_id)
+JOIN clubs USING (club_id)
+GROUP BY club_name, nationality
+ORDER BY 2, 3 DESC;</code></pre></figure>
+</section>
+<section id="sec-8">
+<h2><span class="section-no">08&nbsp;</span>The avg( ) function</h2>
+<ul>
+<li>The average functions will present numeric values. Suppose we want to know the average wage for players according to the club they play for:</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT
+club_name,
+ROUND(AVG(player_contracts.wage), 2) &quot;Average wage&quot;
+FROM clubs
+JOIN player_contracts USING (club_id)
+GROUP BY club_name
+ORDER BY 2 DESC;</code></pre></figure>
+<ul>
+<li>I can also check the average for the overall rating according to the nationality:</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT
+nationality,
+AVG(overall) &quot;Average overall&quot;
+FROM players
+JOIN player_attributes USING (player_id)
+GROUP BY nationality
+ORDER BY 2 DESC;</code></pre></figure>
+</section>
+<section id="sec-9">
+<h2><span class="section-no">09&nbsp;</span>Combining avg( ) and count( )</h2>
+<ul>
+<li>We can also combine functions for more complex queries.</li>
+<li>Suppose I want to get the average age of each player considering their nationality and how many players I have for each nationality:</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT nationality &quot;Nationality&quot;,
+COUNT(*) &quot;Number of players&quot;,
+ROUND(AVG(age), 1) &quot;Average age&quot;
+FROM players
+GROUP BY nationality
+ORDER BY 2 DESC;</code></pre></figure>
+</section>
+<section id="sec-10">
+<h2><span class="section-no">10&nbsp;</span>The sum( ) function</h2>
+<ul>
+<li>The sum function will present numeric values.</li>
+<li>Suppose you want to know how much each club spends on their players’ wages:</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT
+clubs.club_name,
+SUM(wage) &quot;Wage bill&quot;
+FROM clubs
+JOIN player_contracts USING (club_id)
+GROUP BY club_name
+ORDER BY 2 DESC;</code></pre></figure>
+</section>
+<section id="sec-11">
+<h2><span class="section-no">11&nbsp;</span>min( ) and max( )</h2>
+<ul>
+<li>These functions will give you the extreme values for an attribute.</li>
+<li>For example, we can retrieve the minimum and maximum wage a player can get.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT
+MIN(wage) &quot;Minimum wage&quot;,
+MAX(wage) &quot;Maximum wage&quot;
+FROM player_contracts;</code></pre></figure>
+</section>
+<section id="sec-12">
+<h2><span class="section-no">12&nbsp;</span>min( ) and max( ) with dates</h2>
+<ul>
+<li>We can use min( ) and max( ) with date data type arguments.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT
+MIN(joined) &quot;Earliest contract&quot;,
+MAX(contract_valid_until) &quot;Latest contract&quot;
+FROM player_contracts;</code></pre></figure>
+</section>
+<section id="sec-13">
+<h2><span class="section-no">13&nbsp;</span>min( ) and max( ) with string</h2>
+<ul>
+<li>When dealing with text, min and max consider the order of the alphabet.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT
+MIN(player_name),
+MAX(player_name)
+FROM players;</code></pre></figure>
+</section>
+<section id="sec-14">
+<h2><span class="section-no">14&nbsp;</span>HAVING</h2>
+<ul>
+<li>WHERE filters individual rows, but it can&#x27;t filter on the result of an aggregate function like AVG() or COUNT() — aggregates are only calculated after WHERE has already run. HAVING solves this: it filters groups after they&#x27;ve been aggregated, so you can write conditions like “average wage above 50,000”.</li>
+<li>The query below tries to use WHERE with an aggregate, which PostgreSQL will reject:</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL — this errors</figcaption><pre><code>-- Clubs with average wage higher than 50,000
+SELECT club_id, ROUND(AVG(wage), 2) &quot;Average wage&quot;
+FROM player_contracts
+GROUP BY club_id
+WHERE AVG(wage) &gt; 50000;</code></pre></figure>
+</section>
+<section id="sec-15">
+<h2><span class="section-no">15&nbsp;</span>WHERE and HAVING</h2>
+<ul>
+<li>An SQL query is executed in this order:</li>
+<li>FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY</li>
+<li>WHERE applies the specific condition BEFORE the data is grouped. In the previous example, it tried to filter the avg(wage) before the values were grouped according to the club_id.</li>
+<li>HAVING selects group rows after groups and aggregates are computed.</li>
+<li>The WHERE clause must not contain aggregate functions, as it makes no sense to use an aggregate to determine which rows will be inputs to the aggregates.</li>
+</ul>
+</section>
+<section id="sec-16">
+<h2><span class="section-no">16&nbsp;</span>Restricting group results with HAVING</h2>
+<ul>
+<li>When you use the HAVING clause, the PostgreSQL server restricts groups as follows:</li>
+<ul>
+<li>Rows are grouped by the expression you have given.</li>
+<li>The group function is applied.</li>
+<li>Groups matching the HAVING clause are displayed.</li>
+</ul>
+</ul>
+</section>
+<section id="sec-17">
+<h2><span class="section-no">17&nbsp;</span>FILTER + WHERE</h2>
+<ul>
+<li>The FILTER clause in SQL is used with aggregate functions to apply conditions to specific rows before performing the aggregation.</li>
+<li>The FILTER (WHERE …) clause limits which rows are included in a specific aggregate calculation,without affecting the rest of the query.</li>
+</ul>
+</section>
+<section id="sec-18">
+<h2><span class="section-no">18&nbsp;</span>Filter</h2>
+<ul>
+<li>In the following example, we will retrieve:</li>
+<ul>
+<li>The number of players</li>
+<li>The number of players with wage</li>
+<li>The number of players without the wage</li>
+</ul>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT
+club_name,
+COUNT(player_id),
+COUNT(player_id) FILTER (WHERE wage IS NOT NULL) &quot;With wage&quot;,
+COUNT(player_id) FILTER (WHERE wage IS NULL) &quot;Without wage&quot;
+FROM clubs
+LEFT JOIN player_contracts USING (club_id)
+GROUP BY club_name
+ORDER BY club_name;</code></pre></figure>
+</section>
+<section id="sec-19">
+<h2><span class="section-no">19&nbsp;</span>FILTER x HAVING</h2>
+<ul>
+<li>FILTER and HAVING might sound similar, but they are not interchangeable.</li>
+<li>We use FILTER when we want multiple aggregates with different conditions in the same result row.</li>
+<li>Use HAVING when you want to filter out entire groups based on aggregate results.</li>
+</ul>
+</section>
+<section id="sec-20">
+<h2><span class="section-no">20&nbsp;</span>Nesting group functions – not allowed</h2>
+<ul>
+<li>SQL does not allow an aggregate function to be nested inside another aggregate function in the same query block.</li>
+<li>This happens because aggregates operate on sets of rows, not on single values.</li>
+<li>SQL needs to know when the aggregation ends before another begins — but nested aggregates blur that boundary.</li>
+</ul>
+<ul>
+<li>The following returns an error:</li>
+<li>AVG(wage) → wants to compute an average across all rows.</li>
+<li>MAX(...) → also wants to scan across all rows, but now the input would be the averages of groups that don’t exist yet.</li>
+<li>The SQL engine doesn’t have a stage in its pipeline where both can coexist without ambiguity.</li>
+<li>Aggregation happens once per query block, right after GROUP BY is evaluated.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT
+MAX(AVG(wage))
+FROM player_contracts;</code></pre></figure>
+<ul>
+<li>We need to use a subquery to retrieve that data:</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>--We can retrieve that data using a subquery
+SELECT ROUND(MAX(&quot;Average wage&quot;), 2) &quot;Maximum wage&quot; --notice I can nest round and max because round is a single-row function
+FROM (
+SELECT AVG(wage) &quot;Average wage&quot;
+FROM player_contracts
+GROUP BY club_id
+) &quot;Subquery&quot;;</code></pre></figure>
+</section>
+<section id="sec-21">
+<h2><span class="section-no">21&nbsp;</span>String aggregation</h2>
+<ul>
+<li>String aggregation works similarly to the concatenate function, but allows aggregation of multiple rows using the GROUP BY.</li>
+<li>Let’s aggregate all player full names in a single comma-separated string per club, alphabetically.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT
+club_name,
+STRING_AGG(player_name, ', ' ORDER BY players.player_name) "Players list"
+FROM clubs
+JOIN player_contracts USING (club_id)
+JOIN players USING (player_id)
+GROUP BY club_name
+ORDER BY club_name;</code></pre></figure>
+</section>
+<section id="sec-22">
+<h2><span class="section-no">22&nbsp;</span>Dashboard for overview</h2>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT
+club_name,
+COUNT(DISTINCT player_id) &quot;Number of players&quot;,
+ROUND(AVG(wage), 2) &quot;Average wage&quot;,
+SUM(wage) &quot;Total wage bill&quot;,
+MIN(wage) &quot;Minimum wage&quot;,
+MAX(wage) &quot;Maximum wage&quot;,
+COUNT(*) FILTER (WHERE contract_valid_until &lt;= EXTRACT(YEAR FROM CURRENT_DATE)) &quot;Number of valid contracts&quot;,
+STRING_AGG(DISTINCT player_name, &#x27;, &#x27; ORDER BY player_name) &quot;Players list&quot;
+FROM clubs
+LEFT JOIN player_contracts USING (club_id)
+LEFT JOIN players USING (player_id)
+GROUP BY club_name
+ORDER BY 3 DESC NULLS LAST;</code></pre></figure>
+</section>
+    </div>
+  </div>
+</div>
+<script src="../../assets/app.js"></script>
+</body></html>

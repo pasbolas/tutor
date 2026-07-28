@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab — Query Optimisation and CTEs · The Databases Review</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<div class="progress-bar"></div>
+<div class="topbar-mini"><div class="wrap">
+  <a class="mini-logo" href="../../../../">The Databases Review</a>
+  <button class="back-btn" onclick="history.back()" aria-label="Go back">&#8592; Back</button>
+  <div class="crumbs"><a href="../../../../">Home</a><span class="sep">/</span><a href="index.html">Topic 15</a><span class="sep">/</span><span class="current">Lab — Query Optimisation and CTEs</span></div>
+  <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">&#9789;</button>
+</div></div>
+
+<div class="article-header wrap-narrow">
+  <span class="kicker">Lab 12 &middot; Topic 15</span>
+  <h1>Lab — Query Optimisation and CTEs</h1>
+  <p class="dek">Practising query tuning and common table expressions.</p>
+  <div class="byline"><span><b>CMPU2007</b> Databases 1</span><span>1 min read</span><span>3 sections</span></div>
+</div>
+<div class="wrap">
+  <div class="article-body">
+    <nav class="side-toc">
+      <div class="contents-title">Contents</div>
+      <a href="#sec-1" data-target="sec-1"><span class="toc-num">01</span><span class="toc-text">What is this assignment about?</span></a><a href="#sec-2" data-target="sec-2"><span class="toc-num">02</span><span class="toc-text">Before you start</span></a><a href="#sec-3" data-target="sec-3"><span class="toc-num">03</span><span class="toc-text">Questions</span></a>
+    </nav>
+    <div class="prose">
+      <section id="sec-1">
+<h2><span class="section-no">01&nbsp;</span>What is this assignment about?</h2>
+<p>In this assignment, you will practice creating efficient queries to retrieve data from the football database. This assignment represents 5% of your CA marks.</p>
+<figure class="inline-image"><img src="images/lab-query-optimisation-ctes-1.png" loading="lazy" alt=""></figure>
+</section>
+<section id="sec-2">
+<h2><span class="section-no">02&nbsp;</span>Before you start</h2>
+<p>If you do not have access to the football database, run the file football.sql.</p>
+</section>
+<section id="sec-3">
+<h2><span class="section-no">03&nbsp;</span>Questions</h2>
+<p>Question 1 – Query optimisation (2 marks)</p>
+<p>a) Write an SQL query that retrieves all values for all attributes on the table player_attributes.</p>
+<p>b) Now, write an optimised version that:</p>
+<ul>
+<li>Selects only 3 (three) attributes</li>
+<li>Selects only the first 20 rows of the table</li>
+</ul>
+<p>c) Compare how long it takes to run each of the two queries you wrote in parts A and B.</p>
+<p>(Questions 2 and 3 are on the following page)</p>
+<p>Question 2 – Subqueries x JOINs (2 marks)</p>
+<p>a) Using a subquery (no JOINs), write a query that returns player_id and player_name for all players who have a contract.</p>
+<p>b) Rewrite the same query using JOINs instead of a subquery.</p>
+<p>c) Compare how long it takes to run each of the two queries you wrote in parts A and B.</p>
+<p>Question 3 – Common Table Expression (CTE) (1 mark)</p>
+<p>Write a query using a CTE that computes the average of the attribute overall per club. Run a SELECT query to retrieve the data from the CTE, showing two columns: the club name and the average overall attribute.</p>
+</section>
+    </div>
+  </div>
+</div>
+<script src="../../assets/app.js"></script>
+</body></html>

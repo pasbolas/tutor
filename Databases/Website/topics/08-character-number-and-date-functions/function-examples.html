@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Function Examples · The Databases Review</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<div class="progress-bar"></div>
+<div class="topbar-mini"><div class="wrap">
+  <a class="mini-logo" href="../../../../">The Databases Review</a>
+  <button class="back-btn" onclick="history.back()" aria-label="Go back">&#8592; Back</button>
+  <div class="crumbs"><a href="../../../../">Home</a><span class="sep">/</span><a href="index.html">Topic 08</a><span class="sep">/</span><span class="current">Function Examples</span></div>
+  <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">&#9789;</button>
+</div></div>
+
+<div class="article-header wrap-narrow">
+  <span class="kicker">Reference &middot; Topic 08</span>
+  <h1>Function Examples</h1>
+  <p class="dek">Worked examples of character, number and date functions in PostgreSQL.</p>
+  <div class="byline"><span><b>CMPU2007</b> Databases 1</span><span>2 min read</span><span>24 sections</span></div>
+</div>
+<div class="wrap">
+  <div class="article-body">
+    <nav class="side-toc">
+      <div class="contents-title">Contents</div>
+      <a href="#sec-1" data-target="sec-1"><span class="toc-num">01</span><span class="toc-text">Number and date functions, worked</span></a><a href="#sec-2" data-target="sec-2"><span class="toc-num">02</span><span class="toc-text">NULLIF: hiding a sponsor</span></a><a href="#sec-3" data-target="sec-3"><span class="toc-num">03</span><span class="toc-text">COALESCE: fallback for a NULL value</span></a><a href="#sec-4" data-target="sec-4"><span class="toc-num">04</span><span class="toc-text">GREATEST: most recent of two dates</span></a><a href="#sec-5" data-target="sec-5"><span class="toc-num">05</span><span class="toc-text">LEAST: oldest of two dates</span></a><a href="#sec-6" data-target="sec-6"><span class="toc-num">06</span><span class="toc-text">ROUND: basic rounding</span></a><a href="#sec-7" data-target="sec-7"><span class="toc-num">07</span><span class="toc-text">CEIL, FLOOR and ROUND together</span></a><a href="#sec-8" data-target="sec-8"><span class="toc-num">08</span><span class="toc-text">ROUND with a negative second argument</span></a><a href="#sec-9" data-target="sec-9"><span class="toc-num">09</span><span class="toc-text">TRUNC: cutting off without rounding</span></a><a href="#sec-10" data-target="sec-10"><span class="toc-num">10</span><span class="toc-text">MOD: committee allocation</span></a><a href="#sec-11" data-target="sec-11"><span class="toc-num">11</span><span class="toc-text">TO_CHAR: formatting a date</span></a><a href="#sec-12" data-target="sec-12"><span class="toc-num">12</span><span class="toc-text">ABS: days variance between two dates</span></a><a href="#sec-13" data-target="sec-13"><span class="toc-num">13</span><span class="toc-text">NOW() and CURRENT_DATE</span></a><a href="#sec-14" data-target="sec-14"><span class="toc-num">14</span><span class="toc-text">pg_typeof(now()): what type is a timestamp</span></a><a href="#sec-15" data-target="sec-15"><span class="toc-num">15</span><span class="toc-text">Date arithmetic: a week from now</span></a><a href="#sec-16" data-target="sec-16"><span class="toc-num">16</span><span class="toc-text">AGE(): a scientist's age</span></a><a href="#sec-17" data-target="sec-17"><span class="toc-num">17</span><span class="toc-text">AGE(): a project's age</span></a><a href="#sec-18" data-target="sec-18"><span class="toc-num">18</span><span class="toc-text">Date arithmetic: project duration in weeks</span></a><a href="#sec-19" data-target="sec-19"><span class="toc-num">19</span><span class="toc-text">CAST: converting a date to text</span></a><a href="#sec-20" data-target="sec-20"><span class="toc-num">20</span><span class="toc-text">The :: shorthand for CAST</span></a><a href="#sec-21" data-target="sec-21"><span class="toc-num">21</span><span class="toc-text">TO_CHAR with dates: ordinal suffixes</span></a><a href="#sec-22" data-target="sec-22"><span class="toc-num">22</span><span class="toc-text">TO_CHAR with numbers: currency sign</span></a><a href="#sec-23" data-target="sec-23"><span class="toc-num">23</span><span class="toc-text">PL/pgSQL: a custom function</span></a><a href="#sec-24" data-target="sec-24"><span class="toc-num">24</span><span class="toc-text">Calling the custom function</span></a>
+    </nav>
+    <div class="prose">
+
+<section id="sec-1">
+<h2><span class="section-no">01&nbsp;</span>Number and date functions, worked</h2>
+<p>The examples below apply SQL's NULL-handling, number, and date functions to the university research database, one function at a time.</p>
+</section>
+
+<section id="sec-2">
+<h2><span class="section-no">02&nbsp;</span>NULLIF: hiding a sponsor</h2>
+<p>Suppose SFI doesn't want to be shown as a sponsor: NULLIF swaps it out for NULL wherever it appears.</p>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT sponsor, nullif(sponsor, 'SFI') FROM grant_funding;</code></pre></figure>
+</section>
+
+<section id="sec-3">
+<h2><span class="section-no">03&nbsp;</span>COALESCE: fallback for a NULL value</h2>
+<p>Replace a NULL birth date with the scientist's first name instead, using the first non-NULL value in the list.</p>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT coalesce(birth_date::text, firstname) FROM scientist;</code></pre></figure>
+</section>
+
+<section id="sec-4">
+<h2><span class="section-no">04&nbsp;</span>GREATEST: most recent of two dates</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT research_id, title, GREATEST(end_date, CURRENT_DATE) "Most recent date" FROM research;</code></pre></figure>
+</section>
+
+<section id="sec-5">
+<h2><span class="section-no">05&nbsp;</span>LEAST: oldest of two dates</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT research_id, title, LEAST(end_date, CURRENT_DATE) "Oldest date" FROM research;</code></pre></figure>
+</section>
+
+<section id="sec-6">
+<h2><span class="section-no">06&nbsp;</span>ROUND: basic rounding</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT grant_id, amount, ROUND(amount, 1) "Rounded amount" FROM grant_funding;
+-- we could also do round(amount) for no decimal places</code></pre></figure>
+</section>
+
+<section id="sec-7">
+<h2><span class="section-no">07&nbsp;</span>CEIL, FLOOR and ROUND together</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT grant_id, amount, ROUND(amount) "Round", ceil(amount) "Round up", floor(amount) "Round down" FROM grant_funding;</code></pre></figure>
+</section>
+
+<section id="sec-8">
+<h2><span class="section-no">08&nbsp;</span>ROUND with a negative second argument</h2>
+<p>A negative second argument rounds to the left of the decimal point: -1 to the nearest 10, -2 to the nearest 100, -3 to the nearest 1000.</p>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT
+  ROUND(450.9234),
+  ROUND(450.9234, -1), -- nearest 10s
+  ROUND(450.9234, -2), -- nearest 100s
+  ROUND(450.9234, -3); -- nearest 1000s</code></pre></figure>
+</section>
+
+<section id="sec-9">
+<h2><span class="section-no">09&nbsp;</span>TRUNC: cutting off without rounding</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT
+  TRUNC(450.923, -1), -- truncate to nearest 10s
+  TRUNC(450.923, -2), -- truncate to nearest 100s
+  TRUNC(450.923, -3); -- truncate to nearest 1000s</code></pre></figure>
+</section>
+
+<section id="sec-10">
+<h2><span class="section-no">10&nbsp;</span>MOD: committee allocation</h2>
+<p>Spread research projects evenly across 3 review committees, using the remainder of research_id divided by 3.</p>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT
+  research_id,
+  title,
+  MOD(research_id, 3) "Assigned committee"
+FROM research r
+ORDER BY 3;</code></pre></figure>
+</section>
+
+<section id="sec-11">
+<h2><span class="section-no">11&nbsp;</span>TO_CHAR: formatting a date</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT birth_date, to_char(birth_date, 'DD/MM/YYYY') FROM scientist;</code></pre></figure>
+</section>
+
+<section id="sec-12">
+<h2><span class="section-no">12&nbsp;</span>ABS: days variance between two dates</h2>
+<p>The difference in days between a research project's end date and its grant's end date, with ABS keeping the result positive either way round.</p>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT
+  r.end_date "Research ends",
+  g.end_date "Grant ends",
+  abs(g.end_date - r.end_date) "Days variance"
+FROM research r
+JOIN research_grant rg USING (research_id)
+JOIN grant_funding g USING (grant_id);</code></pre></figure>
+</section>
+
+<section id="sec-13">
+<h2><span class="section-no">13&nbsp;</span>NOW() and CURRENT_DATE</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT now();
+SELECT current_date;</code></pre></figure>
+</section>
+
+<section id="sec-14">
+<h2><span class="section-no">14&nbsp;</span>pg_typeof(now()): what type is a timestamp</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT pg_typeof(now());</code></pre></figure>
+</section>
+
+<section id="sec-15">
+<h2><span class="section-no">15&nbsp;</span>Date arithmetic: a week from now</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT current_date + 7;</code></pre></figure>
+</section>
+
+<section id="sec-16">
+<h2><span class="section-no">16&nbsp;</span>AGE(): a scientist's age</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT age(birth_date) FROM scientist;</code></pre></figure>
+</section>
+
+<section id="sec-17">
+<h2><span class="section-no">17&nbsp;</span>AGE(): a project's age</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT age(begin_date) FROM research;</code></pre></figure>
+</section>
+
+<section id="sec-18">
+<h2><span class="section-no">18&nbsp;</span>Date arithmetic: project duration in weeks</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT (end_date - begin_date) / 7 FROM research;</code></pre></figure>
+</section>
+
+<section id="sec-19">
+<h2><span class="section-no">19&nbsp;</span>CAST: converting a date to text</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT pg_typeof(cast(begin_date AS TEXT)) FROM research;</code></pre></figure>
+</section>
+
+<section id="sec-20">
+<h2><span class="section-no">20&nbsp;</span>The :: shorthand for CAST</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT pg_typeof(amount::text) FROM grant_funding;</code></pre></figure>
+</section>
+
+<section id="sec-21">
+<h2><span class="section-no">21&nbsp;</span>TO_CHAR with dates: ordinal suffixes</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT firstname, TO_CHAR(birth_date, 'fmDD Month YYYY') FROM scientist;
+SELECT firstname, TO_CHAR(birth_date, 'Month DDspth') FROM scientist;</code></pre></figure>
+</section>
+
+<section id="sec-22">
+<h2><span class="section-no">22&nbsp;</span>TO_CHAR with numbers: currency sign</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT to_char(amount, '€999,999.99') FROM grant_funding;</code></pre></figure>
+</section>
+
+<section id="sec-23">
+<h2><span class="section-no">23&nbsp;</span>PL/pgSQL: a custom function</h2>
+<p>A function that classifies a project as Active, Upcoming, or Completed based on today's date.</p>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>CREATE OR REPLACE FUNCTION get_project_status(begin_d DATE, end_d DATE)
+RETURNS TEXT AS $$
+BEGIN
+  IF current_date BETWEEN begin_d AND end_d THEN
+    RETURN 'Active';
+  ELSEIF current_date < begin_d THEN
+    RETURN 'Upcoming';
+  ELSE
+    RETURN 'Completed';
+  END IF;
+END;
+$$ LANGUAGE plpgsql;</code></pre></figure>
+</section>
+
+<section id="sec-24">
+<h2><span class="section-no">24&nbsp;</span>Calling the custom function</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT research_id, title,
+  get_project_status(begin_date, end_date) AS project_status
+FROM research
+LIMIT 5;</code></pre></figure>
+</section>
+
+    </div>
+  </div>
+</div>
+<footer></footer>
+<script src="../../assets/app.js"></script>
+</body></html>

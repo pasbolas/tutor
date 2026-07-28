@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab Test — Solutions · The Databases Review</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<div class="progress-bar"></div>
+<div class="topbar-mini"><div class="wrap">
+  <a class="mini-logo" href="../../../../">The Databases Review</a>
+  <button class="back-btn" onclick="history.back()" aria-label="Go back">&#8592; Back</button>
+  <div class="crumbs"><a href="../../../../">Home</a><span class="sep">/</span><a href="index.html">Topic 09</a><span class="sep">/</span><span class="current">Lab Test — Solutions</span></div>
+  <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">&#9789;</button>
+</div></div>
+
+<div class="article-header wrap-narrow">
+  <span class="kicker">Lab Test &middot; Topic 09</span>
+  <h1>Lab Test — Solutions</h1>
+  <p class="dek">Worked solutions to the Week 6 lab test.</p>
+  <div class="byline"><span><b>CMPU2007</b> Databases 1</span><span>6 min read</span><span>1 sections</span></div>
+</div>
+<div class="wrap">
+  <div class="article-body">
+    <nav class="side-toc">
+      <div class="contents-title">Contents</div>
+      <a href="#sec-1" data-target="sec-1"><span class="toc-num">01</span><span class="toc-text">CMPU 2007 Databases 1 – Week 6 - Lab test</span></a>
+    </nav>
+    <div class="prose">
+      <section id="sec-1">
+<h2><span class="section-no">01&nbsp;</span>CMPU 2007 Databases 1 – Week 6 - Lab test</h2>
+<p>Question 1:</p>
+<p>In an ERD, a weak entity depends on a parent entity because:</p>
+<p>A. It stores its own primary key</p>
+<p>B. It has no attributes</p>
+<p>C. Its existence depends on a related entity through a foreign key</p>
+<p>D. It always has many-to-many relationships</p>
+<p>Correct answer: C</p>
+<p>Explanation: A weak entity requires a foreign key from a parent table for identification.</p>
+<p>Question 2:</p>
+<p>Which relationship type best describes “A department employs many instructors, but each instructor works in only one department?</p>
+<p>A. 1:1</p>
+<p>B. 1:N</p>
+<p>C. N:M</p>
+<p>D. 0:1</p>
+<p>Correct answer: B</p>
+<p>Explanation: One department → many instructors (one-to-many).</p>
+<p>Question 3:</p>
+<p>In the DDL below, which constraint enforces domain integrity?</p>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>CREATE TABLE songs (
+song_id SERIAL PRIMARY KEY,
+song_name TEXT NOT NULL UNIQUE,
+artist_name TEXT NOT NULL,
+album_name TEXT,
+release_year INT,
+genre TEXT,
+duration_seconds INT,
+created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);</code></pre></figure>
+<p>A. PRIMARY KEY</p>
+<p>B. FOREIGN KEY</p>
+<p>C. CURRENT_TIMESTAMP</p>
+<p>D. NOT NULL</p>
+<p>Correct answer: D</p>
+<p>Explanation: Domain integrity ensures that the values in a column are valid according to their domain (type, allowed values, or constraints like NOT NULL). NOT NULL enforces domain integrity, because it restricts which values are allowed (no NULLs) for that column..</p>
+<p>Question 4:</p>
+<p>Which command adds a new column to an existing table?</p>
+<p>A. UPDATE TABLE</p>
+<p>B. ALTER TABLE</p>
+<p>C. MODIFY TABLE</p>
+<p>D. ADD NEW COLUMN</p>
+<p>Correct answer: B</p>
+<p>Explanation: ALTER TABLE table_name ADD COLUMN column_name data_type; modifies a table structure.</p>
+<p>Question 5:</p>
+<p>Consider the SQL query below. Which query retrieves songs whose title starts with “I am ”?</p>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT song_name, artist_name FROM songs
+WHERE _____________ ;
+A. song_name LIKE ‘I am’
+B. song_name = ‘I am’
+C. song_name LIKE ‘I am %’
+D. song_name LIKE “I am %”</code></pre></figure>
+<p>Correct answer: C</p>
+<p>Explanation: % is a wildcard in LIKE; ‘I am %&#x27; matches titles starting with “I am”.</p>
+<p>Question 6:</p>
+<p>Which SQL operator is used to filter rows between two numeric values?</p>
+<p>A. BETWEEN</p>
+<p>B. RANGE</p>
+<p>C. LIMIT</p>
+<p>D. FROM</p>
+<p>Correct answer: A</p>
+<p>Explanation: The BETWEEN operator defines an inclusive range.</p>
+<p>Question 7:</p>
+<p>Given the football schema:</p>
+<figure class="code-figure"><figcaption>Code</figcaption><pre><code>players(player_id, player_name)
+player_contracts(player_id, club_id, wage)
+clubs(club_id, club_name)</code></pre></figure>
+<p>Which query retrieves all players and the clubs they play for?</p>
+<figure class="code-figure"><figcaption>A.</figcaption><pre><code>SELECT player_name, club_name
+FROM players, clubs;</code></pre></figure>
+<figure class="code-figure"><figcaption>B.</figcaption><pre><code>SELECT player_name, club_name
+FROM players
+JOIN player_contracts USING (player_id)
+JOIN clubs USING (club_id);</code></pre></figure>
+<figure class="code-figure"><figcaption>C.</figcaption><pre><code>SELECT player_name, club_name
+FROM players INNER JOIN clubs;</code></pre></figure>
+<figure class="code-figure"><figcaption>D.</figcaption><pre><code>SELECT player_name, club_name
+FROM player_contracts;</code></pre></figure>
+<p>Correct answer: B</p>
+<p>Explanation: The query must join through player_contracts using the shared keys.</p>
+<p>Question 8:</p>
+<p>In PostgreSQL, which clause can replace ON table1.col = table2.col when the join column has the same name in both tables?</p>
+<p>A. USING</p>
+<p>B. MATCHING</p>
+<p>C. WITH</p>
+<p>D. MERGE</p>
+<p>Correct answer: A</p>
+<p>Explanation: The USING(column_name) shorthand simplifies joins on same-name attributes.</p>
+<p>Question 9:</p>
+<p>In a RIGHT JOIN, unmatched rows appear as NULLs in:</p>
+<p>A. The right table</p>
+<p>B. The left table</p>
+<p>C. Both tables</p>
+<p>D. Neither table</p>
+<p>Correct answer: B</p>
+<p>Explanation: RIGHT JOIN keeps all rows from the right table; left-side unmatched columns become NULL.</p>
+<p>Question 10:</p>
+<p>Given:</p>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT player_id FROM players
+EXCEPT
+SELECT player_id FROM player_contracts;</code></pre></figure>
+<p>What does this return?</p>
+<p>A. Players with contracts</p>
+<p>B. Players without contracts</p>
+<p>C. Duplicate player IDs</p>
+<p>D. Players with attributes</p>
+<p>Correct answer: B</p>
+<p>Explanation: EXCEPT returns IDs in players not found in player_contracts.</p>
+<p>Question 11:</p>
+<p>What is the result of:</p>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT CONCAT(&#x27;Lab test&#x27;, NULL);</code></pre></figure>
+<p>A. NULL</p>
+<p>B. ‘Lab test’</p>
+<p>C. ‘Lab test NULL’</p>
+<p>D. ‘Lab test, ’</p>
+<p>Correct answer: B</p>
+<p>Explanation: CONCAT() ignores NULL arguments.</p>
+<p>Question 12:</p>
+<p>What is the result of:</p>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT &#x27;Lab test&#x27; || NULL;</code></pre></figure>
+<p>A. NULL</p>
+<p>B. ‘Lab test’</p>
+<p>C. ‘Lab test NULL’</p>
+<p>D. ‘Lab test, ’</p>
+<p>Correct answer: A</p>
+<p>Explanation: | | returns NULL when one of the values is NULL</p>
+<p>Question 13:</p>
+<p>Which query correctly shows the first 10 characters of a research title?</p>
+<figure class="code-figure"><figcaption>A.</figcaption><pre><code>SELECT SUBSTRING(song_name, 1, 10) FROM songs;</code></pre></figure>
+<figure class="code-figure"><figcaption>B.</figcaption><pre><code>SELECT LPAD(song_name FROM 1 FOR 10) FROM songs;</code></pre></figure>
+<figure class="code-figure"><figcaption>C.</figcaption><pre><code>SELECT RPAD(song_name, 20, '-') FROM songs;</code></pre></figure>
+<figure class="code-figure"><figcaption>D.</figcaption><pre><code>SELECT FIRST(song_name, 10) FROM songs;</code></pre></figure>
+<p>Correct answer: A</p>
+<p>Explanation: PostgreSQL uses SUBSTRING(col, start, length) syntax.</p>
+<p>Question 14:</p>
+<p>Which of the following queries ensures case-insensitive search for a scientist named “Murphy”?</p>
+<figure class="code-figure"><figcaption>A.</figcaption><pre><code>SELECT firstname, lastname
+FROM scientist
+WHERE lastname = 'murphy';</code></pre></figure>
+<figure class="code-figure"><figcaption>B.</figcaption><pre><code>SELECT firstname, lastname
+FROM scientist
+WHERE LOWER(lastname) = 'murphy';</code></pre></figure>
+<figure class="code-figure"><figcaption>C.</figcaption><pre><code>SELECT firstname, lastname
+FROM scientist
+WHERE INITCAP(lastname) = 'Murphy';</code></pre></figure>
+<figure class="code-figure"><figcaption>D.</figcaption><pre><code>SELECT firstname, lastname
+FROM scientist
+WHERE lastname LIKE '%murphy%';</code></pre></figure>
+<p>Correct answer: B</p>
+<p>Explanation: LOWER() makes both sides lowercase for case-insensitive comparison.</p>
+<p>Question 15:</p>
+<p>Match each type of integrity with the mechanism that enforces it:</p>
+<p>A. Entity Integrity</p>
+<p>B. Referential Integrity</p>
+<p>C. Domain Integrity</p>
+<p>List of Mechanisms:</p>
+<ol>
+<li value="1">Ensured by defining valid data types, NOT NULL, CHECK, and DEFAULT constraints</li>
+<li value="2">Ensured by primary keys that uniquely identify rows and cannot be NULL</li>
+<li value="3">Ensured by foreign keys linking parent and child tables</li>
+</ol>
+<p>Correct matches:</p>
+<p>A → 2</p>
+<p>B → 3</p>
+<p>C → 1</p>
+<p>Explanation:</p>
+<p>Entity integrity = unique rows (PRIMARY KEY); referential integrity = valid relationships (FOREIGN KEY); domain integrity = valid values (data types, CHECKs, defaults).</p>
+<p>Question 16:</p>
+<p>Given the following simplified schema:</p>
+<p>university(uni_id, uniname, country)</p>
+<p>scientist(sci_id, firstname, lastname, uni_id)</p>
+<p>research(research_id, title, sci_id)</p>
+<p>Which query lists scientists and their universities, even if some scientists have no university assigned?</p>
+<figure class="code-figure"><figcaption>A.</figcaption><pre><code>SELECT firstname, lastname, uniname
+FROM scientist
+JOIN university USING (uni_id);</code></pre></figure>
+<figure class="code-figure"><figcaption>B.</figcaption><pre><code>SELECT firstname, lastname, uniname
+FROM scientist
+LEFT JOIN university USING (uni_id);</code></pre></figure>
+<figure class="code-figure"><figcaption>C.</figcaption><pre><code>SELECT firstname, lastname, uniname
+FROM university
+JOIN scientist USING (uni_id);</code></pre></figure>
+<figure class="code-figure"><figcaption>D.</figcaption><pre><code>SELECT firstname, lastname, uniname
+FROM university
+RIGHT JOIN scientist USING (uni_id);</code></pre></figure>
+<p>Correct answer: B</p>
+<p>Explanation: LEFT JOIN keeps all scientists even when no matching university exists.</p>
+<p>Question 17:</p>
+<p>Given this query:</p>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT CONCAT(&#x27;Dr. &#x27;, INITCAP(firstname), &#x27; &#x27;, INITCAP(lastname))
+FROM scientist
+WHERE LENGTH(TRIM(firstname)) &gt; 5;</code></pre></figure>
+<p>Which description is accurate?</p>
+<p>A. Returns only scientists with first names longer than 5 characters, formatted as “Dr. Firstname Lastname”</p>
+<p>B. Returns all scientists, regardless of length</p>
+<p>C. Returns names exactly 5 characters long</p>
+<p>D. Trims trailing spaces but not leading ones</p>
+<p>Correct answer: A</p>
+<p>Explanation: TRIM() removes both ends, LENGTH() counts characters; INITCAP() formats capitalization.</p>
+<p>Question 18:</p>
+<p>A well-designed data model should ensure data consistency, minimal redundancy, and flexibility.</p>
+<p>Which combination of design principles below most directly supports these goals?</p>
+<p>A.</p>
+<p>Use surrogate keys instead of natural keys, denormalise tables for speed, and allow NULLs everywhere.</p>
+<p>B.</p>
+<p>Use meaningful primary keys, establish relationships through foreign keys, and apply appropriate constraints.</p>
+<p>C.</p>
+<p>Avoid constraints to allow data freedom, store repeated attributes across entities, and use wide tables for all data.</p>
+<p>D.</p>
+<p>Rely on triggers and scripts to correct data after entry rather than defining constraints at design time.</p>
+<p>Correct answer: B</p>
+<p>Explanation:</p>
+<p>Entity, referential, and domain integrity rely on keys and constraints. Designing relationships and applying constraints at the schema level ensures consistency and non-redundancy.</p>
+<p>Question 19:</p>
+<p>During the logical to physical modelling stage, a many-to-many relationship between students and courses is resolved by introducing a junction (weak) entity enrolment.</p>
+<p>Which of the following correctly explains why this step is required?</p>
+<p>A.</p>
+<p>Because it reduces the number of tables by merging both entities into one.</p>
+<p>B.</p>
+<p>Because every course must have only one student, and every student must enrol in exactly one course.</p>
+<p>C.</p>
+<p>Adding a weak entity allows each university to store multiple grades in one cell without requiring normalisation.</p>
+<p>D.</p>
+<p>Because relational databases cannot directly represent many-to-many relationships and must decompose them into two one-to-many relationships.</p>
+<p>Correct answer: D</p>
+<p>Explanation:</p>
+<p>DBMSs can only model one-to-many and one-to-one directly. An junction table resolves many-to-many links by storing both foreign keys, maintaining referential integrity.</p>
+</section>
+    </div>
+  </div>
+</div>
+<script src="../../assets/app.js"></script>
+</body></html>

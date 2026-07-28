@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Optimisation, Transactions and Triggers — Examples · The Databases Review</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<div class="progress-bar"></div>
+<div class="topbar-mini"><div class="wrap">
+  <a class="mini-logo" href="../../../../">The Databases Review</a>
+  <button class="back-btn" onclick="history.back()" aria-label="Go back">&#8592; Back</button>
+  <div class="crumbs"><a href="../../../../">Home</a><span class="sep">/</span><a href="index.html">Topic 15</a><span class="sep">/</span><span class="current">Optimisation, Transactions and Triggers — Examples</span></div>
+  <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">&#9789;</button>
+</div></div>
+
+<div class="article-header wrap-narrow">
+  <span class="kicker">Reference &middot; Topic 15</span>
+  <h1>Optimisation, Transactions and Triggers — Examples</h1>
+  <p class="dek">Worked examples covering query optimisation, transactions and triggers.</p>
+  <div class="byline"><span><b>CMPU2007</b> Databases 1</span><span>3 min read</span><span>23 sections</span></div>
+</div>
+<div class="wrap">
+  <div class="article-body">
+    <nav class="side-toc">
+      <div class="contents-title">Contents</div>
+      <a href="#sec-1" data-target="sec-1"><span class="toc-num">01</span><span class="toc-text">Week 11</span></a><a href="#sec-2" data-target="sec-2"><span class="toc-num">02</span><span class="toc-text">LIMIT</span></a><a href="#sec-3" data-target="sec-3"><span class="toc-num">03</span><span class="toc-text">With LIMIT: just sample 10 rows</span></a><a href="#sec-4" data-target="sec-4"><span class="toc-num">04</span><span class="toc-text">JOIN X SUBQUERY</span></a><a href="#sec-5" data-target="sec-5"><span class="toc-num">05</span><span class="toc-text">Using a JOIN: notice how team_id is treated like an index that facilitates data identifica</span></a><a href="#sec-6" data-target="sec-6"><span class="toc-num">06</span><span class="toc-text">PREPARE</span></a><a href="#sec-7" data-target="sec-7"><span class="toc-num">07</span><span class="toc-text">without prepare</span></a><a href="#sec-8" data-target="sec-8"><span class="toc-num">08</span><span class="toc-text">with prepare</span></a><a href="#sec-9" data-target="sec-9"><span class="toc-num">09</span><span class="toc-text">Specific queries</span></a><a href="#sec-10" data-target="sec-10"><span class="toc-num">10</span><span class="toc-text">Prefer specifying the columns</span></a><a href="#sec-11" data-target="sec-11"><span class="toc-num">11</span><span class="toc-text">0. Inspect current data BEFORE starting the transaction</span></a><a href="#sec-12" data-target="sec-12"><span class="toc-num">12</span><span class="toc-text">1. Start the transaction</span></a><a href="#sec-13" data-target="sec-13"><span class="toc-num">13</span><span class="toc-text">2. Delete old statistics</span></a><a href="#sec-14" data-target="sec-14"><span class="toc-num">14</span><span class="toc-text">3. Insert corrected statistics</span></a><a href="#sec-15" data-target="sec-15"><span class="toc-num">15</span><span class="toc-text">4. Update the game final score</span></a><a href="#sec-16" data-target="sec-16"><span class="toc-num">16</span><span class="toc-text">5. Inspect the data BEFORE committing</span></a><a href="#sec-17" data-target="sec-17"><span class="toc-num">17</span><span class="toc-text">6. If the results look good, run:</span></a><a href="#sec-18" data-target="sec-18"><span class="toc-num">18</span><span class="toc-text">7. If anything is wrong, run:</span></a><a href="#sec-19" data-target="sec-19"><span class="toc-num">19</span><span class="toc-text">Trigger</span></a><a href="#sec-20" data-target="sec-20"><span class="toc-num">20</span><span class="toc-text">trigger</span></a><a href="#sec-21" data-target="sec-21"><span class="toc-num">21</span><span class="toc-text">statement level</span></a><a href="#sec-22" data-target="sec-22"><span class="toc-num">22</span><span class="toc-text">create trigger</span></a><a href="#sec-23" data-target="sec-23"><span class="toc-num">23</span><span class="toc-text">CTE</span></a>
+    </nav>
+    <div class="prose">
+      <section id="sec-1">
+<h2><span class="section-no">01&nbsp;</span>Week 11</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>--Let&#x27;s start by checking how big this schema is
+SELECT
+(SELECT COUNT(*) FROM players) &quot;Rows in players&quot;,
+(SELECT COUNT(*) FROM player_statistics) &quot;Rows in player_statistics&quot;,
+(SELECT COUNT(*) FROM games)
+&quot;Rows in games&quot;,
+(SELECT COUNT(*) FROM teams) &quot;Rows in teams&quot;;</code></pre></figure>
+</section>
+<section id="sec-2">
+<h2><span class="section-no">02&nbsp;</span>LIMIT</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>-- Without LIMIT: reads the whole table
+EXPLAIN ANALYZE
+SELECT * 
+FROM player_statistics;</code></pre></figure>
+</section>
+<section id="sec-3">
+<h2><span class="section-no">03&nbsp;</span>With LIMIT: just sample 10 rows</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>EXPLAIN ANALYZE
+SELECT * 
+FROM player_statistics
+LIMIT 10;</code></pre></figure>
+</section>
+<section id="sec-4">
+<h2><span class="section-no">04&nbsp;</span>JOIN X SUBQUERY</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>-- Get the city of the home team for each game
+--Using a SUBQUERY
+EXPLAIN ANALYZE SELECT game_id,
+       (SELECT team_city
+        FROM nba.teams t
+        WHERE t.team_id = g.home_team_id) AS home_city
+FROM nba.games g;</code></pre></figure>
+</section>
+<section id="sec-5">
+<h2><span class="section-no">05&nbsp;</span>Using a JOIN: notice how team_id is treated like an index that facilitates data identifica</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>EXPLAIN ANALYZE SELECT game_id,
+       team_city &quot;Home city&quot;
+FROM games g
+JOIN teams t
+  ON (t.team_id = g.home_team_id);</code></pre></figure>
+</section>
+<section id="sec-6">
+<h2><span class="section-no">06&nbsp;</span>PREPARE</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>-- Prepare a parameterised query: (int, text)
+PREPARE get_player_stats (int, text) AS
+SELECT ps.game_id,
+       ps.points,
+       ps.assists,
+       ps.rebounds_total,
+       g.game_date,
+       g.game_type
+FROM player_statistics ps
+JOIN games g USING (game_id)
+WHERE ps.person_id = $1      -- player id
+  AND g.game_type = $2;      -- for example, &#x27;Regular Season&#x27;, &#x27;Playoffs&#x27;</code></pre></figure>
+</section>
+<section id="sec-7">
+<h2><span class="section-no">07&nbsp;</span>without prepare</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>EXPLAIN ANALYZE
+SELECT ps.game_id,
+       ps.points,
+       ps.assists,
+       ps.rebounds_total,
+       g.game_date,
+       g.game_type
+FROM nba.player_statistics ps
+JOIN nba.games g USING (game_id)
+WHERE ps.person_id = 1626157     
+  AND g.game_type = &#x27;Regular Season&#x27;;</code></pre></figure>
+</section>
+<section id="sec-8">
+<h2><span class="section-no">08&nbsp;</span>with prepare</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>EXPLAIN ANALYZE
+EXECUTE get_player_stats(1626157, &#x27;Regular Season&#x27;);</code></pre></figure>
+</section>
+<section id="sec-9">
+<h2><span class="section-no">09&nbsp;</span>Specific queries</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>--Avoid SELECT *
+SELECT * 
+FROM nba.player_statistics
+WHERE points &gt; 30;</code></pre></figure>
+</section>
+<section id="sec-10">
+<h2><span class="section-no">10&nbsp;</span>Prefer specifying the columns</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT person_id,
+       game_id,
+       points,
+       assists,
+       rebounds_total
+FROM nba.player_statistics
+WHERE points &gt; 30;</code></pre></figure>
+</section>
+<section id="sec-11">
+<h2><span class="section-no">11&nbsp;</span>0. Inspect current data BEFORE starting the transaction</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT *
+FROM player_statistics
+WHERE game_id = 22400677;</code></pre></figure>
+</section>
+<section id="sec-12">
+<h2><span class="section-no">12&nbsp;</span>1. Start the transaction</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>BEGIN;</code></pre></figure>
+</section>
+<section id="sec-13">
+<h2><span class="section-no">13&nbsp;</span>2. Delete old statistics</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>    DELETE FROM player_statistics
+    WHERE game_id = 22400677;</code></pre></figure>
+</section>
+<section id="sec-14">
+<h2><span class="section-no">14&nbsp;</span>3. Insert corrected statistics</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>    INSERT INTO player_statistics (
+        person_id, game_id, game_date,
+        points, assists, rebounds_total
+    )
+    VALUES
+        (201939, 22400677, &#x27;2025-11-01&#x27;, 32, 8, 5),
+        (2544,   22400677, &#x27;2025-11-01&#x27;, 28, 7, 9);</code></pre></figure>
+</section>
+<section id="sec-15">
+<h2><span class="section-no">15&nbsp;</span>4. Update the game final score</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>    UPDATE games
+    SET home_score = 110,
+        away_score = 105
+    WHERE game_id = 22400677;</code></pre></figure>
+</section>
+<section id="sec-16">
+<h2><span class="section-no">16&nbsp;</span>5. Inspect the data BEFORE committing</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>    SELECT *
+    FROM player_statistics
+    WHERE game_id = 22400677;</code></pre></figure>
+</section>
+<section id="sec-17">
+<h2><span class="section-no">17&nbsp;</span>6. If the results look good, run:</h2>
+<p>COMMIT;</p>
+</section>
+<section id="sec-18">
+<h2><span class="section-no">18&nbsp;</span>7. If anything is wrong, run:</h2>
+<p>ROLLBACK;</p>
+</section>
+<section id="sec-19">
+<h2><span class="section-no">19&nbsp;</span>Trigger</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>--Row-level trigger
+--We start by creating a funcion that will work as a trigger
+CREATE OR REPLACE FUNCTION set_plus_minus_row()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- As we include a new row, the following will recalculate plus_minus_points considering the new values
+	--plus_minus_points checks the difference between the team and the opponent&#x27;s points
+	--we assign values to variables using := in plpsql
+    NEW.plus_minus_points := NEW.points - NEW.turnovers;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;</code></pre></figure>
+</section>
+<section id="sec-20">
+<h2><span class="section-no">20&nbsp;</span>trigger</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>CREATE TRIGGER trg_plus_minus_row
+BEFORE INSERT ON player_statistics
+FOR EACH ROW
+EXECUTE FUNCTION set_plus_minus_row();</code></pre></figure>
+</section>
+<section id="sec-21">
+<h2><span class="section-no">21&nbsp;</span>statement level</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>--create function
+CREATE OR REPLACE FUNCTION update_plus_minus_all()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Recalculate the derived value for ALL rows at once
+    UPDATE player_statistics
+    SET plus_minus_points = points - turnovers;
+    RETURN NULL;  -- statement-level triggers return NULL
+END;
+$$ LANGUAGE plpgsql;</code></pre></figure>
+</section>
+<section id="sec-22">
+<h2><span class="section-no">22&nbsp;</span>create trigger</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>CREATE TRIGGER trg_plus_minus_statement
+AFTER INSERT ON player_statistics
+FOR EACH STATEMENT
+EXECUTE FUNCTION update_plus_minus_all();</code></pre></figure>
+</section>
+<section id="sec-23">
+<h2><span class="section-no">23&nbsp;</span>CTE</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>--First we compute each player’s average points in the CTE
+--Then we filter that result and only keep players averaging at least 20 points per game
+--This is easier to read than nesting the whole AVG and GROUP BY inside one big SELECT
+WITH player_avg AS (
+    SELECT person_id,
+           AVG(points) AS avg_points
+    FROM player_statistics
+    GROUP BY person_id
+)
+SELECT person_id,
+       avg_points
+FROM player_avg
+WHERE avg_points &gt;= 20
+ORDER BY avg_points DESC;</code></pre></figure>
+</section>
+    </div>
+  </div>
+</div>
+<script src="../../assets/app.js"></script>
+</body></html>

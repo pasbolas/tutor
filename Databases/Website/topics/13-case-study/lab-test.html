@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab Test · The Databases Review</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<div class="progress-bar"></div>
+<div class="topbar-mini"><div class="wrap">
+  <a class="mini-logo" href="../../../../">The Databases Review</a>
+  <button class="back-btn" onclick="history.back()" aria-label="Go back">&#8592; Back</button>
+  <div class="crumbs"><a href="../../../../">Home</a><span class="sep">/</span><a href="index.html">Topic 13</a><span class="sep">/</span><span class="current">Lab Test</span></div>
+  <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">&#9789;</button>
+</div></div>
+
+<div class="article-header wrap-narrow">
+  <span class="kicker">Lab Test &middot; Topic 13</span>
+  <h1>Lab Test</h1>
+  <p class="dek">The Week 10 lab test brief.</p>
+  <div class="byline"><span><b>CMPU2007</b> Databases 1</span><span>6 min read</span><span>1 sections</span></div>
+</div>
+<div class="wrap">
+  <div class="article-body">
+    <nav class="side-toc">
+      <div class="contents-title">Contents</div>
+      <a href="#sec-1" data-target="sec-1"><span class="toc-num">01</span><span class="toc-text">Overview</span></a>
+    </nav>
+    <div class="prose">
+      <section id="sec-1">
+<h2><span class="section-no">01&nbsp;</span>Overview</h2>
+<p>Consider the schema presented and answer the questions.</p>
+<p>1 (85% of students answered correctly)</p>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>The following query: SELECT COUNT(*) FROM screening;</code></pre></figure>
+<ul>
+<li>A) Returns one row with the count of all screenings</li>
+<li>B) Returns one row per screening</li>
+<li>C) Returns the number of distinct movies only</li>
+<li>D) Fails because COUNT cannot be used without GROUP BY</li>
+</ul>
+<p>Correct answer: A</p>
+<p>Explanation: count(*) counts all rows in the table, including null values, and always returns one single value, unless a group by is used.</p>
+<ol>
+<li value="2">(65% of students answered correctly)</li>
+</ol>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>The following query: SELECT MAX(AVG(price_eur)) FROM ticket_type;</code></pre></figure>
+<ul>
+<li>A) Returns the maximum average price</li>
+<li>B) Returns an error as nested aggregates are not allowed</li>
+<li>C) Returns one value per ticket type</li>
+<li>D) Runs successfully but returns wrong result</li>
+</ul>
+<p>Correct answer: B</p>
+<p>Explanation: SQL does not allow nesting aggregate functions directly in the same select level. You must compute the average in a subquery.</p>
+<ol>
+<li value="3">(69% of students answered correctly)</li>
+</ol>
+<p>The following query will: SELECT COUNT(*) FILTER(WHERE ticket_type_id=1) AS &quot;Adult&quot;, COUNT(*) FILTER(WHERE ticket_type_id=2) AS &quot;Student&quot; FROM booking;</p>
+<ul>
+<li>A) Count all tickets twice</li>
+<li>B) Separate counts by condition in the same result</li>
+<li>C) Require GROUP BY</li>
+<li>D) Be an invalid syntax</li>
+</ul>
+<p>Correct answer: B</p>
+<p>Explanation: The FILTER clause applies a condition inside an aggregate. You get both counts in one row, each using a different condition. No GROUP BY needed because there is no grouping attribute.</p>
+<ol>
+<li value="4">(99% of students answered correctly)</li>
+</ol>
+<p>According to the query, which seat would be labelled as a front seat? SELECT seat_label, CASE WHEN seat_label LIKE &#x27;Z%&#x27; THEN &#x27;Front&#x27; WHEN seat_label LIKE &#x27;D%&#x27; THEN &#x27;Middle&#x27; ELSE &#x27;Back&#x27; END AS zone FROM booking; A) A10</p>
+<p>B) D5</p>
+<ul>
+<li>C) C3</li>
+<li>D) Z1</li>
+</ul>
+<p>Correct answer: D</p>
+<p>Explanation: LIKE &#x27;Z%&#x27; selects seat labels starting with &quot;Z&quot;. Only Z1 matches.</p>
+<ol>
+<li value="5">(80% of students answered correctly)</li>
+</ol>
+<p>The following query returns: SELECT screening_id FROM booking WHERE ticket_type_id IN (SELECT ticket_type_id FROM ticket_type WHERE price_eur&gt;10);</p>
+<ul>
+<li>A) Screenings where all tickets cost €10</li>
+<li>B) Screenings where at least one ticket above €10 exists</li>
+<li>C) Screenings with all tickets below than €10</li>
+<li>D) Syntax error</li>
+</ul>
+<p>Correct answer: B</p>
+<p>Explanation: The subquery returns ticket types priced above €10. The outer query selects screenings where at least one booking uses one of these types.</p>
+<ol>
+<li value="6">(82% of students answered correctly)</li>
+</ol>
+<p>What does the keyword EXISTS check?</p>
+<ul>
+<li>A) If a subquery returns any row</li>
+<li>B) If a column exists in a table</li>
+<li>C) If a view exists</li>
+<li>D) If a constraint exists</li>
+</ul>
+<p>Correct answer: A</p>
+<p>Explanation: EXISTS(subquery) is true if the subquery returns at least one row. It doesn&#x27;t check table existence.</p>
+<ol>
+<li value="7">(97% of students answered correctly)</li>
+</ol>
+<p>What will this subquery-based update do? UPDATE ticket_type SET price_eur = (SELECT AVG(price_eur) FROM ticket_type) WHERE price_eur IS NULL;</p>
+<ul>
+<li>A) Delete NULL rows</li>
+<li>B) Replace NULL prices with the average price</li>
+<li>C) Set all prices in euros to NULL</li>
+<li>D) Select the average price of all prices</li>
+</ul>
+<p>Correct answer: B</p>
+<p>Explanation: The subquery calculates the average price of all ticket_types. Only rows with price_eur IS NULL are updated to that average.</p>
+<ol>
+<li value="8">(88% of students answered correctly)</li>
+</ol>
+<p>The following query: SELECT title, runtime_min FROM movie WHERE runtime_min &gt; ALL (SELECT runtime_min FROM movie WHERE rating_cert=&#x27;PG&#x27;); Finds:</p>
+<ul>
+<li>A) Shortest PG films</li>
+<li>B) Movies longer than every PG film</li>
+<li>C) Movies shorter than any PG film</li>
+<li>D) All PG films</li>
+</ul>
+<p>Correct answer: B</p>
+<p>Explanation: &gt; ALL (subquery) means the runtime must be greater than every value returned. Thus the query returns movies longer than all PG movies.</p>
+<ol>
+<li value="9">(93% of students answered correctly)</li>
+</ol>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>The command GRANT SELECT, INSERT ON booking TO frontdesk;</code></pre></figure>
+<ul>
+<li>A) Allow row frontdesk to create a view</li>
+<li>B) Gives read and insert rights to role frontdesk</li>
+<li>C) Removes privileges from role frontdesk</li>
+<li>D) Backs up data</li>
+</ul>
+<p>Correct answer: B</p>
+<p>Explanation: GRANT adds privileges. Here the role gets permission to read and insert rows in booking.</p>
+<ol>
+<li value="10">(89% of students answered correctly)</li>
+</ol>
+<p>Example of SQL injection protection:</p>
+<ul>
+<li>A) String concatenation of inputs</li>
+<li>B) Parameterised queries with placeholders</li>
+<li>C) Disabling authentication</li>
+<li>D) Using DELETE without WHERE</li>
+</ul>
+<p>Correct answer: B</p>
+<p>Explanation: Parameterised queries separate code from values, eliminating injection risk. String concatenation is unsafe.</p>
+<ol>
+<li value="11">(89% of students answered correctly)</li>
+</ol>
+<p>In database normalisation, a partial dependency means:</p>
+<ul>
+<li>A) Non-key attributes depend only on part of a composite key</li>
+<li>B) Attribute depends on the whole key</li>
+<li>C) Non-key attributes depend on part of the non-key attributes only</li>
+<li>D) Duplicate primary key</li>
+</ul>
+<p>Correct answer: A</p>
+<p>Explanation: A partial dependency exists when a non-key attribute depends on part of a composite primary key (not the whole key).</p>
+<ol>
+<li value="12">(82% of students answered correctly)</li>
+</ol>
+<p>A transitive dependency occurs when:</p>
+<ul>
+<li>A) Attribute depends on another non-key attribute</li>
+<li>B) Attribute depends on part of a composite key</li>
+<li>C) During a transition, all attributes depend on the primary key</li>
+<li>D) The database has no foreign keys</li>
+</ul>
+<p>Correct answer: A</p>
+<p>Explanation: A non-key attribute depends on another non-key attribute, which depends on the PK.</p>
+<ol>
+<li value="13">(91% of students answered correctly)</li>
+</ol>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>The following command: SELECT table_name FROM information_schema.tables WHERE table_schema=&#x27;cinema&#x27;;</code></pre></figure>
+<ul>
+<li>A) Shows table metadata</li>
+<li>B) Deletes tables</li>
+<li>C) Backs up schema</li>
+<li>D) Lists all users</li>
+</ul>
+<p>Correct answer: A</p>
+<p>Explanation: The query returns metadata: the names of all tables inside the schema “cinema”.</p>
+<ol>
+<li value="14">(94% of students answered correctly)</li>
+</ol>
+<p>What is the purpose of information_schema.columns?</p>
+<ul>
+<li>A) Holds data values of all columns</li>
+<li>B) Contains metadata (column names, types, nullability)</li>
+<li>C) Shows data types only</li>
+<li>D) Stores backup copies</li>
+</ul>
+<p>Correct answer: B</p>
+<p>Explanation: It stores metadata about each column: name, type, nullability, default values, etc.</p>
+<ol>
+<li value="15">(67% of students answered correctly)</li>
+</ol>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>The following query: SELECT screening_id, seat_label, COUNT(*) FROM booking GROUP BY screening_id, seat_label HAVING COUNT(*)&gt;1;</code></pre></figure>
+<ul>
+<li>A) Lists repeated seats per screening</li>
+<li>B) Counts total seats</li>
+<li>C) Deletes duplicates</li>
+<li>D) Inserts rows</li>
+</ul>
+<p>Correct answer: A</p>
+<p>Explanation: Grouping by screening_id, seat_label and counting identifies duplicate seat bookings within the same screening.</p>
+<ol>
+<li value="16">(67% of students answered correctly)</li>
+</ol>
+<p>Which query selects customers with at least two bookings?</p>
+<ul>
+<li>A) SELECT c.customer_id, c.full_name FROM customer c JOIN booking b USING(customer_id) GROUP BY c.customer_id, c.full_name HAVING COUNT(*) &gt;= 2;</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>B) SELECT c.customer_id, c.full_name FROM customer c WHERE COUNT(*) &gt;= 2;
+C) SELECT DISTINCT c.customer_id, c.full_name FROM customer c JOIN booking b USING(customer_id) WHERE COUNT(*) &gt;= 2;
+D) SELECT customer_id, full_name FROM customer WHERE customer_id IN (SELECT customer_id FROM booking WHERE COUNT(*)&gt;=2);</code></pre></figure>
+<p>Correct answer: A</p>
+<p>Explanation: Uses a join, groups per customer, and selects only those with at least 2 rows in booking.</p>
+<ol>
+<li value="17">(78% of students answered correctly)</li>
+</ol>
+<p>Which query selects movies longer than every G/PG movie?</p>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>A) SELECT title FROM movie WHERE runtime_min &gt; ANY (SELECT runtime_min FROM movie WHERE rating_cert IN (&#x27;G&#x27;,&#x27;PG&#x27;));
+B) SELECT title FROM movie WHERE runtime_min &gt; ALL (SELECT runtime_min FROM movie WHERE rating_cert IN (&#x27;G&#x27;,&#x27;PG&#x27;));
+C) SELECT title FROM movie WHERE runtime_min &gt;= ANY (SELECT MAX(runtime_min) FROM movie WHERE rating_cert IN (&#x27;G&#x27;,&#x27;PG&#x27;));
+D) SELECT title FROM movie WHERE runtime_min &gt; (SELECT MIN(runtime_min) FROM movie WHERE rating_cert IN (&#x27;G&#x27;,&#x27;PG&#x27;));</code></pre></figure>
+<p>Correct answer: B</p>
+<p>Explanation: runtime_min &gt; ALL (...) requires exceeding every runtime in the subquery.</p>
+<ol>
+<li value="18">(35% of students answered correctly)</li>
+</ol>
+<p>Which row can be used to display each auditorium name and its total capacity?</p>
+<ul>
+<li>A) SELECT name, SUM(seat_rows * seats_per_row) AS capacity FROM auditorium</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>GROUP BY name;
+B) SELECT name, seat_rows * seats_per_row AS capacity FROM auditorium;
+C) SELECT name, seat_rows + seats_per_row AS capacity FROM auditorium;
+D) SELECT DISTINCT name, seat_rows * seats_per_row AS capacity FROM auditorium;</code></pre></figure>
+<p>Correct answer: B</p>
+<p>Explanation: Capacity is calculated per auditorium by multiplying: seat_rows * seats_per_row. The query shows one row per auditorium with its computed capacity. No aggregation needed.</p>
+</section>
+    </div>
+  </div>
+</div>
+<script src="../../assets/app.js"></script>
+</body></html>

@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Index Examples · The Databases Review</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<div class="progress-bar"></div>
+<div class="topbar-mini"><div class="wrap">
+  <a class="mini-logo" href="../../../../">The Databases Review</a>
+  <button class="back-btn" onclick="history.back()" aria-label="Go back">&#8592; Back</button>
+  <div class="crumbs"><a href="../../../../">Home</a><span class="sep">/</span><a href="index.html">Topic 14</a><span class="sep">/</span><span class="current">Index Examples</span></div>
+  <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">&#9789;</button>
+</div></div>
+
+<div class="article-header wrap-narrow">
+  <span class="kicker">Reference &middot; Topic 14</span>
+  <h1>Index Examples</h1>
+  <p class="dek">Creating indexes and measuring their effect with EXPLAIN ANALYZE.</p>
+  <div class="byline"><span><b>CMPU2007</b> Databases 1</span><span>2 min read</span><span>25 sections</span></div>
+</div>
+<div class="wrap">
+  <div class="article-body">
+    <nav class="side-toc">
+      <div class="contents-title">Contents</div>
+      <a href="#sec-1" data-target="sec-1"><span class="toc-num">01</span><span class="toc-text">Example query</span></a><a href="#sec-2" data-target="sec-2"><span class="toc-num">02</span><span class="toc-text">Creating index</span></a><a href="#sec-3" data-target="sec-3"><span class="toc-num">03</span><span class="toc-text">Checking the time again</span></a><a href="#sec-4" data-target="sec-4"><span class="toc-num">04</span><span class="toc-text">Composite indexes</span></a><a href="#sec-5" data-target="sec-5"><span class="toc-num">05</span><span class="toc-text">DROP INDEX idx_customer_name_city</span></a><a href="#sec-6" data-target="sec-6"><span class="toc-num">06</span><span class="toc-text">CREATE INDEX idx_customer_name_city</span></a><a href="#sec-7" data-target="sec-7"><span class="toc-num">07</span><span class="toc-text">Explain statement</span></a><a href="#sec-8" data-target="sec-8"><span class="toc-num">08</span><span class="toc-text">Memory check</span></a><a href="#sec-9" data-target="sec-9"><span class="toc-num">09</span><span class="toc-text">How much storage one specific index consumes.</span></a><a href="#sec-10" data-target="sec-10"><span class="toc-num">10</span><span class="toc-text">deciding the data structure for your index</span></a><a href="#sec-11" data-target="sec-11"><span class="toc-num">11</span><span class="toc-text">DROP INDEX idx_price</span></a><a href="#sec-12" data-target="sec-12"><span class="toc-num">12</span><span class="toc-text">Explain statement</span></a><a href="#sec-13" data-target="sec-13"><span class="toc-num">13</span><span class="toc-text">checking data structure</span></a><a href="#sec-14" data-target="sec-14"><span class="toc-num">14</span><span class="toc-text">partial index</span></a><a href="#sec-15" data-target="sec-15"><span class="toc-num">15</span><span class="toc-text">joins</span></a><a href="#sec-16" data-target="sec-16"><span class="toc-num">16</span><span class="toc-text">Explain statement</span></a><a href="#sec-17" data-target="sec-17"><span class="toc-num">17</span><span class="toc-text">CREATE INDEX idx_lower_city</span></a><a href="#sec-18" data-target="sec-18"><span class="toc-num">18</span><span class="toc-text">order by</span></a><a href="#sec-19" data-target="sec-19"><span class="toc-num">19</span><span class="toc-text">Explain statement</span></a><a href="#sec-20" data-target="sec-20"><span class="toc-num">20</span><span class="toc-text">unique index</span></a><a href="#sec-21" data-target="sec-21"><span class="toc-num">21</span><span class="toc-text">however, let&#x27;s drop the column and create it again</span></a><a href="#sec-22" data-target="sec-22"><span class="toc-num">22</span><span class="toc-text">create an unique index</span></a><a href="#sec-23" data-target="sec-23"><span class="toc-num">23</span><span class="toc-text">try to update to duplicate values - it&#x27;s not going to work</span></a><a href="#sec-24" data-target="sec-24"><span class="toc-num">24</span><span class="toc-text">index on expression</span></a><a href="#sec-25" data-target="sec-25"><span class="toc-num">25</span><span class="toc-text">DROP INDEX idx_customer_fname_lower</span></a>
+    </nav>
+    <div class="prose">
+      <section id="sec-1">
+<h2><span class="section-no">01&nbsp;</span>Example query</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>EXPLAIN ANALYZE SELECT * FROM booking WHERE customer_id = &#x27;C09142&#x27;;</code></pre></figure>
+</section>
+<section id="sec-2">
+<h2><span class="section-no">02&nbsp;</span>Creating index</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>DROP INDEX IF EXISTS idx_booking_customer;
+CREATE INDEX idx_booking_customer ON booking (customer_id);</code></pre></figure>
+</section>
+<section id="sec-3">
+<h2><span class="section-no">03&nbsp;</span>Checking the time again</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>EXPLAIN ANALYZE SELECT * FROM booking WHERE customer_id = &#x27;C09142&#x27;;</code></pre></figure>
+</section>
+<section id="sec-4">
+<h2><span class="section-no">04&nbsp;</span>Composite indexes</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>--Before index
+EXPLAIN ANALYZE SELECT * FROM customer WHERE customer_fname = &#x27;Alice Anderson&#x27; AND city = &#x27;San Francisco&#x27;;</code></pre></figure>
+</section>
+<section id="sec-5">
+<h2><span class="section-no">05&nbsp;</span>DROP INDEX idx_customer_name_city</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>DROP INDEX IF EXISTS idx_customer_name_city;</code></pre></figure>
+</section>
+<section id="sec-6">
+<h2><span class="section-no">06&nbsp;</span>CREATE INDEX idx_customer_name_city</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>CREATE INDEX idx_customer_name_city
+ON customer (customer_fname, city);</code></pre></figure>
+</section>
+<section id="sec-7">
+<h2><span class="section-no">07&nbsp;</span>Explain statement</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>EXPLAIN ANALYZE SELECT * FROM customer WHERE customer_fname = &#x27;Alice Anderson&#x27; AND city = &#x27;San Francisco&#x27;;</code></pre></figure>
+</section>
+<section id="sec-8">
+<h2><span class="section-no">08&nbsp;</span>Memory check</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>--How much disk space the rows themselves take
+SELECT pg_size_pretty(pg_relation_size(&#x27;customer&#x27;)) AS table_size;)</code></pre></figure>
+</section>
+<section id="sec-9">
+<h2><span class="section-no">09&nbsp;</span>How much storage one specific index consumes.</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT pg_size_pretty(pg_relation_size(&#x27;idx_customer_name_city&#x27;)) AS table_size;)</code></pre></figure>
+</section>
+<section id="sec-10">
+<h2><span class="section-no">10&nbsp;</span>deciding the data structure for your index</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>EXPLAIN ANALYZE SELECT * FROM booking WHERE price_paid BETWEEN 10 AND 50;</code></pre></figure>
+</section>
+<section id="sec-11">
+<h2><span class="section-no">11&nbsp;</span>DROP INDEX idx_price</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>DROP INDEX idx_price;
+CREATE INDEX idx_price ON booking USING btree(price_paid);</code></pre></figure>
+</section>
+<section id="sec-12">
+<h2><span class="section-no">12&nbsp;</span>Explain statement</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>EXPLAIN ANALYZE SELECT * FROM booking WHERE price_paid BETWEEN 10 AND 50;</code></pre></figure>
+</section>
+<section id="sec-13">
+<h2><span class="section-no">13&nbsp;</span>checking data structure</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT indexname, indexdef
+FROM pg_indexes
+WHERE tablename = &#x27;booking&#x27; AND indexname = &#x27;idx_price&#x27;;</code></pre></figure>
+</section>
+<section id="sec-14">
+<h2><span class="section-no">14&nbsp;</span>partial index</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>DROP INDEX idx_large_stages; 
+CREATE INDEX idx_large_stages ON stage (stage_name) WHERE audience_capacity &gt; 100;</code></pre></figure>
+</section>
+<section id="sec-15">
+<h2><span class="section-no">15&nbsp;</span>joins</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>DROP INDEX IF EXISTS idx_concert_artist, idx_booking_concert;
+CREATE INDEX IF NOT EXISTS idx_concert_artist  ON concert(artist_id);
+CREATE INDEX IF NOT EXISTS idx_booking_concert ON booking(concert_id);</code></pre></figure>
+</section>
+<section id="sec-16">
+<h2><span class="section-no">16&nbsp;</span>Explain statement</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>EXPLAIN ANALYZE
+SELECT artist_name, SUM(price_paid)
+FROM booking 
+JOIN concert  USING (concert_id)
+JOIN artist   USING (artist_id)
+WHERE artist_name = &#x27;Lady Gaga Band&#x27;           
+GROUP BY artist_name;</code></pre></figure>
+</section>
+<section id="sec-17">
+<h2><span class="section-no">17&nbsp;</span>CREATE INDEX idx_lower_city</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>CREATE INDEX idx_lower_city ON customer (LOWER(city));</code></pre></figure>
+</section>
+<section id="sec-18">
+<h2><span class="section-no">18&nbsp;</span>order by</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>DROP INDEX IF EXISTS idx_booking_price;
+CREATE INDEX idx_booking_price ON booking (price_paid);</code></pre></figure>
+</section>
+<section id="sec-19">
+<h2><span class="section-no">19&nbsp;</span>Explain statement</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>EXPLAIN ANALYZE
+SELECT booking_id, price_paid
+FROM booking
+ORDER BY price_paid; -- we can add DESC as well</code></pre></figure>
+</section>
+<section id="sec-20">
+<h2><span class="section-no">20&nbsp;</span>unique index</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>--if i create a column
+ALTER TABLE customer ADD COLUMN email_address TEXT;
+-- update all values to the same
+UPDATE customer SET email_address = &#x27;customer@gmail.com&#x27;;
+--it works because there is no unique constraint
+SELECT * FROM customer;</code></pre></figure>
+</section>
+<section id="sec-21">
+<h2><span class="section-no">21&nbsp;</span>however, let&#x27;s drop the column and create it again</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>ALTER TABLE customer DROP COLUMN email_address;
+ALTER TABLE customer ADD COLUMN email_address TEXT;
+--the column is empty
+SELECT * FROM customer;</code></pre></figure>
+</section>
+<section id="sec-22">
+<h2><span class="section-no">22&nbsp;</span>create an unique index</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>DROP INDEX IF EXISTS idx_customer_email;
+CREATE UNIQUE INDEX idx_customer_email ON customer (email_address);</code></pre></figure>
+</section>
+<section id="sec-23">
+<h2><span class="section-no">23&nbsp;</span>try to update to duplicate values - it&#x27;s not going to work</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>UPDATE customer SET email_address = &#x27;customer@gmail.com&#x27;;</code></pre></figure>
+</section>
+<section id="sec-24">
+<h2><span class="section-no">24&nbsp;</span>index on expression</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>EXPLAIN ANALYZE
+SELECT *
+FROM customer
+WHERE LOWER(customer_fname) = &#x27;john doe&#x27;;</code></pre></figure>
+</section>
+<section id="sec-25">
+<h2><span class="section-no">25&nbsp;</span>DROP INDEX idx_customer_fname_lower</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>DROP INDEX IF EXISTS idx_customer_fname_lower;
+CREATE INDEX idx_customer_fname_lower
+ON customer (LOWER(customer_fname));</code></pre></figure>
+</section>
+    </div>
+  </div>
+</div>
+<script src="../../assets/app.js"></script>
+</body></html>

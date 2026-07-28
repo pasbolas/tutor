@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Indexes · The Databases Review</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<div class="progress-bar"></div>
+<div class="topbar-mini"><div class="wrap">
+  <a class="mini-logo" href="../../../../">The Databases Review</a>
+  <button class="back-btn" onclick="history.back()" aria-label="Go back">&#8592; Back</button>
+  <div class="crumbs"><a href="../../../../">Home</a><span class="sep">/</span><a href="index.html">Topic 14</a><span class="sep">/</span><span class="current">Indexes</span></div>
+  <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">&#9789;</button>
+</div></div>
+
+<div class="article-header wrap-narrow">
+  <span class="kicker">Lecture 11 &middot; Topic 14</span>
+  <h1>Indexes</h1>
+  <p class="dek">How indexes speed up lookups, and when they&#x27;re worth the tradeoff.</p>
+  <div class="byline"><span><b>CMPU2007</b> Databases 1</span><span>7 min read</span><span>18 sections</span></div>
+</div>
+<div class="wrap">
+  <div class="article-body">
+    <nav class="side-toc">
+      <div class="contents-title">Contents</div>
+      <a href="#sec-1" data-target="sec-1"><span class="toc-num">01</span><span class="toc-text">Index</span></a><a href="#sec-2" data-target="sec-2"><span class="toc-num">02</span><span class="toc-text">Similar to pointers</span></a><a href="#sec-3" data-target="sec-3"><span class="toc-num">03</span><span class="toc-text">Explain analyze</span></a><a href="#sec-4" data-target="sec-4"><span class="toc-num">04</span><span class="toc-text">Creating an index</span></a><a href="#sec-5" data-target="sec-5"><span class="toc-num">05</span><span class="toc-text">When to use indexes</span></a><a href="#sec-6" data-target="sec-6"><span class="toc-num">06</span><span class="toc-text">Composite indexes</span></a><a href="#sec-7" data-target="sec-7"><span class="toc-num">07</span><span class="toc-text">Composite indexes – the order matter</span></a><a href="#sec-8" data-target="sec-8"><span class="toc-num">08</span><span class="toc-text">Multicolumn index – the order matters</span></a><a href="#sec-9" data-target="sec-9"><span class="toc-num">09</span><span class="toc-text">Faster queries, extra memory</span></a><a href="#sec-10" data-target="sec-10"><span class="toc-num">10</span><span class="toc-text">Databases indices</span></a><a href="#sec-11" data-target="sec-11"><span class="toc-num">11</span><span class="toc-text">Balanced tree (B-tree)</span></a><a href="#sec-12" data-target="sec-12"><span class="toc-num">12</span><span class="toc-text">Data structure</span></a><a href="#sec-13" data-target="sec-13"><span class="toc-num">13</span><span class="toc-text">Partial index</span></a><a href="#sec-14" data-target="sec-14"><span class="toc-num">14</span><span class="toc-text">JOIN</span></a><a href="#sec-15" data-target="sec-15"><span class="toc-num">15</span><span class="toc-text">Order by</span></a><a href="#sec-16" data-target="sec-16"><span class="toc-num">16</span><span class="toc-text">Unique indexes</span></a><a href="#sec-17" data-target="sec-17"><span class="toc-num">17</span><span class="toc-text">Indexes on expressions</span></a><a href="#sec-18" data-target="sec-18"><span class="toc-num">18</span><span class="toc-text">When to use</span></a>
+    </nav>
+    <div class="prose">
+      <section id="sec-1">
+<h2><span class="section-no">01&nbsp;</span>Index</h2>
+<ul>
+<li>A database index is like a book index: it helps locate data faster.</li>
+<li>It stores key values in a separate data structure.</li>
+<li>Without indexes, PostgreSQL must scan every row (sequential scan).</li>
+<li>When you search for a customer in a large table, PostgreSQL checks each row unless there’s an index.</li>
+<li>An index allows PostgreSQL to “jump” directly to the relevant rows.</li>
+</ul>
+<ul>
+<li>Book without index → you read every page.</li>
+<li>Book with index → you look up the term directly.</li>
+</ul>
+</section>
+<section id="sec-2">
+<h2><span class="section-no">02&nbsp;</span>Similar to pointers</h2>
+<ul>
+<li>In C, a pointer stores the memory address of a variable. In PostgreSQL, an index stores the location (address) of a row. So when you write:</li>
+<li>PostgreSQL uses the index to look up &#x27;C3&#x27; in the index structure (like finding an address) and follow the stored “pointers” to the exact row in the booking table.</li>
+<li>That’s very similar to:</li>
+<li>The pointer lets you jump directly to the memory address just like the index lets the database jump directly to the row.</li>
+</ul>
+<ul>
+<li>SELECT * FROM booking WHERE customer_id = &#x27;C3&#x27;;</li>
+</ul>
+<ul>
+<li>int value = 42;</li>
+<li>int *ptr = &amp;value; // pointer to variable &#x27;value&#x27;</li>
+<li>printf(&quot;%d&quot;, *ptr); // follow the pointer to get the value</li>
+</ul>
+</section>
+<section id="sec-3">
+<h2><span class="section-no">03&nbsp;</span>Explain analyze</h2>
+<ul>
+<li>We can use the combination of the commands EXPLAIN and ANALYZE</li>
+<li>Explain: retrieve the execution plan, showing how the table will be scanned (for example, by a plain sequential scan), how the algorithm brings together the required rows from each input table (in case of joins) etc. The statement is not executed, only analysed.</li>
+<li>Analyze: Carry out the command and show actual run times and other statistics. Even though we can use the analyze command on its own, it is common to combine it with the explain command.</li>
+</ul>
+<ul>
+<li>EXPLAIN ANALYZE shows how the query was executed — it tells us if an index was used and how long it took.</li>
+</ul>
+<ul>
+<li>EXPLAIN ANALYZE SELECT * FROM booking WHERE customer_id = &#x27;C09142&#x27;;</li>
+</ul>
+</section>
+<section id="sec-4">
+<h2><span class="section-no">04&nbsp;</span>Creating an index</h2>
+<ul>
+<li>Now PostgreSQL will maintain this index automatically.</li>
+<li>When we query booking by customer_id, it will use this index instead of scanning the full table.</li>
+</ul>
+<ul>
+<li>CREATE INDEX idx_booking_customer ON booking (customer_id);</li>
+</ul>
+</section>
+<section id="sec-5">
+<h2><span class="section-no">05&nbsp;</span>When to use indexes</h2>
+<ul>
+<li>Columns often used in WHERE, JOIN, or ORDER BY</li>
+<li>Large tables (thousands of rows)</li>
+<li>Each index speeds up reads but slows down writes (INSERT, UPDATE, DELETE).</li>
+<li>Balance performance: only index what’s queried often.</li>
+</ul>
+</section>
+<section id="sec-6">
+<h2><span class="section-no">06&nbsp;</span>Composite indexes</h2>
+<ul>
+<li>Combine two or more columns in one index.</li>
+<li>Useful when queries filter on those columns together.</li>
+<li>Column order matters: (concert_id, customer_id) ≠ (customer_id, concert_id)</li>
+<li>PostgreSQL will use this index when both concert_id and customer_id are in the WHERE clause — or even when filtering by concert_id alone, since it’s the first column in the index.</li>
+<li>Let’s measure how much faster it can be.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>--Composite indexes
+--Before index
+EXPLAIN ANALYZE SELECT * FROM customer WHERE customer_fname = &#x27;Alice Anderson&#x27; AND city = &#x27;San Francisco&#x27;;
+DROP INDEX IF EXISTS idx_customer_name_city;
+CREATE INDEX idx_customer_name_city
+ON customer (customer_fname, city);
+EXPLAIN ANALYZE SELECT * FROM customer WHERE customer_fname = &#x27;Alice Anderson&#x27; AND city = &#x27;San Francisco&#x27;;</code></pre></figure>
+</section>
+<section id="sec-7">
+<h2><span class="section-no">07&nbsp;</span>Composite indexes – the order matter</h2>
+<ul>
+<li>Combine two or more columns in one index.</li>
+<li>Useful when queries filter on those columns together.</li>
+<li>Column order matters: (concert_id, customer_id) ≠ (customer_id, concert_id)</li>
+<li>PostgreSQL will use this index when both concert_id and customer_id are in the WHERE clause — or even when filtering by concert_id alone, since it’s the first column in the index.</li>
+<li>Let’s measure how much faster it can be.</li>
+</ul>
+</section>
+<section id="sec-8">
+<h2><span class="section-no">08&nbsp;</span>Multicolumn index – the order matters</h2>
+<ul>
+<li>The order of columns in the index is important because the index is sorted primarily by the first column, then by the second column, and so on.</li>
+<li>A query must use the leading column(s) in the index to benefit from the index. If the query does not use the first column, the index will not be used effectively.</li>
+<li>For the index multi_idx ON person (last_name, first_name);</li>
+<ul>
+<li>Queries like WHERE last_name = &#x27;Smith&#x27; or WHERE last_name = &#x27;Smith&#x27; AND first_name = &#x27;John&#x27; will use the index.</li>
+<li>Queries like WHERE first_name = &#x27;John&#x27; will not use the index because last_name is not included.</li>
+</ul>
+</ul>
+</section>
+<section id="sec-9">
+<h2><span class="section-no">09&nbsp;</span>Faster queries, extra memory</h2>
+<ul>
+<li>As you can imagine, by creating a data structure that guides the data retrieval, indices use some extra memory.</li>
+<li>We can check how much space is taken by running the function pg_relation_size( )</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>--Memory check
+--How much disk space the rows themselves take
+SELECT pg_size_pretty(pg_relation_size(&#x27;customer&#x27;)) AS table_size;)
+--How much storage one specific index consumes.
+SELECT pg_size_pretty(pg_relation_size(&#x27;idx_customer_name_city&#x27;)) AS table_size;)</code></pre></figure>
+</section>
+<section id="sec-10">
+<h2><span class="section-no">10&nbsp;</span>Databases indices</h2>
+<ul>
+<li>PostgreSQL uses different data structures for indices – we can choose among B-tree, Hash, Gist etc.</li>
+<li>B-tree is the default one, fitting most situations</li>
+</ul>
+</section>
+<section id="sec-11">
+<h2><span class="section-no">11&nbsp;</span>Balanced tree (B-tree)</h2>
+<ul>
+<li>B-trees are balanced tree structures where each node can have multiple children. The data is organised hierarchically, with nodes containing ranges of values and pointers to child nodes.</li>
+<li>Provides logarithmic time complexity for searches, and remains balanced despite frequent insertions and deletions.</li>
+</ul>
+<ul>
+<li>B-trees can handle equality and range queries on data that can be sorted into some ordering. ORDER BY queries can be used.</li>
+<li>Commonly used when comparison operators are involved, such as &lt; , &lt;= , = , &gt;= and &gt;.</li>
+<li>BETWEEN and IN can also be implemented with a B-tree index search. Also, an IS NULL or IS NOT NULL condition on an index column can be used with a B-tree index.</li>
+<li>B-tree indexes can also be used to retrieve data in sorted order. This is not always faster than a simple scan and sort, but it is often helpful.</li>
+</ul>
+</section>
+<section id="sec-12">
+<h2><span class="section-no">12&nbsp;</span>Data structure</h2>
+<ul>
+<li>We can also decide what data structure we want to use</li>
+<li>In this example, we are creating an index using a B-TREE</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>--deciding the data structure for your index
+EXPLAIN ANALYZE SELECT * FROM booking WHERE price_paid BETWEEN 10 AND 50;
+DROP INDEX idx_price;
+CREATE INDEX idx_price ON booking USING btree(price_paid);
+EXPLAIN ANALYZE SELECT * FROM booking WHERE price_paid BETWEEN 10 AND 50;</code></pre></figure>
+</section>
+<section id="sec-13">
+<h2><span class="section-no">13&nbsp;</span>Partial index</h2>
+<ul>
+<li>Partial indexes are indexes built on a subset of data that meets a specified condition. For example, if you often query for people with a specific last name:</li>
+<li>When searching for rows with that specific value for the last_name attribute, we have a speed gain:</li>
+</ul>
+<ul>
+<li>CREATE INDEX idx_last_name_smith ON person(last_name) WHERE last_name = &#x27;Smith&#x27;;</li>
+</ul>
+<ul>
+<li>explain analyze select * from person where last_name = &#x27;Smith&#x27;;</li>
+</ul>
+<ul>
+<li>Before creating an index:</li>
+</ul>
+<ul>
+<li>After creating an index:</li>
+</ul>
+<ul>
+<li>Partial indexes store only a subset of rows.</li>
+<li>This is useful when most queries focus on a small subset.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>DROP INDEX idx_large_stages;
+CREATE INDEX idx_large_stages ON stage (stage_name) WHERE audience_capacity &gt; 100;</code></pre></figure>
+</section>
+<section id="sec-14">
+<h2><span class="section-no">14&nbsp;</span>JOIN</h2>
+<ul>
+<li>A common query could be to retrieve the name of the artist and how much they got paid.</li>
+<li>We can create indexes to speed up this common query.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>DROP INDEX IF EXISTS idx_concert_artist, idx_booking_concert;
+CREATE INDEX IF NOT EXISTS idx_concert_artist ON concert(artist_id);
+CREATE INDEX IF NOT EXISTS idx_booking_concert ON booking(concert_id);
+EXPLAIN ANALYZE
+SELECT artist_name, SUM(price_paid)
+FROM booking
+JOIN concert USING (concert_id)
+JOIN artist USING (artist_id)
+WHERE artist_name = &#x27;Lady Gaga Band&#x27;
+GROUP BY artist_name;</code></pre></figure>
+</section>
+<section id="sec-15">
+<h2><span class="section-no">15&nbsp;</span>Order by</h2>
+<ul>
+<li>An index may be able to deliver them in a specific sorted order.</li>
+<li>Only B-tree can produce sorted output — the other index types return matching rows in an unspecified, implementation-dependent order.</li>
+<li>Suppose we want to retrieve all the last_names in descending order:</li>
+<li>The explain analyze command will show it takes a while to retrieve the data in that format:</li>
+</ul>
+<ul>
+<li>explain analyze select last_name from person order by last_name desc;</li>
+</ul>
+<ul>
+<li>Without an index, PostgreSQL must sort results manually.</li>
+<li>With a matching index, PostgreSQL reads in sorted order directly from the index (no Sort step)</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>DROP INDEX IF EXISTS idx_booking_price;
+CREATE INDEX idx_booking_price ON booking (price_paid);
+EXPLAIN ANALYZE
+SELECT booking_id, price_paid
+FROM booking
+ORDER BY price_paid; -- we can add DESC as well</code></pre></figure>
+</section>
+<section id="sec-16">
+<h2><span class="section-no">16&nbsp;</span>Unique indexes</h2>
+<ul>
+<li>A unique index ensures that the values in a column (or a group of columns) are unique across the table.</li>
+<li>It works similarly to adding the word UNIQUE to the DDL, but it allows more flexibility and control – you can quickly drop an index or make it multi-column.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>DROP INDEX IF EXISTS idx_customer_email;
+CREATE UNIQUE INDEX idx_customer_email ON customer (email_address);</code></pre></figure>
+</section>
+<section id="sec-17">
+<h2><span class="section-no">17&nbsp;</span>Indexes on expressions</h2>
+<ul>
+<li>PostgreSQL allows indexing not just on columns but also on expressions.</li>
+<li>n index on an expression stores the result of a function applied to a column so PostgreSQL can use that precomputed value to speed up queries that use the same expression.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>EXPLAIN ANALYZE
+SELECT *
+FROM customer
+WHERE LOWER(customer_fname) = &#x27;john doe&#x27;;
+DROP INDEX IF EXISTS idx_customer_fname_lower;
+CREATE INDEX idx_customer_fname_lower
+ON customer (LOWER(customer_fname));</code></pre></figure>
+</section>
+<section id="sec-18">
+<h2><span class="section-no">18&nbsp;</span>When to use</h2>
+<ul>
+<li>Indexes help when your query can skip work:</li>
+<ul>
+<li>Add a selective WHERE, or match ORDER BY … LIMIT, or enable index-only scans.</li>
+</ul>
+<li>Indexes do not help full-table aggregates or broad scans where most rows qualify.</li>
+<li>Always confirm with EXPLAIN ANALYZE and make sure the time to run the query drops</li>
+</ul>
+</section>
+    </div>
+  </div>
+</div>
+<script src="../../assets/app.js"></script>
+</body></html>

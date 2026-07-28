@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Set Operation Examples · The Databases Review</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<div class="progress-bar"></div>
+<div class="topbar-mini"><div class="wrap">
+  <a class="mini-logo" href="../../../../">The Databases Review</a>
+  <button class="back-btn" onclick="history.back()" aria-label="Go back">&#8592; Back</button>
+  <div class="crumbs"><a href="../../../../">Home</a><span class="sep">/</span><a href="index.html">Topic 07</a><span class="sep">/</span><span class="current">Set Operation Examples</span></div>
+  <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">&#9789;</button>
+</div></div>
+
+<div class="article-header wrap-narrow">
+  <span class="kicker">Reference &middot; Topic 07</span>
+  <h1>Set Operation Examples</h1>
+  <p class="dek">Worked UNION, INTERSECT and EXCEPT queries against the football database.</p>
+  <div class="byline"><span><b>CMPU2007</b> Databases 1</span><span>1 min read</span><span>11 sections</span></div>
+</div>
+<div class="wrap">
+  <div class="article-body">
+    <nav class="side-toc">
+      <div class="contents-title">Contents</div>
+      <a href="#sec-1" data-target="sec-1"><span class="toc-num">01</span><span class="toc-text">Checking the column data types</span></a><a href="#sec-2" data-target="sec-2"><span class="toc-num">02</span><span class="toc-text">Will result in an error as data types are different</span></a><a href="#sec-3" data-target="sec-3"><span class="toc-num">03</span><span class="toc-text">Casting to make it work</span></a><a href="#sec-4" data-target="sec-4"><span class="toc-num">04</span><span class="toc-text">We can order by the first attribute selected</span></a><a href="#sec-5" data-target="sec-5"><span class="toc-num">05</span><span class="toc-text">Ordering by the second attribute fails once merged</span></a><a href="#sec-6" data-target="sec-6"><span class="toc-num">06</span><span class="toc-text">UNION ALL</span></a><a href="#sec-7" data-target="sec-7"><span class="toc-num">07</span><span class="toc-text">INTERSECT: Players that have data on attributes and have contracts</span></a><a href="#sec-8" data-target="sec-8"><span class="toc-num">08</span><span class="toc-text">EXCEPT: Players that have data on attributes but no contract</span></a><a href="#sec-9" data-target="sec-9"><span class="toc-num">09</span><span class="toc-text">We can confirm the number using count in a join</span></a><a href="#sec-10" data-target="sec-10"><span class="toc-num">10</span><span class="toc-text">Explain Analyze to compare efficiency</span></a><a href="#sec-11" data-target="sec-11"><span class="toc-num">11</span><span class="toc-text">Explain statement</span></a>
+    </nav>
+    <div class="prose">
+      <section id="sec-1">
+<h2><span class="section-no">01&nbsp;</span>Checking the column data types</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>--Examples using the football schema
+--Check the data types
+SELECT DISTINCT pg_typeof(player_id) FROM players;
+SELECT DISTINCT pg_typeof(club_id) FROM clubs;</code></pre></figure>
+</section>
+<section id="sec-2">
+<h2><span class="section-no">02&nbsp;</span>Will result in an error as data types are different</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT player_id, &#x27;players&#x27; &quot;Source table&quot; --we manually create another column with the name of the table
+FROM players
+UNION
+SELECT club_id, &#x27;clubs&#x27; &quot;Source table&quot;
+FROM clubs;</code></pre></figure>
+</section>
+<section id="sec-3">
+<h2><span class="section-no">03&nbsp;</span>Casting to make it work</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT player_id::text, &#x27;players&#x27; &quot;Source table&quot;
+FROM players
+UNION
+SELECT club_id, &#x27;clubs&#x27; &quot;Source table&quot;
+FROM clubs;</code></pre></figure>
+</section>
+<section id="sec-4">
+<h2><span class="section-no">04&nbsp;</span>We can order by the first attribute selected</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT player_id::text, &#x27;players&#x27; &quot;Source table&quot;
+FROM players
+UNION
+SELECT club_id, &#x27;clubs&#x27; &quot;Source table&quot;
+FROM clubs ORDER BY player_id;</code></pre></figure>
+</section>
+<section id="sec-5">
+<h2><span class="section-no">05&nbsp;</span>Ordering by the second attribute fails once merged</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT player_id::text, &#x27;players&#x27; &quot;Source table&quot;
+FROM players
+UNION
+SELECT club_id, &#x27;clubs&#x27; &quot;Source table&quot;
+FROM clubs ORDER BY club_id;</code></pre></figure>
+</section>
+<section id="sec-6">
+<h2><span class="section-no">06&nbsp;</span>UNION ALL</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT jersey_number, &#x27;player_attributes&#x27; &quot;Source table&quot;
+FROM player_attributes
+UNION ALL
+SELECT jersey_number, &#x27;player_contracts&#x27; &quot;Source table&quot;
+FROM player_contracts ORDER BY 1;</code></pre></figure>
+</section>
+<section id="sec-7">
+<h2><span class="section-no">07&nbsp;</span>INTERSECT: Players that have data on attributes and have contracts</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT player_id
+FROM player_contracts 
+INTERSECT ALL
+SELECT player_id
+FROM player_attributes;</code></pre></figure>
+</section>
+<section id="sec-8">
+<h2><span class="section-no">08&nbsp;</span>EXCEPT: Players that have data on attributes but no contract</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT player_id
+FROM players
+EXCEPT
+SELECT player_id
+FROM player_contracts;</code></pre></figure>
+</section>
+<section id="sec-9">
+<h2><span class="section-no">09&nbsp;</span>We can confirm the number using count in a join</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT COUNT(*)
+FROM players
+LEFT JOIN player_contracts USING (player_id)
+WHERE player_contracts.player_id IS NULL;</code></pre></figure>
+</section>
+<section id="sec-10">
+<h2><span class="section-no">10&nbsp;</span>Explain Analyze to compare efficiency</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>--Casting to make it work
+EXPLAIN ANALYZE SELECT player_id::text, &#x27;players&#x27; &quot;Source table&quot;
+FROM players
+UNION
+SELECT club_id, &#x27;clubs&#x27; &quot;Source table&quot;
+FROM clubs;</code></pre></figure>
+</section>
+<section id="sec-11">
+<h2><span class="section-no">11&nbsp;</span>Explain statement</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>EXPLAIN ANALYZE SELECT player_id::text, club_id from players join player_contracts using (player_id)
+join clubs using (club_id);</code></pre></figure>
+</section>
+    </div>
+  </div>
+</div>
+<script src="../../assets/app.js"></script>
+</body></html>

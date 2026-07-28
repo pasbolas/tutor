@@ -1,4 +1,8 @@
 (() => {
+  const globalNavigation = document.createElement("script");
+  globalNavigation.src = "/scripts/global-navigation.js";
+  document.head.appendChild(globalNavigation);
+
   const themeToggles = Array.from(document.querySelectorAll(".theme-toggle"));
   const themeStorageKey = "hci-theme";
   const legacyStorageKeys = ["hci-q2-theme", "hci-q3-theme", "hci-q4-theme"];

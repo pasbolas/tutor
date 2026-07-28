@@ -1,3 +1,4 @@
+import "./global-navigation.js";
 import {
   initCursorToggle,
   initDashboardMobileHeaderScroll,

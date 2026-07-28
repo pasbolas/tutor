@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Conditional Expressions and Subqueries · The Databases Review</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<div class="progress-bar"></div>
+<div class="topbar-mini"><div class="wrap">
+  <a class="mini-logo" href="../../../../">The Databases Review</a>
+  <button class="back-btn" onclick="history.back()" aria-label="Go back">&#8592; Back</button>
+  <div class="crumbs"><a href="../../../../">Home</a><span class="sep">/</span><a href="index.html">Topic 10</a><span class="sep">/</span><span class="current">Conditional Expressions and Subqueries</span></div>
+  <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">&#9789;</button>
+</div></div>
+
+<div class="article-header wrap-narrow">
+  <span class="kicker">Lecture 8 &middot; Topic 10</span>
+  <h1>Conditional Expressions and Subqueries</h1>
+  <p class="dek">Branching logic with CASE, and nesting queries inside queries.</p>
+  <div class="byline"><span><b>CMPU2007</b> Databases 1</span><span>8 min read</span><span>23 sections</span></div>
+</div>
+<div class="wrap">
+  <div class="article-body">
+    <nav class="side-toc">
+      <div class="contents-title">Contents</div>
+      <a href="#sec-1" data-target="sec-1"><span class="toc-num">01</span><span class="toc-text">Conditional Expressions</span></a><a href="#sec-2" data-target="sec-2"><span class="toc-num">02</span><span class="toc-text">CASE expression</span></a><a href="#sec-3" data-target="sec-3"><span class="toc-num">03</span><span class="toc-text">Simple CASE</span></a><a href="#sec-4" data-target="sec-4"><span class="toc-num">04</span><span class="toc-text">Searched CASE</span></a><a href="#sec-5" data-target="sec-5"><span class="toc-num">05</span><span class="toc-text">CASE and WHERE</span></a><a href="#sec-6" data-target="sec-6"><span class="toc-num">06</span><span class="toc-text">CASE and Maths operations</span></a><a href="#sec-7" data-target="sec-7"><span class="toc-num">07</span><span class="toc-text">CASE and SQL functions</span></a><a href="#sec-8" data-target="sec-8"><span class="toc-num">08</span><span class="toc-text">CASE and LIKE</span></a><a href="#sec-9" data-target="sec-9"><span class="toc-num">09</span><span class="toc-text">CASE in ORDER BY</span></a><a href="#sec-10" data-target="sec-10"><span class="toc-num">10</span><span class="toc-text">Subquery in SQL</span></a><a href="#sec-11" data-target="sec-11"><span class="toc-num">11</span><span class="toc-text">Subquery in WHERE clause</span></a><a href="#sec-12" data-target="sec-12"><span class="toc-num">12</span><span class="toc-text">Single-row subqueries</span></a><a href="#sec-13" data-target="sec-13"><span class="toc-num">13</span><span class="toc-text">Combining single-row subqueries</span></a><a href="#sec-14" data-target="sec-14"><span class="toc-num">14</span><span class="toc-text">EXISTS</span></a><a href="#sec-15" data-target="sec-15"><span class="toc-num">15</span><span class="toc-text">Multiple-row subqueries</span></a><a href="#sec-16" data-target="sec-16"><span class="toc-num">16</span><span class="toc-text">IN Operator</span></a><a href="#sec-17" data-target="sec-17"><span class="toc-num">17</span><span class="toc-text">NOT IN Operator</span></a><a href="#sec-18" data-target="sec-18"><span class="toc-num">18</span><span class="toc-text">Using the ANY operator</span></a><a href="#sec-19" data-target="sec-19"><span class="toc-num">19</span><span class="toc-text">Using the ALL operator</span></a><a href="#sec-20" data-target="sec-20"><span class="toc-num">20</span><span class="toc-text">DELETE</span></a><a href="#sec-21" data-target="sec-21"><span class="toc-num">21</span><span class="toc-text">Truncate</span></a><a href="#sec-22" data-target="sec-22"><span class="toc-num">22</span><span class="toc-text">Update</span></a><a href="#sec-23" data-target="sec-23"><span class="toc-num">23</span><span class="toc-text">Update with subquery</span></a>
+    </nav>
+    <div class="prose">
+      <section id="sec-1">
+<h2><span class="section-no">01&nbsp;</span>Conditional Expressions</h2>
+<ul>
+<li>Provide the use of IF-THEN-ELSE logic within a SQL statement</li>
+</ul>
+</section>
+<section id="sec-2">
+<h2><span class="section-no">02&nbsp;</span>CASE expression</h2>
+<ul>
+<li>The CASE expression goes through a list of conditions, returning a value once a condition is met (like an if-then-else statement).</li>
+<li>If a true condition is met, the query stops reading the data and return the result.</li>
+<li>If no conditions are true, it returns the value in the ELSE clause.</li>
+<li>If there is no ELSE part and no conditions are true, it returns NULL.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Syntax</figcaption><pre><code>SELECT attribute,
+CASE
+  WHEN condition1 THEN result1
+  WHEN condition2 THEN result2
+  WHEN conditionN THEN resultN
+  ELSE result
+END
+FROM tablename;</code></pre></figure>
+<p>PostgreSQL lets you use CASE almost anywhere: in the SELECT list, in the WHERE clause, or in the ORDER BY clause.</p>
+</section>
+<section id="sec-3">
+<h2><span class="section-no">03&nbsp;</span>Simple CASE</h2>
+<ul>
+<li>A simple CASE compares one column to a fixed set of values.</li>
+<li>It’s often used to translate coded attributes (such as positions or rating levels) into clearer categories.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT
+  p.player_name,
+  pa.position,
+  CASE pa.position
+    WHEN 'GK' THEN 'Goalkeeper'
+    WHEN 'CB' THEN 'Defender'
+    WHEN 'RB' THEN 'Defender'
+    WHEN 'LB' THEN 'Defender'
+    WHEN 'CM' THEN 'Midfielder'
+    WHEN 'CDM' THEN 'Midfielder'
+    WHEN 'CAM' THEN 'Attacker'
+    WHEN 'LW' THEN 'Attacker'
+    WHEN 'RW' THEN 'Attacker'
+    WHEN 'ST' THEN 'Attacker'
+    ELSE 'Other / Utility'
+  END "Position category"
+FROM players p
+JOIN player_attributes pa USING (player_id)
+LIMIT 15;</code></pre></figure>
+</section>
+<section id="sec-4">
+<h2><span class="section-no">04&nbsp;</span>Searched CASE</h2>
+<ul>
+<li>A searched CASE is more flexible.</li>
+<li>It can use different conditions for each WHEN clause.</li>
+<li>It will evaluate a set of Boolean expressions (TRUE or FALSE) and return the result for the first TRUE condition</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT
+  pc.player_id,
+  p.player_name,
+  pc.wage,
+  CASE
+    WHEN pc.wage &gt;= 50000 THEN 'Tier 1: Elite'
+    WHEN pc.wage &gt;= 10000 THEN 'Tier 2: First Team'
+    WHEN pc.wage &gt;= 2000 THEN 'Tier 3: Rotation'
+    WHEN pc.wage IS NULL THEN 'No contract / unknown'
+    ELSE 'Tier 4: Youth / Low cost'
+  END "Salary band"
+FROM player_contracts pc
+JOIN players p USING (player_id);</code></pre></figure>
+</section>
+<section id="sec-5">
+<h2><span class="section-no">05&nbsp;</span>CASE and WHERE</h2>
+<ul>
+<li>The CASE statement in the WHERE clause is evaluated for each row, and it returns a value based on the conditions.</li>
+<li>The returned value can be used to apply different WHERE conditions based on the result.</li>
+</ul>
+<ul>
+<li>Suppose you want retrieve players following specific conditions about their wage.</li>
+<li>For big clubs (like Real Madrid or Chelsea), you only want players earning more than 50,000/week.</li>
+<li>For smaller clubs, you want players earning more than 5,000/week.</li>
+<li>You can write that conditional logic using CASE inside the WHERE clause.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT
+  p.player_name,
+  c.club_name,
+  pc.wage
+FROM players p
+JOIN player_contracts pc USING (player_id)
+JOIN clubs c USING (club_id)
+WHERE
+  pc.wage &gt;
+  CASE
+    WHEN c.club_name IN ('Real Madrid', 'Chelsea') THEN 50000
+    ELSE 5000
+  END
+ORDER BY c.club_name, pc.wage DESC;</code></pre></figure>
+</section>
+<section id="sec-6">
+<h2><span class="section-no">06&nbsp;</span>CASE and Maths operations</h2>
+<ul>
+<li>We can also use the CASE expression combined with mathematics operations to modify the value shown in the output.</li>
+<li>Suppose we want to simulate an updated wage budget for next season:</li>
+<ul>
+<li>Increase wages by 10% for players earning less than €10,000/week.</li>
+<li>Increase wages by 5% for players earning between €10,000 and €50,000/week.</li>
+<li>No increase for players above €50,000/week.</li>
+</ul>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT
+  p.player_name,
+  c.club_name,
+  pc.wage,
+  CASE
+    WHEN pc.wage &lt; 10000 THEN pc.wage * 1.10
+    WHEN pc.wage BETWEEN 10000 AND 50000 THEN pc.wage * 1.05
+    ELSE pc.wage
+  END "Projected wage"
+FROM players p
+JOIN player_contracts pc USING (player_id)
+JOIN clubs c USING (club_id)
+WHERE pc.wage IS NOT NULL
+ORDER BY c.club_name, pc.wage DESC;</code></pre></figure>
+</section>
+<section id="sec-7">
+<h2><span class="section-no">07&nbsp;</span>CASE and SQL functions</h2>
+<ul>
+<li>You’re preparing a financial report that groups clubs into “High Budget”, “Medium Budget”, or “Low Budget” tiers based on their average player wage.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT
+  c.club_name,
+  ROUND(AVG(pc.wage)) "Average wage",
+  CASE
+    WHEN AVG(pc.wage) &gt;= 40000 THEN 'High Budget Club'
+    WHEN AVG(pc.wage) BETWEEN 10000 AND 39999 THEN 'Medium Budget Club'
+    WHEN AVG(pc.wage) &lt; 10000 THEN 'Low Budget Club'
+    ELSE 'No Data'
+  END "Budget category"
+FROM clubs c
+JOIN player_contracts pc USING (club_id)
+WHERE pc.wage IS NOT NULL
+GROUP BY c.club_name
+ORDER BY AVG(pc.wage) DESC;</code></pre></figure>
+</section>
+<section id="sec-8">
+<h2><span class="section-no">08&nbsp;</span>CASE and LIKE</h2>
+<p>We can also build a CASE expression around string values by combining it with the LIKE operator:</p>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT
+  p.player_name,
+  CASE
+    WHEN p.player_name LIKE '%Junior%' THEN 'Brazilian-style name'
+    WHEN p.player_name LIKE '%inho' THEN 'Brazilian-style name'
+    ELSE 'Other pattern'
+  END AS name_pattern
+FROM players p
+ORDER BY 2 ASC;</code></pre></figure>
+</section>
+<section id="sec-9">
+<h2><span class="section-no">09&nbsp;</span>CASE in ORDER BY</h2>
+<ul>
+<li>Suppose we want to list all players, but sort them by their playing role priority instead of alphabetically. For instance:</li>
+<ul>
+<li>Attackers first</li>
+<li>Then Midfielders</li>
+<li>Then Defenders</li>
+<li>Finally Goalkeepers</li>
+</ul>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT
+  p.player_name,
+  pa.position,
+  pa.overall
+FROM players p
+JOIN player_attributes pa USING (player_id)
+ORDER BY
+  CASE
+    WHEN pa.position IN ('ST', 'LW', 'RW', 'CAM') THEN 1 -- Attackers
+    WHEN pa.position IN ('CM', 'CDM', 'LM', 'RM') THEN 2 -- Midfielders
+    WHEN pa.position IN ('CB', 'LB', 'RB', 'RWB', 'LWB') THEN 3 -- Defenders
+    WHEN pa.position = 'GK' THEN 4 -- Goalkeepers
+    ELSE 5 -- Unknown / other
+  END;</code></pre></figure>
+</section>
+<section id="sec-10">
+<h2><span class="section-no">10&nbsp;</span>Subquery in SQL</h2>
+<ul>
+<li>A subquery is a query nested inside a bigger query</li>
+<li>The subquery can be nested inside a SELECT, INSERT, UPDATE, or DELETE statement, or inside another subquery</li>
+</ul>
+</section>
+<section id="sec-11">
+<h2><span class="section-no">11&nbsp;</span>Subquery in WHERE clause</h2>
+<ul>
+<li>The subquery (inner query) executes once before the main query (outer query).</li>
+<li>The result of the subquery is then used by the main query.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Syntax</figcaption><pre><code>SELECT attribute_name FROM table_name WHERE condition (SELECT attribute FROM table_name WHERE condition);</code></pre></figure>
+</section>
+<section id="sec-12">
+<h2><span class="section-no">12&nbsp;</span>Single-row subqueries</h2>
+<ul>
+<li>Return only one row from the sub-query</li>
+<li>Use single-row comparison operators</li>
+</ul>
+<ul>
+<li>Suppose we want to know the players who are earning more than the average wage.</li>
+<li>We can use a subquery:</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT
+p.player_name,
+pc.wage
+FROM players p
+JOIN player_contracts pc USING (player_id)
+WHERE pc.wage &gt;
+(SELECT AVG(wage) FROM player_contracts);</code></pre></figure>
+</section>
+<section id="sec-13">
+<h2><span class="section-no">13&nbsp;</span>Combining single-row subqueries</h2>
+<ul>
+<li>We can also combine multiple single-row subqueries to write more complex conditions.</li>
+<li>Suppose we want to list all players who earn more than Chelsea’s top earner and are worth more than the average Real Madrid player.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT p.player_name, pc.wage
+FROM players p
+JOIN player_contracts pc USING (player_id)
+WHERE pc.wage &gt; (
+SELECT MAX(wage) FROM player_contracts WHERE club_id = &#x27;CL137&#x27; -- Chelsea
+) AND pc.value &gt; (
+SELECT AVG(value) FROM player_contracts WHERE club_id = &#x27;CL473&#x27; -- Real Madrid
+);</code></pre></figure>
+</section>
+<section id="sec-14">
+<h2><span class="section-no">14&nbsp;</span>EXISTS</h2>
+<ul>
+<li>The EXISTS keyword is typically used to check for the existence of rows in the subquery, and it returns true if the subquery returns one or more rows.</li>
+<li>SELECT 1 is a shorthand used in EXISTS subqueries to check for the existence of at least one row that satisfies the specified conditions in the subquery.</li>
+<li>For example, let’s list all clubs that currently have at least one player earning over 50k/week</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT c.club_id, c.club_name
+FROM clubs c
+WHERE EXISTS (
+SELECT 1
+FROM player_contracts pc
+WHERE pc.club_id = c.club_id
+AND pc.wage &gt;= 50000
+);</code></pre></figure>
+</section>
+<section id="sec-15">
+<h2><span class="section-no">15&nbsp;</span>Multiple-row subqueries</h2>
+<ul>
+<li>Return more than one row form the sub-query</li>
+<li>Use multiple-row comparison operators</li>
+</ul>
+</section>
+<section id="sec-16">
+<h2><span class="section-no">16&nbsp;</span>IN Operator</h2>
+<ul>
+<li>The IN operator is used to check if a value matches any value in a subquery.</li>
+<li>Let’s find players who are contracted to clubs that have at least one high-earning player (someone earning €50,000 or more).</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT
+p.player_name,
+c.club_name,
+pc.wage
+FROM players p
+JOIN player_contracts pc USING (player_id)
+JOIN clubs c USING (club_id)
+WHERE pc.club_id IN (
+SELECT DISTINCT club_id
+FROM player_contracts
+WHERE wage &gt;= 50000
+);</code></pre></figure>
+</section>
+<section id="sec-17">
+<h2><span class="section-no">17&nbsp;</span>NOT IN Operator</h2>
+<ul>
+<li>The NOT IN operator is used to check if a value does not match any value in a subquery.</li>
+<li>Suppose we want to know what players currently DO NOT have a contract.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT
+p.player_name
+FROM players p
+WHERE p.player_id NOT IN (
+SELECT player_id
+FROM player_contracts
+);</code></pre></figure>
+</section>
+<section id="sec-18">
+<h2><span class="section-no">18&nbsp;</span>Using the ANY operator</h2>
+<ul>
+<li>The ANY operator compares a value to each value returned by a subquery and returns a row if meets the condition for any of them.</li>
+<li>Suppose we want players whose wage is higher than any player at Chelsea (meaning higher than at least one Chelsea player).</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT
+p.player_name,
+pc.wage
+FROM players p
+JOIN player_contracts pc USING (player_id)
+WHERE pc.wage &gt; ANY (
+SELECT wage
+FROM player_contracts
+WHERE club_id = &#x27;CL137&#x27; -- Chelsea
+);</code></pre></figure>
+</section>
+<section id="sec-19">
+<h2><span class="section-no">19&nbsp;</span>Using the ALL operator</h2>
+<ul>
+<li>The ALL operator compares a value to every value returned by a subquery and returns a row only if it meets the condition for all of them</li>
+<li>Suppose we want to find players whose wage is higher than every player at Chelsea (so, higher than Chelsea’s top earner).</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT
+p.player_name,
+pc.wage
+FROM players p
+JOIN player_contracts pc USING (player_id)
+WHERE pc.wage &gt; ALL (
+SELECT wage
+FROM player_contracts
+WHERE club_id = &#x27;CL137&#x27; -- Chelsea
+);</code></pre></figure>
+</section>
+<section id="sec-20">
+<h2><span class="section-no">20&nbsp;</span>DELETE</h2>
+<ul>
+<li>Removes all rows which satisfy the condition</li>
+<li>Does not free the memory space</li>
+<li>It is slower than truncate since it operates in each row individually</li>
+<li>If no condition is given then ALL rows are deleted - BE CAREFUL</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>--DELETE
+DELETE FROM player_contracts
+WHERE contract_valid_until &lt; 2020;
+SELECT * FROM player_contracts WHERE contract_valid_until &lt; 2020;</code></pre></figure>
+</section>
+<section id="sec-21">
+<h2><span class="section-no">21&nbsp;</span>Truncate</h2>
+<ul>
+<li>Removes all of the table data without saving any rollback information</li>
+<li>It frees up the space</li>
+<li>Faster than delete because it deallocates the entire data at once</li>
+<li>It cannot be used with a condition</li>
+<li>Must disable foreign key constraints before truncating table</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>--TRUNCATE
+TRUNCATE TABLE player_attributes;</code></pre></figure>
+</section>
+<section id="sec-22">
+<h2><span class="section-no">22&nbsp;</span>Update</h2>
+<ul>
+<li>All rows where the condition is true have the columns set to the given values</li>
+<li>If no condition is given all rows are changed so BE CAREFUL</li>
+<li>Values are constants or can be computed from columns</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>--UPDATE
+UPDATE player_contracts
+SET wage = wage * 1.10
+WHERE wage &lt; 10000;</code></pre></figure>
+</section>
+<section id="sec-23">
+<h2><span class="section-no">23&nbsp;</span>Update with subquery</h2>
+<ul>
+<li>Let’s update all players who have NULL wages and set their wage to the average wage of all players.</li>
+</ul>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>UPDATE player_contracts
+SET wage = (
+SELECT ROUND(AVG(wage))
+FROM player_contracts
+WHERE wage IS NOT NULL
+)
+WHERE wage IS NULL;</code></pre></figure>
+</section>
+    </div>
+  </div>
+</div>
+<script src="../../assets/app.js"></script>
+</body></html>

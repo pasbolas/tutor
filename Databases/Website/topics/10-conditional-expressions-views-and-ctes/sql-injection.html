@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SQL Injection — Vulnerable vs Secure · The Databases Review</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<div class="progress-bar"></div>
+<div class="topbar-mini"><div class="wrap">
+  <a class="mini-logo" href="../../../../">The Databases Review</a>
+  <button class="back-btn" onclick="history.back()" aria-label="Go back">&#8592; Back</button>
+  <div class="crumbs"><a href="../../../../">Home</a><span class="sep">/</span><a href="index.html">Topic 10</a><span class="sep">/</span><span class="current">SQL Injection — Vulnerable vs Secure</span></div>
+  <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">&#9789;</button>
+</div></div>
+
+<div class="article-header wrap-narrow">
+  <span class="kicker">Reference &middot; Topic 10</span>
+  <h1>SQL Injection — Vulnerable vs Secure</h1>
+  <p class="dek">A side-by-side look at a SQL-injectable query and its parameterised fix.</p>
+  <div class="byline"><span><b>CMPU2007</b> Databases 1</span><span>1 min read</span><span>4 sections</span></div>
+</div>
+<div class="wrap">
+  <div class="article-body">
+    <nav class="side-toc">
+      <div class="contents-title">Contents</div>
+      <a href="#sec-1" data-target="sec-1"><span class="toc-num">01</span><span class="toc-text">CREATE TABLE users</span></a><a href="#sec-2" data-target="sec-2"><span class="toc-num">02</span><span class="toc-text">Insert data</span></a><a href="#sec-3" data-target="sec-3"><span class="toc-num">03</span><span class="toc-text">Vulnerable Method</span></a><a href="#sec-4" data-target="sec-4"><span class="toc-num">04</span><span class="toc-text">Secure Method</span></a>
+    </nav>
+    <div class="prose">
+      <section id="sec-1">
+<h2><span class="section-no">01&nbsp;</span>CREATE TABLE users</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>CREATE TABLE users (
+    user_id SERIAL PRIMARY KEY,
+    username TEXT NOT NULL,
+    password TEXT NOT NULL
+);</code></pre></figure>
+</section>
+<section id="sec-2">
+<h2><span class="section-no">02&nbsp;</span>Insert data</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>INSERT INTO users (username, password) VALUES
+(&#x27;admin&#x27;, &#x27;admin123&#x27;),
+(&#x27;MarySmith&#x27;, &#x27;dublin123&#x27;),
+(&#x27;JohnDoe&#x27;, &#x27;kildare456&#x27;);</code></pre></figure>
+</section>
+<section id="sec-3">
+<h2><span class="section-no">03&nbsp;</span>Vulnerable Method</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>DO $$
+DECLARE
+    user_input_username TEXT := &#x27;JohnDoe&#x27;;
+    user_input_password TEXT := &#x27;&#x27;&#x27; OR 1=1; --&#x27;;  -- Malicious input
+    query TEXT;
+    result INT;
+BEGIN
+    -- Vulnerable query with string concatenation
+    --query becomes: SELECT COUNT(*) FROM users WHERE username = &#x27;JohnDoe&#x27; AND password = &#x27;&#x27; OR 1=1; --&#x27;;
+    query := &#x27;SELECT * FROM users WHERE username = &#x27;&#x27;&#x27; || user_input_username || &#x27;&#x27;&#x27; AND password = &#x27;&#x27;&#x27; || user_input_password || &#x27;&#x27;&#x27;&#x27;;
+    EXECUTE query INTO result;
+    -- Output the result
+    IF result &gt; 0 THEN
+        RAISE NOTICE &#x27;Authentication successful!&#x27;;
+    ELSE
+        RAISE NOTICE &#x27;Authentication failed!&#x27;;
+    END IF;
+END;
+$$;</code></pre></figure>
+</section>
+<section id="sec-4">
+<h2><span class="section-no">04&nbsp;</span>Secure Method</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>DO $$
+DECLARE
+    user_input_username TEXT := &#x27;JohnDoe&#x27;;
+    user_input_password TEXT := &#x27;&#x27;&#x27; OR 1=1; --&#x27;;  -- Correct password
+    result INT;
+BEGIN
+    -- Secure query using placeholders and parameters
+    EXECUTE &#x27;SELECT * FROM users WHERE username = $1 AND password = $2&#x27;
+    INTO result
+    USING user_input_username, user_input_password;
+    -- Output the result
+    IF result &gt; 0 THEN
+        RAISE NOTICE &#x27;Authentication successful!&#x27;;
+    ELSE
+        RAISE NOTICE &#x27;Authentication failed!&#x27;;
+    END IF;
+END;
+$$;</code></pre></figure>
+</section>
+    </div>
+  </div>
+</div>
+<script src="../../assets/app.js"></script>
+</body></html>

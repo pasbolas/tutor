@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Character Functions · The Databases Review</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<div class="progress-bar"></div>
+<div class="topbar-mini"><div class="wrap">
+  <a class="mini-logo" href="../../../../">The Databases Review</a>
+  <button class="back-btn" onclick="history.back()" aria-label="Go back">&#8592; Back</button>
+  <div class="crumbs"><a href="../../../../">Home</a><span class="sep">/</span><a href="index.html">Topic 08</a><span class="sep">/</span><span class="current">Character Functions</span></div>
+  <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">&#9789;</button>
+</div></div>
+
+<div class="article-header wrap-narrow">
+  <span class="kicker">Lecture 5 &middot; Topic 08</span>
+  <h1>Character Functions</h1>
+  <p class="dek">Trimming, casing, concatenating and searching text with SQL&#x27;s string functions.</p>
+  <div class="byline"><span><b>CMPU2007</b> Databases 1</span><span>10 min read</span><span>8 sections</span></div>
+</div>
+<div class="wrap">
+  <div class="article-body">
+    <nav class="side-toc">
+      <div class="contents-title">Contents</div>
+      <a href="#sec-1" data-target="sec-1"><span class="toc-num">01</span><span class="toc-text">What are functions in SQL</span></a><a href="#sec-2" data-target="sec-2"><span class="toc-num">02</span><span class="toc-text">Case manipulation: upper( ) and lower( )</span></a><a href="#sec-3" data-target="sec-3"><span class="toc-num">03</span><span class="toc-text">Concatenation: || and concat( )</span></a><a href="#sec-4" data-target="sec-4"><span class="toc-num">04</span><span class="toc-text">substring( ), length( ) and position( )</span></a><a href="#sec-5" data-target="sec-5"><span class="toc-num">05</span><span class="toc-text">lpad( ) and rpad( )</span></a><a href="#sec-6" data-target="sec-6"><span class="toc-num">06</span><span class="toc-text">replace( ) and trim( )</span></a><a href="#sec-7" data-target="sec-7"><span class="toc-num">07</span><span class="toc-text">NULLs and concatenation</span></a><a href="#sec-8" data-target="sec-8"><span class="toc-num">08</span><span class="toc-text">Nesting functions</span></a>
+    </nav>
+    <div class="prose">
+
+<section id="sec-1">
+<h2><span class="section-no">01&nbsp;</span>What are functions in SQL</h2>
+<p>Functions are pre-built pieces of functionality you can run against your data quickly, without writing the logic yourself. They let you perform calculations, modify individual values, format dates and numbers for display, convert a column from one data type to another, or manipulate output across a group of rows.</p>
+<p>SQL functions sometimes take arguments, and always return a value. SQL comes with a long built-in list of them, and they fall into two broad categories:</p>
+<ul>
+<li><b>Single-row functions</b> &mdash; act on each row returned by the query, returning one result per row.</li>
+<li><b>Multiple-row (group) functions</b> &mdash; act on a whole set of rows, returning one result per group of rows. These are covered in a later lesson.</li>
+</ul>
+<p>This lesson is about single-row functions. Their features:</p>
+<ul>
+<li>They act on each row the query returns, and return one result per row.</li>
+<li>The value they return can be a different data type to the one they were given.</li>
+<li>They can take one or more arguments, and an argument can be a user-supplied constant, a column name, or an expression.</li>
+<li>They can be used in a SELECT, WHERE, or ORDER BY clause.</li>
+<li>They can be nested inside one another.</li>
+</ul>
+<p>Their general syntax:</p>
+<figure class="code-figure"><figcaption>SQL Syntax</figcaption><pre><code>function_name(arg1, arg2, ...)</code></pre></figure>
+<p>Single-row functions split further by the kind of data they work on: character, number, date, conversion, and general (NULL-handling) functions. This lesson covers character functions, split into two groups: case-manipulation functions and character-manipulation functions. We'll use the same research database for every example below.</p>
+</section>
+
+<section id="sec-2">
+<h2><span class="section-no">02&nbsp;</span>Case manipulation: upper( ) and lower( )</h2>
+<p>UPPER( ) and LOWER( ) convert a string to all-uppercase or all-lowercase.</p>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>-- Uppercase research titles for display
+SELECT title, UPPER(title) "Upper Title"
+FROM research;
+
+-- Lowercase venues for standardised export
+SELECT venue, LOWER(venue) "Lower Venue"
+FROM publication;</code></pre></figure>
+<p>They're just as useful inside a WHERE clause, for a case-insensitive search:</p>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>-- Case-insensitive search for a scientist by last name
+SELECT firstname, lastname
+FROM scientist
+WHERE LOWER(lastname) = 'murphy';</code></pre></figure>
+</section>
+
+<section id="sec-3">
+<h2><span class="section-no">03&nbsp;</span>Concatenation: || and concat( )</h2>
+<p>You can join strings together with the || operator, or with the CONCAT( ) function. CONCAT( ) tends to be the tidier choice once you have several arguments to join.</p>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT CONCAT(TRIM(firstname), ' ', TRIM(lastname), ' (', TRIM(uniname), ')') "Scientist affiliation"
+FROM scientist
+JOIN university USING (uni_id);</code></pre></figure>
+</section>
+
+<section id="sec-4">
+<h2><span class="section-no">04&nbsp;</span>substring( ), length( ) and position( )</h2>
+<p>SUBSTRING( ) pulls out part of a string. Here we grab the first 10 characters of each university name, useful for spotting prefixes or near-duplicates:</p>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>-- First 10 chars of university names (spot prefixes & duplicates)
+SELECT uniname,
+  SUBSTRING(uniname FROM 1 FOR 10) "Uni prefix"
+FROM university;</code></pre></figure>
+<p>LENGTH( ) returns how many characters are in a string, handy for validation or for enforcing a constraint:</p>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>-- Research title length
+SELECT research_id, title, LENGTH(title) "Title length"
+FROM research
+ORDER BY LENGTH(title) DESC;</code></pre></figure>
+<p>POSITION( ) finds where a substring sits inside a bigger string, returning 0 if it isn't found at all:</p>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>-- Find titles mentioning 'AI' anywhere
+SELECT research_id, title,
+  POSITION('AI' IN UPPER(title)) "Position of AI"
+FROM research
+WHERE POSITION('AI' IN UPPER(title)) > 0;</code></pre></figure>
+</section>
+
+<section id="sec-5">
+<h2><span class="section-no">05&nbsp;</span>lpad( ) and rpad( )</h2>
+<p>LPAD and RPAD pad a string on the left or right with a chosen character, until it reaches a target length. They're mostly used to format data consistently, e.g. lining up codes to the same width.</p>
+<figure class="code-figure"><figcaption>SQL Syntax</figcaption><pre><code>LPAD(string, length, fill_string)
+RPAD(string, length, fill_string)</code></pre></figure>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>-- Zero-padded research codes (for reports)
+SELECT research_id, 'RS-' || LPAD(CAST(research_id AS VARCHAR), 5, '0') "Research code"
+FROM research
+ORDER BY 1;</code></pre></figure>
+</section>
+
+<section id="sec-6">
+<h2><span class="section-no">06&nbsp;</span>replace( ) and trim( )</h2>
+<p>REPLACE( ) swaps every occurrence of a substring for another string:</p>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>-- Normalise hyphenated last names to space-separated
+SELECT sci_id,
+  lastname "Last name",
+  REPLACE(lastname, '-', ' ') "Normalised lastname"
+FROM scientist
+WHERE lastname LIKE '%-%';</code></pre></figure>
+<p>TRIM( ) removes leading and trailing spaces from a string. It's the usual tool for cleaning up messy imported data:</p>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>-- Clean leading/trailing spaces from names
+SELECT firstname "Raw first name", LENGTH(firstname) "Raw size",
+  TRIM(firstname) "Trimmed first name", LENGTH(TRIM(firstname)) "Trimmed size"
+FROM scientist
+WHERE firstname LIKE ' %' OR firstname LIKE '% ';</code></pre></figure>
+<p>Combined with LIKE, these functions make case- and whitespace-insensitive matching straightforward:</p>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>-- Case-insensitive search for titles ending in "quantum study"
+SELECT *
+FROM research
+WHERE LOWER(title) LIKE '%quantum study';
+
+-- Case-sensitive equivalent (likely fewer or no matches, depending on the data)
+SELECT *
+FROM research
+WHERE title LIKE '%quantum study';</code></pre></figure>
+</section>
+
+<section id="sec-7">
+<h2><span class="section-no">07&nbsp;</span>NULLs and concatenation</h2>
+<p>Be careful with || and NULLs: if either side of a || is NULL, the whole result becomes NULL.</p>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT 'a' || NULL;          -- NULL
+SELECT concat('a', NULL);    -- 'a'</code></pre></figure>
+<p>CONCAT( ) instead just skips any NULL argument, keeping the rest. Since we usually want to keep whatever isn't NULL, CONCAT( ) is the safer default. There's also CONCAT_WS(separator, arg1, arg2, ...) &mdash; "ws" for "with separator" &mdash; which joins the arguments with a separator in between, still skipping NULLs:</p>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>SELECT concat_ws(', ', 'a', NULL, 'b'); -- 'a, b'</code></pre></figure>
+</section>
+
+<section id="sec-8">
+<h2><span class="section-no">08&nbsp;</span>Nesting functions</h2>
+<p>Single-row functions can be nested inside one another, to any depth. A nested call is evaluated from the innermost function outward: the deepest function runs first, and its result is fed into the next one out.</p>
+<figure class="code-figure"><figcaption>SQL Syntax</figcaption><pre><code>F3(F2(F1(col, arg1), arg2), arg3)
+-- Step 1: F1(col, arg1) runs first
+-- Step 2: its result feeds into F2( ..., arg2)
+-- Step 3: that result feeds into F3( ..., arg3)</code></pre></figure>
+<p>Here's a real example: strip whitespace from a last name, take its first 8 characters, tack on a country suffix, then uppercase the whole thing.</p>
+<figure class="code-figure"><figcaption>SQL Example</figcaption><pre><code>-- Nested functions: lastname stub + country suffix, uppercased
+SELECT lastname,
+  UPPER(CONCAT(SUBSTRING(REGEXP_REPLACE(lastname, '\s+', '', 'g') FROM 1 FOR 8), '_IRL')) "Tag"
+FROM scientist
+JOIN university USING (uni_id)
+WHERE university.country = 'Ireland'
+LIMIT 15;</code></pre></figure>
+</section>
+
+    </div>
+  </div>
+</div>
+<footer></footer>
+<script src="../../assets/app.js"></script>
+</body></html>

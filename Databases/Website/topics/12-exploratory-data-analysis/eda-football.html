@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EDA — Football Dataset · The Databases Review</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<div class="progress-bar"></div>
+<div class="topbar-mini"><div class="wrap">
+  <a class="mini-logo" href="../../../../">The Databases Review</a>
+  <button class="back-btn" onclick="history.back()" aria-label="Go back">&#8592; Back</button>
+  <div class="crumbs"><a href="../../../../">Home</a><span class="sep">/</span><a href="index.html">Topic 12</a><span class="sep">/</span><span class="current">EDA — Football Dataset</span></div>
+  <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">&#9789;</button>
+</div></div>
+
+<div class="article-header wrap-narrow">
+  <span class="kicker">Reference &middot; Topic 12</span>
+  <h1>EDA — Football Dataset</h1>
+  <p class="dek">Worked exploratory queries against the football database.</p>
+  <div class="byline"><span><b>CMPU2007</b> Databases 1</span><span>4 min read</span><span>26 sections</span></div>
+</div>
+<div class="wrap">
+  <div class="article-body">
+    <nav class="side-toc">
+      <div class="contents-title">Contents</div>
+      <a href="#sec-1" data-target="sec-1"><span class="toc-num">01</span><span class="toc-text">Step 1: Understand the structure</span></a><a href="#sec-2" data-target="sec-2"><span class="toc-num">02</span><span class="toc-text">1.2 Identify columns, data types, nullability (repeat the block for any table)</span></a><a href="#sec-3" data-target="sec-3"><span class="toc-num">03</span><span class="toc-text">SELECT from information_schema.columns</span></a><a href="#sec-4" data-target="sec-4"><span class="toc-num">04</span><span class="toc-text">SELECT from information_schema.columns</span></a><a href="#sec-5" data-target="sec-5"><span class="toc-num">05</span><span class="toc-text">SELECT from information_schema.columns</span></a><a href="#sec-6" data-target="sec-6"><span class="toc-num">06</span><span class="toc-text">1.3 Identify constraints for all tables</span></a><a href="#sec-7" data-target="sec-7"><span class="toc-num">07</span><span class="toc-text">2.1 Cross-table coverage</span></a><a href="#sec-8" data-target="sec-8"><span class="toc-num">08</span><span class="toc-text">Data preview</span></a><a href="#sec-9" data-target="sec-9"><span class="toc-num">09</span><span class="toc-text">2.3 Show distinct values of a column</span></a><a href="#sec-10" data-target="sec-10"><span class="toc-num">10</span><span class="toc-text">Random sample of 5 rows</span></a><a href="#sec-11" data-target="sec-11"><span class="toc-num">11</span><span class="toc-text">Preview top players by rating</span></a><a href="#sec-12" data-target="sec-12"><span class="toc-num">12</span><span class="toc-text">2.4 Contract date &amp; expiry coverage</span></a><a href="#sec-13" data-target="sec-13"><span class="toc-num">13</span><span class="toc-text">2.5 Clubs with most contracts</span></a><a href="#sec-14" data-target="sec-14"><span class="toc-num">14</span><span class="toc-text">Step 3: Data quality checks</span></a><a href="#sec-15" data-target="sec-15"><span class="toc-num">15</span><span class="toc-text">SELECT from player_attributes</span></a><a href="#sec-16" data-target="sec-16"><span class="toc-num">16</span><span class="toc-text">3.2 Duplicates</span></a><a href="#sec-17" data-target="sec-17"><span class="toc-num">17</span><span class="toc-text">Multiple contract rows per player (may be legit historically; still inspect)</span></a><a href="#sec-18" data-target="sec-18"><span class="toc-num">18</span><span class="toc-text">3.3 Orphaned references (should be zero if FKs are enforced)</span></a><a href="#sec-19" data-target="sec-19"><span class="toc-num">19</span><span class="toc-text">Step 4: Descriptive statistics</span></a><a href="#sec-20" data-target="sec-20"><span class="toc-num">20</span><span class="toc-text">4.2 Descriptive statistics in a context</span></a><a href="#sec-21" data-target="sec-21"><span class="toc-num">21</span><span class="toc-text">SELECT from players</span></a><a href="#sec-22" data-target="sec-22"><span class="toc-num">22</span><span class="toc-text">5.2 Club spend vs average rating</span></a><a href="#sec-23" data-target="sec-23"><span class="toc-num">23</span><span class="toc-text">5.4 Attributes but no contract</span></a><a href="#sec-24" data-target="sec-24"><span class="toc-num">24</span><span class="toc-text">Step 6: Anomalies and outliers</span></a><a href="#sec-25" data-target="sec-25"><span class="toc-num">25</span><span class="toc-text">6.2 Unrealistic values</span></a><a href="#sec-26" data-target="sec-26"><span class="toc-num">26</span><span class="toc-text">6.3 Outliers - wage</span></a>
+    </nav>
+    <div class="prose">
+      <section id="sec-1">
+<h2><span class="section-no">01&nbsp;</span>Step 1: Understand the structure</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>-- 1.1 List all base tables in the schema
+SELECT table_name
+FROM information_schema.tables
+WHERE table_schema = &#x27;football&#x27;
+  AND table_type = &#x27;BASE TABLE&#x27;
+ORDER BY table_name;</code></pre></figure>
+</section>
+<section id="sec-2">
+<h2><span class="section-no">02&nbsp;</span>1.2 Identify columns, data types, nullability (repeat the block for any table)</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT table_name, column_name, data_type, is_nullable
+FROM information_schema.columns
+WHERE table_schema = &#x27;football&#x27; AND table_name = &#x27;clubs&#x27;
+ORDER BY ordinal_position;</code></pre></figure>
+</section>
+<section id="sec-3">
+<h2><span class="section-no">03&nbsp;</span>SELECT from information_schema.columns</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT table_name, column_name, data_type, is_nullable
+FROM information_schema.columns
+WHERE table_schema = &#x27;football&#x27; AND table_name = &#x27;clubs&#x27;
+ORDER BY ordinal_position;</code></pre></figure>
+</section>
+<section id="sec-4">
+<h2><span class="section-no">04&nbsp;</span>SELECT from information_schema.columns</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT table_name, column_name, data_type, is_nullable
+FROM information_schema.columns
+WHERE table_schema = &#x27;football&#x27; AND table_name = &#x27;player_attributes&#x27;
+ORDER BY ordinal_position;</code></pre></figure>
+</section>
+<section id="sec-5">
+<h2><span class="section-no">05&nbsp;</span>SELECT from information_schema.columns</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT table_name, column_name, data_type, is_nullable
+FROM information_schema.columns
+WHERE table_schema = &#x27;football&#x27; AND table_name = &#x27;player_contracts&#x27;
+ORDER BY ordinal_position;</code></pre></figure>
+</section>
+<section id="sec-6">
+<h2><span class="section-no">06&nbsp;</span>1.3 Identify constraints for all tables</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT table_name, constraint_name, constraint_type FROM information_schema.table_constraints WHERE table_schema = &#x27;football&#x27;;</code></pre></figure>
+</section>
+<section id="sec-7">
+<h2><span class="section-no">07&nbsp;</span>2.1 Cross-table coverage</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT
+  (SELECT COUNT(player_id) FROM players) &quot;Total number of players&quot;,
+  (SELECT COUNT(club_id) FROM clubs) &quot;Number of clubs&quot;,
+  (SELECT COUNT(DISTINCT player_id) FROM player_attributes) &quot;Number of players with attributes&quot;,
+  (SELECT COUNT(DISTINCT player_id) FROM player_contracts)  &quot;Number of players with contracts&quot;;</code></pre></figure>
+</section>
+<section id="sec-8">
+<h2><span class="section-no">08&nbsp;</span>Data preview</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>-- 2.2 Show the first 10 rows of a table
+SELECT * FROM players LIMIT 10;</code></pre></figure>
+</section>
+<section id="sec-9">
+<h2><span class="section-no">09&nbsp;</span>2.3 Show distinct values of a column</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT DISTINCT nationality
+FROM players;</code></pre></figure>
+</section>
+<section id="sec-10">
+<h2><span class="section-no">10&nbsp;</span>Random sample of 5 rows</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT * FROM players ORDER BY RANDOM() LIMIT 5;</code></pre></figure>
+</section>
+<section id="sec-11">
+<h2><span class="section-no">11&nbsp;</span>Preview top players by rating</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT player_id, overall
+FROM player_attributes
+ORDER BY overall DESC
+LIMIT 10;</code></pre></figure>
+</section>
+<section id="sec-12">
+<h2><span class="section-no">12&nbsp;</span>2.4 Contract date &amp; expiry coverage</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT
+  MIN(joined) &quot;First contract date&quot;,
+  MAX(joined) &quot;Last contract date&quot;,
+  MIN(contract_valid_until) &quot;Minimum expiry year&quot;,
+  MAX(contract_valid_until)  &quot;Maximum expiry year&quot;
+FROM player_contracts;</code></pre></figure>
+</section>
+<section id="sec-13">
+<h2><span class="section-no">13&nbsp;</span>2.5 Clubs with most contracts</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT club_name, COUNT(*) &quot;Number of contracts&quot;
+FROM player_contracts
+JOIN clubs USING (club_id)
+GROUP BY club_name
+ORDER BY 2 DESC
+LIMIT 10;</code></pre></figure>
+</section>
+<section id="sec-14">
+<h2><span class="section-no">14&nbsp;</span>Step 3: Data quality checks</h2>
+<p>3.1 Null profiling</p>
+</section>
+<section id="sec-15">
+<h2><span class="section-no">15&nbsp;</span>SELECT from player_attributes</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT
+  COUNT(*) &quot;Total number of rows&quot;,
+  COUNT(*) FILTER (WHERE heading_accuracy IS NULL) &quot;Number of rows where heading accuracy is NULL&quot;,
+  COUNT(*) FILTER (WHERE weight IS NULL)  &quot;Number of rows where weight is NULL&quot;,
+    COUNT(*) FILTER (WHERE overall IS NULL)  &quot;Number of rows where overall is NULL&quot;
+FROM player_attributes;</code></pre></figure>
+</section>
+<section id="sec-16">
+<h2><span class="section-no">16&nbsp;</span>3.2 Duplicates</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>-- Multiple attribute rows for the same player (unexpected in this design)
+SELECT player_id, COUNT(*) &quot;Rows per player&quot;
+FROM player_attributes
+GROUP BY player_id
+HAVING COUNT(*) &gt; 1
+ORDER BY 2 DESC;</code></pre></figure>
+</section>
+<section id="sec-17">
+<h2><span class="section-no">17&nbsp;</span>Multiple contract rows per player (may be legit historically; still inspect)</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT player_id, COUNT(*) &quot;Number of contracts&quot;
+FROM player_contracts
+GROUP BY player_id
+HAVING COUNT(*) &gt; 1
+ORDER BY 2 DESC;</code></pre></figure>
+</section>
+<section id="sec-18">
+<h2><span class="section-no">18&nbsp;</span>3.3 Orphaned references (should be zero if FKs are enforced)</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>-- Players with contracts pointing to non-existent clubs
+SELECT pc.player_contract_id,
+       pc.player_id,
+       pc.club_id,
+       pc.joined,
+       pc.contract_valid_until
+FROM player_contracts pc
+LEFT JOIN clubs c
+  USING (club_id)
+WHERE c.club_id IS NULL;</code></pre></figure>
+</section>
+<section id="sec-19">
+<h2><span class="section-no">19&nbsp;</span>Step 4: Descriptive statistics</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>-- 4.1 Summaries
+-- Basic descriptive statistics for age
+SELECT
+  COUNT(*) &quot;Total players&quot;,
+  COUNT(age) &quot;Total players with age value&quot;,
+  MIN(age) &quot;Minimum value for age&quot;,
+  MAX(age) &quot;Maximum value for age&quot;,
+  AVG(age) &quot;Average value for age&quot;
+FROM players;</code></pre></figure>
+</section>
+<section id="sec-20">
+<h2><span class="section-no">20&nbsp;</span>4.2 Descriptive statistics in a context</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT nationality &quot;Nationality&quot;,
+       COUNT(*) &quot;Number of players&quot;,
+       ROUND(AVG(age), 0) &quot;Average age&quot;
+FROM players
+GROUP BY nationality
+ORDER BY 2 DESC;</code></pre></figure>
+</section>
+<section id="sec-21">
+<h2><span class="section-no">21&nbsp;</span>SELECT from players</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT
+  player_name,
+  overall,
+  potential,
+  wage,
+  club_name
+FROM players
+JOIN player_attributes USING (player_id)
+JOIN player_contracts USING (player_id)
+JOIN clubs USING (club_id) order by wage desc;</code></pre></figure>
+</section>
+<section id="sec-22">
+<h2><span class="section-no">22&nbsp;</span>5.2 Club spend vs average rating</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT club_name &quot;Club&quot;,
+       COUNT(*) &quot;Number of players&quot;,
+       SUM(wage) &quot;Spent on wage&quot;,
+       ROUND(AVG(overall)) &quot;Overall rate&quot;
+FROM player_contracts
+JOIN clubs USING (club_id)
+LEFT JOIN player_attributes USING (player_id)
+GROUP BY club_name
+ORDER BY 3 DESC NULLS LAST;</code></pre></figure>
+</section>
+<section id="sec-23">
+<h2><span class="section-no">23&nbsp;</span>5.4 Attributes but no contract</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT p.player_id, p.player_name, pc.player_contract_id
+FROM players p
+JOIN player_attributes pa USING (player_id)
+LEFT JOIN player_contracts pc USING (player_id)
+WHERE pc.player_id IS NULL
+ORDER BY p.player_name;</code></pre></figure>
+</section>
+<section id="sec-24">
+<h2><span class="section-no">24&nbsp;</span>Step 6: Anomalies and outliers</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>--6.1 Contract ends before start date
+SELECT player_id, joined, contract_valid_until
+FROM player_contracts
+WHERE contract_valid_until IS NOT NULL
+  AND joined IS NOT NULL
+  --joined is a date data type, we need to extract the year
+  AND EXTRACT(YEAR FROM joined) &gt; contract_valid_until;</code></pre></figure>
+</section>
+<section id="sec-25">
+<h2><span class="section-no">25&nbsp;</span>6.2 Unrealistic values</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT player_id, player_name, age
+FROM players
+WHERE age &lt; 14 OR age &gt; 50;</code></pre></figure>
+</section>
+<section id="sec-26">
+<h2><span class="section-no">26&nbsp;</span>6.3 Outliers - wage</h2>
+<figure class="code-figure"><figcaption>SQL</figcaption><pre><code>SELECT
+distinct p.player_id,
+  p.player_name,
+  c.club_name,
+  pc.wage,
+  pa.overall,
+  --we use a subquery because avg() expects a group by at the end
+  ROUND(pc.wage / (SELECT AVG(wage) FROM player_contracts WHERE wage IS NOT NULL), 2) &quot;Times above the average&quot;
+FROM player_contracts pc
+JOIN players p USING (player_id)
+LEFT JOIN player_attributes pa USING (player_id)
+LEFT JOIN clubs c USING (club_id)
+WHERE pc.wage IS NOT NULL
+ORDER BY pc.wage DESC LIMIT 10;</code></pre></figure>
+</section>
+    </div>
+  </div>
+</div>
+<script src="../../assets/app.js"></script>
+</body></html>
