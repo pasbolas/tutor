@@ -1,8 +1,4 @@
 (function(){
-  var globalNavigation = document.createElement('script');
-  globalNavigation.src = '/scripts/global-navigation.js';
-  document.head.appendChild(globalNavigation);
-
   var root = document.documentElement;
   var saved = localStorage.getItem('db-theme');
   if(saved) root.setAttribute('data-theme', saved);
