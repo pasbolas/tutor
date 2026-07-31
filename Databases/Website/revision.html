@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Databases 1: Revision, Functions & Subqueries</title>
+<style>
+  :root{
+    --bg:#ffffff;
+    --ink:#202124;
+    --muted:#5f6368;
+    --line:#e3e6ec;
+    --a-accent:#5b5bd6;
+    --a-accent-soft:#eeeeff;
+    --a-tint:#f7f7fe;
+    --b-accent:#0f9d8f;
+    --b-accent-soft:#e4f7f4;
+    --b-tint:#f5fdfc;
+    --c-accent:#d97706;
+    --c-accent-soft:#fef3e2;
+    --c-tint:#fffaf2;
+    --d-accent:#7c3aed;
+    --d-accent-soft:#f2ebfe;
+    --d-tint:#faf8ff;
+    --code-bg:#f6f7f9;
+    --code-border:#e2e4e8;
+    --key-color:#c2410c;
+    --serif:ui-serif, 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, 'Times New Roman', serif;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(circle at 10% 0%, #2c2f6b 0%, transparent 55%),
+      radial-gradient(circle at 90% 0%, #0f5a52 0%, transparent 55%),
+      linear-gradient(180deg, #14162a 0%, #1b1d33 100%);
+    font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color:var(--ink);
+    line-height:1.5;
+  }
+  .layout{
+    max-width:1180px;
+    margin:36px auto;
+    padding:0 24px;
+    display:flex;
+    align-items:flex-start;
+    gap:24px;
+  }
+  .toc{
+    width:250px;
+    flex-shrink:0;
+    position:sticky;
+    top:24px;
+    max-height:calc(100vh - 48px);
+    overflow-y:auto;
+    background:transparent;
+    border-radius:16px;
+    padding:20px 14px 20px 4px;
+    font-size:13px;
+    scrollbar-width:thin;
+    scrollbar-color:rgba(255,255,255,.22) transparent;
+  }
+  .toc::-webkit-scrollbar{ width:6px; }
+  .toc::-webkit-scrollbar-track{ background:transparent; }
+  .toc::-webkit-scrollbar-thumb{ background:rgba(255,255,255,.18); border-radius:10px; }
+  .toc::-webkit-scrollbar-thumb:hover{ background:rgba(255,255,255,.32); }
+  .toc-page-title{
+    font-size:12px;
+    font-weight:700;
+    color:rgba(255,255,255,.4);
+    text-transform:uppercase;
+    letter-spacing:.6px;
+    margin-bottom:14px;
+  }
+  .toc-heading{
+    font-size:12.5px;
+    font-weight:700;
+    color:rgba(255,255,255,.85);
+    margin:20px 0 10px;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+  }
+  .toc-heading:first-of-type{ margin-top:0; }
+  .toc-sub{
+    margin-bottom:14px;
+    padding-left:12px;
+    border-left:2px solid rgba(255,255,255,.14);
+  }
+  .toc-sub-label{
+    font-size:11px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.3px;
+    margin-bottom:5px;
+    opacity:.95;
+  }
+  .toc-sub.toc-single{ border-left-color:var(--a-accent); }
+  .toc-sub.toc-single .toc-sub-label{ color:#a5a5ee; }
+  .toc-sub.toc-agg{ border-left-color:var(--c-accent); }
+  .toc-sub.toc-agg .toc-sub-label{ color:#f0b869; }
+  .toc-sub.toc-sub-basic{ border-left-color:var(--b-accent); }
+  .toc-sub.toc-sub-basic .toc-sub-label{ color:#5fd6c7; }
+  .toc-sub.toc-sub-advanced{ border-left-color:var(--d-accent); }
+  .toc-sub.toc-sub-advanced .toc-sub-label{ color:#b794f6; }
+  .toc a{
+    display:block;
+    padding:5px 8px;
+    margin:1px 0;
+    border-radius:6px;
+    color:rgba(255,255,255,.55);
+    text-decoration:none;
+    font-size:12.5px;
+    line-height:1.4;
+    transition:background .12s, color .12s;
+  }
+  .toc a:hover{ background:rgba(255,255,255,.08); color:#fff; }
+  .toc a.active{
+    background:rgba(165,165,238,.18);
+    color:#c7c7f5;
+    font-weight:600;
+  }
+  .toc-sub.toc-agg a.active{ background:rgba(240,184,105,.18); color:#f0b869; }
+  .toc-sub.toc-sub-basic a.active{ background:rgba(95,214,199,.18); color:#5fd6c7; }
+  .toc-sub.toc-sub-advanced a.active{ background:rgba(183,148,246,.18); color:#b794f6; }
+
+  .toc-close{
+    display:none;
+    position:absolute;
+    top:14px;
+    right:14px;
+    width:30px;
+    height:30px;
+    border:none;
+    border-radius:8px;
+    background:rgba(255,255,255,.12);
+    color:#fff;
+    font-size:16px;
+    line-height:1;
+    cursor:pointer;
+    align-items:center;
+    justify-content:center;
+  }
+  .menu-toggle{
+    display:none;
+    position:fixed;
+    top:18px;
+    left:18px;
+    z-index:1100;
+    width:44px;
+    height:44px;
+    border:none;
+    border-radius:12px;
+    background:var(--bg);
+    box-shadow:0 8px 24px rgba(0,0,0,.35);
+    cursor:pointer;
+    align-items:center;
+    justify-content:center;
+    padding:0;
+  }
+  .menu-toggle span, .menu-toggle span::before, .menu-toggle span::after{
+    content:"";
+    display:block;
+    width:20px;
+    height:2px;
+    background:var(--ink);
+    border-radius:2px;
+    position:relative;
+    transition:transform .15s;
+  }
+  .menu-toggle span::before{ position:absolute; top:-6px; }
+  .menu-toggle span::after{ position:absolute; top:6px; }
+
+  .toc-overlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(10,10,20,.55);
+    z-index:999;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .2s ease;
+  }
+
+  .sheet{
+    flex:1;
+    min-width:0;
+    background:var(--bg);
+    padding:48px 52px 68px;
+    border-radius:18px;
+    box-shadow:0 20px 60px rgba(0,0,0,.45);
+  }
+
+  @media (max-width:860px){
+    .layout{ padding:0 14px; margin:14px auto 32px; display:block; }
+    .menu-toggle{ display:flex; }
+    .toc{
+      position:fixed;
+      top:0;
+      left:0;
+      height:100vh;
+      max-height:100vh;
+      width:min(84vw, 300px);
+      border-radius:0 18px 18px 0;
+      border-right:1px solid rgba(255,255,255,.1);
+      backdrop-filter:blur(18px);
+      -webkit-backdrop-filter:blur(18px);
+      transform:translateX(-100%);
+      transition:transform .25s ease;
+      z-index:1000;
+      padding-top:56px;
+    }
+    body.toc-open .toc{ transform:translateX(0); }
+    body.toc-open .toc-overlay{ opacity:1; pointer-events:auto; }
+    .toc-overlay{ display:block; }
+    .toc-close{ display:flex; }
+    .sheet{ padding:76px 20px 48px; border-radius:14px; }
+    .page-header h1{ font-size:23px; }
+    .compare{ grid-template-columns:1fr; }
+    .toolbar{ flex-wrap:wrap; }
+    #search{ min-width:0; }
+    .q{ padding:16px 16px; }
+    .group-box{ padding:16px 16px 4px; }
+  }
+  @media (max-width:480px){
+    .sheet{ padding:70px 14px 40px; }
+    .intro{ padding:16px 16px; }
+  }
+
+  .group-box{
+    border-radius:16px;
+    padding:22px 22px 6px;
+    margin:20px 0 28px;
+    border:1px solid var(--line);
+  }
+  .group-box .q{ background:#fff; }
+  .group-label{
+    display:inline-block;
+    font-size:12px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+    padding:4px 10px;
+    border-radius:999px;
+    margin-bottom:16px;
+  }
+  .group-single{ background:var(--a-tint); border-color:var(--a-accent-soft); }
+  .group-single .group-label{ background:var(--a-accent); color:#fff; }
+  .group-single .term{ border-left-color:var(--a-accent); }
+  .group-agg{ background:var(--c-tint); border-color:var(--c-accent-soft); }
+  .group-agg .group-label{ background:var(--c-accent); color:#fff; }
+  .group-agg .term{ border-left-color:var(--c-accent); }
+  .group-sub-basic{ background:var(--b-tint); border-color:var(--b-accent-soft); }
+  .group-sub-basic .group-label{ background:var(--b-accent); color:#fff; }
+  .group-sub-basic .term{ border-left-color:var(--b-accent); }
+  .group-sub-advanced{ background:var(--d-tint); border-color:var(--d-accent-soft); }
+  .group-sub-advanced .group-label{ background:var(--d-accent); color:#fff; }
+  .group-sub-advanced .term{ border-left-color:var(--d-accent); }
+  .page-header{
+    margin-bottom:26px;
+  }
+  .page-header h1{
+    font-family:var(--serif);
+    font-size:32px;
+    margin:0;
+    font-weight:700;
+    letter-spacing:-.3px;
+    color:var(--a-accent);
+    background:linear-gradient(90deg, var(--a-accent), var(--b-accent) 60%, var(--c-accent));
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+    display:inline-block;
+  }
+
+  .toolbar{
+    display:flex;
+    gap:10px;
+    align-items:center;
+    margin-bottom:32px;
+    font-size:13px;
+  }
+  #search{
+    flex:1;
+    padding:11px 14px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    background:#f8f9fb;
+    font-size:14px;
+    font-family:inherit;
+    transition:border-color .15s, background .15s;
+  }
+  #search:focus{outline:none; border-color:var(--a-accent); background:#fff;}
+  #printBtn, #expandBtn{
+    padding:10px 16px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    background:#fff;
+    color:var(--ink);
+    cursor:pointer;
+    font-size:13px;
+    font-weight:600;
+    font-family:inherit;
+    transition:all .15s;
+  }
+  #printBtn:hover, #expandBtn:hover{border-color:var(--a-accent); color:var(--a-accent); box-shadow:0 2px 8px rgba(91,91,214,.15);}
+
+  .intro{
+    border:1px solid var(--c-accent-soft);
+    background:var(--c-tint);
+    border-radius:14px;
+    padding:22px 26px;
+    margin-bottom:8px;
+  }
+  .intro h2{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-family:var(--serif);
+    font-size:20px;
+    font-weight:700;
+    margin:0 0 12px;
+    color:var(--ink);
+  }
+  .intro .section-badge{ background:linear-gradient(135deg, var(--c-accent), #f3b45c); }
+  .intro p{margin:8px 0; font-size:15px; line-height:1.7;}
+  .compare{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+    margin-top:14px;
+  }
+  .compare-card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:14px 16px;
+  }
+  .compare-card h3{
+    font-family:var(--serif);
+    margin:0 0 8px;
+    font-size:16px;
+    font-weight:700;
+  }
+  .compare-card.func h3{color:var(--a-accent);}
+  .compare-card.sub h3{color:var(--b-accent);}
+  .compare-card ul{margin:0; padding-left:20px;}
+  .compare-card li{font-size:14px; margin:5px 0; line-height:1.55;}
+  @media (max-width:600px){ .compare{grid-template-columns:1fr;} }
+
+  .demo-box{
+    border:1px solid var(--line);
+    background:#fbfbfd;
+    border-radius:14px;
+    padding:22px 26px;
+    margin:20px 0 8px;
+  }
+  .demo-box h2{
+    font-family:var(--serif);
+    font-size:18px;
+    font-weight:700;
+    margin:0 0 8px;
+    color:var(--ink);
+  }
+  .demo-box p{
+    font-size:14.5px;
+    line-height:1.65;
+    color:var(--muted);
+    margin:0 0 14px;
+  }
+  .demo-pre{
+    background:#1e2130;
+    color:#e4e7f0;
+    border-radius:10px;
+    padding:16px 18px;
+    overflow-x:auto;
+    font-family:'SF Mono','Courier New',monospace;
+    font-size:13px;
+    line-height:1.7;
+    margin:0 0 16px;
+    white-space:pre;
+  }
+  .hl-func, .hl-sub{
+    text-decoration-line:underline;
+    text-decoration-thickness:2px;
+    text-underline-offset:4px;
+    border-radius:2px;
+  }
+  .hl-func{ text-decoration-color:#8b8bf0; }
+  .hl-sub{ text-decoration-color:#4fd1c1; }
+  .demo-legend{
+    display:flex;
+    flex-wrap:wrap;
+    gap:18px;
+    font-size:13px;
+    color:var(--muted);
+  }
+  .legend-item{ display:flex; align-items:center; gap:8px; }
+  .legend-swatch{
+    display:inline-block;
+    width:22px;
+    height:3px;
+    border-radius:2px;
+  }
+  .legend-swatch.legend-func{ background:#8b8bf0; }
+  .legend-swatch.legend-sub{ background:#4fd1c1; }
+
+  .section{
+    margin-top:8px;
+  }
+  .section-title{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    font-family:var(--serif);
+    font-size:24px;
+    font-weight:700;
+    letter-spacing:-.2px;
+    margin-top:48px;
+    margin-bottom:8px;
+    color:var(--ink);
+  }
+  .section-badge{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:34px;
+    height:34px;
+    border-radius:10px;
+    font-size:15px;
+    font-weight:700;
+    color:#fff;
+    flex-shrink:0;
+  }
+  .section-a .section-badge{ background:linear-gradient(135deg, var(--a-accent), #8b8bf0); }
+  .section-b .section-badge{ background:linear-gradient(135deg, var(--b-accent), #4fd1c1); }
+  .section-a .section-title{ border-bottom:2px solid var(--a-accent-soft); padding-bottom:14px; }
+  .section-b .section-title{ border-bottom:2px solid var(--b-accent-soft); padding-bottom:14px; }
+  .section-note{
+    font-size:15px;
+    color:var(--muted);
+    margin-bottom:22px;
+    line-height:1.7;
+  }
+
+  .q{
+    margin-bottom:18px;
+    padding:20px 24px;
+    border-radius:14px;
+    border:1px solid var(--line);
+    background:#fff;
+    transition:box-shadow .15s, border-color .15s;
+  }
+  .section-a .q{ background:var(--a-tint); }
+  .section-b .q{ background:var(--b-tint); }
+  .q:hover{ box-shadow:0 6px 20px rgba(20,20,40,.08); }
+
+  .q-num{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-width:32px;
+    height:23px;
+    padding:0 6px;
+    border-radius:6px;
+    font-weight:700;
+    font-size:12px;
+    margin-right:8px;
+    color:#fff;
+  }
+  .section-a .q-num{ background:var(--a-accent); }
+  .section-b .q-num{ background:var(--b-accent); }
+  .q-title{
+    font-family:var(--serif);
+    font-size:18px;
+    font-weight:700;
+    display:inline;
+    vertical-align:middle;
+  }
+  .q-body{margin-top:13px;}
+  .q-body p{margin:9px 0; line-height:1.7; font-size:15px;}
+  .q-body ul{margin:8px 0 10px; padding-left:22px;}
+  .q-body li{margin:5px 0; line-height:1.65; font-size:15px;}
+  .keyword{
+    font-family:'SF Mono','Courier New',monospace;
+    background:var(--code-bg);
+    padding:1px 6px;
+    border-radius:4px;
+    font-size:13px;
+    color:var(--key-color);
+    border:1px solid var(--code-border);
+  }
+  .term{
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:12px 16px;
+    margin:10px 0;
+    background:#fff;
+  }
+  .section-a .term{ border-left:4px solid var(--a-accent); }
+  .section-b .term{ border-left:4px solid var(--b-accent); }
+  .term-head{
+    font-family:'SF Mono','Courier New',monospace;
+    font-size:13.5px;
+    font-weight:700;
+    color:var(--key-color);
+    margin-bottom:4px;
+  }
+  .term-desc{
+    font-size:15px;
+    line-height:1.6;
+  }
+  pre{
+    background:#1e2130;
+    color:#e4e7f0;
+    border-radius:10px;
+    padding:15px 17px;
+    overflow-x:auto;
+    font-family:'SF Mono','Courier New',monospace;
+    font-size:13px;
+    line-height:1.6;
+    margin:10px 0;
+    white-space:pre-wrap;
+  }
+
+
+  details.example{
+    margin:8px 0 4px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    background:#fbfbfd;
+    overflow:hidden;
+  }
+  details.example summary{
+    cursor:pointer;
+    padding:9px 14px;
+    font-size:13px;
+    font-weight:600;
+    color:var(--muted);
+    list-style:none;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    user-select:none;
+  }
+  details.example summary::-webkit-details-marker{ display:none; }
+  details.example summary::before{
+    content:"▸";
+    font-size:11px;
+    transition:transform .15s;
+  }
+  details.example[open] summary::before{ transform:rotate(90deg); }
+  .section-a details.example summary:hover{ color:var(--a-accent); }
+  .section-b details.example summary:hover{ color:var(--b-accent); }
+  .example-body{
+    padding:4px 16px 14px;
+    font-size:14px;
+  }
+  .example-body p{margin:6px 0; font-size:13.5px; line-height:1.55; color:var(--muted);}
+  table.mini{
+    border-collapse:collapse;
+    width:100%;
+    margin:6px 0 12px;
+    font-size:13px;
+  }
+  table.mini caption{
+    text-align:left;
+    font-size:11.5px;
+    font-weight:700;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:.4px;
+    margin-bottom:4px;
+  }
+  table.mini th, table.mini td{
+    border:1px solid var(--line);
+    padding:5px 9px;
+    text-align:left;
+  }
+  table.mini th{
+    background:#f1f2f6;
+    font-weight:700;
+  }
+  table.mini.result th{ color:#fff; }
+  .section-a table.mini.result th{ background:var(--a-accent); }
+  .section-b table.mini.result th{ background:var(--b-accent); }
+
+  .hidden{display:none !important;}
+
+  .footer-note{
+    margin-top:48px;
+    text-align:center;
+    font-size:12px;
+    color:var(--muted);
+  }
+
+  @media print{
+    body{background:#fff;}
+    .sheet{margin:0; max-width:100%; box-shadow:none;}
+    .toolbar{display:none;}
+    pre{background:#f6f7f9; color:#1c1e26;}
+  }
+</style>
+</head>
+<body>
+
+<button class="menu-toggle" id="menuToggle" aria-label="Open index"><span></span></button>
+<div class="toc-overlay" id="tocOverlay"></div>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <button class="toc-close" id="tocClose" aria-label="Close index">&times;</button>
+    <div class="toc-page-title">On this page</div>
+
+    <div class="toc-heading">SQL Functions</div>
+    <div class="toc-sub toc-single">
+      <div class="toc-sub-label">Single-row functions</div>
+      <a href="#a1">Single-row vs multiple-row</a>
+      <a href="#a2">General functions</a>
+      <a href="#a3">Number functions</a>
+      <a href="#a4">Date functions</a>
+      <a href="#a5">Conversion functions</a>
+      <a href="#a6">Character functions</a>
+      <a href="#a7">Custom functions (PL/pgSQL)</a>
+    </div>
+    <div class="toc-sub toc-agg">
+      <div class="toc-sub-label">Aggregate functions</div>
+      <a href="#a8">Aggregate (group) functions</a>
+    </div>
+
+    <div class="toc-heading">Subqueries</div>
+    <div class="toc-sub toc-sub-basic">
+      <div class="toc-sub-label">Basics &amp; comparisons</div>
+      <a href="#b1">Subquery basics</a>
+      <a href="#b2">Single-row subqueries</a>
+      <a href="#b3">EXISTS</a>
+      <a href="#b4">IN, NOT IN, ANY, ALL</a>
+    </div>
+    <div class="toc-sub toc-sub-advanced">
+      <div class="toc-sub-label">Advanced techniques</div>
+      <a href="#b5">Subquery in FROM</a>
+      <a href="#b6">Subquery vs JOIN</a>
+      <a href="#b7">UPDATE with a subquery</a>
+      <a href="#b8">CTE vs subquery</a>
+      <a href="#b9">CASE + functions/subqueries</a>
+    </div>
+  </nav>
+
+<div class="sheet">
+
+  <div class="page-header">
+    <h1>Databases 1: Functions &amp; Subqueries</h1>
+  </div>
+
+  <div class="toolbar">
+    <input type="text" id="search" placeholder="Search functions, keywords, SQL... (e.g. mod, EXISTS, TO_CHAR)">
+    <button id="expandBtn">Collapse all</button>
+    <button id="printBtn">Print</button>
+  </div>
+
+  <div class="intro">
+    <h2><span class="section-badge">?</span>Functions vs subqueries: what's the actual difference?</h2>
+    <p>Both are tools for pulling more useful information out of a query, but they work in completely different ways. A <b>function</b> takes some input and transforms it into a single output value, right there in your SELECT list, WHERE clause, or wherever you use it. A <b>subquery</b> is a whole separate SELECT statement living inside a bigger query, and its job is to first go fetch a value (or a set of values) that the outer query then uses.</p>
+    <p>Put simply: a function reshapes or calculates something from the data you already have in front of you. A subquery goes and gets you data you don't have yet, often from somewhere else in the table (or another table entirely), and hands it back so the main query can use it.</p>
+    <div class="compare">
+      <div class="compare-card func">
+        <h3>Functions</h3>
+        <ul>
+          <li>Operate on a value that is already part of the row or query (a column, an expression, or a constant).</li>
+          <li>Single-row functions return one result per row, e.g. <span class="keyword">UPPER(name)</span>.</li>
+          <li>Aggregate functions return one result per group of rows, e.g. <span class="keyword">AVG(wage)</span>.</li>
+          <li>Can be nested inside each other, e.g. <span class="keyword">ROUND(AVG(wage))</span>.</li>
+          <li>Examples: nullif, coalesce, round, trunc, mod, to_char, upper, concat, count, sum.</li>
+        </ul>
+      </div>
+      <div class="compare-card sub">
+        <h3>Subqueries</h3>
+        <ul>
+          <li>A full SELECT statement nested inside another SELECT, INSERT, UPDATE, or DELETE.</li>
+          <li>The inner query runs first, and its result feeds into the outer query.</li>
+          <li>Single-row subqueries return exactly one value, so you compare with <span class="keyword">=, &gt;, &lt;</span> etc.</li>
+          <li>Multiple-row subqueries return a list of values, so you use <span class="keyword">IN, ANY, ALL, EXISTS</span>.</li>
+          <li>Can sit in a WHERE clause, a FROM clause (as a derived table), or even inside an UPDATE's SET clause.</li>
+        </ul>
+      </div>
+    </div>
+    <p>They're not mutually exclusive either. You'll see them combined all the time, like a function wrapped around the result of a subquery, e.g. <span class="keyword">ROUND(MAX("Average wage"), 2)</span> where the "Average wage" is coming from a subquery in the FROM clause.</p>
+  </div>
+
+  <div class="demo-box">
+    <h2>Spotting the difference inside one query</h2>
+    <p>Same query as above, but with every function underlined in one colour and the subquery underlined in another, so you can see exactly which part is doing which job.</p>
+    <pre class="demo-pre">SELECT <span class="hl-func">ROUND</span>(<span class="hl-func">MAX</span>("Average wage"), 2) "Maximum wage"
+FROM <span class="hl-sub">(
+    SELECT <span class="hl-func">AVG</span>(wage) "Average wage"
+    FROM player_contracts
+    GROUP BY club_id
+)</span> "Subquery";</pre>
+    <div class="demo-legend">
+      <span class="legend-item"><span class="legend-swatch legend-func"></span>Function &mdash; reshapes or calculates a value from data already in front of it (ROUND, MAX, AVG)</span>
+      <span class="legend-item"><span class="legend-swatch legend-sub"></span>Subquery &mdash; a separate SELECT nested inside, run first to fetch data the outer query then uses</span>
+    </div>
+  </div>
+
+  <!-- ================= SECTION A: FUNCTIONS ================= -->
+  <div class="section section-a">
+  <div class="section-title"><span class="section-badge">A</span>SQL Functions</div>
+  <div class="section-note">Functions are pre-built pieces of functionality you can run on your data without writing the logic yourself. There are two broad families: <b>single-row functions</b>, which return one result per row, and <b>multiple-row (aggregate) functions</b>, which collapse a whole set of rows down into one result.</div>
+
+  <div class="group-box group-single">
+  <div class="group-label">Single-row functions</div>
+  <div class="q" id="a1" data-kw="single-row multiple-row types of functions">
+    <div class="q-title">Single-row vs multiple-row functions</div>
+    <div class="q-body">
+      <p>Single-row functions look at each row individually and hand back a value for that row. A few things worth remembering about them:</p>
+      <ul>
+        <li>They act on each row separately and return exactly one value per row.</li>
+        <li>They can be nested inside one another.</li>
+        <li>The value they return isn't always the same data type as the value that went in.</li>
+        <li>The argument they take can be a column, an expression, or a constant you type in yourself: <span class="keyword">function_name(arg1, arg2, ...)</span>.</li>
+        <li>You can use them in SELECT, WHERE, ORDER BY, and even in constraints.</li>
+      </ul>
+      <p>Single-row functions fall into five categories:</p>
+      <ul>
+        <li><b>Conversion</b>: converts a value from one data type to another.</li>
+        <li><b>Character</b>: takes character input and can return either a character or a numeric value.</li>
+        <li><b>Number</b>: takes numeric input and returns a single numeric value.</li>
+        <li><b>Date</b>: works on the date data type and returns a date.</li>
+        <li><b>General</b>: handles NULL values, or picks a return value based on a condition.</li>
+      </ul>
+      <p>Multiple-row (aggregate) functions do the opposite: instead of one value per row, they return one value for a whole set of rows, like COUNT, AVG, or SUM.</p>
+    </div>
+  </div>
+
+  <div class="q" id="a2" data-kw="general functions nullif coalesce greatest least">
+    <div class="q-title">General functions</div>
+    <div class="q-body">
+      <p>These handle NULL values or let you pick between a few possible return values.</p>
+      <div class="term"><div class="term-head">nullif(x, y)</div><div class="term-desc">Takes two arguments and returns NULL if they're equal to each other. Otherwise it just returns the first argument unchanged. Handy when you want to hide or blank out one specific value.</div></div>
+      <pre>SELECT sponsor,
+       nullif(sponsor, 'SFI')
+FROM grant_funding;</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>grant_funding</caption><tr><th>grant_id</th><th>sponsor</th></tr>
+        <tr><td>1</td><td>SFI</td></tr><tr><td>2</td><td>Enterprise Ireland</td></tr><tr><td>3</td><td>SFI</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>sponsor</th><th>nullif</th></tr>
+        <tr><td>SFI</td><td><i>NULL</i></td></tr><tr><td>Enterprise Ireland</td><td>Enterprise Ireland</td></tr><tr><td>SFI</td><td><i>NULL</i></td></tr></table>
+        <p>Every "SFI" row gets blanked out to NULL because it matches the second argument; anything else passes straight through.</p>
+      </div></details>
+      <div class="term"><div class="term-head">coalesce(...)</div><div class="term-desc">Goes through a list of expressions or columns and returns the first one that isn't NULL. This is what you reach for when you want a fallback or default value in place of a missing one.</div></div>
+      <pre>SELECT coalesce(birth_date::text, firstname)
+FROM scientist;</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>scientist</caption><tr><th>sci_id</th><th>firstname</th><th>birth_date</th></tr>
+        <tr><td>1</td><td>Aoife</td><td>1985-03-02</td></tr><tr><td>2</td><td>Cian</td><td><i>NULL</i></td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>coalesce</th></tr>
+        <tr><td>1985-03-02</td></tr><tr><td>Cian</td></tr></table>
+        <p>Aoife has a birth date, so that's returned as text. Cian's birth date is NULL, so coalesce falls back to the next value in the list, his firstname.</p>
+      </div></details>
+      <div class="term"><div class="term-head">greatest(...)</div><div class="term-desc">Returns whichever value is the largest out of the ones you give it.</div></div>
+      <pre>SELECT research_id,
+       title,
+       GREATEST(end_date, CURRENT_DATE) "Most recent date"
+FROM research;</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <p>Assume today's date (CURRENT_DATE) is 2026-07-31.</p>
+        <table class="mini"><caption>research</caption><tr><th>research_id</th><th>title</th><th>end_date</th></tr>
+        <tr><td>10</td><td>AI in Genomics</td><td>2025-01-15</td></tr><tr><td>11</td><td>Quantum Study</td><td>2027-06-01</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>research_id</th><th>title</th><th>Most recent date</th></tr>
+        <tr><td>10</td><td>AI in Genomics</td><td>2026-07-31</td></tr><tr><td>11</td><td>Quantum Study</td><td>2027-06-01</td></tr></table>
+        <p>For row 10 the project already ended, so today's date is later and wins. For row 11 the end date is still in the future, so it wins instead.</p>
+      </div></details>
+      <div class="term"><div class="term-head">least(...)</div><div class="term-desc">The opposite of greatest, it returns the smallest value out of the ones you give it.</div></div>
+      <pre>SELECT research_id,
+       title,
+       LEAST(end_date, CURRENT_DATE) "Most recent date"
+FROM research;</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <p>Using the same rows as above, with today's date at 2026-07-31.</p>
+        <table class="mini"><caption>research</caption><tr><th>research_id</th><th>title</th><th>end_date</th></tr>
+        <tr><td>10</td><td>AI in Genomics</td><td>2025-01-15</td></tr><tr><td>11</td><td>Quantum Study</td><td>2027-06-01</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>research_id</th><th>title</th><th>Least date</th></tr>
+        <tr><td>10</td><td>AI in Genomics</td><td>2025-01-15</td></tr><tr><td>11</td><td>Quantum Study</td><td>2026-07-31</td></tr></table>
+        <p>LEAST just flips the comparison: it now picks the earlier of the two dates for each row.</p>
+      </div></details>
+    </div>
+  </div>
+
+  <div class="q" id="a3" data-kw="number functions round trunc mod abs ceil floor">
+    <div class="q-title">Number functions</div>
+    <div class="q-body">
+      <ul>
+        <li><b>ROUND</b> rounds a value to a specified number of decimal places.</li>
+        <li><b>TRUNC</b> truncates a value to a specified number of decimal places, without rounding.</li>
+        <li><b>MOD</b> returns the remainder left over from a division.</li>
+      </ul>
+      <pre>SELECT grant_id,
+       amount,
+       ROUND(amount, 1) "Rounded amount"
+FROM grant_funding;
+
+SELECT grant_id,
+       amount,
+       ROUND(amount) "Round",
+       ceil(amount) "Round up",
+       floor(amount) "Round down"
+FROM grant_funding;</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>grant_funding</caption><tr><th>grant_id</th><th>amount</th></tr>
+        <tr><td>1</td><td>4520.37</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>grant_id</th><th>amount</th><th>Rounded amount</th><th>Round</th><th>Round up</th><th>Round down</th></tr>
+        <tr><td>1</td><td>4520.37</td><td>4520.4</td><td>4520</td><td>4521</td><td>4520</td></tr></table>
+      </div></details>
+      <p>You can also reach for <span class="keyword">ceil()</span> to round up to the nearest integer, and <span class="keyword">floor()</span> to round down.</p>
+      <p>A negative second argument in ROUND or TRUNC rounds or truncates to the <i>left</i> of the decimal point instead of the right. So <span class="keyword">-1</span> rounds to the nearest 10s, <span class="keyword">-2</span> to the nearest 100s, and <span class="keyword">-3</span> to the nearest 1000s.</p>
+      <pre>SELECT ROUND(450.9234),
+       ROUND(450.9234,-1)/*nearest 10s*/,
+       ROUND(450.9234,-2)/*nearest 100s*/,
+       ROUND(450.9234,-3)/*nearest 1000s*/;
+SELECT TRUNC(450.923, -1)/*truncate to nearest 10s*/,
+       TRUNC(450.923,-2),
+       TRUNC(450.923,-3);</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>input</caption><tr><th>value</th></tr><tr><td>450.9234</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>ROUND()</th><th>ROUND(,-1)</th><th>ROUND(,-2)</th><th>ROUND(,-3)</th></tr>
+        <tr><td>451</td><td>450</td><td>500</td><td>0</td></tr></table>
+        <p>TRUNC on 450.923 with the same negative arguments gives 450, 400, 0. TRUNC never rounds up, it just chops the digits off.</p>
+      </div></details>
+      <p>TRUNC in particular is useful in finance, since discarding insignificant decimal places avoids the kind of rounding that could quietly inflate or deflate a balance. It's also handy when a system has to respect a strict resource threshold, since truncating keeps a count within bounds instead of accidentally rounding it up over the limit.</p>
+      <p>MOD is mostly used for two things: spotting even and odd patterns, and sorting data into categories based on some numerical rule. For example, if a university wants to automatically split research projects evenly across 3 review committees instead of assigning them by hand, taking the MOD of the research ID does the job:</p>
+      <pre>SELECT research_id,
+       title,
+       MOD(research_id, 3) "Assigned committee"
+FROM research r
+ORDER BY 3;</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>research</caption><tr><th>research_id</th><th>title</th></tr>
+        <tr><td>10</td><td>AI in Genomics</td></tr><tr><td>11</td><td>Quantum Study</td></tr><tr><td>12</td><td>Coral Reef Mapping</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>research_id</th><th>title</th><th>Assigned committee</th></tr>
+        <tr><td>10</td><td>AI in Genomics</td><td>1</td></tr><tr><td>11</td><td>Quantum Study</td><td>2</td></tr><tr><td>12</td><td>Coral Reef Mapping</td><td>0</td></tr></table>
+        <p>10 &divide; 3 leaves a remainder of 1, 11 &divide; 3 leaves 2, 12 &divide; 3 leaves 0. That remainder becomes the committee number, spreading projects out evenly.</p>
+      </div></details>
+      <p><span class="keyword">abs()</span> returns the absolute value of a number, so it strips out the sign even if the number started out negative. This is useful whenever you want a "difference" that should never come out negative, like the number of days between a research project ending and its grant ending:</p>
+      <pre>SELECT r.end_date "Research ends",
+       g.end_date "Grant ends",
+       abs(g.end_date - r.end_date) "Days variance"
+FROM research r JOIN research_grant rg USING (research_id) JOIN grant_funding g USING (grant_id);</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>research</caption><tr><th>research_id</th><th>end_date</th></tr><tr><td>10</td><td>2025-06-01</td></tr></table>
+        <table class="mini"><caption>grant_funding</caption><tr><th>grant_id</th><th>end_date</th></tr><tr><td>1</td><td>2025-05-20</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>Research ends</th><th>Grant ends</th><th>Days variance</th></tr>
+        <tr><td>2025-06-01</td><td>2025-05-20</td><td>12</td></tr></table>
+        <p>The grant technically ended 12 days before the research did, which would come out as -12 without abs(). Wrapping it in abs() keeps the variance a plain, positive number of days.</p>
+      </div></details>
+    </div>
+  </div>
+
+  <div class="q" id="a4" data-kw="date functions to_char now current_date age arithmetic">
+    <div class="q-title">Date functions</div>
+    <div class="q-body">
+      <div class="term"><div class="term-head">to_char(value, format)</div><div class="term-desc">Displays a date (or number) as text, formatted however you want.</div></div>
+      <pre>SELECT birth_date,
+       to_char(birth_date, 'DD/MM/YYYY')
+FROM scientist;</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>scientist</caption><tr><th>sci_id</th><th>birth_date</th></tr><tr><td>1</td><td>1985-03-02</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>birth_date</th><th>to_char</th></tr>
+        <tr><td>1985-03-02</td><td>02/03/1985</td></tr></table>
+      </div></details>
+      <div class="term"><div class="term-head">now()</div><div class="term-desc">Retrieves the current date and time, given back as a timestamp. current_date does the same but just for today's date.</div></div>
+      <pre>SELECT now();
+SELECT current_date;
+SELECT pg_typeof(now());</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <p><b>Input:</b> none. These read the server clock rather than any table, so there's nothing to select from.</p>
+        <table class="mini result"><caption>result</caption><tr><th>now()</th><th>current_date</th><th>pg_typeof(now())</th></tr>
+        <tr><td>2026-07-31 14:22:05.113+01</td><td>2026-07-31</td><td>timestamp with time zone</td></tr></table>
+      </div></details>
+      <p>You can also do arithmetic directly on dates. Adding a number to a date column shifts it forward that many days, and dividing the gap between two dates gives you a duration.</p>
+      <pre>SELECT current_date + 7;                         -- one week from now
+SELECT (end_date - begin_date) / 7 from research; -- project duration in weeks</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>research</caption><tr><th>research_id</th><th>begin_date</th><th>end_date</th></tr>
+        <tr><td>13</td><td>2025-01-01</td><td>2025-04-01</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>current_date + 7</th><th>duration (weeks)</th></tr>
+        <tr><td>2026-08-07</td><td>12</td></tr></table>
+        <p>If current_date is 2026-07-31, current_date + 7 gives 2026-08-07. For the research row above, (end_date - begin_date) / 7 gives 12 (roughly 12 weeks).</p>
+      </div></details>
+      <div class="term"><div class="term-head">age()</div><div class="term-desc">Calculates the difference between the current date and a given date, which is exactly what you want for something like someone's age or how long a project has been running.</div></div>
+      <pre>-- scientist's age
+SELECT age(birth_date)
+FROM scientist;
+
+-- project's age
+SELECT age(begin_date)
+FROM research;</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>scientist</caption><tr><th>sci_id</th><th>birth_date</th></tr><tr><td>1</td><td>1985-03-02</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>age(birth_date)</th></tr><tr><td>41 years 4 mons 29 days</td></tr></table>
+        <p>Today being 2026-07-31, age(birth_date) works out the gap between that and 1985-03-02.</p>
+      </div></details>
+      <p>TO_CHAR has a few formatting tricks worth remembering. <span class="keyword">fm</span> stands for "fill mode" and strips out the leading spaces or padding that formatting would normally add. <span class="keyword">DDspth</span> spells a number out as an ordinal word, like turning "4" into "4th". The suffix codes work like this:</p>
+      <ul>
+        <li><span class="keyword">TH</span> gives you something like <span class="keyword">4TH</span>.</li>
+        <li><span class="keyword">SP</span> spells the number out, e.g. <span class="keyword">FOUR</span>.</li>
+        <li><span class="keyword">SPTH</span> spells it out with the ordinal suffix, e.g. <span class="keyword">FOURTH</span>.</li>
+      </ul>
+      <pre>SELECT firstname,
+       TO_CHAR(birth_date, 'Month DDspth')
+FROM scientist;
+
+SELECT firstname,
+       TO_CHAR(birth_date, 'fmDD Month YYYY')
+FROM scientist;</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>scientist</caption><tr><th>firstname</th><th>birth_date</th></tr><tr><td>Aoife</td><td>1985-03-02</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>format</th><th>output</th></tr>
+        <tr><td>'Month DDspth'</td><td>March&nbsp;&nbsp;&nbsp;2nd</td></tr>
+        <tr><td>'fmDD Month YYYY'</td><td>2 March 1985</td></tr></table>
+        <p>Without fm, 'DD Month YYYY' would pad "March" out to 9 characters with trailing spaces; fm strips that padding away.</p>
+      </div></details>
+      <p>TO_CHAR works on numbers too, which is how you'd display a currency sign:</p>
+      <pre>SELECT to_char(amount, '€999,999.99')
+FROM grant_funding;</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>grant_funding</caption><tr><th>grant_id</th><th>amount</th></tr><tr><td>1</td><td>4520.37</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>amount</th><th>to_char</th></tr>
+        <tr><td>4520.37</td><td>€4,520.37</td></tr></table>
+      </div></details>
+    </div>
+  </div>
+
+  <div class="q" id="a5" data-kw="conversion functions cast double colon">
+    <div class="q-title">Conversion functions</div>
+    <div class="q-body">
+      <div class="term"><div class="term-head">cast(attribute AS data_type)</div><div class="term-desc">Converts a value from one data type into another so it can be used the way you need it. The double-colon syntax, ::, is just a shorthand for the same thing.</div></div>
+      <pre>SELECT pg_typeof(cast(begin_date AS TEXT))
+FROM research;
+
+SELECT pg_typeof(amount::text)
+FROM grant_funding;</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>research</caption><tr><th>research_id</th><th>begin_date</th></tr><tr><td>10</td><td>2025-01-15</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>pg_typeof(begin_date)</th><th>pg_typeof(cast(begin_date AS TEXT))</th></tr>
+        <tr><td>date</td><td>text</td></tr></table>
+        <p>begin_date is stored as a date column, so pg_typeof(begin_date) would normally return "date". After casting it, pg_typeof(cast(begin_date AS TEXT)) returns <span class="keyword">text</span> instead, because the value has genuinely been converted, not just displayed differently.</p>
+      </div></details>
+    </div>
+  </div>
+
+  <div class="q" id="a6" data-kw="character functions upper lower concat substring length position lpad rpad replace trim nesting">
+    <div class="q-title">Character functions</div>
+    <div class="q-body">
+      <div class="term"><div class="term-head">UPPER() / LOWER()</div><div class="term-desc">Converts text to uppercase or lowercase. Also useful inside a WHERE clause when you want a case-insensitive match.</div></div>
+      <pre>SELECT title,
+       UPPER(title) "Upper Title"
+FROM research;
+
+SELECT venue,
+       LOWER(venue) "Lower Title"
+FROM publication;
+
+SELECT firstname,
+       lastname
+FROM scientist
+WHERE LOWER(lastname) = 'murphy';</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>research</caption><tr><th>title</th></tr><tr><td>Quantum Study</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>title</th><th>Upper Title</th></tr>
+        <tr><td>Quantum Study</td><td>QUANTUM STUDY</td></tr></table>
+        <table class="mini"><caption>scientist</caption><tr><th>firstname</th><th>lastname</th></tr><tr><td>Aoife</td><td>murphy</td></tr></table>
+        <p>The WHERE query matches that scientist even though "murphy" is stored in lowercase and we searched for 'murphy', because both sides get lowercased before comparing. It would match "Murphy" or "MURPHY" too.</p>
+      </div></details>
+      <div class="term"><div class="term-head">CONCAT()</div><div class="term-desc">Joins strings together. You can do the same thing with the || operator.</div></div>
+      <pre>SELECT CONCAT(TRIM(firstname), ' ', TRIM(lastname), ' (', TRIM(uniname), ')') "Scientist affiliation"
+FROM scientist JOIN university USING (uni_id);</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>scientist / university</caption><tr><th>firstname</th><th>lastname</th><th>uniname</th></tr>
+        <tr><td>Aoife</td><td>Byrne</td><td>Trinity College Dublin</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>Scientist affiliation</th></tr>
+        <tr><td>Aoife Byrne (Trinity College Dublin)</td></tr></table>
+      </div></details>
+      <div class="term"><div class="term-head">SUBSTRING(string FROM start FOR length)</div><div class="term-desc">Pulls out part of a string, starting at a given position for a given length.</div></div>
+      <pre>SELECT uniname,
+       SUBSTRING(uniname FROM 1 FOR 10) "Uni prefix"
+FROM university;</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>university</caption><tr><th>uniname</th></tr><tr><td>Trinity College Dublin</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>uniname</th><th>Uni prefix</th></tr>
+        <tr><td>Trinity College Dublin</td><td>Trinity Co</td></tr></table>
+      </div></details>
+      <div class="term"><div class="term-head">LENGTH()</div><div class="term-desc">Returns how many characters are in a string, which is useful for data validation or enforcing constraints.</div></div>
+      <pre>SELECT research_id,
+       LENGTH(title) "Research title length"
+FROM research
+ORDER BY title_len DESC;</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>research</caption><tr><th>research_id</th><th>title</th></tr><tr><td>11</td><td>Quantum Study</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>research_id</th><th>title</th><th>Research title length</th></tr>
+        <tr><td>11</td><td>Quantum Study</td><td>13</td></tr></table>
+      </div></details>
+      <div class="term"><div class="term-head">POSITION('substr' IN string)</div><div class="term-desc">Finds where a substring first appears inside a bigger string.</div></div>
+      <pre>SELECT research_id,
+       title,
+       POSITION('AI' IN UPPER(title)) "Position AI"
+FROM research
+WHERE POSITION('AI' IN UPPER(title)) > 0;</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>research</caption><tr><th>research_id</th><th>title</th></tr><tr><td>10</td><td>AI in Genomics</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>research_id</th><th>title</th><th>Position AI</th></tr>
+        <tr><td>10</td><td>AI in Genomics</td><td>1</td></tr></table>
+        <p>"AI" starts right at the first character of the (uppercased) title, so it returns position 1. A row with no "AI" anywhere would return 0, and get filtered out by the WHERE clause.</p>
+      </div></details>
+      <div class="term"><div class="term-head">LPAD(string, length, fill_string) / RPAD(...)</div><div class="term-desc">Pads a string on the left or right with a chosen character until it reaches a target length. Mostly used to format output neatly, like zero-padding a code.</div></div>
+      <pre>SELECT research_id,
+       'RS-' || LPAD(CAST(research_id AS VARCHAR), 5, '0') "Research code"
+FROM research
+ORDER BY 1;</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>research</caption><tr><th>research_id</th></tr><tr><td>11</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>research_id</th><th>Research code</th></tr>
+        <tr><td>11</td><td>RS-00011</td></tr></table>
+        <p>"11" is only 2 characters, so LPAD pads it with zeros on the left until it's 5 characters long, giving "00011".</p>
+      </div></details>
+      <div class="term"><div class="term-head">REPLACE(string, from, to)</div><div class="term-desc">Swaps out every occurrence of one substring for another.</div></div>
+      <pre>SELECT sci_id,
+       lastname "Last name",
+       REPLACE(lastname, '-', ' ') "Normalised lastname"
+FROM scientist
+WHERE lastname LIKE '%-%';</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>scientist</caption><tr><th>sci_id</th><th>lastname</th></tr><tr><td>4</td><td>O'Neill-Byrne</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>sci_id</th><th>Last name</th><th>Normalised lastname</th></tr>
+        <tr><td>4</td><td>O'Neill-Byrne</td><td>O'Neill Byrne</td></tr></table>
+      </div></details>
+      <div class="term"><div class="term-head">TRIM()</div><div class="term-desc">Strips off leading and trailing spaces. Mostly used for cleaning up messy data before you present it.</div></div>
+      <pre>SELECT firstname "Raw first name",
+       length(firstname) "First name size",
+       TRIM(firstname) "Trimmed first name",
+       length(trim(firstname)) "First name size after trimming"
+FROM scientist
+WHERE firstname LIKE ' %' OR firstname LIKE '% ';</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>scientist</caption><tr><th>firstname</th></tr><tr><td>" Cian "</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>Raw first name</th><th>First name size</th><th>Trimmed first name</th><th>First name size after trimming</th></tr>
+        <tr><td>" Cian "</td><td>7</td><td>"Cian"</td><td>4</td></tr></table>
+      </div></details>
+      <p>There's more than one way to concatenate, and they don't all behave the same with NULLs:</p>
+      <ul>
+        <li><span class="keyword">||</span> joins values together, but if any one of them is NULL the whole result becomes NULL: <span class="keyword">'a' || NULL &rarr; NULL</span>.</li>
+        <li><span class="keyword">concat()</span> quietly skips NULLs instead of poisoning the whole result: <span class="keyword">concat('a', NULL) &rarr; 'a'</span>. Since we usually want to keep whatever isn't null, concat() is generally the safer choice.</li>
+        <li><span class="keyword">concat_ws(sep, args...)</span> stands for "with separator". It takes a separator plus a list of arguments, joins them with that separator, and skips any NULLs along the way.</li>
+      </ul>
+      <pre>SELECT 'a' || NULL;
+SELECT concat('a', NULL);
+SELECT concat_ws(' , ', 'a', NULL, 'b');</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>input values</caption><tr><th>a</th><th>b</th></tr><tr><td>'a'</td><td><i>NULL</i></td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>expression</th><th>output</th></tr>
+        <tr><td>'a' || NULL</td><td><i>NULL</i></td></tr>
+        <tr><td>concat('a', NULL)</td><td>a</td></tr>
+        <tr><td>concat_ws(' , ', 'a', NULL, 'b')</td><td>a , b</td></tr></table>
+      </div></details>
+      <p>Single-row functions can also be nested inside each other, and PostgreSQL evaluates them from the innermost one outward: <span class="keyword">F3(F2(F1(col,arg1),arg2),arg3)</span> runs F1 first, then F2 on that result, then F3 on that.</p>
+      <pre>SELECT lastname,
+       UPPER(CONCAT(SUBSTRING(REGEXP_REPLACE(lastname, '\s+', '', 'g') FROM 1 FOR 8), '_IRL')) "Tag"
+FROM scientist JOIN university USING (uni_id)
+WHERE university.country = 'Ireland' LIMIT 15;</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>scientist / university</caption><tr><th>lastname</th><th>country</th></tr><tr><td>O Sullivan</td><td>Ireland</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>lastname</th><th>Tag</th></tr>
+        <tr><td>O Sullivan</td><td>OSULLIVA_IRL</td></tr></table>
+        <p>Step by step: REGEXP_REPLACE strips the space to give "OSullivan", SUBSTRING takes the first 8 characters "OSulliva", CONCAT appends "_IRL", and UPPER capitalises the whole thing.</p>
+      </div></details>
+    </div>
+  </div>
+
+  <div class="q" id="a7" data-kw="custom function pl/pgsql create function trigger">
+    <div class="q-title">Custom functions: PL/pgSQL</div>
+    <div class="q-body">
+      <p>PL/pgSQL (Procedural Language/PostgreSQL) lets you write your own reusable blocks of logic when a plain query isn't enough. It extends ordinary SQL with programming basics like loops and conditionals, and it's commonly used to build triggers, which are functions that fire automatically whenever a row is inserted, updated, or deleted.</p>
+      <p>The basic syntax looks like this:</p>
+      <pre>CREATE OR REPLACE FUNCTION function_name(parameter_name data_type)
+RETURNS return_type AS $$
+BEGIN
+    RETURN something;
+END;
+$$ LANGUAGE plpgsql;</pre>
+      <p>Here's a function that works out whether a project is active, upcoming, or completed based on today's date:</p>
+      <pre>CREATE OR REPLACE FUNCTION get_project_status(begin_d DATE, end_d DATE)
+RETURNS TEXT AS $$
+BEGIN
+    IF current_date BETWEEN begin_d AND end_d THEN
+        RETURN 'Active';
+    ELSEIF current_date < begin_d THEN
+        RETURN 'Upcoming';
+    ELSE
+        RETURN 'Completed';
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT research_id,
+       title,
+       get_project_status(begin_date, end_date) AS project_status
+FROM research LIMIT 5;</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <p>Assume today is 2026-07-31.</p>
+        <table class="mini"><caption>research</caption><tr><th>research_id</th><th>title</th><th>begin_date</th><th>end_date</th></tr>
+        <tr><td>10</td><td>AI in Genomics</td><td>2025-01-15</td><td>2025-06-01</td></tr>
+        <tr><td>11</td><td>Quantum Study</td><td>2026-05-01</td><td>2027-01-01</td></tr>
+        <tr><td>12</td><td>Coral Reef Mapping</td><td>2026-09-01</td><td>2027-03-01</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>research_id</th><th>title</th><th>project_status</th></tr>
+        <tr><td>10</td><td>AI in Genomics</td><td>Completed</td></tr>
+        <tr><td>11</td><td>Quantum Study</td><td>Active</td></tr>
+        <tr><td>12</td><td>Coral Reef Mapping</td><td>Upcoming</td></tr></table>
+      </div></details>
+      <p>A row-level trigger example, which recalculates a derived value every time a new row comes in:</p>
+      <pre>CREATE OR REPLACE FUNCTION set_plus_minus_row()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.plus_minus_points := NEW.points - NEW.turnovers;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_plus_minus_row
+BEFORE INSERT ON player_statistics
+FOR EACH ROW
+EXECUTE FUNCTION set_plus_minus_row();</pre>
+      <p>And a statement-level trigger, which recalculates the value across every row at once. Note it returns NULL, because statement-level triggers are required to:</p>
+      <pre>CREATE OR REPLACE FUNCTION update_plus_minus_all()
+RETURNS TRIGGER AS $$
+BEGIN
+    UPDATE player_statistics SET plus_minus_points = points - turnovers;
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_plus_minus_statement
+AFTER INSERT ON player_statistics
+FOR EACH STATEMENT
+EXECUTE FUNCTION update_plus_minus_all();</pre>
+    </div>
+  </div>
+
+  </div>
+
+  <div class="group-box group-agg">
+  <div class="group-label">Aggregate (group) functions</div>
+  <div class="q" id="a8" data-kw="aggregate group functions count avg sum min max group by having filter string_agg">
+    <div class="q-title">Aggregate (group) functions</div>
+    <div class="q-body">
+      <p>Aggregate functions take a whole bunch of rows and collapse them down into a single value. Because of that, if a query mixes an aggregated column with a normal, non-aggregated column, PostgreSQL needs a GROUP BY clause to know how to group the rows together first.</p>
+      <div class="term"><div class="term-head">COUNT(*)</div><div class="term-desc">Counts how many rows are in a table. Because it's counting rows rather than a specific column's values, NULLs still get counted. If you count a specific column instead, e.g. COUNT(wage), rows where that column is NULL are skipped.</div></div>
+      <pre>SELECT COUNT(*) "Total players"
+FROM players;
+
+-- ignores NULL wage
+SELECT COUNT(wage) "Contracts with wage"
+FROM player_contracts;
+
+SELECT COUNT(DISTINCT club_id) "Unique wage values"
+FROM player_contracts;</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>player_contracts</caption><tr><th>player_id</th><th>club_id</th><th>wage</th></tr>
+        <tr><td>1</td><td>CL137</td><td>52000</td></tr><tr><td>2</td><td>CL137</td><td><i>NULL</i></td></tr><tr><td>3</td><td>CL473</td><td>18000</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>COUNT(*)</th><th>COUNT(wage)</th><th>COUNT(DISTINCT club_id)</th></tr>
+        <tr><td>3</td><td>2</td><td>2</td></tr></table>
+        <p>COUNT(*) counts all 3 rows regardless of NULLs. COUNT(wage) only counts the 2 rows where wage isn't NULL.</p>
+      </div></details>
+      <p>You can also use subqueries to gather several different counts side by side in a single row of output:</p>
+      <pre>SELECT (SELECT COUNT(player_id) FROM players) "Total number of players",
+       (SELECT COUNT(club_id) FROM clubs) "Number of clubs",
+       (SELECT COUNT(DISTINCT player_id) FROM player_attributes) "Number of players with attributes",
+       (SELECT COUNT(DISTINCT player_id) FROM player_contracts) "Number of players with contracts";</pre>
+      <div class="term"><div class="term-head">GROUP BY</div><div class="term-desc">Groups rows together based on the value of one or more attributes, so an aggregate function can be applied to each group separately. You can group by more than one column at once to get summaries at different levels of detail.</div></div>
+      <pre>SELECT club_name,
+       COUNT(player_contracts.player_id) "Players with contract"
+FROM clubs LEFT JOIN player_contracts USING (club_id)
+GROUP BY club_name;
+
+SELECT club_name,
+       nationality,
+       ROUND(AVG(wage), 2) "Average wage"
+FROM player_contracts JOIN players USING (player_id) JOIN clubs USING (club_id)
+GROUP BY club_name, nationality
+ORDER BY 2, 3 DESC;</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>player_contracts (joined to clubs), a few sample rows out of a full 52-row table</caption><tr><th>club_name</th><th>player_id</th></tr>
+        <tr><td>Chelsea</td><td>1</td></tr><tr><td>Chelsea</td><td>2</td></tr><tr><td>Real Madrid</td><td>3</td></tr><tr><td>...</td><td>...</td></tr></table>
+        <table class="mini result"><caption>result: players per club</caption><tr><th>club_name</th><th>Players with contract</th></tr>
+        <tr><td>Chelsea</td><td>27</td></tr><tr><td>Real Madrid</td><td>25</td></tr></table>
+        <p>Every player row gets rolled up into one count per club_name, which is exactly what GROUP BY is for. The full table has 27 Chelsea rows and 25 Real Madrid rows; only a few are shown above.</p>
+      </div></details>
+      <p>AVG, SUM, MIN, and MAX can all be combined in the same query, and MIN/MAX also work on dates and even strings, where they follow alphabetical order.</p>
+      <pre>SELECT nationality "Nationality",
+       COUNT(*) "Number of players",
+       ROUND(AVG(age), 1) "Average age"
+FROM players
+GROUP BY nationality
+ORDER BY 2 DESC;
+
+SELECT clubs.club_name,
+       SUM(wage) "Wage bill"
+FROM clubs JOIN player_contracts USING (club_id)
+GROUP BY club_name
+ORDER BY 2 DESC;
+
+SELECT MIN(wage) "Minimum wage",
+       MAX(wage) "Maximum wage"
+FROM player_contracts;
+
+SELECT MIN(joined) "Earliest contract",
+       MAX(contract_valid_until) "Latest contract"
+FROM player_contracts;
+
+SELECT MIN(player_name),
+       MAX(player_name)
+FROM players;</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>players, a few sample rows</caption><tr><th>nationality</th><th>age</th></tr>
+        <tr><td>Brazil</td><td>27</td></tr><tr><td>Brazil</td><td>24</td></tr><tr><td>Ireland</td><td>22</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>Nationality</th><th>Number of players</th><th>Average age</th></tr>
+        <tr><td>Brazil</td><td>14</td><td>26.3</td></tr><tr><td>Ireland</td><td>6</td><td>24.1</td></tr></table>
+        <table class="mini"><caption>player_contracts</caption><tr><th>wage</th></tr><tr><td>800</td></tr><tr><td>52000</td></tr><tr><td>350000</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>Minimum wage</th><th>Maximum wage</th></tr>
+        <tr><td>800</td><td>350000</td></tr></table>
+      </div></details>
+      <p>A common point of confusion is WHERE versus HAVING. PostgreSQL actually runs a query in this order: <span class="keyword">
+FROM &rarr; WHERE &rarr; GROUP BY &rarr; HAVING &rarr; SELECT &rarr; ORDER BY</span>. WHERE filters individual rows before they're grouped, which means it can never contain an aggregate function, because the aggregate simply doesn't exist yet at that stage. HAVING is the one that filters after the grouping and aggregation have already happened.</p>
+      <pre>-- This fails: WHERE cannot use an aggregate
+SELECT club_id,
+       ROUND(AVG(wage), 2) "Average wage"
+FROM player_contracts
+GROUP BY club_id
+WHERE AVG(wage) > 50000;</pre>
+      <details class="example"><summary>Example: fixing it with HAVING</summary><div class="example-body">
+        <pre>SELECT club_id,
+       ROUND(AVG(wage), 2) "Average wage"
+FROM player_contracts
+GROUP BY club_id
+HAVING AVG(wage) > 50000;</pre>
+        <table class="mini"><caption>player_contracts</caption><tr><th>club_id</th><th>wage</th></tr>
+        <tr><td>CL137</td><td>65000</td></tr><tr><td>CL137</td><td>60000</td></tr><tr><td>CL473</td><td>20000</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>club_id</th><th>Average wage</th></tr>
+        <tr><td>CL137</td><td>62500.00</td></tr></table>
+        <p>Moving the condition from WHERE to HAVING is all it takes, since HAVING runs after AVG(wage) has actually been calculated per group.</p>
+      </div></details>
+      <div class="term"><div class="term-head">FILTER (WHERE ...)</div><div class="term-desc">Applies a condition to one specific aggregate, without touching the rest of the query. Reach for FILTER when you want several aggregates with different conditions side by side in the same row, and reach for HAVING when you want to drop entire groups based on the aggregate result.</div></div>
+      <pre>SELECT club_name FILTER (WHERE club_name IS NOT NULL),
+       COUNT(player_id),
+       COUNT(player_id) FILTER (WHERE wage IS NOT NULL) "With wage",
+       COUNT(player_id) FILTER (WHERE wage IS NULL) "Without wage"
+FROM clubs LEFT JOIN player_contracts USING (club_id)
+GROUP BY club_name ORDER BY club_name;</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>player_contracts (joined to clubs), a few sample rows</caption><tr><th>club_name</th><th>player_id</th><th>wage</th></tr>
+        <tr><td>Chelsea</td><td>1</td><td>65000</td></tr><tr><td>Chelsea</td><td>2</td><td><i>NULL</i></td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>club_name</th><th>COUNT(player_id)</th><th>With wage</th><th>Without wage</th></tr>
+        <tr><td>Chelsea</td><td>27</td><td>25</td><td>2</td></tr></table>
+        <p>All three counts come from the same GROUP BY club_name, but each FILTER narrows down which rows that particular COUNT looks at.</p>
+      </div></details>
+      <p>One rule that catches people out: SQL will not let you nest one aggregate directly inside another, so something like <span class="keyword">MAX(AVG(wage))</span> throws an error, because aggregation only happens once per query block, right after GROUP BY runs. The workaround is to compute the first aggregate in a subquery, then aggregate over that result. Notice that ROUND and MAX can still nest together here, because ROUND is a single-row function, not an aggregate:</p>
+      <pre>SELECT ROUND(MAX("Average wage"), 2) "Maximum wage"
+FROM (
+    SELECT AVG(wage) "Average wage" FROM player_contracts GROUP BY club_id
+) "Subquery";</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>inner subquery result: average wage per club_id</caption><tr><th>Average wage</th></tr>
+        <tr><td>62500.00</td></tr><tr><td>41200.00</td></tr><tr><td>19800.00</td></tr></table>
+        <table class="mini result"><caption>final result</caption><tr><th>Maximum wage</th></tr><tr><td>62500.00</td></tr></table>
+        <p>The subquery produces one average per club first. Only then does the outer MAX look across those averages to find the highest one.</p>
+      </div></details>
+      <div class="term"><div class="term-head">STRING_AGG(column, separator ORDER BY ...)</div><div class="term-desc">Works a bit like CONCAT but across multiple rows within a group, joining them into one string with a separator you choose.</div></div>
+      <pre>SELECT club_name,
+       STRING_AGG(player_name, ', ' ORDER BY players.player_name) "Players list"
+FROM clubs JOIN player_contracts USING (club_id) JOIN players USING (player_id)
+GROUP BY club_name ORDER BY club_name;</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>players (joined via player_contracts to clubs)</caption><tr><th>club_name</th><th>player_name</th></tr>
+        <tr><td>Chelsea</td><td>Enzo Fernandez</td></tr><tr><td>Chelsea</td><td>Cole Palmer</td></tr><tr><td>Chelsea</td><td>Reece James</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>club_name</th><th>Players list</th></tr>
+        <tr><td>Chelsea</td><td>Cole Palmer, Enzo Fernandez, Reece James</td></tr></table>
+      </div></details>
+    </div>
+  </div>
+
+  </div>
+
+  </div>
+
+  <!-- ================= SECTION B: SUBQUERIES ================= -->
+  <div class="section section-b">
+  <div class="section-title"><span class="section-badge">B</span>Subqueries</div>
+  <div class="section-note">A subquery is simply a query nested inside a bigger query. It can live inside a SELECT, INSERT, UPDATE, or DELETE statement, or even inside another subquery. The inner query (the subquery) runs first, and whatever it returns is then used by the outer query.</div>
+
+  <div class="group-box group-sub-basic">
+  <div class="group-label">Basics &amp; comparison subqueries</div>
+  <div class="q" id="b1" data-kw="subquery where clause syntax">
+    <div class="q-title">Subquery in a WHERE clause: the basic pattern</div>
+    <div class="q-body">
+      <p>The general shape is: run the inner query first, then let the outer query use whatever it produced.</p>
+      <pre>SELECT attribute_name FROM table_name
+WHERE condition (SELECT attribute FROM table_name WHERE condition);</pre>
+    </div>
+  </div>
+
+  <div class="q" id="b2" data-kw="single-row subquery comparison operators">
+    <div class="q-title">Single-row subqueries</div>
+    <div class="q-body">
+      <p>A single-row subquery returns just one row, so you can compare against it using ordinary single-row operators like <span class="keyword">=, &gt;, &lt;</span>. For example, finding players who earn more than the average wage:</p>
+      <pre>SELECT p.player_name,
+       pc.wage
+FROM players p JOIN player_contracts pc USING (player_id)
+WHERE pc.wage > (SELECT AVG(wage) FROM player_contracts);</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>player_contracts, a few sample rows (AVG(wage) across the whole table works out to 24,000)</caption><tr><th>player_name</th><th>wage</th></tr>
+        <tr><td>Cole Palmer</td><td>52000</td></tr><tr><td>Enzo Fernandez</td><td>65000</td></tr><tr><td>Youth Prospect X</td><td>1200</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>player_name</th><th>wage</th></tr>
+        <tr><td>Cole Palmer</td><td>52000</td></tr><tr><td>Enzo Fernandez</td><td>65000</td></tr></table>
+        <p>Only players earning above that 24,000 average make it into the result. Everyone at or below it is filtered out.</p>
+      </div></details>
+      <p>You can also chain several single-row subqueries together with AND to build more complex conditions. Here we want players who earn more than Chelsea's top earner and are worth more than the average Real Madrid player:</p>
+      <pre>SELECT p.player_name,
+       pc.wage
+FROM players p JOIN player_contracts pc USING (player_id)
+WHERE pc.wage > (
+    SELECT MAX(wage) FROM player_contracts WHERE club_id = 'CL137'  -- Chelsea
+) AND pc.value > (
+    SELECT AVG(value) FROM player_contracts WHERE club_id = 'CL473'  -- Real Madrid
+);</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>player_contracts, sample rows</caption><tr><th>club_id</th><th>wage</th><th>value</th></tr>
+        <tr><td>CL137 (Chelsea)</td><td>65000</td><td>&mdash;</td></tr><tr><td>CL473 (Real Madrid)</td><td>&mdash;</td><td>45,000,000</td></tr>
+        <tr><td>other</td><td>70000</td><td>50,000,000</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>player_name</th><th>wage</th></tr><tr><td>Vinícius Jr</td><td>70000</td></tr></table>
+        <p>Chelsea's top earner is on 65,000, and Real Madrid's average player value is €45m. A player earning 70,000 and valued at €50m passes both conditions and shows up in the result; a player earning 70,000 but valued at only €30m would get filtered out by the second condition.</p>
+      </div></details>
+    </div>
+  </div>
+
+  <div class="q" id="b3" data-kw="exists select 1">
+    <div class="q-title">EXISTS</div>
+    <div class="q-body">
+      <div class="term"><div class="term-head">EXISTS</div><div class="term-desc">Checks whether the subquery returns any rows at all, and simply returns true if it finds at least one. SELECT 1 is the usual shorthand you'll see inside an EXISTS subquery, since the actual value being selected doesn't matter, only whether a matching row exists.</div></div>
+      <pre>-- Clubs that currently have at least one player earning over 50k/week
+SELECT c.club_id,
+       c.club_name
+FROM clubs c
+WHERE EXISTS (
+    SELECT 1 FROM player_contracts pc
+    WHERE pc.club_id = c.club_id AND pc.wage >= 50000
+);</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>clubs</caption><tr><th>club_id</th><th>club_name</th></tr>
+        <tr><td>CL137</td><td>Chelsea</td></tr><tr><td>CL999</td><td>Shamrock Rovers</td></tr></table>
+        <table class="mini"><caption>player_contracts</caption><tr><th>club_id</th><th>wage</th></tr>
+        <tr><td>CL137</td><td>65000</td></tr><tr><td>CL999</td><td>1200</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>club_id</th><th>club_name</th></tr>
+        <tr><td>CL137</td><td>Chelsea</td></tr></table>
+        <p>Chelsea has a matching row (a player on 65,000, which is &ge; 50,000), so EXISTS returns true for it. Shamrock Rovers has no player anywhere near that wage, so it's left out.</p>
+      </div></details>
+    </div>
+  </div>
+
+  <div class="q" id="b4" data-kw="multiple-row subquery in not in any all">
+    <div class="q-title">Multiple-row subqueries: IN, NOT IN, ANY, ALL</div>
+    <div class="q-body">
+      <p>These subqueries can return more than one row, so they pair with comparison operators built to handle a whole list of values rather than just one:</p>
+      <ul>
+        <li><b>IN</b> checks whether a value matches any single value in the list the subquery returns.</li>
+        <li><b>NOT IN</b> is the opposite, checking that a value matches none of them.</li>
+        <li><b>ANY</b> compares a value against every value the subquery returns, and passes if the condition is true for at least one of them.</li>
+        <li><b>ALL</b> also compares against every value returned, but only passes if the condition is true for every single one.</li>
+      </ul>
+      <p>IN: finding players contracted to clubs that have at least one high earner (€50,000 or more):</p>
+      <pre>SELECT p.player_name,
+       c.club_name,
+       pc.wage
+FROM players p JOIN player_contracts pc USING (player_id) JOIN clubs c USING (club_id)
+WHERE pc.club_id IN (
+    SELECT DISTINCT club_id FROM player_contracts WHERE wage >= 50000
+);</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>player_contracts, sample rows</caption><tr><th>club_id</th><th>wage</th></tr>
+        <tr><td>CL137</td><td>65000</td></tr><tr><td>CL137</td><td>1500</td></tr><tr><td>CL999</td><td>1200</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>player_name</th><th>club_name</th><th>wage</th></tr>
+        <tr><td>Cole Palmer</td><td>Chelsea</td><td>65000</td></tr><tr><td>Youth Prospect X</td><td>Chelsea</td><td>1500</td></tr></table>
+        <p>The subquery returns club_id CL137 (a club with at least one €50k+ earner). Every player from that club shows up in the outer result, including the teammate earning far less, but Shamrock Rovers (CL999) is left out entirely since none of their players clear 50,000.</p>
+      </div></details>
+      <p>NOT IN: finding players who currently don't have a contract at all:</p>
+      <pre>SELECT p.player_name FROM players p
+WHERE p.player_id NOT IN (SELECT player_id FROM player_contracts);</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>players</caption><tr><th>player_id</th><th>player_name</th></tr>
+        <tr><td>1</td><td>Cole Palmer</td></tr><tr><td>2</td><td>Youth Prospect X</td></tr></table>
+        <table class="mini"><caption>player_contracts</caption><tr><th>player_id</th></tr><tr><td>1</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>player_name</th></tr><tr><td>Youth Prospect X</td></tr></table>
+        <p>Player 1 has a contract row, so they're excluded. Player 2 has no matching row in player_contracts at all, so they show up as contract-less.</p>
+      </div></details>
+      <p>ANY: finding players whose wage beats at least one Chelsea player, meaning it just has to be higher than the lowest paid one:</p>
+      <pre>SELECT p.player_name,
+       pc.wage
+FROM players p JOIN player_contracts pc USING (player_id)
+WHERE pc.wage > ANY (
+    SELECT wage FROM player_contracts WHERE club_id = 'CL137'  -- Chelsea
+);</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>player_contracts, Chelsea (CL137) wages</caption><tr><th>wage</th></tr>
+        <tr><td>65000</td></tr><tr><td>40000</td></tr><tr><td>12000</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>player_name</th><th>wage</th></tr><tr><td>Youth Prospect Y</td><td>15000</td></tr></table>
+        <p>A player earning 15000 passes, because 15000 is greater than at least one of Chelsea's wages (12000), even though it's nowhere near their top earner.</p>
+      </div></details>
+      <p>ALL: finding players whose wage beats every single Chelsea player, meaning it has to be higher than even their top earner:</p>
+      <pre>SELECT p.player_name,
+       pc.wage
+FROM players p JOIN player_contracts pc USING (player_id)
+WHERE pc.wage > ALL (
+    SELECT wage FROM player_contracts WHERE club_id = 'CL137'  -- Chelsea
+);</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>player_contracts, Chelsea (CL137) wages</caption><tr><th>wage</th></tr>
+        <tr><td>65000</td></tr><tr><td>40000</td></tr><tr><td>12000</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>player_name</th><th>wage</th></tr><tr><td>Vinícius Jr</td><td>70000</td></tr></table>
+        <p>A player needs to earn more than 65000, the highest of the three Chelsea wages, to satisfy ALL. The player on 15000 who passed the ANY example above would fail this one.</p>
+      </div></details>
+    </div>
+  </div>
+
+  </div>
+
+  <div class="group-box group-sub-advanced">
+  <div class="group-label">Advanced subquery techniques</div>
+  <div class="q" id="b5" data-kw="subquery from derived table nested aggregate">
+    <div class="q-title">Subquery in FROM (a derived table)</div>
+    <div class="q-body">
+      <p>A subquery doesn't have to live in WHERE. You can put one in the FROM clause too, and PostgreSQL will treat it just like a regular table. This is exactly the trick used to get around SQL's rule against nesting aggregates directly:</p>
+      <pre>SELECT ROUND(MAX("Average wage"), 2) "Maximum wage"
+FROM (
+    SELECT AVG(wage) "Average wage" FROM player_contracts GROUP BY club_id
+) "Subquery";</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>player_contracts, sample rows</caption><tr><th>club_id</th><th>wage</th></tr>
+        <tr><td>CL137</td><td>65000</td></tr><tr><td>CL137</td><td>60000</td></tr><tr><td>CL473</td><td>20000</td></tr></table>
+        <table class="mini"><caption>"Subquery" (the inner query's result, one row per club)</caption><tr><th>Average wage</th></tr>
+        <tr><td>62500.00</td></tr><tr><td>20000.00</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>Maximum wage</th></tr><tr><td>62500.00</td></tr></table>
+        <p>PostgreSQL first runs the inner query and materialises it as if it were a real table called "Subquery", with one "Average wage" row per club. The outer query then just does MAX/ROUND over that small table.</p>
+      </div></details>
+    </div>
+  </div>
+
+  <div class="q" id="b6" data-kw="subquery join comparison explain analyze">
+    <div class="q-title">Subquery vs JOIN</div>
+    <div class="q-body">
+      <p>The same result can often be written either as a correlated subquery or as a JOIN, and they're not always equal in performance. A JOIN generally runs faster because the column being matched on, like an ID, can be used almost like an index for quick lookups. A scalar subquery, on the other hand, effectively runs once for every row in the outer query, which adds up.</p>
+      <pre>-- Using a SUBQUERY
+EXPLAIN ANALYZE SELECT game_id,
+       (SELECT team_city FROM nba.teams t WHERE t.team_id = g.home_team_id) AS home_city
+FROM nba.games g;
+
+-- Using a JOIN
+EXPLAIN ANALYZE SELECT game_id,
+       team_city "Home city"
+FROM games g JOIN teams t ON (t.team_id = g.home_team_id);</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>games</caption><tr><th>game_id</th><th>home_team_id</th></tr><tr><td>22400677</td><td>2</td></tr></table>
+        <table class="mini"><caption>teams</caption><tr><th>team_id</th><th>team_city</th></tr><tr><td>2</td><td>Boston</td></tr></table>
+        <table class="mini result"><caption>result (same for both versions)</caption><tr><th>game_id</th><th>home_city</th></tr><tr><td>22400677</td><td>Boston</td></tr></table>
+        <p>Both versions return the same rows. The difference shows up in EXPLAIN ANALYZE's timing output: the subquery version re-runs a lookup against nba.teams for every single game row, while the JOIN version matches team_id once using an efficient join strategy, so it typically comes back faster on a large games table.</p>
+      </div></details>
+    </div>
+  </div>
+
+  <div class="q" id="b7" data-kw="update with subquery">
+    <div class="q-title">UPDATE with a subquery</div>
+    <div class="q-body">
+      <p>Subqueries aren't just for reading data, they can feed straight into an UPDATE. Here every player with a NULL wage gets set to the average wage of everyone else:</p>
+      <pre>UPDATE player_contracts
+SET wage = (
+    SELECT ROUND(AVG(wage)) FROM player_contracts WHERE wage IS NOT NULL
+)
+WHERE wage IS NULL;</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>player_contracts (before)</caption><tr><th>player_id</th><th>wage</th></tr>
+        <tr><td>1</td><td>50000</td></tr><tr><td>2</td><td><i>NULL</i></td></tr><tr><td>3</td><td>30000</td></tr></table>
+        <table class="mini result"><caption>player_contracts (after)</caption><tr><th>player_id</th><th>wage</th></tr>
+        <tr><td>1</td><td>50000</td></tr><tr><td>2</td><td>40000</td></tr><tr><td>3</td><td>30000</td></tr></table>
+        <p>The subquery works out the average of the known wages (50000 and 30000, so 40000), and that value gets written into the one row that was NULL.</p>
+      </div></details>
+    </div>
+  </div>
+
+  <div class="q" id="b8" data-kw="cte common table expression with as">
+    <div class="q-title">CTE as an alternative to a subquery</div>
+    <div class="q-body">
+      <div class="term"><div class="term-head">WITH name AS (...)</div><div class="term-desc">A Common Table Expression computes a result once, gives it a name, and lets you query it like a temporary table afterwards. It reads much more clearly than nesting everything inside one giant SELECT, even though it's solving the same kind of problem a subquery would.</div></div>
+      <pre>WITH player_avg AS (
+    SELECT person_id, AVG(points) AS avg_points
+    FROM player_statistics
+    GROUP BY person_id
+)
+SELECT person_id,
+       avg_points
+FROM player_avg
+WHERE avg_points >= 20
+ORDER BY avg_points DESC;</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>player_avg (the CTE's result)</caption><tr><th>person_id</th><th>avg_points</th></tr>
+        <tr><td>201939</td><td>28.4</td></tr><tr><td>1626157</td><td>17.9</td></tr></table>
+        <table class="mini result"><caption>final result</caption><tr><th>person_id</th><th>avg_points</th></tr>
+        <tr><td>201939</td><td>28.4</td></tr></table>
+        <p>The CTE computes every player's average points once, and the outer query just filters that named result down to players averaging 20 or more. Player 1626157 gets dropped since 17.9 is below the cutoff.</p>
+      </div></details>
+    </div>
+  </div>
+
+  <div class="q" id="b9" data-kw="case expression function conditional">
+    <div class="q-title">CASE combined with functions and subqueries</div>
+    <div class="q-body">
+      <p>CASE can wrap around an aggregate function to sort groups into categories based on where their aggregate value lands:</p>
+      <pre>SELECT c.club_name,
+       ROUND(AVG(pc.wage)) "Average wage",
+       CASE
+    WHEN AVG(pc.wage) >= 40000 THEN 'High Budget Club'
+    WHEN AVG(pc.wage) BETWEEN 10000 AND 39999 THEN 'Medium Budget Club'
+    WHEN AVG(pc.wage) < 10000 THEN 'Low Budget Club'
+    ELSE 'No Data'
+END "Budget category"
+FROM clubs c JOIN player_contracts pc USING (club_id)
+WHERE pc.wage IS NOT NULL
+GROUP BY c.club_name
+ORDER BY AVG(pc.wage) DESC;</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>player_contracts, sample rows</caption><tr><th>club_name</th><th>wage</th></tr>
+        <tr><td>Chelsea</td><td>65000</td></tr><tr><td>Chelsea</td><td>39000</td></tr><tr><td>Shamrock Rovers</td><td>1800</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>club_name</th><th>Average wage</th><th>Budget category</th></tr>
+        <tr><td>Chelsea</td><td>52000</td><td>High Budget Club</td></tr>
+        <tr><td>Shamrock Rovers</td><td>1800</td><td>Low Budget Club</td></tr></table>
+        <p>The CASE expression looks at each club's own AVG(pc.wage), which GROUP BY has already computed, and slots it into whichever bucket it falls into.</p>
+      </div></details>
+    </div>
+  </div>
+
+  </div>
+
+  </div>
+
+  <div class="footer-note">Use the search box above to jump around. Good luck with the exam.</div>
+
+</div>
+
+</div>
+
+<script>
+  const search = document.getElementById('search');
+  const items = Array.from(document.querySelectorAll('.q'));
+  search.addEventListener('input', () => {
+    const term = search.value.trim().toLowerCase();
+    items.forEach(item => {
+      const kw = item.getAttribute('data-kw') || '';
+      const text = item.textContent.toLowerCase();
+      const match = !term || kw.includes(term) || text.includes(term);
+      item.classList.toggle('hidden', !match);
+    });
+  });
+
+  let collapsed = false;
+  const expandBtn = document.getElementById('expandBtn');
+  expandBtn.addEventListener('click', () => {
+    collapsed = !collapsed;
+    document.querySelectorAll('.q-body').forEach(b => {
+      b.style.display = collapsed ? 'none' : '';
+    });
+    expandBtn.textContent = collapsed ? 'Expand all' : 'Collapse all';
+  });
+
+  document.getElementById('printBtn').addEventListener('click', () => window.print());
+
+  const tocLinks = Array.from(document.querySelectorAll('.toc a'));
+  const targets = tocLinks
+    .map(a => document.getElementById(a.getAttribute('href').slice(1)))
+    .filter(Boolean);
+
+  const tocEl = document.getElementById('toc');
+
+  function setActive(id){
+    let activeLink = null;
+    tocLinks.forEach(a => {
+      const isActive = a.getAttribute('href') === '#' + id;
+      a.classList.toggle('active', isActive);
+      if (isActive) activeLink = a;
+    });
+    if (activeLink && tocEl) {
+      const linkTop = activeLink.offsetTop;
+      const linkBottom = linkTop + activeLink.offsetHeight;
+      const viewTop = tocEl.scrollTop;
+      const viewBottom = viewTop + tocEl.clientHeight;
+      const margin = 24;
+      if (linkTop < viewTop + margin || linkBottom > viewBottom - margin) {
+        const target = linkTop - tocEl.clientHeight / 2 + activeLink.offsetHeight / 2;
+        tocEl.scrollTo({ top: Math.max(0, target), behavior: 'smooth' });
+      }
+    }
+  }
+
+  if ('IntersectionObserver' in window && targets.length){
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries
+        .filter(e => e.isIntersecting)
+        .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+      if (visible.length) setActive(visible[0].target.id);
+    }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+    targets.forEach(t => observer.observe(t));
+  }
+
+  function closeToc(){ document.body.classList.remove('toc-open'); }
+  function openToc(){ document.body.classList.add('toc-open'); }
+
+  tocLinks.forEach(a => {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      const target = document.getElementById(a.getAttribute('href').slice(1));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setActive(a.getAttribute('href').slice(1));
+      closeToc();
+    });
+  });
+
+  const menuToggle = document.getElementById('menuToggle');
+  const tocOverlay = document.getElementById('tocOverlay');
+  const tocClose = document.getElementById('tocClose');
+  if (menuToggle) menuToggle.addEventListener('click', openToc);
+  if (tocOverlay) tocOverlay.addEventListener('click', closeToc);
+  if (tocClose) tocClose.addEventListener('click', closeToc);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeToc(); });
+</script>
+
+</body>
+</html>

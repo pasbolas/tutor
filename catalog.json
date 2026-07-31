@@ -160,6 +160,12 @@
       "type": "folder",
       "children": [
         {
+          "name": "Functions and Subqueries",
+          "type": "file",
+          "href": "Databases/Website/revision.html",
+          "meta": "Revision"
+        },
+        {
           "name": "Course Topics",
           "type": "folder",
           "children": [
