@@ -385,7 +385,51 @@
     border-radius:2px;
   }
   .hl-func{ text-decoration-color:#8b8bf0; }
-  .hl-sub{ text-decoration-color:#4fd1c1; }
+  .hl-sub{
+    text-decoration-color:#4fd1c1;
+    position:relative;
+    cursor:help;
+  }
+  .hl-sub::after{
+    content:"Subquery";
+    position:absolute;
+    bottom:100%;
+    left:0;
+    margin-bottom:8px;
+    background:#0f9d8f;
+    color:#fff;
+    font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:.2px;
+    padding:4px 9px;
+    border-radius:6px;
+    white-space:nowrap;
+    box-shadow:0 4px 12px rgba(0,0,0,.35);
+    opacity:0;
+    transform:translateY(4px);
+    transition:opacity .15s ease, transform .15s ease;
+    pointer-events:none;
+    z-index:30;
+  }
+  .hl-sub::before{
+    content:"";
+    position:absolute;
+    bottom:100%;
+    left:10px;
+    margin-bottom:2px;
+    border:5px solid transparent;
+    border-top-color:#0f9d8f;
+    opacity:0;
+    transform:translateY(4px);
+    transition:opacity .15s ease, transform .15s ease;
+    pointer-events:none;
+    z-index:30;
+  }
+  .hl-sub:hover::after, .hl-sub:hover::before{
+    opacity:1;
+    transform:translateY(0);
+  }
   .demo-legend{
     display:flex;
     flex-wrap:wrap;
@@ -1301,7 +1345,7 @@ GROUP BY club_name ORDER BY club_name;</pre>
     <div class="q-body">
       <p>The general shape is: run the inner query first, then let the outer query use whatever it produced.</p>
       <pre>SELECT attribute_name FROM table_name
-WHERE condition (SELECT attribute FROM table_name WHERE condition);</pre>
+WHERE condition <span class="hl-sub">(SELECT attribute FROM table_name WHERE condition)</span>;</pre>
     </div>
   </div>
 
@@ -1312,7 +1356,7 @@ WHERE condition (SELECT attribute FROM table_name WHERE condition);</pre>
       <pre>SELECT p.player_name,
        pc.wage
 FROM players p JOIN player_contracts pc USING (player_id)
-WHERE pc.wage > (SELECT AVG(wage) FROM player_contracts);</pre>
+WHERE pc.wage > <span class="hl-sub">(SELECT AVG(wage) FROM player_contracts)</span>;</pre>
       <details class="example"><summary>Example with sample data</summary><div class="example-body">
         <table class="mini"><caption>player_contracts, a few sample rows (AVG(wage) across the whole table works out to 24,000)</caption><tr><th>player_name</th><th>wage</th></tr>
         <tr><td>Cole Palmer</td><td>52000</td></tr><tr><td>Enzo Fernandez</td><td>65000</td></tr><tr><td>Youth Prospect X</td><td>1200</td></tr></table>
@@ -1324,11 +1368,11 @@ WHERE pc.wage > (SELECT AVG(wage) FROM player_contracts);</pre>
       <pre>SELECT p.player_name,
        pc.wage
 FROM players p JOIN player_contracts pc USING (player_id)
-WHERE pc.wage > (
+WHERE pc.wage > <span class="hl-sub">(
     SELECT MAX(wage) FROM player_contracts WHERE club_id = 'CL137'  -- Chelsea
-) AND pc.value > (
+)</span> AND pc.value > <span class="hl-sub">(
     SELECT AVG(value) FROM player_contracts WHERE club_id = 'CL473'  -- Real Madrid
-);</pre>
+)</span>;</pre>
       <details class="example"><summary>Example with sample data</summary><div class="example-body">
         <table class="mini"><caption>player_contracts, sample rows</caption><tr><th>club_id</th><th>wage</th><th>value</th></tr>
         <tr><td>CL137 (Chelsea)</td><td>65000</td><td>&mdash;</td></tr><tr><td>CL473 (Real Madrid)</td><td>&mdash;</td><td>45,000,000</td></tr>
@@ -1347,10 +1391,10 @@ WHERE pc.wage > (
 SELECT c.club_id,
        c.club_name
 FROM clubs c
-WHERE EXISTS (
+WHERE EXISTS <span class="hl-sub">(
     SELECT 1 FROM player_contracts pc
     WHERE pc.club_id = c.club_id AND pc.wage >= 50000
-);</pre>
+)</span>;</pre>
       <details class="example"><summary>Example with sample data</summary><div class="example-body">
         <table class="mini"><caption>clubs</caption><tr><th>club_id</th><th>club_name</th></tr>
         <tr><td>CL137</td><td>Chelsea</td></tr><tr><td>CL999</td><td>Shamrock Rovers</td></tr></table>
@@ -1378,9 +1422,9 @@ WHERE EXISTS (
        c.club_name,
        pc.wage
 FROM players p JOIN player_contracts pc USING (player_id) JOIN clubs c USING (club_id)
-WHERE pc.club_id IN (
+WHERE pc.club_id IN <span class="hl-sub">(
     SELECT DISTINCT club_id FROM player_contracts WHERE wage >= 50000
-);</pre>
+)</span>;</pre>
       <details class="example"><summary>Example with sample data</summary><div class="example-body">
         <table class="mini"><caption>player_contracts, sample rows</caption><tr><th>club_id</th><th>wage</th></tr>
         <tr><td>CL137</td><td>65000</td></tr><tr><td>CL137</td><td>1500</td></tr><tr><td>CL999</td><td>1200</td></tr></table>
@@ -1390,7 +1434,7 @@ WHERE pc.club_id IN (
       </div></details>
       <p>NOT IN: finding players who currently don't have a contract at all:</p>
       <pre>SELECT p.player_name FROM players p
-WHERE p.player_id NOT IN (SELECT player_id FROM player_contracts);</pre>
+WHERE p.player_id NOT IN <span class="hl-sub">(SELECT player_id FROM player_contracts)</span>;</pre>
       <details class="example"><summary>Example with sample data</summary><div class="example-body">
         <table class="mini"><caption>players</caption><tr><th>player_id</th><th>player_name</th></tr>
         <tr><td>1</td><td>Cole Palmer</td></tr><tr><td>2</td><td>Youth Prospect X</td></tr></table>
@@ -1402,9 +1446,9 @@ WHERE p.player_id NOT IN (SELECT player_id FROM player_contracts);</pre>
       <pre>SELECT p.player_name,
        pc.wage
 FROM players p JOIN player_contracts pc USING (player_id)
-WHERE pc.wage > ANY (
+WHERE pc.wage > ANY <span class="hl-sub">(
     SELECT wage FROM player_contracts WHERE club_id = 'CL137'  -- Chelsea
-);</pre>
+)</span>;</pre>
       <details class="example"><summary>Example with sample data</summary><div class="example-body">
         <table class="mini"><caption>player_contracts, Chelsea (CL137) wages</caption><tr><th>wage</th></tr>
         <tr><td>65000</td></tr><tr><td>40000</td></tr><tr><td>12000</td></tr></table>
@@ -1415,9 +1459,9 @@ WHERE pc.wage > ANY (
       <pre>SELECT p.player_name,
        pc.wage
 FROM players p JOIN player_contracts pc USING (player_id)
-WHERE pc.wage > ALL (
+WHERE pc.wage > ALL <span class="hl-sub">(
     SELECT wage FROM player_contracts WHERE club_id = 'CL137'  -- Chelsea
-);</pre>
+)</span>;</pre>
       <details class="example"><summary>Example with sample data</summary><div class="example-body">
         <table class="mini"><caption>player_contracts, Chelsea (CL137) wages</caption><tr><th>wage</th></tr>
         <tr><td>65000</td></tr><tr><td>40000</td></tr><tr><td>12000</td></tr></table>
@@ -1436,9 +1480,9 @@ WHERE pc.wage > ALL (
     <div class="q-body">
       <p>A subquery doesn't have to live in WHERE. You can put one in the FROM clause too, and PostgreSQL will treat it just like a regular table. This is exactly the trick used to get around SQL's rule against nesting aggregates directly:</p>
       <pre>SELECT ROUND(MAX("Average wage"), 2) "Maximum wage"
-FROM (
+FROM <span class="hl-sub">(
     SELECT AVG(wage) "Average wage" FROM player_contracts GROUP BY club_id
-) "Subquery";</pre>
+)</span> "Subquery";</pre>
       <details class="example"><summary>Example with sample data</summary><div class="example-body">
         <table class="mini"><caption>player_contracts, sample rows</caption><tr><th>club_id</th><th>wage</th></tr>
         <tr><td>CL137</td><td>65000</td></tr><tr><td>CL137</td><td>60000</td></tr><tr><td>CL473</td><td>20000</td></tr></table>
@@ -1456,7 +1500,7 @@ FROM (
       <p>The same result can often be written either as a correlated subquery or as a JOIN, and they're not always equal in performance. A JOIN generally runs faster because the column being matched on, like an ID, can be used almost like an index for quick lookups. A scalar subquery, on the other hand, effectively runs once for every row in the outer query, which adds up.</p>
       <pre>-- Using a SUBQUERY
 EXPLAIN ANALYZE SELECT game_id,
-       (SELECT team_city FROM nba.teams t WHERE t.team_id = g.home_team_id) AS home_city
+       <span class="hl-sub">(SELECT team_city FROM nba.teams t WHERE t.team_id = g.home_team_id)</span> AS home_city
 FROM nba.games g;
 
 -- Using a JOIN
@@ -1477,9 +1521,9 @@ FROM games g JOIN teams t ON (t.team_id = g.home_team_id);</pre>
     <div class="q-body">
       <p>Subqueries aren't just for reading data, they can feed straight into an UPDATE. Here every player with a NULL wage gets set to the average wage of everyone else:</p>
       <pre>UPDATE player_contracts
-SET wage = (
+SET wage = <span class="hl-sub">(
     SELECT ROUND(AVG(wage)) FROM player_contracts WHERE wage IS NOT NULL
-)
+)</span>
 WHERE wage IS NULL;</pre>
       <details class="example"><summary>Example with sample data</summary><div class="example-body">
         <table class="mini"><caption>player_contracts (before)</caption><tr><th>player_id</th><th>wage</th></tr>
@@ -1495,11 +1539,11 @@ WHERE wage IS NULL;</pre>
     <div class="q-title">CTE as an alternative to a subquery</div>
     <div class="q-body">
       <div class="term"><div class="term-head">WITH name AS (...)</div><div class="term-desc">A Common Table Expression computes a result once, gives it a name, and lets you query it like a temporary table afterwards. It reads much more clearly than nesting everything inside one giant SELECT, even though it's solving the same kind of problem a subquery would.</div></div>
-      <pre>WITH player_avg AS (
+      <pre>WITH player_avg AS <span class="hl-sub">(
     SELECT person_id, AVG(points) AS avg_points
     FROM player_statistics
     GROUP BY person_id
-)
+)</span>
 SELECT person_id,
        avg_points
 FROM player_avg
