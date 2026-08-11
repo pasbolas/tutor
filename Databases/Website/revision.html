@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <title>Databases 1: Revision, Functions & Subqueries</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#ffffff;
@@ -32,14 +35,41 @@
   *{box-sizing:border-box;}
   body{
     margin:0;
+    padding-top:34px;
     background:
       radial-gradient(circle at 10% 0%, #2c2f6b 0%, transparent 55%),
       radial-gradient(circle at 90% 0%, #0f5a52 0%, transparent 55%),
       linear-gradient(180deg, #14162a 0%, #1b1d33 100%);
-    font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-family:'Atkinson Hyperlegible', Verdana, Tahoma, 'Comic Sans MS', -apple-system, sans-serif;
     color:var(--ink);
-    line-height:1.5;
+    line-height:1.7;
+    letter-spacing:.2px;
   }
+  .flow-header{
+    position:fixed;
+    top:0; left:0; right:0;
+    z-index:1200;
+    height:34px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(14,15,28,.72);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(255,255,255,.08);
+    padding:0 12px;
+  }
+  .flow-header-inner{
+    font-family:'SF Mono','Courier New',monospace;
+    font-size:11.5px;
+    letter-spacing:.3px;
+    color:rgba(255,255,255,.5);
+    white-space:nowrap;
+    overflow-x:auto;
+    max-width:100%;
+  }
+  .flow-header-inner b{ color:rgba(255,255,255,.8); font-weight:600; }
+  .flow-header-arrow{ color:rgba(255,255,255,.28); margin:0 7px; }
   .layout{
     max-width:1180px;
     margin:36px auto;
@@ -52,13 +82,13 @@
     width:250px;
     flex-shrink:0;
     position:sticky;
-    top:24px;
+    top:58px;
     max-height:calc(100vh - 48px);
     overflow-y:auto;
     background:transparent;
     border-radius:16px;
     padding:20px 14px 20px 4px;
-    font-size:13px;
+    font-size:15px;
     scrollbar-width:thin;
     scrollbar-color:rgba(255,255,255,.22) transparent;
   }
@@ -67,7 +97,7 @@
   .toc::-webkit-scrollbar-thumb{ background:rgba(255,255,255,.18); border-radius:10px; }
   .toc::-webkit-scrollbar-thumb:hover{ background:rgba(255,255,255,.32); }
   .toc-page-title{
-    font-size:12px;
+    font-size:14px;
     font-weight:700;
     color:rgba(255,255,255,.4);
     text-transform:uppercase;
@@ -89,7 +119,7 @@
     border-left:2px solid rgba(255,255,255,.14);
   }
   .toc-sub-label{
-    font-size:11px;
+    font-size:13px;
     font-weight:700;
     text-transform:uppercase;
     letter-spacing:.3px;
@@ -136,7 +166,7 @@
     border-radius:8px;
     background:rgba(255,255,255,.12);
     color:#fff;
-    font-size:16px;
+    font-size:18px;
     line-height:1;
     cursor:pointer;
     align-items:center;
@@ -145,7 +175,7 @@
   .menu-toggle{
     display:none;
     position:fixed;
-    top:18px;
+    top:52px;
     left:18px;
     z-index:1100;
     width:44px;
@@ -197,10 +227,10 @@
     .menu-toggle{ display:flex; }
     .toc{
       position:fixed;
-      top:0;
+      top:34px;
       left:0;
-      height:100vh;
-      max-height:100vh;
+      height:calc(100vh - 34px);
+      max-height:calc(100vh - 34px);
       width:min(84vw, 300px);
       border-radius:0 18px 18px 0;
       border-right:1px solid rgba(255,255,255,.1);
@@ -213,10 +243,10 @@
     }
     body.toc-open .toc{ transform:translateX(0); }
     body.toc-open .toc-overlay{ opacity:1; pointer-events:auto; }
-    .toc-overlay{ display:block; }
+    .toc-overlay{ display:block; top:34px; }
     .toc-close{ display:flex; }
-    .sheet{ padding:76px 20px 48px; border-radius:14px; }
-    .page-header h1{ font-size:23px; }
+    .sheet{ padding:110px 20px 48px; border-radius:14px; }
+    .page-header h1{ font-size:26px; }
     .compare{ grid-template-columns:1fr; }
     .toolbar{ flex-wrap:wrap; }
     #search{ min-width:0; }
@@ -237,7 +267,7 @@
   .group-box .q{ background:#fff; }
   .group-label{
     display:inline-block;
-    font-size:12px;
+    font-size:14px;
     font-weight:700;
     text-transform:uppercase;
     letter-spacing:.5px;
@@ -262,7 +292,7 @@
   }
   .page-header h1{
     font-family:var(--serif);
-    font-size:32px;
+    font-size:37px;
     margin:0;
     font-weight:700;
     letter-spacing:-.3px;
@@ -279,7 +309,7 @@
     gap:10px;
     align-items:center;
     margin-bottom:32px;
-    font-size:13px;
+    font-size:15px;
   }
   #search{
     flex:1;
@@ -287,7 +317,7 @@
     border:1px solid var(--line);
     border-radius:8px;
     background:#f8f9fb;
-    font-size:14px;
+    font-size:16px;
     font-family:inherit;
     transition:border-color .15s, background .15s;
   }
@@ -299,7 +329,7 @@
     background:#fff;
     color:var(--ink);
     cursor:pointer;
-    font-size:13px;
+    font-size:15px;
     font-weight:600;
     font-family:inherit;
     transition:all .15s;
@@ -318,13 +348,13 @@
     align-items:center;
     gap:10px;
     font-family:var(--serif);
-    font-size:20px;
+    font-size:23px;
     font-weight:700;
     margin:0 0 12px;
     color:var(--ink);
   }
   .intro .section-badge{ background:linear-gradient(135deg, var(--c-accent), #f3b45c); }
-  .intro p{margin:8px 0; font-size:15px; line-height:1.7;}
+  .intro p{margin:8px 0; font-size:17px; line-height:1.7;}
   .compare{
     display:grid;
     grid-template-columns:1fr 1fr;
@@ -340,13 +370,13 @@
   .compare-card h3{
     font-family:var(--serif);
     margin:0 0 8px;
-    font-size:16px;
+    font-size:18px;
     font-weight:700;
   }
   .compare-card.func h3{color:var(--a-accent);}
   .compare-card.sub h3{color:var(--b-accent);}
   .compare-card ul{margin:0; padding-left:20px;}
-  .compare-card li{font-size:14px; margin:5px 0; line-height:1.55;}
+  .compare-card li{font-size:16px; margin:5px 0; line-height:1.55;}
   @media (max-width:600px){ .compare{grid-template-columns:1fr;} }
 
   .demo-box{
@@ -358,7 +388,7 @@
   }
   .demo-box h2{
     font-family:var(--serif);
-    font-size:18px;
+    font-size:21px;
     font-weight:700;
     margin:0 0 8px;
     color:var(--ink);
@@ -376,7 +406,7 @@
     padding:16px 18px;
     overflow-x:auto;
     font-family:'SF Mono','Courier New',monospace;
-    font-size:13px;
+    font-size:15px;
     line-height:1.7;
     margin:0 0 16px;
     white-space:pre;
@@ -401,8 +431,8 @@
     margin-bottom:8px;
     background:#0f9d8f;
     color:#fff;
-    font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    font-size:11px;
+    font-family:'Atkinson Hyperlegible', Verdana, Tahoma, 'Comic Sans MS', -apple-system, sans-serif;
+    font-size:13px;
     font-weight:600;
     letter-spacing:.2px;
     padding:4px 9px;
@@ -437,7 +467,7 @@
     display:flex;
     flex-wrap:wrap;
     gap:18px;
-    font-size:13px;
+    font-size:15px;
     color:var(--muted);
   }
   .legend-item{ display:flex; align-items:center; gap:8px; }
@@ -458,7 +488,7 @@
     align-items:center;
     gap:12px;
     font-family:var(--serif);
-    font-size:24px;
+    font-size:28px;
     font-weight:700;
     letter-spacing:-.2px;
     margin-top:48px;
@@ -472,7 +502,7 @@
     width:34px;
     height:34px;
     border-radius:10px;
-    font-size:15px;
+    font-size:17px;
     font-weight:700;
     color:#fff;
     flex-shrink:0;
@@ -482,7 +512,7 @@
   .section-a .section-title{ border-bottom:2px solid var(--a-accent-soft); padding-bottom:14px; }
   .section-b .section-title{ border-bottom:2px solid var(--b-accent-soft); padding-bottom:14px; }
   .section-note{
-    font-size:15px;
+    font-size:17px;
     color:var(--muted);
     margin-bottom:22px;
     line-height:1.7;
@@ -509,7 +539,7 @@
     padding:0 6px;
     border-radius:6px;
     font-weight:700;
-    font-size:12px;
+    font-size:14px;
     margin-right:8px;
     color:#fff;
   }
@@ -517,21 +547,21 @@
   .section-b .q-num{ background:var(--b-accent); }
   .q-title{
     font-family:var(--serif);
-    font-size:18px;
+    font-size:21px;
     font-weight:700;
     display:inline;
     vertical-align:middle;
   }
   .q-body{margin-top:13px;}
-  .q-body p{margin:9px 0; line-height:1.7; font-size:15px;}
+  .q-body p{margin:9px 0; line-height:1.7; font-size:17px;}
   .q-body ul{margin:8px 0 10px; padding-left:22px;}
-  .q-body li{margin:5px 0; line-height:1.65; font-size:15px;}
+  .q-body li{margin:5px 0; line-height:1.65; font-size:17px;}
   .keyword{
     font-family:'SF Mono','Courier New',monospace;
     background:var(--code-bg);
     padding:1px 6px;
     border-radius:4px;
-    font-size:13px;
+    font-size:15px;
     color:var(--key-color);
     border:1px solid var(--code-border);
   }
@@ -552,7 +582,7 @@
     margin-bottom:4px;
   }
   .term-desc{
-    font-size:15px;
+    font-size:17px;
     line-height:1.6;
   }
   pre{
@@ -562,7 +592,7 @@
     padding:15px 17px;
     overflow-x:auto;
     font-family:'SF Mono','Courier New',monospace;
-    font-size:13px;
+    font-size:15px;
     line-height:1.6;
     margin:10px 0;
     white-space:pre-wrap;
@@ -579,7 +609,7 @@
   details.example summary{
     cursor:pointer;
     padding:9px 14px;
-    font-size:13px;
+    font-size:15px;
     font-weight:600;
     color:var(--muted);
     list-style:none;
@@ -591,7 +621,7 @@
   details.example summary::-webkit-details-marker{ display:none; }
   details.example summary::before{
     content:"▸";
-    font-size:11px;
+    font-size:13px;
     transition:transform .15s;
   }
   details.example[open] summary::before{ transform:rotate(90deg); }
@@ -599,7 +629,7 @@
   .section-b details.example summary:hover{ color:var(--b-accent); }
   .example-body{
     padding:4px 16px 14px;
-    font-size:14px;
+    font-size:16px;
   }
   .example-body p{margin:6px 0; font-size:13.5px; line-height:1.55; color:var(--muted);}
 
@@ -625,7 +655,7 @@
     border-radius:8px;
     background:#fff;
     font-family:inherit;
-    font-size:13px;
+    font-size:15px;
     font-weight:600;
     color:var(--muted);
     text-align:left;
@@ -633,7 +663,7 @@
   }
   .toggle-btn::before{
     content:"▸";
-    font-size:11px;
+    font-size:13px;
     transition:transform .15s;
     flex-shrink:0;
   }
@@ -665,7 +695,7 @@
     border-collapse:collapse;
     width:100%;
     margin:6px 0 12px;
-    font-size:13px;
+    font-size:15px;
   }
   table.mini caption{
     text-align:left;
@@ -694,7 +724,7 @@
   .footer-note{
     margin-top:48px;
     text-align:center;
-    font-size:12px;
+    font-size:14px;
     color:var(--muted);
   }
 
@@ -707,6 +737,8 @@
 </style>
 </head>
 <body>
+
+<div class="flow-header"><div class="flow-header-inner"><b>FROM</b><span class="flow-header-arrow">→</span><b>WHERE</b><span class="flow-header-arrow">→</span><b>GROUP BY</b><span class="flow-header-arrow">→</span><b>HAVING</b><span class="flow-header-arrow">→</span><b>SELECT</b><span class="flow-header-arrow">→</span><b>ORDER BY</b></div></div>
 
 <button class="menu-toggle" id="menuToggle" aria-label="Open index"><span></span></button>
 <div class="toc-overlay" id="tocOverlay"></div>
@@ -1512,11 +1544,13 @@ WHERE condition <span class="hl-sub">(SELECT attribute FROM table_name WHERE con
 FROM players p JOIN player_contracts pc USING (player_id)
 WHERE pc.wage > <span class="hl-sub">(SELECT AVG(wage) FROM player_contracts)</span>;</pre>
       <details class="example"><summary>Example with sample data</summary><div class="example-body">
-        <table class="mini"><caption>player_contracts, a few sample rows (AVG(wage) across the whole table works out to 24,000)</caption><tr><th>player_name</th><th>wage</th></tr>
-        <tr><td>Cole Palmer</td><td>52000</td></tr><tr><td>Enzo Fernandez</td><td>65000</td></tr><tr><td>Youth Prospect X</td><td>1200</td></tr></table>
+        <table class="mini"><caption>players</caption><tr><th>player_id</th><th>player_name</th></tr>
+        <tr><td>1</td><td>Cole Palmer</td></tr><tr><td>2</td><td>Enzo Fernandez</td></tr><tr><td>3</td><td>Youth Prospect X</td></tr></table>
+        <table class="mini"><caption>player_contracts</caption><tr><th>player_id</th><th>wage</th></tr>
+        <tr><td>1</td><td>52000</td></tr><tr><td>2</td><td>65000</td></tr><tr><td>3</td><td>1200</td></tr></table>
         <table class="mini result"><caption>result</caption><tr><th>player_name</th><th>wage</th></tr>
         <tr><td>Cole Palmer</td><td>52000</td></tr><tr><td>Enzo Fernandez</td><td>65000</td></tr></table>
-        <p>Only players earning above that 24,000 average make it into the result. Everyone at or below it is filtered out.</p>
+        <p>The JOIN lines up each player_id from players with its matching row in player_contracts. AVG(wage) over these three rows is (52000 + 65000 + 1200) / 3 = 39,400. Cole Palmer and Enzo Fernandez both earn more than that, so they make it into the result; Youth Prospect X, on 1200, gets filtered out.</p>
       </div></details>
       <p>You can also chain several single-row subqueries together with AND to build more complex conditions. Here we want players who earn more than Chelsea's top earner and are worth more than the average Real Madrid player:</p>
       <pre>SELECT p.player_name,
