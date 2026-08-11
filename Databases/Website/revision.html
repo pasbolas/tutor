@@ -21,6 +21,9 @@
     --d-accent:#7c3aed;
     --d-accent-soft:#f2ebfe;
     --d-tint:#faf8ff;
+    --green-accent:#16a34a;
+    --green-soft:#dcf5e3;
+    --green-tint:#f3fdf6;
     --code-bg:#f6f7f9;
     --code-border:#e2e4e8;
     --key-color:#c2410c;
@@ -599,6 +602,65 @@
     font-size:14px;
   }
   .example-body p{margin:6px 0; font-size:13.5px; line-height:1.55; color:var(--muted);}
+
+  .dual-toggle{
+    margin:14px 0 8px;
+    padding:14px 14px 6px;
+    border:1px solid var(--green-soft);
+    background:var(--green-tint);
+    border-radius:14px;
+  }
+  .dual-toggle-buttons{
+    display:flex;
+    gap:8px;
+  }
+  .toggle-btn{
+    flex:1;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    cursor:pointer;
+    padding:9px 14px;
+    border:1px solid var(--green-soft);
+    border-radius:8px;
+    background:#fff;
+    font-family:inherit;
+    font-size:13px;
+    font-weight:600;
+    color:var(--muted);
+    text-align:left;
+    user-select:none;
+  }
+  .toggle-btn::before{
+    content:"▸";
+    font-size:11px;
+    transition:transform .15s;
+    flex-shrink:0;
+  }
+  .toggle-btn.open::before{ transform:rotate(90deg); }
+  .toggle-btn.open{ background:var(--green-accent); color:#fff; border-color:var(--green-accent); }
+  .toggle-btn:hover{ color:var(--green-accent); border-color:var(--green-accent); }
+  .dual-toggle-panel{
+    display:none;
+    border:1px solid var(--green-soft);
+    border-radius:8px;
+    background:#fff;
+    margin-top:8px;
+  }
+  .dual-toggle-panel.open{ display:block; }
+  .flow-title{
+    font-size:11.5px !important;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+    color:var(--green-accent) !important;
+    margin-top:2px !important;
+  }
+  .flow-step{
+    margin-top:16px !important;
+    font-size:14.5px !important;
+    color:var(--ink) !important;
+  }
   table.mini{
     border-collapse:collapse;
     width:100%;
@@ -1229,13 +1291,105 @@ SELECT club_name,
 FROM player_contracts JOIN players USING (player_id) JOIN clubs USING (club_id)
 GROUP BY club_name, nationality
 ORDER BY 2, 3 DESC;</pre>
-      <details class="example"><summary>Example with sample data</summary><div class="example-body">
-        <table class="mini"><caption>player_contracts (joined to clubs), a few sample rows out of a full 52-row table</caption><tr><th>club_name</th><th>player_id</th></tr>
-        <tr><td>Chelsea</td><td>1</td></tr><tr><td>Chelsea</td><td>2</td></tr><tr><td>Real Madrid</td><td>3</td></tr><tr><td>...</td><td>...</td></tr></table>
-        <table class="mini result"><caption>result: players per club</caption><tr><th>club_name</th><th>Players with contract</th></tr>
-        <tr><td>Chelsea</td><td>27</td></tr><tr><td>Real Madrid</td><td>25</td></tr></table>
-        <p>Every player row gets rolled up into one count per club_name, which is exactly what GROUP BY is for. The full table has 27 Chelsea rows and 25 Real Madrid rows; only a few are shown above.</p>
-      </div></details>
+      <div class="dual-toggle">
+        <div class="dual-toggle-buttons">
+          <button type="button" class="toggle-btn" data-target="gb-multi-example">Example with sample data</button>
+          <button type="button" class="toggle-btn" data-target="gb-multi-explain">Explanation</button>
+        </div>
+        <div class="dual-toggle-panel" id="gb-multi-example">
+          <div class="example-body">
+            <table class="mini"><caption>player_contracts (joined to clubs), a few sample rows out of a full 52-row table</caption><tr><th>club_name</th><th>player_id</th></tr>
+            <tr><td>Chelsea</td><td>1</td></tr><tr><td>Chelsea</td><td>2</td></tr><tr><td>Real Madrid</td><td>3</td></tr><tr><td>...</td><td>...</td></tr></table>
+            <table class="mini result"><caption>result: players per club</caption><tr><th>club_name</th><th>Players with contract</th></tr>
+            <tr><td>Chelsea</td><td>27</td></tr><tr><td>Real Madrid</td><td>25</td></tr></table>
+            <p>Every player row gets rolled up into one count per club_name, which is exactly what GROUP BY is for. The full table has 27 Chelsea rows and 25 Real Madrid rows; only a few are shown above.</p>
+          </div>
+        </div>
+        <div class="dual-toggle-panel" id="gb-multi-explain">
+          <div class="example-body">
+            <p class="flow-title">SQL Query Flow</p>
+            <pre>SELECT club_name,
+       nationality,
+       ROUND(AVG(wage), 2) "Average wage"
+FROM player_contracts
+JOIN players USING (player_id)
+JOIN clubs USING (club_id)
+GROUP BY club_name, nationality
+ORDER BY 2, 3 DESC;</pre>
+
+            <p class="flow-step"><b>1. <span class="keyword">FROM</span> and <span class="keyword">JOIN</span></b></p>
+            <pre>FROM player_contracts
+JOIN players USING (player_id)
+JOIN clubs USING (club_id)</pre>
+            <p>This combines data from the three tables:</p>
+            <ul>
+              <li><span class="keyword">player_contracts</span></li>
+              <li><span class="keyword">players</span></li>
+              <li><span class="keyword">clubs</span></li>
+            </ul>
+            <p><span class="keyword">USING (player_id)</span> means:</p>
+            <pre>player_contracts.player_id = players.player_id</pre>
+            <p><span class="keyword">USING (club_id)</span> means:</p>
+            <pre>player_contracts.club_id = clubs.club_id</pre>
+            <p>Example joined data:</p>
+            <pre>Chelsea | Irish   | 40000
+Chelsea | Irish   | 60000
+Chelsea | English | 90000
+Arsenal | Irish   | 30000
+Arsenal | English | 50000</pre>
+
+            <p class="flow-step"><b>2. <span class="keyword">GROUP BY</span></b></p>
+            <pre>GROUP BY club_name, nationality</pre>
+            <p>This creates one group for every unique combination of:</p>
+            <pre>club_name + nationality</pre>
+            <p>Example:</p>
+            <pre>Chelsea + Irish
+    40000
+    60000
+
+Chelsea + English
+    90000
+
+Arsenal + Irish
+    30000
+
+Arsenal + English
+    50000</pre>
+            <p><b>Important:</b> <span class="keyword">GROUP BY club_name, nationality</span> does not group club_name and nationality separately. It groups by their combination.</p>
+
+            <p class="flow-step"><b>3. <span class="keyword">AVG(wage)</span></b></p>
+            <pre>AVG(wage)</pre>
+            <p>Calculates the average wage inside each group. Example:</p>
+            <pre>Chelsea + Irish
+(40000 + 60000) / 2
+= 50000</pre>
+            <p>So the grouped result becomes:</p>
+            <pre>Chelsea | Irish   | 50000
+Chelsea | English | 90000
+Arsenal | Irish   | 30000
+Arsenal | English | 50000</pre>
+
+            <p class="flow-step"><b>4. <span class="keyword">ROUND</span></b></p>
+            <pre>ROUND(AVG(wage), 2)</pre>
+            <p>Rounds the average wage to 2 decimal places. Example:</p>
+            <pre>50000.456</pre>
+            <p>becomes:</p>
+            <pre>50000.46</pre>
+            <p><span class="keyword">"Average wage"</span> is the alias for that calculated column.</p>
+
+            <p class="flow-step"><b>5. <span class="keyword">ORDER BY</span></b></p>
+            <pre>ORDER BY 2, 3 DESC;</pre>
+            <p>The numbers refer to the positions in the SELECT list:</p>
+            <pre>1 = club_name
+2 = nationality
+3 = Average wage</pre>
+            <p>So this is equivalent to:</p>
+            <pre>ORDER BY nationality ASC,
+         "Average wage" DESC;</pre>
+            <p>SQL first sorts by nationality alphabetically. Then, if multiple rows have the same nationality, it sorts their average wages from highest to lowest.</p>
+          </div>
+        </div>
+      </div>
       <p>AVG, SUM, MIN, and MAX can all be combined in the same query, and MIN/MAX also work on dates and even strings, where they follow alphabetical order.</p>
       <pre>SELECT nationality "Nationality",
        COUNT(*) "Number of players",
@@ -1621,6 +1775,14 @@ ORDER BY AVG(pc.wage) DESC;</pre>
 
   document.getElementById('printBtn').addEventListener('click', () => window.print());
 
+  document.querySelectorAll('.toggle-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const panel = document.getElementById(btn.getAttribute('data-target'));
+      const isOpen = btn.classList.toggle('open');
+      if (panel) panel.classList.toggle('open', isOpen);
+    });
+  });
+
   const tocLinks = Array.from(document.querySelectorAll('.toc a'));
   const targets = tocLinks
     .map(a => document.getElementById(a.getAttribute('href').slice(1)))
@@ -1643,7 +1805,7 @@ ORDER BY AVG(pc.wage) DESC;</pre>
       const margin = 24;
       if (linkTop < viewTop + margin || linkBottom > viewBottom - margin) {
         const target = linkTop - tocEl.clientHeight / 2 + activeLink.offsetHeight / 2;
-        tocEl.scrollTo({ top: Math.max(0, target), behavior: 'smooth' });
+        tocEl.scrollTo({ top: Math.max(0, target), behavior: 'auto' });
       }
     }
   }
