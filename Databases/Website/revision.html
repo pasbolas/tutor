@@ -249,7 +249,6 @@
     .page-header h1{ font-size:26px; }
     .compare{ grid-template-columns:1fr; }
     .toolbar{ flex-wrap:wrap; }
-    #search{ min-width:0; }
     .q{ padding:16px 16px; }
     .group-box{ padding:16px 16px 4px; }
   }
@@ -291,17 +290,12 @@
     margin-bottom:26px;
   }
   .page-header h1{
-    font-family:var(--serif);
+    font-family:'Atkinson Hyperlegible', Verdana, Tahoma, 'Comic Sans MS', sans-serif;
     font-size:37px;
     margin:0;
     font-weight:700;
-    letter-spacing:-.3px;
-    color:var(--a-accent);
-    background:linear-gradient(90deg, var(--a-accent), var(--b-accent) 60%, var(--c-accent));
-    -webkit-background-clip:text;
-    background-clip:text;
-    -webkit-text-fill-color:transparent;
-    display:inline-block;
+    letter-spacing:.3px;
+    color:var(--ink);
   }
 
   .toolbar{
@@ -311,18 +305,7 @@
     margin-bottom:32px;
     font-size:15px;
   }
-  #search{
-    flex:1;
-    padding:11px 14px;
-    border:1px solid var(--line);
-    border-radius:8px;
-    background:#f8f9fb;
-    font-size:16px;
-    font-family:inherit;
-    transition:border-color .15s, background .15s;
-  }
-  #search:focus{outline:none; border-color:var(--a-accent); background:#fff;}
-  #printBtn, #expandBtn{
+  #printBtn{
     padding:10px 16px;
     border:1px solid var(--line);
     border-radius:8px;
@@ -334,7 +317,7 @@
     font-family:inherit;
     transition:all .15s;
   }
-  #printBtn:hover, #expandBtn:hover{border-color:var(--a-accent); color:var(--a-accent); box-shadow:0 2px 8px rgba(91,91,214,.15);}
+  #printBtn:hover{border-color:var(--a-accent); color:var(--a-accent); box-shadow:0 2px 8px rgba(91,91,214,.15);}
 
   .intro{
     border:1px solid var(--c-accent-soft);
@@ -790,8 +773,6 @@
   </div>
 
   <div class="toolbar">
-    <input type="text" id="search" placeholder="Search functions, keywords, SQL... (e.g. mod, EXISTS, TO_CHAR)">
-    <button id="expandBtn">Collapse all</button>
     <button id="printBtn">Print</button>
   </div>
 
@@ -934,9 +915,16 @@ FROM research;</pre>
       <pre>SELECT grant_id,
        amount,
        ROUND(amount, 1) "Rounded amount"
-FROM grant_funding;
-
-SELECT grant_id,
+FROM grant_funding;</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>grant_funding</caption><tr><th>grant_id</th><th>amount</th></tr>
+        <tr><td>1</td><td>4520.37</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>grant_id</th><th>amount</th><th>Rounded amount</th></tr>
+        <tr><td>1</td><td>4520.37</td><td>4520.4</td></tr></table>
+        <p>ROUND(amount, 1) keeps just 1 decimal place, so 4520.37 becomes 4520.4 (the 7 rounds the 3 up).</p>
+      </div></details>
+      <p>You can also reach for <span class="keyword">ceil()</span> to round up to the nearest integer, and <span class="keyword">floor()</span> to round down. With no second argument, ROUND rounds to the nearest whole number:</p>
+      <pre>SELECT grant_id,
        amount,
        ROUND(amount) "Round",
        ceil(amount) "Round up",
@@ -945,23 +933,30 @@ FROM grant_funding;</pre>
       <details class="example"><summary>Example with sample data</summary><div class="example-body">
         <table class="mini"><caption>grant_funding</caption><tr><th>grant_id</th><th>amount</th></tr>
         <tr><td>1</td><td>4520.37</td></tr></table>
-        <table class="mini result"><caption>result</caption><tr><th>grant_id</th><th>amount</th><th>Rounded amount</th><th>Round</th><th>Round up</th><th>Round down</th></tr>
-        <tr><td>1</td><td>4520.37</td><td>4520.4</td><td>4520</td><td>4521</td><td>4520</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>grant_id</th><th>amount</th><th>Round</th><th>Round up</th><th>Round down</th></tr>
+        <tr><td>1</td><td>4520.37</td><td>4520</td><td>4521</td><td>4520</td></tr></table>
+        <p>ROUND(amount) rounds .37 to the nearest whole number, 4520. ceil() always rounds up regardless of the decimal, giving 4521. floor() always rounds down, giving 4520 (same as ROUND here purely by coincidence, since .37 is already closer to 4520).</p>
       </div></details>
-      <p>You can also reach for <span class="keyword">ceil()</span> to round up to the nearest integer, and <span class="keyword">floor()</span> to round down.</p>
       <p>A negative second argument in ROUND or TRUNC rounds or truncates to the <i>left</i> of the decimal point instead of the right. So <span class="keyword">-1</span> rounds to the nearest 10s, <span class="keyword">-2</span> to the nearest 100s, and <span class="keyword">-3</span> to the nearest 1000s.</p>
       <pre>SELECT ROUND(450.9234),
        ROUND(450.9234,-1)/*nearest 10s*/,
        ROUND(450.9234,-2)/*nearest 100s*/,
-       ROUND(450.9234,-3)/*nearest 1000s*/;
-SELECT TRUNC(450.923, -1)/*truncate to nearest 10s*/,
-       TRUNC(450.923,-2),
-       TRUNC(450.923,-3);</pre>
+       ROUND(450.9234,-3)/*nearest 1000s*/;</pre>
       <details class="example"><summary>Example with sample data</summary><div class="example-body">
         <table class="mini"><caption>input</caption><tr><th>value</th></tr><tr><td>450.9234</td></tr></table>
         <table class="mini result"><caption>result</caption><tr><th>ROUND()</th><th>ROUND(,-1)</th><th>ROUND(,-2)</th><th>ROUND(,-3)</th></tr>
         <tr><td>451</td><td>450</td><td>500</td><td>0</td></tr></table>
-        <p>TRUNC on 450.923 with the same negative arguments gives 450, 400, 0. TRUNC never rounds up, it just chops the digits off.</p>
+        <p>ROUND() with no second argument rounds to the nearest whole number, 451. ROUND(,-1) rounds to the nearest 10, and 450.9234 is closer to 450 than 460, so it stays 450. ROUND(,-2) rounds to the nearest 100, and 450.9234 is closer to 500 than 400, so it jumps to 500. ROUND(,-3) rounds to the nearest 1000, and 450.9234 is closer to 0 than 1000, so it becomes 0.</p>
+      </div></details>
+      <p>TRUNC works the same way but never rounds, it just chops off whatever is past the position you asked for:</p>
+      <pre>SELECT TRUNC(450.923, -1)/*truncate to nearest 10s*/,
+       TRUNC(450.923,-2),
+       TRUNC(450.923,-3);</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>input</caption><tr><th>value</th></tr><tr><td>450.923</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>TRUNC(,-1)</th><th>TRUNC(,-2)</th><th>TRUNC(,-3)</th></tr>
+        <tr><td>450</td><td>400</td><td>0</td></tr></table>
+        <p>TRUNC(,-1) just chops off everything right of the 10s place, leaving 450 (it doesn't matter that 450.923 is closer to 460, TRUNC never rounds up). TRUNC(,-2) chops down to the 100s place, leaving 400 even though ROUND(,-2) above jumped to 500. TRUNC(,-3) chops everything below the 1000s place, leaving 0.</p>
       </div></details>
       <p>TRUNC in particular is useful in finance, since discarding insignificant decimal places avoids the kind of rounding that could quietly inflate or deflate a balance. It's also handy when a system has to respect a strict resource threshold, since truncating keeps a count within bounds instead of accidentally rounding it up over the limit.</p>
       <p>MOD is mostly used for two things: spotting even and odd patterns, and sorting data into categories based on some numerical rule. For example, if a university wants to automatically split research projects evenly across 3 review committees instead of assigning them by hand, taking the MOD of the research ID does the job:</p>
@@ -984,10 +979,11 @@ ORDER BY 3;</pre>
 FROM research r JOIN research_grant rg USING (research_id) JOIN grant_funding g USING (grant_id);</pre>
       <details class="example"><summary>Example with sample data</summary><div class="example-body">
         <table class="mini"><caption>research</caption><tr><th>research_id</th><th>end_date</th></tr><tr><td>10</td><td>2025-06-01</td></tr></table>
+        <table class="mini"><caption>research_grant (the linking table between research and grant_funding)</caption><tr><th>research_id</th><th>grant_id</th></tr><tr><td>10</td><td>1</td></tr></table>
         <table class="mini"><caption>grant_funding</caption><tr><th>grant_id</th><th>end_date</th></tr><tr><td>1</td><td>2025-05-20</td></tr></table>
         <table class="mini result"><caption>result</caption><tr><th>Research ends</th><th>Grant ends</th><th>Days variance</th></tr>
         <tr><td>2025-06-01</td><td>2025-05-20</td><td>12</td></tr></table>
-        <p>The grant technically ended 12 days before the research did, which would come out as -12 without abs(). Wrapping it in abs() keeps the variance a plain, positive number of days.</p>
+        <p>research_grant doesn't have any interesting columns of its own here, it just links research_id 10 to grant_id 1 so the two JOINs can connect research to grant_funding. The grant technically ended 12 days before the research did, which would come out as -12 without abs(). Wrapping it in abs() keeps the variance a plain, positive number of days.</p>
       </div></details>
     </div>
   </div>
@@ -1013,28 +1009,41 @@ SELECT pg_typeof(now());</pre>
         <table class="mini result"><caption>result</caption><tr><th>now()</th><th>current_date</th><th>pg_typeof(now())</th></tr>
         <tr><td>2026-07-31 14:22:05.113+01</td><td>2026-07-31</td><td>timestamp with time zone</td></tr></table>
       </div></details>
-      <p>You can also do arithmetic directly on dates. Adding a number to a date column shifts it forward that many days, and dividing the gap between two dates gives you a duration.</p>
-      <pre>SELECT current_date + 7;                         -- one week from now
-SELECT (end_date - begin_date) / 7 from research; -- project duration in weeks</pre>
+      <p>You can also do arithmetic directly on dates. Adding a number to a date column shifts it forward that many days:</p>
+      <pre>SELECT current_date + 7;  -- one week from now</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <p><b>Input:</b> none, this reads the server clock rather than any table.</p>
+        <table class="mini result"><caption>result</caption><tr><th>current_date + 7</th></tr>
+        <tr><td>2026-08-07</td></tr></table>
+        <p>If current_date is 2026-07-31, adding 7 days lands on 2026-08-07.</p>
+      </div></details>
+      <p>Dividing the gap between two date columns gives you a duration:</p>
+      <pre>SELECT (end_date - begin_date) / 7
+FROM research;  -- project duration in weeks</pre>
       <details class="example"><summary>Example with sample data</summary><div class="example-body">
         <table class="mini"><caption>research</caption><tr><th>research_id</th><th>begin_date</th><th>end_date</th></tr>
         <tr><td>13</td><td>2025-01-01</td><td>2025-04-01</td></tr></table>
-        <table class="mini result"><caption>result</caption><tr><th>current_date + 7</th><th>duration (weeks)</th></tr>
-        <tr><td>2026-08-07</td><td>12</td></tr></table>
-        <p>If current_date is 2026-07-31, current_date + 7 gives 2026-08-07. For the research row above, (end_date - begin_date) / 7 gives 12 (roughly 12 weeks).</p>
+        <table class="mini result"><caption>result</caption><tr><th>duration (weeks)</th></tr>
+        <tr><td>12</td></tr></table>
+        <p>end_date minus begin_date gives 90 days between 2025-01-01 and 2025-04-01. Dividing by 7 gives roughly 12 weeks.</p>
       </div></details>
       <div class="term"><div class="term-head">age()</div><div class="term-desc">Calculates the difference between the current date and a given date, which is exactly what you want for something like someone's age or how long a project has been running.</div></div>
       <pre>-- scientist's age
 SELECT age(birth_date)
-FROM scientist;
-
--- project's age
-SELECT age(begin_date)
-FROM research;</pre>
+FROM scientist;</pre>
       <details class="example"><summary>Example with sample data</summary><div class="example-body">
         <table class="mini"><caption>scientist</caption><tr><th>sci_id</th><th>birth_date</th></tr><tr><td>1</td><td>1985-03-02</td></tr></table>
         <table class="mini result"><caption>result</caption><tr><th>age(birth_date)</th></tr><tr><td>41 years 4 mons 29 days</td></tr></table>
         <p>Today being 2026-07-31, age(birth_date) works out the gap between that and 1985-03-02.</p>
+      </div></details>
+      <p>The exact same function works on any date column, not just birth dates, such as working out how long a project has been running:</p>
+      <pre>-- project's age
+SELECT age(begin_date)
+FROM research;</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>research</caption><tr><th>research_id</th><th>begin_date</th></tr><tr><td>11</td><td>2026-05-01</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>age(begin_date)</th></tr><tr><td>3 mons</td></tr></table>
+        <p>Today being 2026-07-31, age(begin_date) works out the gap between that and 2026-05-01, which is 3 months. Same function, same logic, just applied to a different column.</p>
       </div></details>
       <p>TO_CHAR has a few formatting tricks worth remembering. <span class="keyword">fm</span> stands for "fill mode" and strips out the leading spaces or padding that formatting would normally add. <span class="keyword">DDspth</span> spells a number out as an ordinal word, like turning "4" into "4th". The suffix codes work like this:</p>
       <ul>
@@ -1044,17 +1053,21 @@ FROM research;</pre>
       </ul>
       <pre>SELECT firstname,
        TO_CHAR(birth_date, 'Month DDspth')
-FROM scientist;
-
-SELECT firstname,
+FROM scientist;</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>scientist</caption><tr><th>firstname</th><th>birth_date</th></tr><tr><td>Aoife</td><td>1985-03-02</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>firstname</th><th>to_char</th></tr>
+        <tr><td>Aoife</td><td>March&nbsp;&nbsp;&nbsp;2nd</td></tr></table>
+        <p>DDspth turns the day number 2 into the ordinal word "2nd". Notice "March" is padded out with trailing spaces to a fixed width of 9 characters, that's the default behaviour without fm.</p>
+      </div></details>
+      <pre>SELECT firstname,
        TO_CHAR(birth_date, 'fmDD Month YYYY')
 FROM scientist;</pre>
       <details class="example"><summary>Example with sample data</summary><div class="example-body">
         <table class="mini"><caption>scientist</caption><tr><th>firstname</th><th>birth_date</th></tr><tr><td>Aoife</td><td>1985-03-02</td></tr></table>
-        <table class="mini result"><caption>result</caption><tr><th>format</th><th>output</th></tr>
-        <tr><td>'Month DDspth'</td><td>March&nbsp;&nbsp;&nbsp;2nd</td></tr>
-        <tr><td>'fmDD Month YYYY'</td><td>2 March 1985</td></tr></table>
-        <p>Without fm, 'DD Month YYYY' would pad "March" out to 9 characters with trailing spaces; fm strips that padding away.</p>
+        <table class="mini result"><caption>result</caption><tr><th>firstname</th><th>to_char</th></tr>
+        <tr><td>Aoife</td><td>2 March 1985</td></tr></table>
+        <p>Without fm, 'DD Month YYYY' would pad "March" out to 9 characters with trailing spaces like in the example above; fm strips that padding away, giving a clean "2 March 1985".</p>
       </div></details>
       <p>TO_CHAR works on numbers too, which is how you'd display a currency sign:</p>
       <pre>SELECT to_char(amount, '€999,999.99')
@@ -1072,15 +1085,21 @@ FROM grant_funding;</pre>
     <div class="q-body">
       <div class="term"><div class="term-head">cast(attribute AS data_type)</div><div class="term-desc">Converts a value from one data type into another so it can be used the way you need it. The double-colon syntax, ::, is just a shorthand for the same thing.</div></div>
       <pre>SELECT pg_typeof(cast(begin_date AS TEXT))
-FROM research;
-
-SELECT pg_typeof(amount::text)
-FROM grant_funding;</pre>
+FROM research;</pre>
       <details class="example"><summary>Example with sample data</summary><div class="example-body">
         <table class="mini"><caption>research</caption><tr><th>research_id</th><th>begin_date</th></tr><tr><td>10</td><td>2025-01-15</td></tr></table>
         <table class="mini result"><caption>result</caption><tr><th>pg_typeof(begin_date)</th><th>pg_typeof(cast(begin_date AS TEXT))</th></tr>
         <tr><td>date</td><td>text</td></tr></table>
         <p>begin_date is stored as a date column, so pg_typeof(begin_date) would normally return "date". After casting it, pg_typeof(cast(begin_date AS TEXT)) returns <span class="keyword">text</span> instead, because the value has genuinely been converted, not just displayed differently.</p>
+      </div></details>
+      <p>The <span class="keyword">::</span> shorthand does exactly the same thing as CAST, just with less typing:</p>
+      <pre>SELECT pg_typeof(amount::text)
+FROM grant_funding;</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>grant_funding</caption><tr><th>grant_id</th><th>amount</th></tr><tr><td>1</td><td>4520.37</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>pg_typeof(amount)</th><th>pg_typeof(amount::text)</th></tr>
+        <tr><td>numeric</td><td>text</td></tr></table>
+        <p>amount is stored as numeric, so pg_typeof(amount) alone would return "numeric". amount::text is shorthand for cast(amount AS TEXT), so pg_typeof(amount::text) returns <span class="keyword">text</span> instead, the same conversion as the CAST example above but on a different column and data type.</p>
       </div></details>
     </div>
   </div>
@@ -1091,31 +1110,44 @@ FROM grant_funding;</pre>
       <div class="term"><div class="term-head">UPPER() / LOWER()</div><div class="term-desc">Converts text to uppercase or lowercase. Also useful inside a WHERE clause when you want a case-insensitive match.</div></div>
       <pre>SELECT title,
        UPPER(title) "Upper Title"
-FROM research;
-
-SELECT venue,
-       LOWER(venue) "Lower Title"
-FROM publication;
-
-SELECT firstname,
-       lastname
-FROM scientist
-WHERE LOWER(lastname) = 'murphy';</pre>
+FROM research;</pre>
       <details class="example"><summary>Example with sample data</summary><div class="example-body">
         <table class="mini"><caption>research</caption><tr><th>title</th></tr><tr><td>Quantum Study</td></tr></table>
         <table class="mini result"><caption>result</caption><tr><th>title</th><th>Upper Title</th></tr>
         <tr><td>Quantum Study</td><td>QUANTUM STUDY</td></tr></table>
-        <table class="mini"><caption>scientist</caption><tr><th>firstname</th><th>lastname</th></tr><tr><td>Aoife</td><td>murphy</td></tr></table>
-        <p>The WHERE query matches that scientist even though "murphy" is stored in lowercase and we searched for 'murphy', because both sides get lowercased before comparing. It would match "Murphy" or "MURPHY" too.</p>
+        <p>UPPER() converts every letter in the title to uppercase.</p>
+      </div></details>
+      <p>LOWER() does the same thing in the opposite direction:</p>
+      <pre>SELECT venue,
+       LOWER(venue) "Lower Title"
+FROM publication;</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>publication</caption><tr><th>venue</th></tr><tr><td>ACM SIGMOD</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>venue</th><th>Lower Title</th></tr>
+        <tr><td>ACM SIGMOD</td><td>acm sigmod</td></tr></table>
+        <p>LOWER() converts every letter in the venue name to lowercase.</p>
+      </div></details>
+      <p>A common use for either one is a case-insensitive match inside a WHERE clause, since a plain <span class="keyword">=</span> comparison in PostgreSQL is case-sensitive by default:</p>
+      <pre>SELECT firstname,
+       lastname
+FROM scientist
+WHERE LOWER(lastname) = 'murphy';</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>scientist</caption><tr><th>firstname</th><th>lastname</th></tr><tr><td>Aoife</td><td>murphy</td></tr><tr><td>Cian</td><td>Byrne</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>firstname</th><th>lastname</th></tr><tr><td>Aoife</td><td>murphy</td></tr></table>
+        <p>The WHERE query matches Aoife even though "murphy" is stored in lowercase and we searched for 'murphy', because LOWER(lastname) forces the column to lowercase before comparing. It would match "Murphy" or "MURPHY" too, since all of those become "murphy" once lowercased. Cian's surname "Byrne" doesn't match at all, so he's excluded.</p>
       </div></details>
       <div class="term"><div class="term-head">CONCAT()</div><div class="term-desc">Joins strings together. You can do the same thing with the || operator.</div></div>
       <pre>SELECT CONCAT(TRIM(firstname), ' ', TRIM(lastname), ' (', TRIM(uniname), ')') "Scientist affiliation"
 FROM scientist JOIN university USING (uni_id);</pre>
       <details class="example"><summary>Example with sample data</summary><div class="example-body">
-        <table class="mini"><caption>scientist / university</caption><tr><th>firstname</th><th>lastname</th><th>uniname</th></tr>
-        <tr><td>Aoife</td><td>Byrne</td><td>Trinity College Dublin</td></tr></table>
+        <table class="mini"><caption>scientist</caption><tr><th>sci_id</th><th>firstname</th><th>lastname</th><th>uni_id</th></tr>
+        <tr><td>1</td><td>Aoife</td><td>Byrne</td><td>7</td></tr></table>
+        <table class="mini"><caption>university</caption><tr><th>uni_id</th><th>uniname</th></tr>
+        <tr><td>7</td><td>Trinity College Dublin</td></tr></table>
         <table class="mini result"><caption>result</caption><tr><th>Scientist affiliation</th></tr>
         <tr><td>Aoife Byrne (Trinity College Dublin)</td></tr></table>
+        <p>The JOIN matches scientist.uni_id to university.uni_id, pulling in Aoife's university name alongside her own first and last name, and CONCAT stitches all three together into one string.</p>
       </div></details>
       <div class="term"><div class="term-head">SUBSTRING(string FROM start FOR length)</div><div class="term-desc">Pulls out part of a string, starting at a given position for a given length.</div></div>
       <pre>SELECT uniname,
@@ -1204,10 +1236,13 @@ SELECT concat_ws(' , ', 'a', NULL, 'b');</pre>
 FROM scientist JOIN university USING (uni_id)
 WHERE university.country = 'Ireland' LIMIT 15;</pre>
       <details class="example"><summary>Example with sample data</summary><div class="example-body">
-        <table class="mini"><caption>scientist / university</caption><tr><th>lastname</th><th>country</th></tr><tr><td>O Sullivan</td><td>Ireland</td></tr></table>
+        <table class="mini"><caption>scientist</caption><tr><th>sci_id</th><th>lastname</th><th>uni_id</th></tr>
+        <tr><td>1</td><td>O Sullivan</td><td>7</td></tr></table>
+        <table class="mini"><caption>university</caption><tr><th>uni_id</th><th>uniname</th><th>country</th></tr>
+        <tr><td>7</td><td>Trinity College Dublin</td><td>Ireland</td></tr></table>
         <table class="mini result"><caption>result</caption><tr><th>lastname</th><th>Tag</th></tr>
         <tr><td>O Sullivan</td><td>OSULLIVA_IRL</td></tr></table>
-        <p>Step by step: REGEXP_REPLACE strips the space to give "OSullivan", SUBSTRING takes the first 8 characters "OSulliva", CONCAT appends "_IRL", and UPPER capitalises the whole thing.</p>
+        <p>The JOIN matches scientist.uni_id to university.uni_id, and WHERE university.country = 'Ireland' keeps only scientists at Irish universities. Step by step on the surviving row: REGEXP_REPLACE strips the space to give "OSullivan", SUBSTRING takes the first 8 characters "OSulliva", CONCAT appends "_IRL", and UPPER capitalises the whole thing.</p>
       </div></details>
     </div>
   </div>
@@ -1265,6 +1300,14 @@ CREATE TRIGGER trg_plus_minus_row
 BEFORE INSERT ON player_statistics
 FOR EACH ROW
 EXECUTE FUNCTION set_plus_minus_row();</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <p><b>Input:</b> a new row being inserted into player_statistics, before the trigger touches it.</p>
+        <table class="mini"><caption>new row, as INSERTed</caption><tr><th>player_id</th><th>points</th><th>turnovers</th><th>plus_minus_points</th></tr>
+        <tr><td>1</td><td>28</td><td>4</td><td><i>NULL</i></td></tr></table>
+        <table class="mini result"><caption>row actually stored, after the trigger runs</caption><tr><th>player_id</th><th>points</th><th>turnovers</th><th>plus_minus_points</th></tr>
+        <tr><td>1</td><td>28</td><td>4</td><td>24</td></tr></table>
+        <p>Because this is <span class="keyword">BEFORE INSERT ... FOR EACH ROW</span>, the trigger fires once for this single row, before it's written to disk. NEW refers to the incoming row, so NEW.plus_minus_points := NEW.points - NEW.turnovers works out 28 - 4 = 24 and fills it in before the row is saved, so plus_minus_points is never actually NULL in the stored table.</p>
+      </div></details>
       <p>And a statement-level trigger, which recalculates the value across every row at once. Note it returns NULL, because statement-level triggers are required to:</p>
       <pre>CREATE OR REPLACE FUNCTION update_plus_minus_all()
 RETURNS TRIGGER AS $$
@@ -1278,6 +1321,14 @@ CREATE TRIGGER trg_plus_minus_statement
 AFTER INSERT ON player_statistics
 FOR EACH STATEMENT
 EXECUTE FUNCTION update_plus_minus_all();</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <p><b>Input:</b> an INSERT statement that adds several rows to player_statistics at once (a bulk import, say).</p>
+        <table class="mini"><caption>player_statistics, before the trigger runs</caption><tr><th>player_id</th><th>points</th><th>turnovers</th><th>plus_minus_points</th></tr>
+        <tr><td>1</td><td>28</td><td>4</td><td>24</td></tr><tr><td>2</td><td>15</td><td>6</td><td>9</td></tr></table>
+        <table class="mini result"><caption>player_statistics, after the trigger runs</caption><tr><th>player_id</th><th>points</th><th>turnovers</th><th>plus_minus_points</th></tr>
+        <tr><td>1</td><td>28</td><td>4</td><td>24</td></tr><tr><td>2</td><td>15</td><td>6</td><td>9</td></tr></table>
+        <p>This trigger is <span class="keyword">AFTER INSERT ... FOR EACH STATEMENT</span>, so it fires only once for the whole INSERT statement, no matter how many rows it added, rather than once per row. Instead of referencing NEW, the function's body just runs a plain UPDATE across the whole table to recompute plus_minus_points everywhere. Since it's not tied to any single row, PostgreSQL requires the function to RETURN NULL.</p>
+      </div></details>
     </div>
   </div>
 
@@ -1291,33 +1342,65 @@ EXECUTE FUNCTION update_plus_minus_all();</pre>
       <p>Aggregate functions take a whole bunch of rows and collapse them down into a single value. Because of that, if a query mixes an aggregated column with a normal, non-aggregated column, PostgreSQL needs a GROUP BY clause to know how to group the rows together first.</p>
       <div class="term"><div class="term-head">COUNT(*)</div><div class="term-desc">Counts how many rows are in a table. Because it's counting rows rather than a specific column's values, NULLs still get counted. If you count a specific column instead, e.g. COUNT(wage), rows where that column is NULL are skipped.</div></div>
       <pre>SELECT COUNT(*) "Total players"
-FROM players;
-
--- ignores NULL wage
+FROM players;</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>players</caption><tr><th>player_id</th><th>player_name</th></tr>
+        <tr><td>1</td><td>Cole Palmer</td></tr><tr><td>2</td><td>Enzo Fernandez</td></tr><tr><td>3</td><td>Youth Prospect X</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>Total players</th></tr>
+        <tr><td>3</td></tr></table>
+        <p>COUNT(*) simply counts every row in players, regardless of whether any column in it is NULL.</p>
+      </div></details>
+      <p>COUNT on a specific column instead of * skips rows where that column is NULL:</p>
+      <pre>-- ignores NULL wage
 SELECT COUNT(wage) "Contracts with wage"
-FROM player_contracts;
-
-SELECT COUNT(DISTINCT club_id) "Unique wage values"
 FROM player_contracts;</pre>
       <details class="example"><summary>Example with sample data</summary><div class="example-body">
         <table class="mini"><caption>player_contracts</caption><tr><th>player_id</th><th>club_id</th><th>wage</th></tr>
         <tr><td>1</td><td>CL137</td><td>52000</td></tr><tr><td>2</td><td>CL137</td><td><i>NULL</i></td></tr><tr><td>3</td><td>CL473</td><td>18000</td></tr></table>
-        <table class="mini result"><caption>result</caption><tr><th>COUNT(*)</th><th>COUNT(wage)</th><th>COUNT(DISTINCT club_id)</th></tr>
-        <tr><td>3</td><td>2</td><td>2</td></tr></table>
-        <p>COUNT(*) counts all 3 rows regardless of NULLs. COUNT(wage) only counts the 2 rows where wage isn't NULL.</p>
+        <table class="mini result"><caption>result</caption><tr><th>Contracts with wage</th></tr>
+        <tr><td>2</td></tr></table>
+        <p>COUNT(wage) only counts the 2 rows where wage isn't NULL, skipping player 2's NULL wage entirely, unlike COUNT(*) which would count all 3.</p>
+      </div></details>
+      <p>Adding DISTINCT counts only the unique values in that column, ignoring repeats:</p>
+      <pre>SELECT COUNT(DISTINCT club_id) "Unique wage values"
+FROM player_contracts;</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>player_contracts</caption><tr><th>player_id</th><th>club_id</th><th>wage</th></tr>
+        <tr><td>1</td><td>CL137</td><td>52000</td></tr><tr><td>2</td><td>CL137</td><td><i>NULL</i></td></tr><tr><td>3</td><td>CL473</td><td>18000</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>Unique wage values</th></tr>
+        <tr><td>2</td></tr></table>
+        <p>club_id shows up 3 times across the 3 rows, but only 2 distinct values (CL137 and CL473), since CL137 repeats for players 1 and 2. COUNT(DISTINCT club_id) counts those unique values only, giving 2.</p>
       </div></details>
       <p>You can also use subqueries to gather several different counts side by side in a single row of output:</p>
       <pre>SELECT (SELECT COUNT(player_id) FROM players) "Total number of players",
        (SELECT COUNT(club_id) FROM clubs) "Number of clubs",
        (SELECT COUNT(DISTINCT player_id) FROM player_attributes) "Number of players with attributes",
        (SELECT COUNT(DISTINCT player_id) FROM player_contracts) "Number of players with contracts";</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>players</caption><tr><th>player_id</th></tr><tr><td>1</td></tr><tr><td>2</td></tr><tr><td>3</td></tr></table>
+        <table class="mini"><caption>clubs</caption><tr><th>club_id</th></tr><tr><td>CL137</td></tr><tr><td>CL473</td></tr></table>
+        <table class="mini"><caption>player_attributes</caption><tr><th>player_id</th></tr><tr><td>1</td></tr><tr><td>1</td></tr><tr><td>2</td></tr></table>
+        <table class="mini"><caption>player_contracts</caption><tr><th>player_id</th></tr><tr><td>1</td></tr><tr><td>2</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>Total number of players</th><th>Number of clubs</th><th>Number of players with attributes</th><th>Number of players with contracts</th></tr>
+        <tr><td>3</td><td>2</td><td>2</td><td>2</td></tr></table>
+        <p>Each of these is its own independent scalar subquery, run once against a different table, and they all land in the same output row purely because they're all listed in the same SELECT. COUNT(player_id) FROM players counts all 3 players. COUNT(club_id) FROM clubs counts the 2 clubs. COUNT(DISTINCT player_id) FROM player_attributes counts player 1 only once even though he has 2 attribute rows, giving 2 distinct players. The same DISTINCT logic applies to player_contracts.</p>
+      </div></details>
       <div class="term"><div class="term-head">GROUP BY</div><div class="term-desc">Groups rows together based on the value of one or more attributes, so an aggregate function can be applied to each group separately. You can group by more than one column at once to get summaries at different levels of detail.</div></div>
       <pre>SELECT club_name,
        COUNT(player_contracts.player_id) "Players with contract"
 FROM clubs LEFT JOIN player_contracts USING (club_id)
-GROUP BY club_name;
-
-SELECT club_name,
+GROUP BY club_name;</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>clubs</caption><tr><th>club_id</th><th>club_name</th></tr>
+        <tr><td>CL137</td><td>Chelsea</td></tr><tr><td>CL473</td><td>Real Madrid</td></tr></table>
+        <table class="mini"><caption>player_contracts, a few sample rows out of a full 52-row table</caption><tr><th>club_id</th><th>player_id</th></tr>
+        <tr><td>CL137</td><td>1</td></tr><tr><td>CL137</td><td>2</td></tr><tr><td>CL473</td><td>3</td></tr><tr><td>...</td><td>...</td></tr></table>
+        <table class="mini result"><caption>result: players per club</caption><tr><th>club_name</th><th>Players with contract</th></tr>
+        <tr><td>Chelsea</td><td>27</td></tr><tr><td>Real Madrid</td><td>25</td></tr></table>
+        <p>The LEFT JOIN matches every club_id in clubs to its rows in player_contracts. Every player row gets rolled up into one count per club_name, which is exactly what GROUP BY is for. The full table has 27 Chelsea rows and 25 Real Madrid rows; only a few are shown above. LEFT JOIN also means a club with zero contracted players would still appear, with a count of 0, instead of disappearing entirely.</p>
+      </div></details>
+      <p>You can group by more than one column at once to get a summary at a finer level of detail, for example broken down by both club and nationality instead of just club:</p>
+      <pre>SELECT club_name,
        nationality,
        ROUND(AVG(wage), 2) "Average wage"
 FROM player_contracts JOIN players USING (player_id) JOIN clubs USING (club_id)
@@ -1330,11 +1413,19 @@ ORDER BY 2, 3 DESC;</pre>
         </div>
         <div class="dual-toggle-panel" id="gb-multi-example">
           <div class="example-body">
-            <table class="mini"><caption>player_contracts (joined to clubs), a few sample rows out of a full 52-row table</caption><tr><th>club_name</th><th>player_id</th></tr>
-            <tr><td>Chelsea</td><td>1</td></tr><tr><td>Chelsea</td><td>2</td></tr><tr><td>Real Madrid</td><td>3</td></tr><tr><td>...</td><td>...</td></tr></table>
-            <table class="mini result"><caption>result: players per club</caption><tr><th>club_name</th><th>Players with contract</th></tr>
-            <tr><td>Chelsea</td><td>27</td></tr><tr><td>Real Madrid</td><td>25</td></tr></table>
-            <p>Every player row gets rolled up into one count per club_name, which is exactly what GROUP BY is for. The full table has 27 Chelsea rows and 25 Real Madrid rows; only a few are shown above.</p>
+            <table class="mini"><caption>clubs</caption><tr><th>club_id</th><th>club_name</th></tr>
+            <tr><td>CL137</td><td>Chelsea</td></tr><tr><td>CL166</td><td>Arsenal</td></tr></table>
+            <table class="mini"><caption>players</caption><tr><th>player_id</th><th>nationality</th></tr>
+            <tr><td>1</td><td>Irish</td></tr><tr><td>2</td><td>Irish</td></tr><tr><td>3</td><td>English</td></tr>
+            <tr><td>4</td><td>Irish</td></tr><tr><td>5</td><td>English</td></tr></table>
+            <table class="mini"><caption>player_contracts</caption><tr><th>player_id</th><th>club_id</th><th>wage</th></tr>
+            <tr><td>1</td><td>CL137</td><td>40,000</td></tr><tr><td>2</td><td>CL137</td><td>60,000</td></tr>
+            <tr><td>3</td><td>CL137</td><td>90,000</td></tr><tr><td>4</td><td>CL166</td><td>30,000</td></tr>
+            <tr><td>5</td><td>CL166</td><td>50,000</td></tr></table>
+            <table class="mini result"><caption>result</caption><tr><th>club_name</th><th>nationality</th><th>Average wage</th></tr>
+            <tr><td>Chelsea</td><td>English</td><td>90,000.00</td></tr><tr><td>Arsenal</td><td>English</td><td>50,000.00</td></tr>
+            <tr><td>Chelsea</td><td>Irish</td><td>50,000.00</td></tr><tr><td>Arsenal</td><td>Irish</td><td>30,000.00</td></tr></table>
+            <p>GROUP BY club_name, nationality creates one group per unique combination of the two columns, so Chelsea/Irish and Chelsea/English are two separate groups even though they share a club. Chelsea/Irish's two wages (40,000 and 60,000) average to 50,000. ORDER BY 2, 3 DESC sorts by nationality first (alphabetically: English before Irish), then by average wage from highest to lowest within each nationality. See the Explanation panel for the full step-by-step breakdown.</p>
           </div>
         </div>
         <div class="dual-toggle-panel" id="gb-multi-explain">
@@ -1422,39 +1513,66 @@ Arsenal | English | 50000</pre>
           </div>
         </div>
       </div>
-      <p>AVG, SUM, MIN, and MAX can all be combined in the same query, and MIN/MAX also work on dates and even strings, where they follow alphabetical order.</p>
+      <p>AVG, SUM, MIN, and MAX can all be combined in the same query. Here COUNT and AVG appear side by side, both computed separately within each nationality group:</p>
       <pre>SELECT nationality "Nationality",
        COUNT(*) "Number of players",
        ROUND(AVG(age), 1) "Average age"
 FROM players
 GROUP BY nationality
-ORDER BY 2 DESC;
-
-SELECT clubs.club_name,
-       SUM(wage) "Wage bill"
-FROM clubs JOIN player_contracts USING (club_id)
-GROUP BY club_name
-ORDER BY 2 DESC;
-
-SELECT MIN(wage) "Minimum wage",
-       MAX(wage) "Maximum wage"
-FROM player_contracts;
-
-SELECT MIN(joined) "Earliest contract",
-       MAX(contract_valid_until) "Latest contract"
-FROM player_contracts;
-
-SELECT MIN(player_name),
-       MAX(player_name)
-FROM players;</pre>
+ORDER BY 2 DESC;</pre>
       <details class="example"><summary>Example with sample data</summary><div class="example-body">
-        <table class="mini"><caption>players, a few sample rows</caption><tr><th>nationality</th><th>age</th></tr>
+        <table class="mini"><caption>players, a few sample rows out of a bigger table</caption><tr><th>nationality</th><th>age</th></tr>
         <tr><td>Brazil</td><td>27</td></tr><tr><td>Brazil</td><td>24</td></tr><tr><td>Ireland</td><td>22</td></tr></table>
         <table class="mini result"><caption>result</caption><tr><th>Nationality</th><th>Number of players</th><th>Average age</th></tr>
         <tr><td>Brazil</td><td>14</td><td>26.3</td></tr><tr><td>Ireland</td><td>6</td><td>24.1</td></tr></table>
+        <p>Brazil has 14 players in the full table, averaging 26.3 years old; Ireland has 6, averaging 24.1. ORDER BY 2 DESC sorts by the second column in the SELECT list, "Number of players", from highest to lowest, so Brazil (14) comes before Ireland (6).</p>
+      </div></details>
+      <p>SUM works the same way, adding up every value in a group instead of averaging them, useful for something like a club's total wage spend:</p>
+      <pre>SELECT clubs.club_name,
+       SUM(wage) "Wage bill"
+FROM clubs JOIN player_contracts USING (club_id)
+GROUP BY club_name
+ORDER BY 2 DESC;</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>clubs</caption><tr><th>club_id</th><th>club_name</th></tr>
+        <tr><td>CL137</td><td>Chelsea</td></tr><tr><td>CL166</td><td>Arsenal</td></tr></table>
+        <table class="mini"><caption>player_contracts</caption><tr><th>club_id</th><th>wage</th></tr>
+        <tr><td>CL137</td><td>65,000</td></tr><tr><td>CL137</td><td>52,000</td></tr><tr><td>CL166</td><td>40,000</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>club_name</th><th>Wage bill</th></tr>
+        <tr><td>Chelsea</td><td>117,000</td></tr><tr><td>Arsenal</td><td>40,000</td></tr></table>
+        <p>The JOIN matches club_id between clubs and player_contracts. Chelsea's two wages (65,000 and 52,000) get added together into a single wage bill of 117,000. ORDER BY 2 DESC then puts the biggest spender first.</p>
+      </div></details>
+      <p>MIN and MAX can also work without any GROUP BY at all, collapsing the whole table down to a single row:</p>
+      <pre>SELECT MIN(wage) "Minimum wage",
+       MAX(wage) "Maximum wage"
+FROM player_contracts;</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
         <table class="mini"><caption>player_contracts</caption><tr><th>wage</th></tr><tr><td>800</td></tr><tr><td>52000</td></tr><tr><td>350000</td></tr></table>
         <table class="mini result"><caption>result</caption><tr><th>Minimum wage</th><th>Maximum wage</th></tr>
         <tr><td>800</td><td>350000</td></tr></table>
+        <p>With no GROUP BY, the whole table is treated as one group, so MIN and MAX just scan all 3 wages and return the smallest and largest.</p>
+      </div></details>
+      <p>MIN/MAX also work on dates, picking the earliest or latest one:</p>
+      <pre>SELECT MIN(joined) "Earliest contract",
+       MAX(contract_valid_until) "Latest contract"
+FROM player_contracts;</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>player_contracts</caption><tr><th>joined</th><th>contract_valid_until</th></tr>
+        <tr><td>2022-08-01</td><td>2026-06-30</td></tr><tr><td>2024-01-15</td><td>2027-06-30</td></tr><tr><td>2023-07-01</td><td>2025-06-30</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>Earliest contract</th><th>Latest contract</th></tr>
+        <tr><td>2022-08-01</td><td>2027-06-30</td></tr></table>
+        <p>MIN(joined) picks out the earliest of the three joined dates, 2022-08-01. MAX(contract_valid_until) picks out the latest of the three expiry dates, 2027-06-30. Note these two dates don't even have to come from the same row.</p>
+      </div></details>
+      <p>They even work on plain text, where they follow alphabetical order:</p>
+      <pre>SELECT MIN(player_name),
+       MAX(player_name)
+FROM players;</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>players</caption><tr><th>player_name</th></tr>
+        <tr><td>Cole Palmer</td></tr><tr><td>Ademola Lookman</td></tr><tr><td>Vinícius Jr</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>min</th><th>max</th></tr>
+        <tr><td>Ademola Lookman</td><td>Vinícius Jr</td></tr></table>
+        <p>"Ademola Lookman" comes first alphabetically (A comes before C and V), so MIN returns it. "Vinícius Jr" comes last, so MAX returns that instead.</p>
       </div></details>
       <p>A common point of confusion is WHERE versus HAVING. PostgreSQL actually runs a query in this order: <span class="keyword">
 FROM &rarr; WHERE &rarr; GROUP BY &rarr; HAVING &rarr; SELECT &rarr; ORDER BY</span>. WHERE filters individual rows before they're grouped, which means it can never contain an aggregate function, because the aggregate simply doesn't exist yet at that stage. HAVING is the one that filters after the grouping and aggregation have already happened.</p>
@@ -1484,11 +1602,13 @@ HAVING AVG(wage) > 50000;</pre>
 FROM clubs LEFT JOIN player_contracts USING (club_id)
 GROUP BY club_name ORDER BY club_name;</pre>
       <details class="example"><summary>Example with sample data</summary><div class="example-body">
-        <table class="mini"><caption>player_contracts (joined to clubs), a few sample rows</caption><tr><th>club_name</th><th>player_id</th><th>wage</th></tr>
-        <tr><td>Chelsea</td><td>1</td><td>65000</td></tr><tr><td>Chelsea</td><td>2</td><td><i>NULL</i></td></tr></table>
+        <table class="mini"><caption>clubs</caption><tr><th>club_id</th><th>club_name</th></tr>
+        <tr><td>CL137</td><td>Chelsea</td></tr></table>
+        <table class="mini"><caption>player_contracts</caption><tr><th>club_id</th><th>player_id</th><th>wage</th></tr>
+        <tr><td>CL137</td><td>1</td><td>65000</td></tr><tr><td>CL137</td><td>2</td><td><i>NULL</i></td></tr></table>
         <table class="mini result"><caption>result</caption><tr><th>club_name</th><th>COUNT(player_id)</th><th>With wage</th><th>Without wage</th></tr>
         <tr><td>Chelsea</td><td>27</td><td>25</td><td>2</td></tr></table>
-        <p>All three counts come from the same GROUP BY club_name, but each FILTER narrows down which rows that particular COUNT looks at.</p>
+        <p>The LEFT JOIN connects each club row in clubs to its player_contracts rows via club_id. All three counts come from the same GROUP BY club_name, but each FILTER narrows down which rows that particular COUNT looks at: the plain COUNT(player_id) counts every contracted player at the club, the "With wage" one only counts rows where wage isn't NULL, and "Without wage" only counts rows where it is.</p>
       </div></details>
       <p>One rule that catches people out: SQL will not let you nest one aggregate directly inside another, so something like <span class="keyword">MAX(AVG(wage))</span> throws an error, because aggregation only happens once per query block, right after GROUP BY runs. The workaround is to compute the first aggregate in a subquery, then aggregate over that result. Notice that ROUND and MAX can still nest together here, because ROUND is a single-row function, not an aggregate:</p>
       <pre>SELECT ROUND(MAX("Average wage"), 2) "Maximum wage"
@@ -1496,10 +1616,14 @@ FROM (
     SELECT AVG(wage) "Average wage" FROM player_contracts GROUP BY club_id
 ) "Subquery";</pre>
       <details class="example"><summary>Example with sample data</summary><div class="example-body">
-        <table class="mini"><caption>inner subquery result: average wage per club_id</caption><tr><th>Average wage</th></tr>
+        <table class="mini"><caption>player_contracts</caption><tr><th>club_id</th><th>wage</th></tr>
+        <tr><td>CL137</td><td>65000</td></tr><tr><td>CL137</td><td>60000</td></tr>
+        <tr><td>CL473</td><td>41200</td></tr>
+        <tr><td>CL999</td><td>19800</td></tr></table>
+        <table class="mini"><caption>"Subquery" &mdash; inner query's result: average wage per club_id</caption><tr><th>Average wage</th></tr>
         <tr><td>62500.00</td></tr><tr><td>41200.00</td></tr><tr><td>19800.00</td></tr></table>
         <table class="mini result"><caption>final result</caption><tr><th>Maximum wage</th></tr><tr><td>62500.00</td></tr></table>
-        <p>The subquery produces one average per club first. Only then does the outer MAX look across those averages to find the highest one.</p>
+        <p>The inner query first scans player_contracts and groups it by club_id, giving one AVG(wage) per club: CL137's two wages (65000, 60000) average to 62500, CL473 has just the one row at 41200, and CL999 just the one row at 19800. PostgreSQL materialises that as a small table named "Subquery". Only then does the outer MAX/ROUND look across those three averages and pick the highest, 62500.00.</p>
       </div></details>
       <div class="term"><div class="term-head">STRING_AGG(column, separator ORDER BY ...)</div><div class="term-desc">Works a bit like CONCAT but across multiple rows within a group, joining them into one string with a separator you choose.</div></div>
       <pre>SELECT club_name,
@@ -1507,10 +1631,15 @@ FROM (
 FROM clubs JOIN player_contracts USING (club_id) JOIN players USING (player_id)
 GROUP BY club_name ORDER BY club_name;</pre>
       <details class="example"><summary>Example with sample data</summary><div class="example-body">
-        <table class="mini"><caption>players (joined via player_contracts to clubs)</caption><tr><th>club_name</th><th>player_name</th></tr>
-        <tr><td>Chelsea</td><td>Enzo Fernandez</td></tr><tr><td>Chelsea</td><td>Cole Palmer</td></tr><tr><td>Chelsea</td><td>Reece James</td></tr></table>
+        <table class="mini"><caption>clubs</caption><tr><th>club_id</th><th>club_name</th></tr>
+        <tr><td>CL137</td><td>Chelsea</td></tr></table>
+        <table class="mini"><caption>player_contracts</caption><tr><th>club_id</th><th>player_id</th></tr>
+        <tr><td>CL137</td><td>1</td></tr><tr><td>CL137</td><td>2</td></tr><tr><td>CL137</td><td>3</td></tr></table>
+        <table class="mini"><caption>players</caption><tr><th>player_id</th><th>player_name</th></tr>
+        <tr><td>1</td><td>Enzo Fernandez</td></tr><tr><td>2</td><td>Cole Palmer</td></tr><tr><td>3</td><td>Reece James</td></tr></table>
         <table class="mini result"><caption>result</caption><tr><th>club_name</th><th>Players list</th></tr>
         <tr><td>Chelsea</td><td>Cole Palmer, Enzo Fernandez, Reece James</td></tr></table>
+        <p>The two JOINs link clubs to player_contracts to players by club_id and player_id, giving Chelsea's three players. STRING_AGG then rolls those three player_name values into one comma-separated string per club_name group, and ORDER BY players.player_name inside STRING_AGG alphabetises them within that string (Cole before Enzo before Reece), separately from the outer GROUP BY.</p>
       </div></details>
     </div>
   </div>
@@ -1562,11 +1691,19 @@ WHERE pc.wage > <span class="hl-sub">(
     SELECT AVG(value) FROM player_contracts WHERE club_id = 'CL473'  -- Real Madrid
 )</span>;</pre>
       <details class="example"><summary>Example with sample data</summary><div class="example-body">
-        <table class="mini"><caption>player_contracts, sample rows</caption><tr><th>club_id</th><th>wage</th><th>value</th></tr>
-        <tr><td>CL137 (Chelsea)</td><td>65000</td><td>&mdash;</td></tr><tr><td>CL473 (Real Madrid)</td><td>&mdash;</td><td>45,000,000</td></tr>
-        <tr><td>other</td><td>70000</td><td>50,000,000</td></tr></table>
-        <table class="mini result"><caption>result</caption><tr><th>player_name</th><th>wage</th></tr><tr><td>Vinícius Jr</td><td>70000</td></tr></table>
-        <p>Chelsea's top earner is on 65,000, and Real Madrid's average player value is €45m. A player earning 70,000 and valued at €50m passes both conditions and shows up in the result; a player earning 70,000 but valued at only €30m would get filtered out by the second condition.</p>
+        <table class="mini"><caption>players</caption><tr><th>player_id</th><th>player_name</th></tr>
+        <tr><td>1</td><td>Cole Palmer</td></tr><tr><td>2</td><td>Enzo Fernandez</td></tr><tr><td>3</td><td>Vinícius Jr</td></tr></table>
+        <table class="mini"><caption>player_contracts (all rows &mdash; the subqueries scan this whole table, not just the 3 players above)</caption><tr><th>player_id</th><th>club_id</th><th>wage</th><th>value</th></tr>
+        <tr><td>1</td><td>CL137 (Chelsea)</td><td>52,000</td><td>60,000,000</td></tr>
+        <tr><td>2</td><td>CL137 (Chelsea)</td><td>65,000</td><td>70,000,000</td></tr>
+        <tr><td>3</td><td>CL201 (Al-Nassr)</td><td>70,000</td><td>50,000,000</td></tr>
+        <tr><td>4</td><td>CL473 (Real Madrid)</td><td>38,000</td><td>70,000,000</td></tr>
+        <tr><td>5</td><td>CL473 (Real Madrid)</td><td>41,000</td><td>20,000,000</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>player_name</th><th>wage</th></tr><tr><td>Vinícius Jr</td><td>70,000</td></tr></table>
+        <p><b>Step 1 &mdash; <code>FROM players p JOIN player_contracts pc USING (player_id)</code>:</b> joins the 3 rows in players to their matching player_contracts row, giving 3 combined rows: Cole Palmer/52,000/60m, Enzo Fernandez/65,000/70m, Vinícius Jr/70,000/50m.</p>
+        <p><b>Step 2 &mdash; <code>SELECT MAX(wage) FROM player_contracts WHERE club_id = 'CL137'</code>:</b> this subquery ignores the JOIN entirely and scans the full player_contracts table for Chelsea rows only (52,000 and 65,000), returning MAX = 65,000.</p>
+        <p><b>Step 3 &mdash; <code>SELECT AVG(value) FROM player_contracts WHERE club_id = 'CL473'</code>:</b> scans the full table again for Real Madrid rows (70,000,000 and 20,000,000), returning AVG = 45,000,000.</p>
+        <p><b>Step 4 &mdash; <code>WHERE pc.wage &gt; 65000 AND pc.value &gt; 45000000</code>:</b> applied to the 3 joined rows from step 1. Cole Palmer: 52,000 &gt; 65,000 is false, excluded. Enzo Fernandez: 65,000 &gt; 65,000 is false (not strictly greater), excluded. Vinícius Jr: 70,000 &gt; 65,000 is true, and 50,000,000 &gt; 45,000,000 is true, so both conditions pass and he's the only row in the result.</p>
       </div></details>
     </div>
   </div>
@@ -1614,11 +1751,17 @@ WHERE pc.club_id IN <span class="hl-sub">(
     SELECT DISTINCT club_id FROM player_contracts WHERE wage >= 50000
 )</span>;</pre>
       <details class="example"><summary>Example with sample data</summary><div class="example-body">
-        <table class="mini"><caption>player_contracts, sample rows</caption><tr><th>club_id</th><th>wage</th></tr>
-        <tr><td>CL137</td><td>65000</td></tr><tr><td>CL137</td><td>1500</td></tr><tr><td>CL999</td><td>1200</td></tr></table>
+        <table class="mini"><caption>players</caption><tr><th>player_id</th><th>player_name</th></tr>
+        <tr><td>1</td><td>Cole Palmer</td></tr><tr><td>2</td><td>Youth Prospect X</td></tr><tr><td>3</td><td>Sean Rover</td></tr></table>
+        <table class="mini"><caption>player_contracts</caption><tr><th>player_id</th><th>club_id</th><th>wage</th></tr>
+        <tr><td>1</td><td>CL137</td><td>65,000</td></tr><tr><td>2</td><td>CL137</td><td>1,500</td></tr><tr><td>3</td><td>CL999</td><td>1,200</td></tr></table>
+        <table class="mini"><caption>clubs</caption><tr><th>club_id</th><th>club_name</th></tr>
+        <tr><td>CL137</td><td>Chelsea</td></tr><tr><td>CL999</td><td>Shamrock Rovers</td></tr></table>
         <table class="mini result"><caption>result</caption><tr><th>player_name</th><th>club_name</th><th>wage</th></tr>
-        <tr><td>Cole Palmer</td><td>Chelsea</td><td>65000</td></tr><tr><td>Youth Prospect X</td><td>Chelsea</td><td>1500</td></tr></table>
-        <p>The subquery returns club_id CL137 (a club with at least one €50k+ earner). Every player from that club shows up in the outer result, including the teammate earning far less, but Shamrock Rovers (CL999) is left out entirely since none of their players clear 50,000.</p>
+        <tr><td>Cole Palmer</td><td>Chelsea</td><td>65,000</td></tr><tr><td>Youth Prospect X</td><td>Chelsea</td><td>1,500</td></tr></table>
+        <p><b>Step 1 &mdash; <code>SELECT DISTINCT club_id FROM player_contracts WHERE wage &gt;= 50000</code>:</b> scans all 3 rows of player_contracts. Only the 65,000 row clears the bar, so this subquery returns a one-value list: {CL137}.</p>
+        <p><b>Step 2 &mdash; <code>FROM players p JOIN player_contracts pc USING (player_id) JOIN clubs c USING (club_id)</code>:</b> joins all 3 players to their contract and club, giving 3 combined rows: Cole Palmer/Chelsea/65,000, Youth Prospect X/Chelsea/1,500, Sean Rover/Shamrock Rovers/1,200.</p>
+        <p><b>Step 3 &mdash; <code>WHERE pc.club_id IN (CL137)</code>:</b> keeps only rows whose club_id is in that one-value list. Cole Palmer and Youth Prospect X are both at CL137, so they stay, even though Youth Prospect X personally earns far less than 50,000, since IN only checks the club, not the individual wage. Sean Rover is at CL999, which never appeared in the list, so he's dropped entirely.</p>
       </div></details>
       <p>NOT IN: finding players who currently don't have a contract at all:</p>
       <pre>SELECT p.player_name FROM players p
@@ -1638,10 +1781,19 @@ WHERE pc.wage > ANY <span class="hl-sub">(
     SELECT wage FROM player_contracts WHERE club_id = 'CL137'  -- Chelsea
 )</span>;</pre>
       <details class="example"><summary>Example with sample data</summary><div class="example-body">
-        <table class="mini"><caption>player_contracts, Chelsea (CL137) wages</caption><tr><th>wage</th></tr>
-        <tr><td>65000</td></tr><tr><td>40000</td></tr><tr><td>12000</td></tr></table>
-        <table class="mini result"><caption>result</caption><tr><th>player_name</th><th>wage</th></tr><tr><td>Youth Prospect Y</td><td>15000</td></tr></table>
-        <p>A player earning 15000 passes, because 15000 is greater than at least one of Chelsea's wages (12000), even though it's nowhere near their top earner.</p>
+        <table class="mini"><caption>players</caption><tr><th>player_id</th><th>player_name</th></tr>
+        <tr><td>1</td><td>Cole Palmer</td></tr><tr><td>2</td><td>Enzo Fernandez</td></tr><tr><td>3</td><td>Youth Academy Player</td></tr><tr><td>4</td><td>Youth Prospect Y</td></tr><tr><td>5</td><td>Vinícius Jr</td></tr></table>
+        <table class="mini"><caption>player_contracts</caption><tr><th>player_id</th><th>club_id</th><th>wage</th></tr>
+        <tr><td>1</td><td>CL137 (Chelsea)</td><td>65,000</td></tr>
+        <tr><td>2</td><td>CL137 (Chelsea)</td><td>40,000</td></tr>
+        <tr><td>3</td><td>CL137 (Chelsea)</td><td>12,000</td></tr>
+        <tr><td>4</td><td>CL999</td><td>15,000</td></tr>
+        <tr><td>5</td><td>CL473</td><td>70,000</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>player_name</th><th>wage</th></tr>
+        <tr><td>Cole Palmer</td><td>65,000</td></tr><tr><td>Enzo Fernandez</td><td>40,000</td></tr><tr><td>Youth Prospect Y</td><td>15,000</td></tr><tr><td>Vinícius Jr</td><td>70,000</td></tr></table>
+        <p><b>Step 1 &mdash; <code>SELECT wage FROM player_contracts WHERE club_id = 'CL137'</code>:</b> scans the whole table for Chelsea rows, returning the list {65,000, 40,000, 12,000}.</p>
+        <p><b>Step 2 &mdash; <code>FROM players p JOIN player_contracts pc USING (player_id)</code>:</b> joins all 5 players to their wage, giving 5 candidate rows to test, including the three Chelsea players themselves.</p>
+        <p><b>Step 3 &mdash; <code>WHERE pc.wage &gt; ANY (65000, 40000, 12000)</code>:</b> a row passes if its wage beats at least one value in that list, so it just has to beat the smallest, 12,000. Cole Palmer (65,000), Enzo Fernandez (40,000) and Vinícius Jr (70,000) all clear 12,000 easily. Youth Prospect Y on 15,000 also clears it, just barely. Youth Academy Player on exactly 12,000 fails, since 12,000 is not greater than 12,000, or than anything else in the list.</p>
       </div></details>
       <p>ALL: finding players whose wage beats every single Chelsea player, meaning it has to be higher than even their top earner:</p>
       <pre>SELECT p.player_name,
@@ -1651,10 +1803,18 @@ WHERE pc.wage > ALL <span class="hl-sub">(
     SELECT wage FROM player_contracts WHERE club_id = 'CL137'  -- Chelsea
 )</span>;</pre>
       <details class="example"><summary>Example with sample data</summary><div class="example-body">
-        <table class="mini"><caption>player_contracts, Chelsea (CL137) wages</caption><tr><th>wage</th></tr>
-        <tr><td>65000</td></tr><tr><td>40000</td></tr><tr><td>12000</td></tr></table>
-        <table class="mini result"><caption>result</caption><tr><th>player_name</th><th>wage</th></tr><tr><td>Vinícius Jr</td><td>70000</td></tr></table>
-        <p>A player needs to earn more than 65000, the highest of the three Chelsea wages, to satisfy ALL. The player on 15000 who passed the ANY example above would fail this one.</p>
+        <table class="mini"><caption>players</caption><tr><th>player_id</th><th>player_name</th></tr>
+        <tr><td>1</td><td>Cole Palmer</td></tr><tr><td>2</td><td>Enzo Fernandez</td></tr><tr><td>3</td><td>Youth Academy Player</td></tr><tr><td>4</td><td>Youth Prospect Y</td></tr><tr><td>5</td><td>Vinícius Jr</td></tr></table>
+        <table class="mini"><caption>player_contracts (same table as the ANY example above)</caption><tr><th>player_id</th><th>club_id</th><th>wage</th></tr>
+        <tr><td>1</td><td>CL137 (Chelsea)</td><td>65,000</td></tr>
+        <tr><td>2</td><td>CL137 (Chelsea)</td><td>40,000</td></tr>
+        <tr><td>3</td><td>CL137 (Chelsea)</td><td>12,000</td></tr>
+        <tr><td>4</td><td>CL999</td><td>15,000</td></tr>
+        <tr><td>5</td><td>CL473</td><td>70,000</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>player_name</th><th>wage</th></tr><tr><td>Vinícius Jr</td><td>70,000</td></tr></table>
+        <p><b>Step 1 &mdash; <code>SELECT wage FROM player_contracts WHERE club_id = 'CL137'</code>:</b> same as before, returns {65,000, 40,000, 12,000}.</p>
+        <p><b>Step 2 &mdash; <code>FROM players p JOIN player_contracts pc USING (player_id)</code>:</b> same 5 candidate rows as the ANY example.</p>
+        <p><b>Step 3 &mdash; <code>WHERE pc.wage &gt; ALL (65000, 40000, 12000)</code>:</b> this time a row only passes if its wage beats every value in the list, so it has to clear the largest, 65,000. Cole Palmer (65,000) fails, since 65,000 is not greater than 65,000. Enzo Fernandez (40,000), Youth Academy Player (12,000) and Youth Prospect Y (15,000) all fail too. Only Vinícius Jr on 70,000 beats all three Chelsea wages, so he's the only row that satisfies ALL, unlike the ANY example where four different players qualified.</p>
       </div></details>
     </div>
   </div>
@@ -1686,20 +1846,27 @@ FROM <span class="hl-sub">(
     <div class="q-title">Subquery vs JOIN</div>
     <div class="q-body">
       <p>The same result can often be written either as a correlated subquery or as a JOIN, and they're not always equal in performance. A JOIN generally runs faster because the column being matched on, like an ID, can be used almost like an index for quick lookups. A scalar subquery, on the other hand, effectively runs once for every row in the outer query, which adds up.</p>
+      <p>Here's the same lookup, written first as a correlated subquery:</p>
       <pre>-- Using a SUBQUERY
 EXPLAIN ANALYZE SELECT game_id,
        <span class="hl-sub">(SELECT team_city FROM nba.teams t WHERE t.team_id = g.home_team_id)</span> AS home_city
-FROM nba.games g;
-
--- Using a JOIN
+FROM nba.games g;</pre>
+      <details class="example"><summary>Example with sample data</summary><div class="example-body">
+        <table class="mini"><caption>nba.games</caption><tr><th>game_id</th><th>home_team_id</th></tr><tr><td>22400677</td><td>2</td></tr></table>
+        <table class="mini"><caption>nba.teams</caption><tr><th>team_id</th><th>team_city</th></tr><tr><td>2</td><td>Boston</td></tr></table>
+        <table class="mini result"><caption>result</caption><tr><th>game_id</th><th>home_city</th></tr><tr><td>22400677</td><td>Boston</td></tr></table>
+        <p>For every row in nba.games, the subquery <span class="keyword">(SELECT team_city FROM nba.teams t WHERE t.team_id = g.home_team_id)</span> runs separately, looking up that one game's home_team_id in nba.teams. With one game row here it looks trivial, but on a table with thousands of games, that's thousands of separate lookups against nba.teams, one per row.</p>
+      </div></details>
+      <p>...and now as a JOIN, doing the same lookup:</p>
+      <pre>-- Using a JOIN
 EXPLAIN ANALYZE SELECT game_id,
        team_city "Home city"
 FROM games g JOIN teams t ON (t.team_id = g.home_team_id);</pre>
       <details class="example"><summary>Example with sample data</summary><div class="example-body">
-        <table class="mini"><caption>games</caption><tr><th>game_id</th><th>home_team_id</th></tr><tr><td>22400677</td><td>2</td></tr></table>
+        <table class="mini"><caption>games (this version queries the unqualified games/teams tables directly, not the nba schema)</caption><tr><th>game_id</th><th>home_team_id</th></tr><tr><td>22400677</td><td>2</td></tr></table>
         <table class="mini"><caption>teams</caption><tr><th>team_id</th><th>team_city</th></tr><tr><td>2</td><td>Boston</td></tr></table>
-        <table class="mini result"><caption>result (same for both versions)</caption><tr><th>game_id</th><th>home_city</th></tr><tr><td>22400677</td><td>Boston</td></tr></table>
-        <p>Both versions return the same rows. The difference shows up in EXPLAIN ANALYZE's timing output: the subquery version re-runs a lookup against nba.teams for every single game row, while the JOIN version matches team_id once using an efficient join strategy, so it typically comes back faster on a large games table.</p>
+        <table class="mini result"><caption>result</caption><tr><th>game_id</th><th>Home city</th></tr><tr><td>22400677</td><td>Boston</td></tr></table>
+        <p>Both versions return exactly the same rows: game_id 22400677, home city Boston. The difference only shows up in EXPLAIN ANALYZE's timing output. Here the JOIN matches every game to its team in one pass using an efficient join strategy, instead of running a separate lookup per row, so it typically comes back faster on a large games table.</p>
       </div></details>
     </div>
   </div>
@@ -1738,7 +1905,10 @@ FROM player_avg
 WHERE avg_points >= 20
 ORDER BY avg_points DESC;</pre>
       <details class="example"><summary>Example with sample data</summary><div class="example-body">
-        <table class="mini"><caption>player_avg (the CTE's result)</caption><tr><th>person_id</th><th>avg_points</th></tr>
+        <table class="mini"><caption>player_statistics, a few sample rows</caption><tr><th>person_id</th><th>points</th></tr>
+        <tr><td>201939</td><td>30</td></tr><tr><td>201939</td><td>26.8</td></tr>
+        <tr><td>1626157</td><td>15</td></tr><tr><td>1626157</td><td>20.8</td></tr></table>
+        <table class="mini"><caption>player_avg (the CTE's result, computed from player_statistics)</caption><tr><th>person_id</th><th>avg_points</th></tr>
         <tr><td>201939</td><td>28.4</td></tr><tr><td>1626157</td><td>17.9</td></tr></table>
         <table class="mini result"><caption>final result</caption><tr><th>person_id</th><th>avg_points</th></tr>
         <tr><td>201939</td><td>28.4</td></tr></table>
@@ -1764,12 +1934,14 @@ WHERE pc.wage IS NOT NULL
 GROUP BY c.club_name
 ORDER BY AVG(pc.wage) DESC;</pre>
       <details class="example"><summary>Example with sample data</summary><div class="example-body">
-        <table class="mini"><caption>player_contracts, sample rows</caption><tr><th>club_name</th><th>wage</th></tr>
-        <tr><td>Chelsea</td><td>65000</td></tr><tr><td>Chelsea</td><td>39000</td></tr><tr><td>Shamrock Rovers</td><td>1800</td></tr></table>
+        <table class="mini"><caption>clubs</caption><tr><th>club_id</th><th>club_name</th></tr>
+        <tr><td>CL137</td><td>Chelsea</td></tr><tr><td>CL999</td><td>Shamrock Rovers</td></tr></table>
+        <table class="mini"><caption>player_contracts</caption><tr><th>club_id</th><th>wage</th></tr>
+        <tr><td>CL137</td><td>65000</td></tr><tr><td>CL137</td><td>39000</td></tr><tr><td>CL999</td><td>1800</td></tr></table>
         <table class="mini result"><caption>result</caption><tr><th>club_name</th><th>Average wage</th><th>Budget category</th></tr>
         <tr><td>Chelsea</td><td>52000</td><td>High Budget Club</td></tr>
         <tr><td>Shamrock Rovers</td><td>1800</td><td>Low Budget Club</td></tr></table>
-        <p>The CASE expression looks at each club's own AVG(pc.wage), which GROUP BY has already computed, and slots it into whichever bucket it falls into.</p>
+        <p>The JOIN matches club_id between clubs and player_contracts. The CASE expression then looks at each club's own AVG(pc.wage), which GROUP BY has already computed (Chelsea: (65000+39000)/2 = 52000, Shamrock Rovers: 1800), and slots it into whichever bucket it falls into: 52000 is &gt;= 40000 so Chelsea is "High Budget Club", while 1800 is &lt; 10000 so Shamrock Rovers is "Low Budget Club".</p>
       </div></details>
     </div>
   </div>
@@ -1778,35 +1950,13 @@ ORDER BY AVG(pc.wage) DESC;</pre>
 
   </div>
 
-  <div class="footer-note">Use the search box above to jump around. Good luck with the exam.</div>
+  <div class="footer-note">Use the index on the left to jump around. Good luck with the exam.</div>
 
 </div>
 
 </div>
 
 <script>
-  const search = document.getElementById('search');
-  const items = Array.from(document.querySelectorAll('.q'));
-  search.addEventListener('input', () => {
-    const term = search.value.trim().toLowerCase();
-    items.forEach(item => {
-      const kw = item.getAttribute('data-kw') || '';
-      const text = item.textContent.toLowerCase();
-      const match = !term || kw.includes(term) || text.includes(term);
-      item.classList.toggle('hidden', !match);
-    });
-  });
-
-  let collapsed = false;
-  const expandBtn = document.getElementById('expandBtn');
-  expandBtn.addEventListener('click', () => {
-    collapsed = !collapsed;
-    document.querySelectorAll('.q-body').forEach(b => {
-      b.style.display = collapsed ? 'none' : '';
-    });
-    expandBtn.textContent = collapsed ? 'Expand all' : 'Collapse all';
-  });
-
   document.getElementById('printBtn').addEventListener('click', () => window.print());
 
   document.querySelectorAll('.toggle-btn').forEach(btn => {
