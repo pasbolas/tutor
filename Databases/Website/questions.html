@@ -1,0 +1,1632 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SQL Output Exam Trainer</title>
+<style>
+:root {
+  --bg:#f5f3ed;
+  --panel:#fffdf8;
+  --ink:#171714;
+  --muted:#6f6b62;
+  --line:#d9d4c8;
+  --accent:#264653;
+  --accent2:#e9c46a;
+  --code:#161a1d;
+  --codeInk:#f8f5ef;
+  --easy:#e8f3ec;
+  --easyInk:#24533a;
+  --medium:#fff0cf;
+  --mediumInk:#79520a;
+  --shadow:0 10px 30px rgba(32,32,25,.06);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  color:var(--ink);
+  background:
+    radial-gradient(circle at 15% 0%, rgba(233,196,106,.16), transparent 25rem),
+    var(--bg);
+  font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+.container{width:min(1100px,calc(100% - 32px));margin:auto}
+.hero{padding:64px 0 34px;border-bottom:1px solid var(--line)}
+.kicker{font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:800;color:var(--accent)}
+h1{font-family:Georgia,serif;font-size:clamp(38px,7vw,72px);line-height:.96;margin:10px 0 18px;max-width:850px;font-weight:600}
+.lead{font-size:18px;line-height:1.6;color:var(--muted);max-width:760px}
+.stats{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.stat{background:var(--panel);border:1px solid var(--line);padding:10px 14px;border-radius:999px;font-size:13px;font-weight:700}
+.quiz-layout{
+  width:min(1240px,calc(100% - 32px));
+  margin:auto;
+  padding:34px 0 80px;
+  display:grid;
+  grid-template-columns:240px minmax(0,1fr);
+  gap:28px;
+  align-items:start;
+}
+.topics-sidebar{
+  position:sticky;
+  top:20px;
+  max-height:calc(100vh - 40px);
+  overflow-y:auto;
+  padding:20px 16px;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:rgba(255,253,248,.94);
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(12px);
+  scrollbar-width:thin;
+  scrollbar-color:var(--line) transparent;
+}
+.topics-sidebar__title{
+  margin:0 0 16px;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+}
+.topics-sidebar__study-link{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  min-height:42px;
+  margin-bottom:20px;
+  padding:0 12px;
+  border:1px solid var(--accent);
+  border-radius:10px;
+  background:var(--accent);
+  color:#fff;
+  font-size:14px;
+  font-weight:800;
+  text-decoration:none;
+  box-shadow:0 6px 16px rgba(38,70,83,.16);
+  transition:transform .15s ease,box-shadow .15s ease;
+}
+.topics-sidebar__study-link:hover{transform:translateY(-1px);box-shadow:0 9px 20px rgba(38,70,83,.22)}
+.topics-sidebar__study-link:focus-visible{outline:3px solid rgba(38,70,83,.22);outline-offset:3px}
+.topics-sidebar__group{margin-top:20px}
+.topics-sidebar__group:first-of-type{margin-top:0}
+.topics-sidebar__label{
+  margin:0 10px 7px;
+  color:var(--accent);
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.11em;
+  text-transform:uppercase;
+}
+.topics-sidebar__list{display:grid;gap:5px}
+.topics-sidebar__utility{
+  margin-top:18px;
+  padding-top:16px;
+  border-top:1px solid var(--line);
+}
+.topics-sidebar__close,.topic-menu-toggle,.topics-overlay{display:none}
+.topic-btn,.utility-btn{
+  width:100%;border:1px solid transparent;background:transparent;color:var(--ink);padding:10px 11px;border-radius:10px;
+  font:700 14px/1.25 inherit;text-align:left;cursor:pointer;transition:background .15s,border-color .15s,color .15s,transform .15s
+}
+.topic-btn:hover{background:#f2efe7;border-color:var(--line)}
+.topic-btn.active{background:var(--accent);border-color:var(--accent);color:white;box-shadow:0 6px 16px rgba(38,70,83,.16)}
+.topic-btn:focus-visible,.utility-btn:focus-visible,.topic-menu-toggle:focus-visible,.topics-sidebar__close:focus-visible{outline:3px solid rgba(38,70,83,.22);outline-offset:2px}
+.utility-btn{border-color:var(--line);background:var(--panel);text-align:center}
+.utility-btn:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-1px)}
+main{min-width:0;padding:0}
+.topic-heading{font-family:Georgia,serif;font-size:30px;margin:48px 0 16px}
+.question-card{
+  background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:24px;margin:0 0 20px;box-shadow:var(--shadow)
+}
+.question-card[hidden]{display:none}
+.question-top{display:flex;justify-content:space-between;gap:20px;align-items:flex-start}
+.eyebrow{font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);font-weight:800}
+h3{font-family:Georgia,serif;font-size:25px;margin:4px 0 18px}
+.difficulty{font-size:12px;font-weight:800;border-radius:999px;padding:7px 10px}
+.easy{background:var(--easy);color:var(--easyInk)}
+.medium{background:var(--medium);color:var(--mediumInk)}
+.tables-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-bottom:18px}
+.data-card{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+.table-name{font-size:12px;font-weight:800;padding:9px 11px;background:#f2efe7;border-bottom:1px solid var(--line)}
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:9px 11px;text-align:left;border-bottom:1px solid #ece8df;white-space:nowrap}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);background:#fff}
+tbody tr:last-child td{border-bottom:0}
+.null{font-style:italic;color:#9a5d4e}
+.sql-label{font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:800;color:var(--muted);margin:3px 0 8px}
+pre{margin:0;background:var(--code);color:var(--codeInk);padding:18px;border-radius:12px;overflow:auto;font-size:13px;line-height:1.55}
+.prompt{font-weight:750;margin:15px 0}
+.answer{border-top:1px solid var(--line);padding-top:4px}
+summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:13px 2px 8px;font-weight:800;color:var(--accent)}
+summary::-webkit-details-marker{display:none}
+.chev{font-size:20px;transition:.15s}
+details[open] .chev{transform:rotate(45deg)}
+.answer-body{padding:8px 0 2px}
+.reason{font-size:14px;color:var(--muted);line-height:1.55;margin:12px 2px 2px}
+.section-label{display:flex;align-items:center;gap:12px;margin:46px 0 16px}
+.section-label h2{font:600 30px/1.1 Georgia,serif;margin:0}
+.section-label span{font-size:12px;color:var(--muted);font-weight:800}
+.empty{display:none;text-align:center;padding:60px;color:var(--muted)}
+footer{padding:26px 0 60px;color:var(--muted);font-size:13px}
+@media (max-width:880px){
+  body.topics-open{overflow:hidden}
+  .quiz-layout{display:block;width:min(100% - 28px,760px);padding-top:28px}
+  .topic-menu-toggle{
+    position:fixed;top:16px;left:16px;z-index:1100;display:flex;align-items:center;gap:9px;min-height:44px;padding:0 14px;
+    border:1px solid var(--line);border-radius:12px;background:rgba(255,253,248,.96);box-shadow:0 8px 24px rgba(32,32,25,.15);
+    color:var(--ink);font:800 13px/1 inherit;cursor:pointer;backdrop-filter:blur(10px)
+  }
+  .topic-menu-toggle__icon{display:grid;gap:3px;width:16px}
+  .topic-menu-toggle__icon span{display:block;width:16px;height:2px;border-radius:999px;background:currentColor}
+  .topics-sidebar{
+    position:fixed;inset:0 auto 0 0;z-index:1050;width:min(84vw,300px);max-height:none;padding:72px 18px 24px;
+    border-width:0 1px 0 0;border-radius:0 18px 18px 0;transform:translateX(-104%);transition:transform .22s ease;
+    box-shadow:0 20px 60px rgba(32,32,25,.22);visibility:hidden
+  }
+  body.topics-open .topics-sidebar{transform:translateX(0);visibility:visible}
+  .topics-sidebar__close{
+    position:absolute;top:18px;right:18px;display:grid;width:36px;height:36px;place-items:center;border:1px solid var(--line);
+    border-radius:10px;background:var(--panel);color:var(--ink);font-size:21px;line-height:1;cursor:pointer
+  }
+  .topics-overlay{
+    position:fixed;inset:0;z-index:1000;display:block;border:0;background:rgba(23,23,20,.38);opacity:0;pointer-events:none;
+    visibility:hidden;transition:opacity .2s ease,visibility 0s linear .2s
+  }
+  body.topics-open .topics-overlay{opacity:1;pointer-events:auto;visibility:visible;transition-delay:0s}
+}
+@media (max-width:640px){
+  .hero{padding-top:42px}
+  .question-card{padding:18px;border-radius:14px}
+  h3{font-size:22px}
+}
+@media print{
+  .topics-sidebar,.topic-menu-toggle,.topics-overlay,.answer{display:none}
+  .quiz-layout{display:block;width:100%;padding:20px 0}
+  body{background:white}
+  .question-card{break-inside:avoid;box-shadow:none}
+}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="container">
+    <div class="kicker">PostgreSQL exam practice</div>
+    <h1>Predict the SQL output.</h1>
+    <p class="lead">Medium-to-easy practice built around the exact style you described: read the sample table, trace the query, then write the expected output. Answers stay collapsed until you choose to reveal them.</p>
+    <div class="stats">
+      <div class="stat">39 questions</div>
+      <div class="stat">8 topic groups</div>
+      <div class="stat">Easy + Medium only</div>
+      <div class="stat">No setup required</div>
+    </div>
+  </div>
+</header>
+
+<button class="topic-menu-toggle" id="topicMenuToggle" type="button" aria-expanded="false" aria-controls="topicsSidebar">
+  <span class="topic-menu-toggle__icon" aria-hidden="true"><span></span><span></span><span></span></span>
+  <span>Topics</span>
+</button>
+<button class="topics-overlay" id="topicsOverlay" type="button" aria-label="Close topics"></button>
+
+<div class="quiz-layout">
+  <aside class="topics-sidebar" id="topicsSidebar" aria-label="Question topics">
+    <button class="topics-sidebar__close" id="topicsSidebarClose" type="button" aria-label="Close topics">&times;</button>
+    <a class="topics-sidebar__study-link" href="revision.html">
+      <span aria-hidden="true">&larr;</span>
+      <span>Revision notes</span>
+    </a>
+    <p class="topics-sidebar__title">Question topics</p>
+    <nav aria-label="Filter questions by topic">
+      <div class="topics-sidebar__list">
+        <button class="topic-btn active" type="button" data-filter="all" aria-pressed="true">All topics</button>
+      </div>
+      <section class="topics-sidebar__group" aria-labelledby="functions-topics-label">
+        <p class="topics-sidebar__label" id="functions-topics-label">Functions</p>
+        <div class="topics-sidebar__list">
+          <button class="topic-btn" type="button" data-filter="General Functions" aria-pressed="false">General Functions</button>
+          <button class="topic-btn" type="button" data-filter="Number Functions" aria-pressed="false">Number Functions</button>
+          <button class="topic-btn" type="button" data-filter="Date &amp; Conversion Functions" aria-pressed="false">Date &amp; Conversion</button>
+          <button class="topic-btn" type="button" data-filter="Character Functions" aria-pressed="false">Character Functions</button>
+          <button class="topic-btn" type="button" data-filter="Aggregate Functions" aria-pressed="false">Aggregate Functions</button>
+        </div>
+      </section>
+      <section class="topics-sidebar__group" aria-labelledby="queries-topics-label">
+        <p class="topics-sidebar__label" id="queries-topics-label">Queries &amp; logic</p>
+        <div class="topics-sidebar__list">
+          <button class="topic-btn" type="button" data-filter="Subqueries" aria-pressed="false">Subqueries</button>
+          <button class="topic-btn" type="button" data-filter="Advanced SQL" aria-pressed="false">Advanced SQL</button>
+          <button class="topic-btn" type="button" data-filter="PL/pgSQL &amp; Triggers" aria-pressed="false">PL/pgSQL &amp; Triggers</button>
+        </div>
+      </section>
+    </nav>
+    <div class="topics-sidebar__utility">
+      <button class="utility-btn" type="button" id="collapseBtn">Collapse answers</button>
+    </div>
+  </aside>
+
+<main id="quiz">
+  
+    <article class="question-card" data-topic="General Functions" data-difficulty="Easy" id="q1">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 01</div>
+          <h3>NULLIF</h3>
+        </div>
+        <span class="difficulty easy">Easy</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">grant_funding</div>
+      <div class="table-wrap"><table><thead><tr><th>grant_id</th><th>sponsor</th></tr></thead><tbody><tr><td class="">G1</td><td class="">SFI</td></tr><tr><td class="">G2</td><td class="">Enterprise Ireland</td></tr><tr><td class="">G3</td><td class="">SFI</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>SELECT grant_id,
+       NULLIF(sponsor, &#x27;SFI&#x27;) AS shown_sponsor
+FROM grant_funding
+ORDER BY grant_id;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>grant_id</th><th>shown_sponsor</th></tr></thead><tbody><tr><td class="">G1</td><td class="null">NULL</td></tr><tr><td class="">G2</td><td class="">Enterprise Ireland</td></tr><tr><td class="">G3</td><td class="null">NULL</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> NULLIF(x, y) returns NULL when x = y. Otherwise it returns x.</p>
+        </div>
+      </details>
+    </article>
+    <article class="question-card" data-topic="General Functions" data-difficulty="Easy" id="q2">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 02</div>
+          <h3>COALESCE</h3>
+        </div>
+        <span class="difficulty easy">Easy</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">scientist</div>
+      <div class="table-wrap"><table><thead><tr><th>sci_id</th><th>birth_date</th><th>firstname</th></tr></thead><tbody><tr><td class="">1</td><td class="">1999-04-12</td><td class="">Aisha</td></tr><tr><td class="">2</td><td class="null">NULL</td><td class="">Ben</td></tr><tr><td class="">3</td><td class="">2001-09-03</td><td class="">Cara</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>SELECT sci_id,
+       COALESCE(birth_date::text, firstname) AS display_value
+FROM scientist
+ORDER BY sci_id;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>sci_id</th><th>display_value</th></tr></thead><tbody><tr><td class="">1</td><td class="">1999-04-12</td></tr><tr><td class="">2</td><td class="">Ben</td></tr><tr><td class="">3</td><td class="">2001-09-03</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> COALESCE returns the first non-NULL value from left to right.</p>
+        </div>
+      </details>
+    </article>
+    <article class="question-card" data-topic="General Functions" data-difficulty="Easy" id="q3">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 03</div>
+          <h3>GREATEST and LEAST</h3>
+        </div>
+        <span class="difficulty easy">Easy</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">scores</div>
+      <div class="table-wrap"><table><thead><tr><th>student</th><th>exam1</th><th>exam2</th></tr></thead><tbody><tr><td class="">Ana</td><td class="">62</td><td class="">78</td></tr><tr><td class="">Bo</td><td class="">91</td><td class="">84</td></tr><tr><td class="">Cy</td><td class="">70</td><td class="">70</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>SELECT student,
+       GREATEST(exam1, exam2) AS best,
+       LEAST(exam1, exam2) AS worst
+FROM scores
+ORDER BY student;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>student</th><th>best</th><th>worst</th></tr></thead><tbody><tr><td class="">Ana</td><td class="">78</td><td class="">62</td></tr><tr><td class="">Bo</td><td class="">91</td><td class="">84</td></tr><tr><td class="">Cy</td><td class="">70</td><td class="">70</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> GREATEST picks the largest argument; LEAST picks the smallest.</p>
+        </div>
+      </details>
+    </article>
+    <article class="question-card" data-topic="Number Functions" data-difficulty="Easy" id="q4">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 04</div>
+          <h3>ROUND and TRUNC</h3>
+        </div>
+        <span class="difficulty easy">Easy</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">grant_funding</div>
+      <div class="table-wrap"><table><thead><tr><th>grant_id</th><th>amount</th></tr></thead><tbody><tr><td class="">G1</td><td class="">450.923</td></tr><tr><td class="">G2</td><td class="">128.678</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>SELECT grant_id,
+       ROUND(amount, 1) AS rounded,
+       TRUNC(amount, 1) AS truncated
+FROM grant_funding
+ORDER BY grant_id;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>grant_id</th><th>rounded</th><th>truncated</th></tr></thead><tbody><tr><td class="">G1</td><td class="">450.9</td><td class="">450.9</td></tr><tr><td class="">G2</td><td class="">128.7</td><td class="">128.6</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> ROUND can increase the retained digit; TRUNC simply cuts off everything after it.</p>
+        </div>
+      </details>
+    </article>
+    <article class="question-card" data-topic="Number Functions" data-difficulty="Medium" id="q5">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 05</div>
+          <h3>Negative precision</h3>
+        </div>
+        <span class="difficulty medium">Medium</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">payments</div>
+      <div class="table-wrap"><table><thead><tr><th>id</th><th>amount</th></tr></thead><tbody><tr><td class="">1</td><td class="">456.2</td></tr><tr><td class="">2</td><td class="">1449.9</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>SELECT id,
+       ROUND(amount, -2) AS rounded_100,
+       TRUNC(amount, -2) AS truncated_100
+FROM payments
+ORDER BY id;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>id</th><th>rounded_100</th><th>truncated_100</th></tr></thead><tbody><tr><td class="">1</td><td class="">500</td><td class="">400</td></tr><tr><td class="">2</td><td class="">1400</td><td class="">1400</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> A precision of -2 works to the left of the decimal point, at the hundreds position.</p>
+        </div>
+      </details>
+    </article>
+    <article class="question-card" data-topic="Number Functions" data-difficulty="Easy" id="q6">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 06</div>
+          <h3>MOD</h3>
+        </div>
+        <span class="difficulty easy">Easy</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">research</div>
+      <div class="table-wrap"><table><thead><tr><th>research_id</th><th>title</th></tr></thead><tbody><tr><td class="">10</td><td class="">AI Safety</td></tr><tr><td class="">11</td><td class="">Climate</td></tr><tr><td class="">12</td><td class="">Robotics</td></tr><tr><td class="">13</td><td class="">Health</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>SELECT research_id,
+       MOD(research_id, 3) AS committee
+FROM research
+ORDER BY research_id;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>research_id</th><th>committee</th></tr></thead><tbody><tr><td class="">10</td><td class="">1</td></tr><tr><td class="">11</td><td class="">2</td></tr><tr><td class="">12</td><td class="">0</td></tr><tr><td class="">13</td><td class="">1</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> MOD(a, b) returns the remainder after a is divided by b.</p>
+        </div>
+      </details>
+    </article>
+    <article class="question-card" data-topic="Number Functions" data-difficulty="Easy" id="q7">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 07</div>
+          <h3>ABS</h3>
+        </div>
+        <span class="difficulty easy">Easy</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">milestones</div>
+      <div class="table-wrap"><table><thead><tr><th>id</th><th>planned_day</th><th>actual_day</th></tr></thead><tbody><tr><td class="">1</td><td class="">12</td><td class="">15</td></tr><tr><td class="">2</td><td class="">20</td><td class="">17</td></tr><tr><td class="">3</td><td class="">9</td><td class="">9</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>SELECT id,
+       ABS(actual_day - planned_day) AS variance
+FROM milestones
+ORDER BY id;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>id</th><th>variance</th></tr></thead><tbody><tr><td class="">1</td><td class="">3</td></tr><tr><td class="">2</td><td class="">3</td></tr><tr><td class="">3</td><td class="">0</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> ABS removes the sign, so both +3 and -3 become 3.</p>
+        </div>
+      </details>
+    </article>
+    <article class="question-card" data-topic="Date &amp; Conversion Functions" data-difficulty="Easy" id="q8">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 08</div>
+          <h3>TO_CHAR on dates</h3>
+        </div>
+        <span class="difficulty easy">Easy</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">scientist</div>
+      <div class="table-wrap"><table><thead><tr><th>firstname</th><th>birth_date</th></tr></thead><tbody><tr><td class="">Mina</td><td class="">2002-03-07</td></tr><tr><td class="">Owen</td><td class="">1998-11-21</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>SELECT firstname,
+       TO_CHAR(birth_date, &#x27;DD/MM/YYYY&#x27;) AS formatted
+FROM scientist
+ORDER BY firstname;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>firstname</th><th>formatted</th></tr></thead><tbody><tr><td class="">Mina</td><td class="">07/03/2002</td></tr><tr><td class="">Owen</td><td class="">21/11/1998</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> TO_CHAR formats the date as text using day/month/year.</p>
+        </div>
+      </details>
+    </article>
+    <article class="question-card" data-topic="Date &amp; Conversion Functions" data-difficulty="Easy" id="q9">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 09</div>
+          <h3>Date arithmetic</h3>
+        </div>
+        <span class="difficulty easy">Easy</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">research</div>
+      <div class="table-wrap"><table><thead><tr><th>research_id</th><th>begin_date</th><th>end_date</th></tr></thead><tbody><tr><td class="">R1</td><td class="">2026-01-01</td><td class="">2026-01-29</td></tr><tr><td class="">R2</td><td class="">2026-03-10</td><td class="">2026-03-24</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>SELECT research_id,
+       (end_date - begin_date) / 7 AS weeks
+FROM research
+ORDER BY research_id;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>research_id</th><th>weeks</th></tr></thead><tbody><tr><td class="">R1</td><td class="">4</td></tr><tr><td class="">R2</td><td class="">2</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> PostgreSQL date subtraction returns the number of days; dividing by 7 gives whole weeks here.</p>
+        </div>
+      </details>
+    </article>
+    <article class="question-card" data-topic="Date &amp; Conversion Functions" data-difficulty="Easy" id="q10">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 10</div>
+          <h3>CAST and ::</h3>
+        </div>
+        <span class="difficulty easy">Easy</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">research</div>
+      <div class="table-wrap"><table><thead><tr><th>research_id</th><th>begin_date</th></tr></thead><tbody><tr><td class="">1</td><td class="">2026-02-10</td></tr><tr><td class="">2</td><td class="">2026-06-01</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>SELECT research_id,
+       begin_date::text AS date_text
+FROM research
+ORDER BY research_id;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>research_id</th><th>date_text</th></tr></thead><tbody><tr><td class="">1</td><td class="">2026-02-10</td></tr><tr><td class="">2</td><td class="">2026-06-01</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> The ::text shorthand casts the date value to text. Its visible ISO value remains the same.</p>
+        </div>
+      </details>
+    </article>
+    <article class="question-card" data-topic="Character Functions" data-difficulty="Easy" id="q11">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 11</div>
+          <h3>UPPER and LOWER</h3>
+        </div>
+        <span class="difficulty easy">Easy</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">research</div>
+      <div class="table-wrap"><table><thead><tr><th>id</th><th>title</th></tr></thead><tbody><tr><td class="">1</td><td class="">Ai Ethics</td></tr><tr><td class="">2</td><td class="">ROBOT Vision</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>SELECT id,
+       UPPER(title) AS upper_title,
+       LOWER(title) AS lower_title
+FROM research
+ORDER BY id;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>id</th><th>upper_title</th><th>lower_title</th></tr></thead><tbody><tr><td class="">1</td><td class="">AI ETHICS</td><td class="">ai ethics</td></tr><tr><td class="">2</td><td class="">ROBOT VISION</td><td class="">robot vision</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> UPPER converts alphabetic characters to uppercase; LOWER converts them to lowercase.</p>
+        </div>
+      </details>
+    </article>
+    <article class="question-card" data-topic="Character Functions" data-difficulty="Easy" id="q12">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 12</div>
+          <h3>CONCAT and NULL</h3>
+        </div>
+        <span class="difficulty easy">Easy</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">scientist</div>
+      <div class="table-wrap"><table><thead><tr><th>id</th><th>firstname</th><th>lastname</th></tr></thead><tbody><tr><td class="">1</td><td class="">Ada</td><td class="">Lovelace</td></tr><tr><td class="">2</td><td class="">Alan</td><td class="null">NULL</td></tr><tr><td class="">3</td><td class="">Grace</td><td class="">Hopper</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>SELECT id,
+       CONCAT(firstname, &#x27; &#x27;, lastname) AS full_name
+FROM scientist
+ORDER BY id;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>id</th><th>full_name</th></tr></thead><tbody><tr><td class="">1</td><td class="">Ada Lovelace</td></tr><tr><td class="">2</td><td class="">Alan </td></tr><tr><td class="">3</td><td class="">Grace Hopper</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> CONCAT skips NULL arguments instead of making the whole result NULL.</p>
+        </div>
+      </details>
+    </article>
+    <article class="question-card" data-topic="Character Functions" data-difficulty="Medium" id="q13">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 13</div>
+          <h3>|| versus CONCAT</h3>
+        </div>
+        <span class="difficulty medium">Medium</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">scientist</div>
+      <div class="table-wrap"><table><thead><tr><th>id</th><th>firstname</th><th>nickname</th></tr></thead><tbody><tr><td class="">1</td><td class="">Ada</td><td class="">A</td></tr><tr><td class="">2</td><td class="">Ben</td><td class="null">NULL</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>SELECT id,
+       firstname || &#x27;:&#x27; || nickname AS using_pipe,
+       CONCAT(firstname, &#x27;:&#x27;, nickname) AS using_concat
+FROM scientist
+ORDER BY id;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>id</th><th>using_pipe</th><th>using_concat</th></tr></thead><tbody><tr><td class="">1</td><td class="">Ada:A</td><td class="">Ada:A</td></tr><tr><td class="">2</td><td class="null">NULL</td><td class="">Ben:</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> The || operator propagates NULL. CONCAT skips a NULL argument.</p>
+        </div>
+      </details>
+    </article>
+    <article class="question-card" data-topic="Character Functions" data-difficulty="Easy" id="q14">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 14</div>
+          <h3>SUBSTRING and LENGTH</h3>
+        </div>
+        <span class="difficulty easy">Easy</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">university</div>
+      <div class="table-wrap"><table><thead><tr><th>uni_id</th><th>uniname</th></tr></thead><tbody><tr><td class="">1</td><td class="">Technological University Dublin</td></tr><tr><td class="">2</td><td class="">Oxford</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>SELECT uni_id,
+       SUBSTRING(uniname FROM 1 FOR 5) AS prefix,
+       LENGTH(uniname) AS name_length
+FROM university
+ORDER BY uni_id;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>uni_id</th><th>prefix</th><th>name_length</th></tr></thead><tbody><tr><td class="">1</td><td class="">Techn</td><td class="">32</td></tr><tr><td class="">2</td><td class="">Oxfor</td><td class="">6</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> SUBSTRING starts at position 1. LENGTH counts every character, including spaces.</p>
+        </div>
+      </details>
+    </article>
+    <article class="question-card" data-topic="Character Functions" data-difficulty="Medium" id="q15">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 15</div>
+          <h3>POSITION</h3>
+        </div>
+        <span class="difficulty medium">Medium</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">research</div>
+      <div class="table-wrap"><table><thead><tr><th>id</th><th>title</th></tr></thead><tbody><tr><td class="">1</td><td class="">AI for Health</td></tr><tr><td class="">2</td><td class="">Robotics</td></tr><tr><td class="">3</td><td class="">Fair AI</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>SELECT id,
+       POSITION(&#x27;AI&#x27; IN UPPER(title)) AS ai_position
+FROM research
+WHERE POSITION(&#x27;AI&#x27; IN UPPER(title)) &gt; 0
+ORDER BY id;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>id</th><th>ai_position</th></tr></thead><tbody><tr><td class="">1</td><td class="">1</td></tr><tr><td class="">3</td><td class="">6</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> POSITION is 1-based. Row 2 is filtered out because &#x27;AI&#x27; is not present.</p>
+        </div>
+      </details>
+    </article>
+    <article class="question-card" data-topic="Character Functions" data-difficulty="Easy" id="q16">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 16</div>
+          <h3>LPAD</h3>
+        </div>
+        <span class="difficulty easy">Easy</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">research</div>
+      <div class="table-wrap"><table><thead><tr><th>research_id</th></tr></thead><tbody><tr><td class="">7</td></tr><tr><td class="">42</td></tr><tr><td class="">305</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>SELECT research_id,
+       &#x27;RS-&#x27; || LPAD(research_id::text, 4, &#x27;0&#x27;) AS code
+FROM research
+ORDER BY research_id;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>research_id</th><th>code</th></tr></thead><tbody><tr><td class="">7</td><td class="">RS-0007</td></tr><tr><td class="">42</td><td class="">RS-0042</td></tr><tr><td class="">305</td><td class="">RS-0305</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> LPAD adds zeroes on the left until the text reaches length 4.</p>
+        </div>
+      </details>
+    </article>
+    <article class="question-card" data-topic="Character Functions" data-difficulty="Easy" id="q17">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 17</div>
+          <h3>REPLACE and TRIM</h3>
+        </div>
+        <span class="difficulty easy">Easy</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">scientist</div>
+      <div class="table-wrap"><table><thead><tr><th>id</th><th>lastname</th></tr></thead><tbody><tr><td class="">1</td><td class="">  Smith-Jones  </td></tr><tr><td class="">2</td><td class="">Murphy</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>SELECT id,
+       REPLACE(TRIM(lastname), &#x27;-&#x27;, &#x27; &#x27;) AS cleaned
+FROM scientist
+ORDER BY id;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>id</th><th>cleaned</th></tr></thead><tbody><tr><td class="">1</td><td class="">Smith Jones</td></tr><tr><td class="">2</td><td class="">Murphy</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> TRIM removes outer spaces first, then REPLACE changes &#x27;-&#x27; to a space.</p>
+        </div>
+      </details>
+    </article>
+    <article class="question-card" data-topic="Aggregate Functions" data-difficulty="Easy" id="q18">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 18</div>
+          <h3>COUNT(*) vs COUNT(column)</h3>
+        </div>
+        <span class="difficulty easy">Easy</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">player_contracts</div>
+      <div class="table-wrap"><table><thead><tr><th>player_id</th><th>wage</th></tr></thead><tbody><tr><td class="">1</td><td class="">50000</td></tr><tr><td class="">2</td><td class="null">NULL</td></tr><tr><td class="">3</td><td class="">30000</td></tr><tr><td class="">4</td><td class="null">NULL</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>SELECT COUNT(*) AS total_rows,
+       COUNT(wage) AS known_wages
+FROM player_contracts;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>total_rows</th><th>known_wages</th></tr></thead><tbody><tr><td class="">4</td><td class="">2</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> COUNT(*) counts rows. COUNT(wage) skips rows where wage is NULL.</p>
+        </div>
+      </details>
+    </article>
+    <article class="question-card" data-topic="Aggregate Functions" data-difficulty="Easy" id="q19">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 19</div>
+          <h3>COUNT DISTINCT</h3>
+        </div>
+        <span class="difficulty easy">Easy</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">player_contracts</div>
+      <div class="table-wrap"><table><thead><tr><th>player_id</th><th>club_id</th></tr></thead><tbody><tr><td class="">1</td><td class="">A</td></tr><tr><td class="">2</td><td class="">A</td></tr><tr><td class="">3</td><td class="">B</td></tr><tr><td class="">4</td><td class="">B</td></tr><tr><td class="">5</td><td class="">B</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>SELECT COUNT(DISTINCT club_id) AS clubs
+FROM player_contracts;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>clubs</th></tr></thead><tbody><tr><td class="">2</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> Only A and B are distinct club_id values.</p>
+        </div>
+      </details>
+    </article>
+    <article class="question-card" data-topic="Aggregate Functions" data-difficulty="Easy" id="q20">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 20</div>
+          <h3>GROUP BY with AVG</h3>
+        </div>
+        <span class="difficulty easy">Easy</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">player_contracts</div>
+      <div class="table-wrap"><table><thead><tr><th>player_id</th><th>club_id</th><th>wage</th></tr></thead><tbody><tr><td class="">1</td><td class="">A</td><td class="">20</td></tr><tr><td class="">2</td><td class="">A</td><td class="">40</td></tr><tr><td class="">3</td><td class="">B</td><td class="">50</td></tr><tr><td class="">4</td><td class="">B</td><td class="">70</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>SELECT club_id,
+       AVG(wage) AS avg_wage
+FROM player_contracts
+GROUP BY club_id
+ORDER BY club_id;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>club_id</th><th>avg_wage</th></tr></thead><tbody><tr><td class="">A</td><td class="">30</td></tr><tr><td class="">B</td><td class="">60</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> Rows are grouped by club first, then AVG is calculated separately inside each group.</p>
+        </div>
+      </details>
+    </article>
+    <article class="question-card" data-topic="Aggregate Functions" data-difficulty="Medium" id="q21">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 21</div>
+          <h3>GROUP BY two columns</h3>
+        </div>
+        <span class="difficulty medium">Medium</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">players</div>
+      <div class="table-wrap"><table><thead><tr><th>player</th><th>club</th><th>nationality</th><th>wage</th></tr></thead><tbody><tr><td class="">P1</td><td class="">A</td><td class="">Irish</td><td class="">20</td></tr><tr><td class="">P2</td><td class="">A</td><td class="">Irish</td><td class="">40</td></tr><tr><td class="">P3</td><td class="">A</td><td class="">French</td><td class="">50</td></tr><tr><td class="">P4</td><td class="">B</td><td class="">Irish</td><td class="">70</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>SELECT club,
+       nationality,
+       AVG(wage) AS avg_wage
+FROM players
+GROUP BY club, nationality
+ORDER BY club, nationality;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>club</th><th>nationality</th><th>avg_wage</th></tr></thead><tbody><tr><td class="">A</td><td class="">French</td><td class="">50</td></tr><tr><td class="">A</td><td class="">Irish</td><td class="">30</td></tr><tr><td class="">B</td><td class="">Irish</td><td class="">70</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> Each unique club + nationality pair becomes its own group.</p>
+        </div>
+      </details>
+    </article>
+    <article class="question-card" data-topic="Aggregate Functions" data-difficulty="Easy" id="q22">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 22</div>
+          <h3>SUM, MIN and MAX</h3>
+        </div>
+        <span class="difficulty easy">Easy</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">player_contracts</div>
+      <div class="table-wrap"><table><thead><tr><th>club_id</th><th>wage</th></tr></thead><tbody><tr><td class="">A</td><td class="">20</td></tr><tr><td class="">A</td><td class="">40</td></tr><tr><td class="">B</td><td class="">15</td></tr><tr><td class="">B</td><td class="">80</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>SELECT SUM(wage) AS total,
+       MIN(wage) AS minimum,
+       MAX(wage) AS maximum
+FROM player_contracts;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>total</th><th>minimum</th><th>maximum</th></tr></thead><tbody><tr><td class="">155</td><td class="">15</td><td class="">80</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> Without GROUP BY, all rows form one aggregate group.</p>
+        </div>
+      </details>
+    </article>
+    <article class="question-card" data-topic="Aggregate Functions" data-difficulty="Medium" id="q23">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 23</div>
+          <h3>WHERE before GROUP BY</h3>
+        </div>
+        <span class="difficulty medium">Medium</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">player_contracts</div>
+      <div class="table-wrap"><table><thead><tr><th>club_id</th><th>wage</th></tr></thead><tbody><tr><td class="">A</td><td class="">20</td></tr><tr><td class="">A</td><td class="">60</td></tr><tr><td class="">B</td><td class="">50</td></tr><tr><td class="">B</td><td class="">90</td></tr><tr><td class="">C</td><td class="">30</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>SELECT club_id,
+       AVG(wage) AS avg_wage
+FROM player_contracts
+WHERE wage &gt;= 50
+GROUP BY club_id
+ORDER BY club_id;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>club_id</th><th>avg_wage</th></tr></thead><tbody><tr><td class="">A</td><td class="">60</td></tr><tr><td class="">B</td><td class="">70</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> WHERE removes 20 and 30 before grouping. Club C then has no remaining rows.</p>
+        </div>
+      </details>
+    </article>
+    <article class="question-card" data-topic="Aggregate Functions" data-difficulty="Medium" id="q24">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 24</div>
+          <h3>HAVING after GROUP BY</h3>
+        </div>
+        <span class="difficulty medium">Medium</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">player_contracts</div>
+      <div class="table-wrap"><table><thead><tr><th>club_id</th><th>wage</th></tr></thead><tbody><tr><td class="">A</td><td class="">20</td></tr><tr><td class="">A</td><td class="">40</td></tr><tr><td class="">B</td><td class="">50</td></tr><tr><td class="">B</td><td class="">90</td></tr><tr><td class="">C</td><td class="">30</td></tr><tr><td class="">C</td><td class="">40</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>SELECT club_id,
+       AVG(wage) AS avg_wage
+FROM player_contracts
+GROUP BY club_id
+HAVING AVG(wage) &gt;= 35
+ORDER BY club_id;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>club_id</th><th>avg_wage</th></tr></thead><tbody><tr><td class="">B</td><td class="">70</td></tr><tr><td class="">C</td><td class="">35</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> HAVING filters groups after AVG is calculated. A averages 30, so it is removed.</p>
+        </div>
+      </details>
+    </article>
+    <article class="question-card" data-topic="Aggregate Functions" data-difficulty="Medium" id="q25">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 25</div>
+          <h3>FILTER (WHERE ...)</h3>
+        </div>
+        <span class="difficulty medium">Medium</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">player_contracts</div>
+      <div class="table-wrap"><table><thead><tr><th>club_id</th><th>player_id</th><th>wage</th></tr></thead><tbody><tr><td class="">A</td><td class="">1</td><td class="">50</td></tr><tr><td class="">A</td><td class="">2</td><td class="null">NULL</td></tr><tr><td class="">A</td><td class="">3</td><td class="">30</td></tr><tr><td class="">B</td><td class="">4</td><td class="null">NULL</td></tr><tr><td class="">B</td><td class="">5</td><td class="">70</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>SELECT club_id,
+       COUNT(player_id) AS total,
+       COUNT(player_id) FILTER (WHERE wage IS NOT NULL) AS with_wage,
+       COUNT(player_id) FILTER (WHERE wage IS NULL) AS without_wage
+FROM player_contracts
+GROUP BY club_id
+ORDER BY club_id;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>club_id</th><th>total</th><th>with_wage</th><th>without_wage</th></tr></thead><tbody><tr><td class="">A</td><td class="">3</td><td class="">2</td><td class="">1</td></tr><tr><td class="">B</td><td class="">2</td><td class="">1</td><td class="">1</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> FILTER changes only the aggregate it is attached to; it does not remove rows for the other aggregates.</p>
+        </div>
+      </details>
+    </article>
+    <article class="question-card" data-topic="Aggregate Functions" data-difficulty="Medium" id="q26">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 26</div>
+          <h3>STRING_AGG</h3>
+        </div>
+        <span class="difficulty medium">Medium</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">players</div>
+      <div class="table-wrap"><table><thead><tr><th>club_id</th><th>player_name</th></tr></thead><tbody><tr><td class="">A</td><td class="">Zara</td></tr><tr><td class="">A</td><td class="">Adam</td></tr><tr><td class="">B</td><td class="">Mina</td></tr><tr><td class="">B</td><td class="">Ben</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>SELECT club_id,
+       STRING_AGG(player_name, &#x27;, &#x27; ORDER BY player_name) AS players
+FROM players
+GROUP BY club_id
+ORDER BY club_id;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>club_id</th><th>players</th></tr></thead><tbody><tr><td class="">A</td><td class="">Adam, Zara</td></tr><tr><td class="">B</td><td class="">Ben, Mina</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> STRING_AGG joins rows inside each group, and its internal ORDER BY alphabetizes the names.</p>
+        </div>
+      </details>
+    </article>
+    <article class="question-card" data-topic="Subqueries" data-difficulty="Easy" id="q27">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 27</div>
+          <h3>Single-row subquery</h3>
+        </div>
+        <span class="difficulty easy">Easy</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">player_contracts</div>
+      <div class="table-wrap"><table><thead><tr><th>player</th><th>wage</th></tr></thead><tbody><tr><td class="">A</td><td class="">20</td></tr><tr><td class="">B</td><td class="">40</td></tr><tr><td class="">C</td><td class="">60</td></tr><tr><td class="">D</td><td class="">80</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>SELECT player, wage
+FROM player_contracts
+WHERE wage &gt; (
+    SELECT AVG(wage)
+    FROM player_contracts
+)
+ORDER BY wage;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>player</th><th>wage</th></tr></thead><tbody><tr><td class="">C</td><td class="">60</td></tr><tr><td class="">D</td><td class="">80</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> The subquery returns AVG = 50. The outer query keeps wages greater than 50.</p>
+        </div>
+      </details>
+    </article>
+    <article class="question-card" data-topic="Subqueries" data-difficulty="Medium" id="q28">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 28</div>
+          <h3>EXISTS</h3>
+        </div>
+        <span class="difficulty medium">Medium</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">clubs</div>
+      <div class="table-wrap"><table><thead><tr><th>club_id</th><th>club_name</th></tr></thead><tbody><tr><td class="">A</td><td class="">Alpha FC</td></tr><tr><td class="">B</td><td class="">Beta FC</td></tr><tr><td class="">C</td><td class="">City FC</td></tr></tbody></table></div>
+    </div>
+    <div class="data-card">
+      <div class="table-name">player_contracts</div>
+      <div class="table-wrap"><table><thead><tr><th>player_id</th><th>club_id</th><th>wage</th></tr></thead><tbody><tr><td class="">1</td><td class="">A</td><td class="">30000</td></tr><tr><td class="">2</td><td class="">A</td><td class="">60000</td></tr><tr><td class="">3</td><td class="">B</td><td class="">45000</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>SELECT c.club_name
+FROM clubs c
+WHERE EXISTS (
+    SELECT 1
+    FROM player_contracts pc
+    WHERE pc.club_id = c.club_id
+      AND pc.wage &gt;= 50000
+)
+ORDER BY c.club_name;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>club_name</th></tr></thead><tbody><tr><td class="">Alpha FC</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> EXISTS only asks whether at least one matching row exists. Only club A has a wage at or above 50000.</p>
+        </div>
+      </details>
+    </article>
+    <article class="question-card" data-topic="Subqueries" data-difficulty="Medium" id="q29">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 29</div>
+          <h3>IN</h3>
+        </div>
+        <span class="difficulty medium">Medium</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">player_contracts</div>
+      <div class="table-wrap"><table><thead><tr><th>player</th><th>club_id</th><th>wage</th></tr></thead><tbody><tr><td class="">P1</td><td class="">A</td><td class="">20</td></tr><tr><td class="">P2</td><td class="">A</td><td class="">70</td></tr><tr><td class="">P3</td><td class="">B</td><td class="">30</td></tr><tr><td class="">P4</td><td class="">B</td><td class="">40</td></tr><tr><td class="">P5</td><td class="">C</td><td class="">80</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>SELECT player, club_id
+FROM player_contracts
+WHERE club_id IN (
+    SELECT DISTINCT club_id
+    FROM player_contracts
+    WHERE wage &gt;= 70
+)
+ORDER BY player;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>player</th><th>club_id</th></tr></thead><tbody><tr><td class="">P1</td><td class="">A</td></tr><tr><td class="">P2</td><td class="">A</td></tr><tr><td class="">P5</td><td class="">C</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> The subquery returns clubs A and C. IN then keeps every player belonging to either of those clubs.</p>
+        </div>
+      </details>
+    </article>
+    <article class="question-card" data-topic="Subqueries" data-difficulty="Easy" id="q30">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 30</div>
+          <h3>NOT IN</h3>
+        </div>
+        <span class="difficulty easy">Easy</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">players</div>
+      <div class="table-wrap"><table><thead><tr><th>player_id</th><th>player_name</th></tr></thead><tbody><tr><td class="">1</td><td class="">Ana</td></tr><tr><td class="">2</td><td class="">Bo</td></tr><tr><td class="">3</td><td class="">Cy</td></tr><tr><td class="">4</td><td class="">Dee</td></tr></tbody></table></div>
+    </div>
+    <div class="data-card">
+      <div class="table-name">player_contracts</div>
+      <div class="table-wrap"><table><thead><tr><th>player_id</th></tr></thead><tbody><tr><td class="">1</td></tr><tr><td class="">3</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>SELECT player_name
+FROM players
+WHERE player_id NOT IN (
+    SELECT player_id
+    FROM player_contracts
+)
+ORDER BY player_name;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>player_name</th></tr></thead><tbody><tr><td class="">Bo</td></tr><tr><td class="">Dee</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> The subquery returns player IDs 1 and 3, so NOT IN keeps 2 and 4.</p>
+        </div>
+      </details>
+    </article>
+    <article class="question-card" data-topic="Subqueries" data-difficulty="Medium" id="q31">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 31</div>
+          <h3>&gt; ANY</h3>
+        </div>
+        <span class="difficulty medium">Medium</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">player_contracts</div>
+      <div class="table-wrap"><table><thead><tr><th>player</th><th>club_id</th><th>wage</th></tr></thead><tbody><tr><td class="">A1</td><td class="">A</td><td class="">30</td></tr><tr><td class="">A2</td><td class="">A</td><td class="">50</td></tr><tr><td class="">B1</td><td class="">B</td><td class="">20</td></tr><tr><td class="">B2</td><td class="">B</td><td class="">40</td></tr><tr><td class="">C1</td><td class="">C</td><td class="">60</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>SELECT player, wage
+FROM player_contracts
+WHERE wage &gt; ANY (
+    SELECT wage
+    FROM player_contracts
+    WHERE club_id = &#x27;A&#x27;
+)
+ORDER BY wage, player;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>player</th><th>wage</th></tr></thead><tbody><tr><td class="">B2</td><td class="">40</td></tr><tr><td class="">A2</td><td class="">50</td></tr><tr><td class="">C1</td><td class="">60</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> Club A wages are 30 and 50. &gt; ANY means greater than at least one of them, so effectively greater than 30.</p>
+        </div>
+      </details>
+    </article>
+    <article class="question-card" data-topic="Subqueries" data-difficulty="Medium" id="q32">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 32</div>
+          <h3>&gt; ALL</h3>
+        </div>
+        <span class="difficulty medium">Medium</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">player_contracts</div>
+      <div class="table-wrap"><table><thead><tr><th>player</th><th>club_id</th><th>wage</th></tr></thead><tbody><tr><td class="">A1</td><td class="">A</td><td class="">30</td></tr><tr><td class="">A2</td><td class="">A</td><td class="">50</td></tr><tr><td class="">B1</td><td class="">B</td><td class="">40</td></tr><tr><td class="">B2</td><td class="">B</td><td class="">55</td></tr><tr><td class="">C1</td><td class="">C</td><td class="">70</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>SELECT player, wage
+FROM player_contracts
+WHERE wage &gt; ALL (
+    SELECT wage
+    FROM player_contracts
+    WHERE club_id = &#x27;A&#x27;
+)
+ORDER BY wage;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>player</th><th>wage</th></tr></thead><tbody><tr><td class="">B2</td><td class="">55</td></tr><tr><td class="">C1</td><td class="">70</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> Club A&#x27;s maximum wage is 50. &gt; ALL requires the wage to beat both 30 and 50, so it must be greater than 50.</p>
+        </div>
+      </details>
+    </article>
+    <article class="question-card" data-topic="Advanced SQL" data-difficulty="Medium" id="q33">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 33</div>
+          <h3>Derived table in FROM</h3>
+        </div>
+        <span class="difficulty medium">Medium</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">player_contracts</div>
+      <div class="table-wrap"><table><thead><tr><th>club_id</th><th>wage</th></tr></thead><tbody><tr><td class="">A</td><td class="">20</td></tr><tr><td class="">A</td><td class="">40</td></tr><tr><td class="">B</td><td class="">50</td></tr><tr><td class="">B</td><td class="">90</td></tr><tr><td class="">C</td><td class="">10</td></tr><tr><td class="">C</td><td class="">20</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>SELECT MAX(avg_wage) AS highest_club_average
+FROM (
+    SELECT club_id,
+           AVG(wage) AS avg_wage
+    FROM player_contracts
+    GROUP BY club_id
+) s;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>highest_club_average</th></tr></thead><tbody><tr><td class="">70</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> The inner query produces A=30, B=70, C=15. The outer MAX returns 70.</p>
+        </div>
+      </details>
+    </article>
+    <article class="question-card" data-topic="Advanced SQL" data-difficulty="Medium" id="q34">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 34</div>
+          <h3>UPDATE with subquery</h3>
+        </div>
+        <span class="difficulty medium">Medium</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">player_contracts BEFORE UPDATE</div>
+      <div class="table-wrap"><table><thead><tr><th>player</th><th>wage</th></tr></thead><tbody><tr><td class="">A</td><td class="">20</td></tr><tr><td class="">B</td><td class="">40</td></tr><tr><td class="">C</td><td class="null">NULL</td></tr><tr><td class="">D</td><td class="null">NULL</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>UPDATE player_contracts
+SET wage = (
+    SELECT ROUND(AVG(wage))
+    FROM player_contracts
+    WHERE wage IS NOT NULL
+)
+WHERE wage IS NULL;
+
+SELECT player, wage
+FROM player_contracts
+ORDER BY player;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>player</th><th>wage</th></tr></thead><tbody><tr><td class="">A</td><td class="">20</td></tr><tr><td class="">B</td><td class="">40</td></tr><tr><td class="">C</td><td class="">30</td></tr><tr><td class="">D</td><td class="">30</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> The subquery average of the known wages is 30. Both NULL wages are updated to 30.</p>
+        </div>
+      </details>
+    </article>
+    <article class="question-card" data-topic="Advanced SQL" data-difficulty="Medium" id="q35">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 35</div>
+          <h3>CTE</h3>
+        </div>
+        <span class="difficulty medium">Medium</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">player_statistics</div>
+      <div class="table-wrap"><table><thead><tr><th>person_id</th><th>points</th></tr></thead><tbody><tr><td class="">1</td><td class="">10</td></tr><tr><td class="">1</td><td class="">30</td></tr><tr><td class="">2</td><td class="">15</td></tr><tr><td class="">2</td><td class="">25</td></tr><tr><td class="">3</td><td class="">8</td></tr><tr><td class="">3</td><td class="">12</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>WITH player_avg AS (
+    SELECT person_id,
+           AVG(points) AS avg_points
+    FROM player_statistics
+    GROUP BY person_id
+)
+SELECT person_id, avg_points
+FROM player_avg
+WHERE avg_points &gt;= 20
+ORDER BY person_id;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>person_id</th><th>avg_points</th></tr></thead><tbody><tr><td class="">1</td><td class="">20</td></tr><tr><td class="">2</td><td class="">20</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> The CTE produces averages 20, 20, and 10. The outer WHERE keeps the first two.</p>
+        </div>
+      </details>
+    </article>
+    <article class="question-card" data-topic="Advanced SQL" data-difficulty="Medium" id="q36">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 36</div>
+          <h3>CASE with aggregate</h3>
+        </div>
+        <span class="difficulty medium">Medium</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">player_contracts</div>
+      <div class="table-wrap"><table><thead><tr><th>club</th><th>wage</th></tr></thead><tbody><tr><td class="">A</td><td class="">50000</td></tr><tr><td class="">A</td><td class="">30000</td></tr><tr><td class="">B</td><td class="">12000</td></tr><tr><td class="">B</td><td class="">18000</td></tr><tr><td class="">C</td><td class="">5000</td></tr><tr><td class="">C</td><td class="">7000</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>SELECT club,
+       ROUND(AVG(wage)) AS avg_wage,
+       CASE
+           WHEN AVG(wage) &gt;= 40000 THEN &#x27;High&#x27;
+           WHEN AVG(wage) BETWEEN 10000 AND 39999 THEN &#x27;Medium&#x27;
+           WHEN AVG(wage) &lt; 10000 THEN &#x27;Low&#x27;
+       END AS category
+FROM player_contracts
+GROUP BY club
+ORDER BY club;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>club</th><th>avg_wage</th><th>category</th></tr></thead><tbody><tr><td class="">A</td><td class="">40000</td><td class="">High</td></tr><tr><td class="">B</td><td class="">15000</td><td class="">Medium</td></tr><tr><td class="">C</td><td class="">6000</td><td class="">Low</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> CASE is evaluated separately for each grouped AVG result.</p>
+        </div>
+      </details>
+    </article>
+    <article class="question-card" data-topic="PL/pgSQL &amp; Triggers" data-difficulty="Easy" id="q37">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 37</div>
+          <h3>Custom function call</h3>
+        </div>
+        <span class="difficulty easy">Easy</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">values_table</div>
+      <div class="table-wrap"><table><thead><tr><th>id</th><th>points</th><th>turnovers</th></tr></thead><tbody><tr><td class="">1</td><td class="">18</td><td class="">5</td></tr><tr><td class="">2</td><td class="">9</td><td class="">11</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>CREATE OR REPLACE FUNCTION plus_minus(p INT, t INT)
+RETURNS INT AS $$
+BEGIN
+    RETURN p - t;
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT id,
+       plus_minus(points, turnovers) AS result
+FROM values_table
+ORDER BY id;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>id</th><th>result</th></tr></thead><tbody><tr><td class="">1</td><td class="">13</td></tr><tr><td class="">2</td><td class="">-2</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> The function simply returns its first argument minus its second argument for each row.</p>
+        </div>
+      </details>
+    </article>
+    <article class="question-card" data-topic="PL/pgSQL &amp; Triggers" data-difficulty="Medium" id="q38">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 38</div>
+          <h3>BEFORE INSERT row trigger</h3>
+        </div>
+        <span class="difficulty medium">Medium</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">player_statistics BEFORE INSERT</div>
+      <div class="table-wrap"><table><thead><tr><th>player_id</th><th>points</th><th>turnovers</th><th>plus_minus_points</th></tr></thead><tbody><tr><td class="">1</td><td class="">20</td><td class="">4</td><td class="">16</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>CREATE OR REPLACE FUNCTION set_plus_minus_row()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.plus_minus_points := NEW.points - NEW.turnovers;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Assume this trigger already exists:
+-- BEFORE INSERT ON player_statistics
+-- FOR EACH ROW EXECUTE FUNCTION set_plus_minus_row();
+
+INSERT INTO player_statistics
+VALUES (2, 15, 6, NULL);
+
+SELECT *
+FROM player_statistics
+ORDER BY player_id;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>player_id</th><th>points</th><th>turnovers</th><th>plus_minus_points</th></tr></thead><tbody><tr><td class="">1</td><td class="">20</td><td class="">4</td><td class="">16</td></tr><tr><td class="">2</td><td class="">15</td><td class="">6</td><td class="">9</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> The BEFORE INSERT trigger changes NEW.plus_minus_points to 15 - 6 before the row is stored.</p>
+        </div>
+      </details>
+    </article>
+    <article class="question-card" data-topic="PL/pgSQL &amp; Triggers" data-difficulty="Medium" id="q39">
+      <div class="question-top">
+        <div>
+          <div class="eyebrow">Question 39</div>
+          <h3>FOR EACH STATEMENT trigger</h3>
+        </div>
+        <span class="difficulty medium">Medium</span>
+      </div>
+      <div class="tables-grid">
+    <div class="data-card">
+      <div class="table-name">player_statistics BEFORE INSERT</div>
+      <div class="table-wrap"><table><thead><tr><th>player_id</th><th>points</th><th>turnovers</th><th>plus_minus_points</th></tr></thead><tbody><tr><td class="">1</td><td class="">20</td><td class="">4</td><td class="">999</td></tr><tr><td class="">2</td><td class="">12</td><td class="">3</td><td class="">999</td></tr></tbody></table></div>
+    </div></div>
+      <div class="sql-label">SQL query</div>
+      <pre><code>CREATE OR REPLACE FUNCTION update_plus_minus_all()
+RETURNS TRIGGER AS $$
+BEGIN
+    UPDATE player_statistics
+    SET plus_minus_points = points - turnovers;
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Assume this trigger already exists:
+-- AFTER INSERT ON player_statistics
+-- FOR EACH STATEMENT EXECUTE FUNCTION update_plus_minus_all();
+
+INSERT INTO player_statistics
+VALUES (3, 10, 7, 999);
+
+SELECT *
+FROM player_statistics
+ORDER BY player_id;</code></pre>
+      <p class="prompt">Write the exact output produced by the query.</p>
+      <details class="answer">
+        <summary><span>Show answer</span><span class="chev">+</span></summary>
+        <div class="answer-body">
+          
+    <div class="data-card">
+      <div class="table-name">Expected output</div>
+      <div class="table-wrap"><table><thead><tr><th>player_id</th><th>points</th><th>turnovers</th><th>plus_minus_points</th></tr></thead><tbody><tr><td class="">1</td><td class="">20</td><td class="">4</td><td class="">16</td></tr><tr><td class="">2</td><td class="">12</td><td class="">3</td><td class="">9</td></tr><tr><td class="">3</td><td class="">10</td><td class="">7</td><td class="">3</td></tr></tbody></table></div>
+    </div>
+          <p class="reason"><strong>Why:</strong> The statement-level trigger runs once after the INSERT and recalculates plus_minus_points for every row.</p>
+        </div>
+      </details>
+    </article>
+  <div class="empty" id="empty">No questions match this filter.</div>
+</main>
+</div>
+
+<footer class="container">
+  Tip: do not reveal an answer until you have written the output columns and rows yourself. Reading SQL and thinking “yeah, I get it” is the academic equivalent of watching gym videos and expecting biceps.
+</footer>
+
+<script>
+const buttons = [...document.querySelectorAll('.topic-btn')];
+const cards = [...document.querySelectorAll('.question-card')];
+const empty = document.getElementById('empty');
+
+buttons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    buttons.forEach(b => {
+      b.classList.remove('active');
+      b.setAttribute('aria-pressed', 'false');
+    });
+    btn.classList.add('active');
+    btn.setAttribute('aria-pressed', 'true');
+    const filter = btn.dataset.filter;
+    let shown = 0;
+    cards.forEach(card => {
+      const match = filter === 'all' || card.dataset.topic === filter;
+      card.hidden = !match;
+      if (match) shown++;
+    });
+    empty.style.display = shown ? 'none' : 'block';
+    closeTopics();
+  });
+});
+
+const topicMenuToggle = document.getElementById('topicMenuToggle');
+const topicsSidebarClose = document.getElementById('topicsSidebarClose');
+const topicsOverlay = document.getElementById('topicsOverlay');
+
+const openTopics = () => {
+  document.body.classList.add('topics-open');
+  topicMenuToggle.setAttribute('aria-expanded', 'true');
+};
+
+const closeTopics = () => {
+  const wasOpen = document.body.classList.contains('topics-open');
+  document.body.classList.remove('topics-open');
+  topicMenuToggle.setAttribute('aria-expanded', 'false');
+  if (wasOpen) topicMenuToggle.focus();
+};
+
+topicMenuToggle.addEventListener('click', openTopics);
+topicsSidebarClose.addEventListener('click', closeTopics);
+topicsOverlay.addEventListener('click', closeTopics);
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape') closeTopics();
+});
+
+document.getElementById('collapseBtn').addEventListener('click', () => {
+  document.querySelectorAll('details.answer').forEach(d => d.open = false);
+});
+
+document.querySelectorAll('details.answer').forEach(d => {
+  d.addEventListener('toggle', () => {
+    const text = d.querySelector('summary span:first-child');
+    text.textContent = d.open ? 'Hide answer' : 'Show answer';
+  });
+});
+</script>
+</body>
+</html>

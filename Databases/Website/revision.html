@@ -87,7 +87,7 @@
     overflow-y:auto;
     background:transparent;
     border-radius:16px;
-    padding:20px 14px 20px 4px;
+    padding:132px 14px 20px 4px;
     font-size:15px;
     scrollbar-width:thin;
     scrollbar-color:rgba(255,255,255,.22) transparent;
@@ -296,6 +296,89 @@
     font-weight:700;
     letter-spacing:.3px;
     color:var(--ink);
+  }
+
+  .left-quick-links{
+    position:fixed;
+    top:70px;
+    left:max(24px, calc((100vw - 1180px) / 2 + 24px));
+    z-index:1100;
+    width:232px;
+    display:grid;
+    gap:8px;
+  }
+  .back-to-tutoring,
+  .practice-questions-link{
+    width:100%;
+    min-height:42px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+    padding:0 16px;
+    border:1px solid rgba(255,255,255,.16);
+    border-radius:10px;
+    background:linear-gradient(135deg, #2c2f6b, #174f55);
+    color:#fff;
+    box-shadow:0 7px 18px rgba(28,31,73,.18);
+    font-size:14px;
+    font-weight:700;
+    line-height:1;
+    text-decoration:none;
+    white-space:nowrap;
+    transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  }
+  .practice-questions-link{
+    border-color:rgba(255,255,255,.18);
+    background:rgba(20,22,42,.64);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+  }
+  .back-to-tutoring-arrow{
+    font-size:19px;
+    font-weight:400;
+    line-height:1;
+    transition:transform .15s ease;
+  }
+  .back-to-tutoring:hover,
+  .back-to-tutoring:focus-visible,
+  .practice-questions-link:hover,
+  .practice-questions-link:focus-visible{
+    border-color:rgba(255,255,255,.42);
+    box-shadow:0 10px 24px rgba(28,31,73,.28);
+    transform:translateY(-1px);
+  }
+  .back-to-tutoring:hover .back-to-tutoring-arrow,
+  .back-to-tutoring:focus-visible .back-to-tutoring-arrow{
+    transform:translateX(-3px);
+  }
+  .back-to-tutoring:focus-visible,
+  .practice-questions-link:focus-visible{
+    outline:3px solid rgba(91,91,214,.28);
+    outline-offset:3px;
+  }
+
+  @media (max-width:860px){
+    .left-quick-links{
+      top:52px;
+      right:auto;
+      left:72px;
+      width:calc(100vw - 90px);
+      display:flex;
+      gap:8px;
+    }
+    .back-to-tutoring,
+    .practice-questions-link{
+      width:auto;
+      flex:1 1 auto;
+      min-height:44px;
+      padding:0 10px;
+      box-shadow:0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  @media (max-width:480px){
+    .back-to-tutoring-prefix,
+    .practice-questions-prefix{ display:none; }
   }
 
   .toolbar{
@@ -714,8 +797,14 @@
   @media print{
     body{background:#fff;}
     .sheet{margin:0; max-width:100%; box-shadow:none;}
-    .toolbar{display:none;}
+    .toolbar,.left-quick-links{display:none;}
     pre{background:#f6f7f9; color:#1c1e26;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .back-to-tutoring,
+    .practice-questions-link,
+    .back-to-tutoring-arrow{transition:none;}
   }
 </style>
 </head>
@@ -724,6 +813,16 @@
 <div class="flow-header"><div class="flow-header-inner"><b>FROM</b><span class="flow-header-arrow">→</span><b>WHERE</b><span class="flow-header-arrow">→</span><b>GROUP BY</b><span class="flow-header-arrow">→</span><b>HAVING</b><span class="flow-header-arrow">→</span><b>SELECT</b><span class="flow-header-arrow">→</span><b>ORDER BY</b></div></div>
 
 <button class="menu-toggle" id="menuToggle" aria-label="Open index"><span></span></button>
+<div class="left-quick-links" aria-label="Study navigation">
+  <a class="back-to-tutoring" href="https://tutoring.pasbola.com/" aria-label="Go back to tutoring">
+    <span class="back-to-tutoring-arrow" aria-hidden="true">&larr;</span>
+    <span><span class="back-to-tutoring-prefix">Back to </span>Tutoring</span>
+  </a>
+  <a class="practice-questions-link" href="questions.html">
+    <span><span class="practice-questions-prefix">Practice </span>Questions</span>
+    <span aria-hidden="true">&rarr;</span>
+  </a>
+</div>
 <div class="toc-overlay" id="tocOverlay"></div>
 
 <div class="layout">
